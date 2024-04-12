@@ -3,9 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34728.123
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SeriesTracker.API", "SeriesTracker.API\SeriesTracker.API.csproj", "{AF154567-C620-487C-BD1B-1764EA969E69}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SeriesTracker.API", "SeriesTracker.API\SeriesTracker.API.csproj", "{AF154567-C620-487C-BD1B-1764EA969E69}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SeriesTracker.Core", "SeriesTracker.Core\SeriesTracker.Core.csproj", "{1BFAAB40-74DD-4C2D-B126-C62C203616B8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SeriesTracker.Core", "SeriesTracker.Core\SeriesTracker.Core.csproj", "{1BFAAB40-74DD-4C2D-B126-C62C203616B8}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SeriesTracker.DataAccess", "SeriesTracker.DataAccess\SeriesTracker.DataAccess.csproj", "{6C4657B0-83FE-48CB-BEBC-CE51642D305F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SeriesTracker.Application", "SeriesTracker.Application\SeriesTracker.Application.csproj", "{A45361B8-6C47-450D-A4BD-CEB3577F9094}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +25,14 @@ Global
 		{1BFAAB40-74DD-4C2D-B126-C62C203616B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1BFAAB40-74DD-4C2D-B126-C62C203616B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1BFAAB40-74DD-4C2D-B126-C62C203616B8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6C4657B0-83FE-48CB-BEBC-CE51642D305F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6C4657B0-83FE-48CB-BEBC-CE51642D305F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6C4657B0-83FE-48CB-BEBC-CE51642D305F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6C4657B0-83FE-48CB-BEBC-CE51642D305F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A45361B8-6C47-450D-A4BD-CEB3577F9094}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A45361B8-6C47-450D-A4BD-CEB3577F9094}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A45361B8-6C47-450D-A4BD-CEB3577F9094}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A45361B8-6C47-450D-A4BD-CEB3577F9094}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
