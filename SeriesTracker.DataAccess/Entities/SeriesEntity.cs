@@ -17,12 +17,8 @@
             get; set;
         } = string.Empty;
 
-        public int Duration
-        {
-            get; set;
-        } = 0;
 
-        public string Description
+        public string? Description
         {
             get; set;
         } = string.Empty;
@@ -37,15 +33,20 @@
             get; set;
         } = 0;
 
-        public string ImagePath
-        {
-            get; set;
-        } = string.Empty;
-
         public int LastEpisode
         {
             get; set;
-        } = 0;
+        } = 1;
+
+        public int Duration
+        {
+            get; set;
+        } = 24;
+
+        public string? ImagePath
+        {
+            get; set;
+        } = string.Empty;
 
         public string ReleaseDate
         {
@@ -57,7 +58,7 @@
             get; set;
         } = string.Empty;
 
-        public string OverDate
+        public string? OverDate
         {
             get; set;
         } = string.Empty;

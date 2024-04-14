@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SeriesTracker.Core", "Serie
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SeriesTracker.DataAccess", "SeriesTracker.DataAccess\SeriesTracker.DataAccess.csproj", "{6C4657B0-83FE-48CB-BEBC-CE51642D305F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SeriesTracker.Application", "SeriesTracker.Application\SeriesTracker.Application.csproj", "{A45361B8-6C47-450D-A4BD-CEB3577F9094}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SeriesTracker.Application", "SeriesTracker.Application\SeriesTracker.Application.csproj", "{A45361B8-6C47-450D-A4BD-CEB3577F9094}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

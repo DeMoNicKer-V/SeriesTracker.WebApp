@@ -21,7 +21,7 @@ namespace SeriesTracker.API.Controllers
         {
             var seriesList = await _seriesService.GetSeriesList();
 
-            var response = seriesList.Select(s => new SeriesResponse(s.Id, s.Title, s.Description, s.WatchedEpisode, s.LastEpisode, s.Duration, s.Rating,
+            var response = seriesList.Select(s => new SeriesResponse(s.Id, s.Title, s.Description, s.WatchedEpisode, s.LastEpisode, s.Duration, s.Rating, s.ImagePath,
                 s.ReleaseDate, s.AddedDate, s.AddedDate, s.OverDate, s.IsFavorite, s.IsFavorite));
 
             return Ok(response);
@@ -30,8 +30,9 @@ namespace SeriesTracker.API.Controllers
         [HttpPost]
         public async Task<ActionResult<Guid>> CreateSeries([FromBody] SeriesRequest request) 
         {
+            var date = DateTime.Now.ToString();
             var (series, error) = Series.Create(Guid.NewGuid(), request.Title, request.Description, request.WatchedEpisode, request.LastEpisode,
-                request.Duration, request.Rating, request.ReleaseDate, request.AddedDate, request.ChangedDate, request.OverDate, request.IsOver, request.IsFavorite);
+                request.Duration, request.Rating, request.ImagePath, request.ReleaseDate, date, date, request.OverDate, request.IsOver, request.IsFavorite);
 
             if (!string.IsNullOrEmpty(error)) 
             {
@@ -45,8 +46,9 @@ namespace SeriesTracker.API.Controllers
         [HttpPut("{id:guid}")]
         public async Task<ActionResult<Guid>> UpdateSeries(Guid id, [FromBody] SeriesRequest request)
         {
+            var date = DateTime.Now.ToString();
             var seriesId = await _seriesService.UpdateSeries(id, request.Title, request.Description, request.WatchedEpisode, request.LastEpisode,
-                request.Duration, request.Rating, request.ReleaseDate, request.AddedDate, request.ChangedDate, request.OverDate, request.IsOver, request.IsFavorite);
+                request.Duration, request.Rating, request.ReleaseDate, date, request.OverDate, request.IsOver, request.IsFavorite);
             return Ok(seriesId);
         }
 

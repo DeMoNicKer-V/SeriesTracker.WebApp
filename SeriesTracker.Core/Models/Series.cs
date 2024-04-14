@@ -3,7 +3,7 @@
     public class Series
     {
         private Series(Guid id, string title, string description, int watched, int last, int duration,
-            float rating, string release, string added, string overDate, string changed, bool over, bool favorite)
+            float rating, string image, string release, string added, string changed, string overDate, bool over, bool favorite)
         {
             Id = id;
             Title = title;
@@ -13,8 +13,9 @@
             LastEpisode = last;
             Duration = duration;
             Rating = rating;
+            ImagePath = image;
             ReleaseDate = release;
-            AddedDate = string.IsNullOrEmpty(AddedDate) ? added : AddedDate;
+            AddedDate = added;
             OverDate = overDate;
             ChangedDate = changed;
             IsOver = over;
@@ -36,12 +37,8 @@
             get;
         } = string.Empty;
 
-        public int Duration
-        {
-            get;
-        } = 24;
 
-        public string Description
+        public string? Description
         {
             get;
         } = string.Empty;
@@ -56,15 +53,20 @@
             get;
         } = 0;
 
-        public string ImagePath
-        {
-            get;
-        } = string.Empty;
-
         public int LastEpisode
         {
             get;
         } = 1;
+
+        public int Duration
+        {
+            get;
+        } = 24;
+
+        public string? ImagePath
+        {
+            get;
+        } = string.Empty;
 
         public string ReleaseDate
         {
@@ -76,7 +78,7 @@
             get;
         } = string.Empty;
 
-        public string OverDate
+        public string? OverDate
         {
             get;
         } = string.Empty;
@@ -97,7 +99,7 @@
         } = false;
 
         public static (Series Series, string Error) Create(Guid id, string title, string description, int watched, int last, int duration,
-            float rating, string release, string added, string overDate, string changed, bool over, bool favorite)
+            float rating, string image, string release, string added, string changed, string overDate, bool over, bool favorite)
         {
             string error = string.Empty;
             if (string.IsNullOrEmpty(title))
@@ -116,7 +118,7 @@
             {
                 error = "Некоректная дата выхода сериала.";
             }
-            Series series = new Series(id, title, description, watched, last, duration, rating, release, added, overDate, changed, over, favorite);
+            Series series = new Series(id, title, description, watched, last, duration, rating, image, release, added, changed, overDate, over, favorite);
 
             return (series, error);
         }

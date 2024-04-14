@@ -23,9 +23,9 @@ namespace SeriesTracker.Application.Services
         }
 
         public async Task<Guid> UpdateSeries(Guid id, string title, string description, int watched, int last, int duration,
-            float rating, string release, string added, string overDate, string changed, bool over, bool favorite)
+            float rating, string release, string overDate, string changed, bool over, bool favorite)
         {
-            return await _seriesRepository.UpdateSeries(id, title, description, watched, last, duration, rating, release, added, overDate, changed, over, favorite);
+            return await _seriesRepository.UpdateSeries(id, title, description, watched, last, duration, rating, release, changed, overDate, over, favorite);
         }
 
         public async Task<Guid> DeleteSeries(Guid id)

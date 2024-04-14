@@ -19,7 +19,7 @@ namespace SeriesTracker.DataAccess.Repositories
             var seriesEntities = await _context.SeriesEntities.AsNoTracking().ToListAsync();
 
             var seiresList = seriesEntities.Select(s => Series.Create(s.Id, s.Title, s.Description, s.WatchedEpisode, s.LastEpisode, s.Duration,
-                s.Rating, s.ReleaseDate, s.AddedDate, s.OverDate, s.ChangedDate, s.IsOver, s.IsFavorite).Series).ToList();
+                s.Rating, s.ImagePath, s.ReleaseDate, s.AddedDate, s.OverDate, s.ChangedDate, s.IsOver, s.IsFavorite).Series).ToList();
 
             return seiresList;
         }
@@ -50,7 +50,7 @@ namespace SeriesTracker.DataAccess.Repositories
         }
 
         public async Task<Guid> UpdateSeries(Guid id, string title, string description, int watched, int last, int duration,
-            float rating, string release, string added, string overDate, string changed, bool over, bool favorite)
+            float rating, string release, string overDate, string changed, bool over, bool favorite)
         {
             await _context.SeriesEntities.Where(s => s.Id == id)
                 .ExecuteUpdateAsync(s => s.SetProperty(s => s.Title, s => title)
@@ -60,8 +60,7 @@ namespace SeriesTracker.DataAccess.Repositories
                 .SetProperty(s => s.Duration, s => duration)
                 .SetProperty(s => s.Rating, s => rating)
                 .SetProperty(s => s.ReleaseDate, s => release)
-                .SetProperty(s => s.AddedDate, s => added)
-                 .SetProperty(s => s.OverDate, s => overDate)
+                .SetProperty(s => s.OverDate, s => overDate)
                 .SetProperty(s => s.ChangedDate, s => changed)
                 .SetProperty(s => s.IsOver, s => over)
                 .SetProperty(s => s.IsFavorite, s => favorite));
