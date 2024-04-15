@@ -1,15 +1,9 @@
-"use client"
 import React, { useState } from 'react';
-import "./globals.css";
-import { LaptopOutlined, NotificationOutlined, UserOutlined } from '@ant-design/icons';
-import type { MenuProps } from 'antd';
 import { Breadcrumb, Button, Layout, Menu, theme } from 'antd';
 
 import {
     MenuFoldOutlined,
     MenuUnfoldOutlined,
-    UploadOutlined,
-    VideoCameraOutlined,
   } from '@ant-design/icons';
 import { Footer } from 'antd/es/layout/layout';
 import Link from 'next/link';
@@ -18,27 +12,19 @@ import Link from 'next/link';
 const { Header, Content, Sider } = Layout;
 
 
-
-
-
-const items = [
-  {key: "home" , label: <Link href={"/"}>Home</Link>},
-  {key: "series" , label: <Link href={"/series"}>Series</Link>}
-]
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
-  
+const BaseLayout: React.FC = () => {
+    const items = [
+        {key: "home" , label: <Link href={"/"}>Home</Link>},
+        {key: "series" , label: <Link href={"/series"}>Series</Link>}
+      ]
   const [collapsed, setCollapsed] = useState(false);
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
+
+  
   return (
-    <html lang="en">
-      <body>
-      <Layout style={{minHeight:"100vh"}}>
+    <Layout>
         <Header > <Button 
             type="text"
             icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
@@ -62,19 +48,34 @@ export default function RootLayout({
         />
       </Sider>
       <Layout>
-        <Content style={{padding: "0 48px"}}>
-         
-            {children}
-          
+        <Content style={{ margin: '24px 16px 0', overflow: 'initial' }}>
+          <div
+            style={{
+              padding: 24,
+              textAlign: 'center',
+              background: colorBgContainer,
+              borderRadius: borderRadiusLG,
+            }}
+          >
+            <p>long content</p>
+            {
+              // indicates very long content
+              Array.from({ length: 100 }, (_, index) => (
+                <React.Fragment key={index}>
+                  {index % 20 === 0 && index ? 'more' : '...'}
+                  <br />
+                </React.Fragment>
+              ))
+            }
+          </div>
         </Content>
-        <Footer fixedPosition  style={{ textAlign: 'center' }}>
+        <Footer style={{ textAlign: 'center' }}>
           Ant Design ©{new Date().getFullYear()} Created by Ant UED
         </Footer>
       </Layout>
     </Layout>
     </Layout>
-
-      </body>
-    </html>
   );
-}
+};
+
+export default BaseLayout;
