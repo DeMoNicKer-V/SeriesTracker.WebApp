@@ -74,5 +74,10 @@ namespace SeriesTracker.DataAccess.Repositories
 
             return id;
         }
+
+        public async Task<int> GetAllSeriesCount()
+        {
+            return await _context.SeriesEntities.CountAsync();
+        }
     }
 }

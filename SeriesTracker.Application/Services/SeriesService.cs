@@ -33,5 +33,10 @@ namespace SeriesTracker.Application.Services
             return await _seriesRepository.DeleteSeries(id);
         }
 
+        public async Task<int> GetAllSeriesCount()
+        {
+            return await _seriesRepository.GetAllSeriesCount();
+        }
+
     }
 }

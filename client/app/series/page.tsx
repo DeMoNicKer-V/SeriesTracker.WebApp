@@ -2,10 +2,10 @@
 import Button from "antd/es/button"
 import { Series } from "../components/Series";
 import { useEffect, useState } from "react";
-import { SeriesReqruest, createSeries, deleteSeries, getAllSeries, updateSeries } from "../services/series";
+import { SeriesReqruest, createSeries, deleteSeries, getAllSeries, getAllSeriesCount, updateSeries } from "../services/series";
 import Title from "antd/es/skeleton/Title";
 import { CreateUpdateSeries, Mode } from "../components/AddUpdateSeries";
-import { create } from "domain";
+import { Pagination } from "antd";
 
 export default function SeriesPage(){
 
@@ -16,15 +16,20 @@ export default function SeriesPage(){
 
     const [values, setValues] = useState<Series>(defaultValues);
 
+
     useEffect(() => {
         const getSeries = async() =>{
-            const series = await getAllSeries();
+            const series = await getAllSeries(page);
+            const count = await getAllSeriesCount();
             setLoading(false);
+            setseriesCount(count);
             setSeries(series);
         }
         getSeries();
     }, []);
 
+    const [page, setPage] = useState<number>(1);
+    const [seriesCount, setseriesCount] = useState<number>(1);
     const [series, setSeries] = useState<Series[]>([]);
     const [loading, setLoading] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -35,7 +40,13 @@ export default function SeriesPage(){
         await createSeries(request);
         closeModal();
 
-        const series = await getAllSeries();
+        const series = await getAllSeries(page);
+        setSeries(series);
+    }
+
+    const updateSeriesList = async (page:number) =>{
+
+        const series = await getAllSeries(page);
         setSeries(series);
     }
 
@@ -43,7 +54,7 @@ export default function SeriesPage(){
         await updateSeries(id, request);
         closeModal();
 
-        const series = await getAllSeries();
+        const series = await getAllSeries(page);
         setSeries(series);
     }
 
@@ -51,7 +62,7 @@ export default function SeriesPage(){
         await deleteSeries(id);
         closeModal();
 
-        const series = await getAllSeries();
+        const series = await getAllSeries(page);
         setSeries(series);
     }
 
@@ -85,6 +96,8 @@ export default function SeriesPage(){
             />
 
 {loading ? <Title>Loading...</Title> : <Series series={series} handleOpen={openEditModel} handleDelete={deleteThisSeries}/>}
+<Pagination  current={page}  onChange={(current: any) => {
+                            setPage(current); updateSeriesList(current)}} showTitle={false} pageSize={16} total={seriesCount}/>
         </div>
     )
 }   

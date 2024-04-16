@@ -8,8 +8,16 @@ export interface SeriesReqruest{
     releaseDate: string;
 }
 
-export const getAllSeries = async() => {
+
+export const getAllSeriesCount = async() => {
     const response = await fetch("http://localhost:5125/controller");
+
+    return response.json();
+
+};
+
+export const getAllSeries = async(page:number) => {
+    const response = await fetch(`http://localhost:5125/controller/${page}`);
 
     return response.json();
 

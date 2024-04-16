@@ -17,14 +17,6 @@ import Link from 'next/link';
 
 const { Header, Content, Sider } = Layout;
 
-
-
-
-
-const items = [
-  {key: "home" , label: <Link href={"/"}>Home</Link>},
-  {key: "series" , label: <Link href={"/series"}>Series</Link>}
-]
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -58,7 +50,18 @@ export default function RootLayout({
           theme="dark"
           mode="inline"
           defaultSelectedKeys={['home']}
-          items={items}
+          items={[
+            {
+              key: 'home',
+              icon: <UserOutlined />,
+              label: <Link href={"/"}>Home</Link>,
+            },
+            {
+              key: 'series',
+              icon: <VideoCameraOutlined />,
+              label: <Link href={"/series"}>Series</Link>,
+            },
+          ]}
         />
       </Sider>
       <Layout>
