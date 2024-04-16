@@ -31,7 +31,7 @@ namespace SeriesTracker.API.Controllers
             var seriesList = await _seriesService.GetSeriesList();
 
             var response = seriesList.Select(s => new SeriesResponse(s.Id, s.Title, s.Description, s.WatchedEpisode, s.LastEpisode, s.Duration, s.Rating, s.ImagePath,
-                s.ReleaseDate, s.AddedDate, s.AddedDate, s.OverDate, s.IsFavorite, s.IsFavorite)).Skip(16 * (page - 1)).Take(16);
+                s.ReleaseDate, s.AddedDate, s.AddedDate, s.OverDate, s.IsFavorite, s.IsFavorite)).Skip(30 * (page - 1)).Take(30);
 
             return Ok(response);
         }

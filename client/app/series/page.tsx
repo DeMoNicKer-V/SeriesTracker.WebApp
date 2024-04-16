@@ -1,30 +1,36 @@
 "use client";
-import Button from "antd/es/button"
+import Button from "antd/es/button";
 import { Series } from "../components/Series";
 import { useEffect, useState } from "react";
-import { SeriesReqruest, createSeries, deleteSeries, getAllSeries, getAllSeriesCount, updateSeries } from "../services/series";
+import {
+    SeriesReqruest,
+    createSeries,
+    deleteSeries,
+    getAllSeries,
+    getAllSeriesCount,
+    updateSeries,
+} from "../services/series";
 import Title from "antd/es/skeleton/Title";
 import { CreateUpdateSeries, Mode } from "../components/AddUpdateSeries";
 import { Pagination } from "antd";
 
-export default function SeriesPage(){
-
-    const defaultValues = {title: "",
-    description: "",
-    lastEpisode: 1,
-} as Series;
+export default function SeriesPage() {
+    const defaultValues = {
+        title: "",
+        description: "",
+        lastEpisode: 1,
+    } as Series;
 
     const [values, setValues] = useState<Series>(defaultValues);
 
-
     useEffect(() => {
-        const getSeries = async() =>{
+        const getSeries = async () => {
             const series = await getAllSeries(page);
             const count = await getAllSeriesCount();
             setLoading(false);
             setseriesCount(count);
             setSeries(series);
-        }
+        };
         getSeries();
     }, []);
 
@@ -35,57 +41,71 @@ export default function SeriesPage(){
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [mode, setMode] = useState(Mode.Create);
 
-
-    const handleCreateSeries = async (request: SeriesReqruest) =>{
+    const handleCreateSeries = async (request: SeriesReqruest) => {
         await createSeries(request);
         closeModal();
 
         const series = await getAllSeries(page);
+        const count = await getAllSeriesCount();
+        setseriesCount(count);
         setSeries(series);
-    }
+    };
 
-    const updateSeriesList = async (page:number) =>{
-
+    const updateSeriesList = async (page: number) => {
         const series = await getAllSeries(page);
+        const count = await getAllSeriesCount();
+        setseriesCount(count);
         setSeries(series);
-    }
+    };
 
-    const handleUpdateSeries = async (id: string, request: SeriesReqruest) =>{
+    const handleUpdateSeries = async (id: string, request: SeriesReqruest) => {
         await updateSeries(id, request);
         closeModal();
 
         const series = await getAllSeries(page);
         setSeries(series);
-    }
+    };
 
-    const deleteThisSeries = async (id: string) =>{
+    const deleteThisSeries = async (id: string) => {
         await deleteSeries(id);
         closeModal();
+        if (series.length == 1) {
+            await updateSeriesList(page - 1);
+        } else {
+            const series1 = await getAllSeries(page);
+            const count = await getAllSeriesCount();
+            setseriesCount(count);
+            setSeries(series1);
+        }
+    };
 
-        const series = await getAllSeries(page);
-        setSeries(series);
-    }
-
-    const openEditModel = (series: Series) =>{
+    const openEditModel = (series: Series) => {
         setMode(Mode.Edit);
         setValues(series);
-        setIsModalOpen(true);
-    }
 
-    const openModal = () =>{
         setIsModalOpen(true);
-    }
+    };
 
-    const closeModal = () =>{
+    const openModal = () => {
+        setIsModalOpen(true);
+    };
+
+    const closeModal = () => {
         setValues(defaultValues);
         setIsModalOpen(false);
-    }
+    };
 
-
-    return(
+    return (
         <div>
-            <Button type="primary" style={{marginTop: "30px"}} size="large" onClick={openModal}>Добавить сериал</Button>
-            
+            <Button
+                type="primary"
+                style={{ marginTop: "30px" }}
+                size="large"
+                onClick={openModal}
+            >
+                Добавить сериал
+            </Button>
+
             <CreateUpdateSeries
                 mode={mode}
                 values={values}
@@ -95,9 +115,25 @@ export default function SeriesPage(){
                 handleCancel={closeModal}
             />
 
-{loading ? <Title>Loading...</Title> : <Series series={series} handleOpen={openEditModel} handleDelete={deleteThisSeries}/>}
-<Pagination  current={page}  onChange={(current: any) => {
-                            setPage(current); updateSeriesList(current)}} showTitle={false} pageSize={16} total={seriesCount}/>
+            {loading ? (
+                <Title>Loading...</Title>
+            ) : (
+                <Series
+                    series={series}
+                    handleOpen={openEditModel}
+                    handleDelete={deleteThisSeries}
+                />
+            )}
+            <Pagination
+                current={page}
+                onChange={(current: any) => {
+                    setPage(current);
+                    updateSeriesList(current);
+                }}
+                showTitle={false}
+                pageSize={10}
+                total={seriesCount}
+            />
         </div>
-    )
-}   
+    );
+}
