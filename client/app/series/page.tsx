@@ -131,7 +131,7 @@ export default function SeriesPage() {
                     updateSeriesList(current);
                 }}
                 showTitle={false}
-                pageSize={10}
+                pageSize={30}
                 total={seriesCount}
             />
         </div>
