@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { usePathname, useSearchParams } from "next/navigation";
 
 export const AZList = ({}) => {
     const lettersList = [
@@ -61,8 +62,12 @@ export const AZList = ({}) => {
                     <Link
                         key={message}
                         style={{ padding: "0 12px" }}
-                        href={"/series?query=[key]"}
-                        as={`/series?query=${message}`}
+                        href={{
+                            pathname: "/series",
+                            query: {
+                                query: message,
+                            },
+                        }}
                     >
                         <span>{message}</span>
                     </Link>
@@ -71,3 +76,5 @@ export const AZList = ({}) => {
         </div>
     );
 };
+
+export default AZList;

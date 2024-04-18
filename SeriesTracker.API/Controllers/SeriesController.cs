@@ -2,6 +2,7 @@
 using SeriesTracker.API.Contracts;
 using SeriesTracker.Core.Abstractions;
 using SeriesTracker.Core.Models;
+using System.Text.RegularExpressions;
 
 namespace SeriesTracker.API.Controllers
 {
@@ -25,16 +26,21 @@ namespace SeriesTracker.API.Controllers
         }
 
 
-        [HttpGet("{page:int}")]
-        public async Task<ActionResult<List<SeriesResponse>>> GetSeriesList(int page = 1) 
+        [HttpGet("{page:int}/{query}")]
+        public async Task<ActionResult<List<SeriesResponse>>> GetSeriesList(int page = 1, string? query = null) 
         {
-            //(?i)^([A])(?-i)")
             var seriesList = await _seriesService.GetSeriesList();
 
+            var regex = query == "null" ? null : $"(?i)^([{query}])(?-i)";
             var response = seriesList.Select(s => new SeriesResponse(s.Id, s.Title, s.Description, s.WatchedEpisode, s.LastEpisode, s.Duration, s.Rating, s.ImagePath,
-                s.ReleaseDate, s.AddedDate, s.AddedDate, s.OverDate, s.IsFavorite, s.IsFavorite)).Skip(30 * (page - 1)).Take(30);
+                s.ReleaseDate, s.AddedDate, s.AddedDate, s.OverDate, s.IsFavorite, s.IsFavorite)).Skip(30 * (page - 1)).Where(s => regex == null || Regex.IsMatch(s.Title, regex)).Take(30);
+            var count = await _seriesService.GetAllSeriesCount();
+            if (regex != null)
+            {
+                count = response.Count();
+            }
 
-            return Ok(response);
+            return Ok(Tuple.Create(response, count));
         }
 
         [HttpPost]

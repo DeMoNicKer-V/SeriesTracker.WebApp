@@ -1,18 +1,11 @@
 "use client";
 import React, { useState } from "react";
 import "./globals.css";
-import {
-    LaptopOutlined,
-    NotificationOutlined,
-    UserOutlined,
-} from "@ant-design/icons";
-import type { MenuProps } from "antd";
-import { Breadcrumb, Button, Layout, Menu, theme } from "antd";
+import { Button, Layout, Menu, theme } from "antd";
 
 import {
     MenuFoldOutlined,
     MenuUnfoldOutlined,
-    UploadOutlined,
     VideoCameraOutlined,
 } from "@ant-design/icons";
 import { Footer } from "antd/es/layout/layout";
