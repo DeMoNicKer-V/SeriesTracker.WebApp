@@ -25,6 +25,18 @@ export const getAllSeries = async (page: number, query: any) => {
     return series;
 };
 
+export const getAllSeriesSearch = async (query: any) => {
+    if (query === "") {
+        return;
+    }
+    const response = await fetch(
+        `http://localhost:5125/controller/search/${query}`
+    );
+
+    const series: Series["item1"] = await response.json();
+    return series;
+};
+
 export const createSeries = async (seriesReqruest: SeriesReqruest) => {
     await fetch("http://localhost:5125/controller", {
         method: "POST",

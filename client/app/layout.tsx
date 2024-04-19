@@ -11,6 +11,7 @@ import {
 import { Footer } from "antd/es/layout/layout";
 import Link from "next/link";
 import { AZList } from "./components/azList";
+import SearchBar from "./components/searchbar";
 
 const { Header, Content, Sider } = Layout;
 
@@ -26,9 +27,21 @@ export default function RootLayout({
     return (
         <html lang="en">
             <body>
-                <Layout style={{ minHeight: "100vh" }}>
-                    <Header>
-                        {" "}
+                <Layout
+                    style={{
+                        minHeight: "100vh",
+                    }}
+                >
+                    <Header
+                        style={{
+                            position: "sticky",
+                            top: 0,
+                            zIndex: 1,
+                            width: "100%",
+                            display: "flex",
+                            alignItems: "center",
+                        }}
+                    >
                         <Button
                             type="text"
                             icon={
@@ -46,10 +59,25 @@ export default function RootLayout({
                                 color: "#fff",
                             }}
                         />
+                        <SearchBar />
                     </Header>
-                    <Layout hasSider>
-                        <Sider trigger={null} collapsible collapsed={collapsed}>
-                            <div className="demo-logo-vertical" />
+                    <Layout
+                        style={{
+                            padding: 10,
+                        }}
+                    >
+                        <Sider
+                            trigger={null}
+                            collapsible
+                            collapsed={collapsed}
+                            style={{
+                                height: "90vh",
+                                maxHeight: "calc(100% - 80px)",
+                                position: "sticky",
+                                top: "80px",
+                                transform: "translateX(0%)",
+                            }}
+                        >
                             <Menu
                                 theme="dark"
                                 mode="inline"
@@ -66,7 +94,15 @@ export default function RootLayout({
                             />
                         </Sider>
                         <Layout>
-                            <Content style={{ padding: "0 48px" }}>
+                            <Content
+                                style={{
+                                    padding: 24,
+                                    margin: 0,
+                                    minHeight: 280,
+                                    background: colorBgContainer,
+                                    borderRadius: borderRadiusLG,
+                                }}
+                            >
                                 {children}
                             </Content>
                             <Footer style={{ textAlign: "left" }}>

@@ -1,6 +1,4 @@
-import { useEffect, useState } from "react";
 import Link from "next/link";
-import { usePathname, useSearchParams } from "next/navigation";
 
 export const AZList = ({}) => {
     const lettersList = [
