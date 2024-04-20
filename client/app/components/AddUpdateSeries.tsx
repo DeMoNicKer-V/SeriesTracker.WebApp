@@ -231,12 +231,6 @@ export const CreateUpdateSeries = ({
                                         marginRight: "auto",
                                     }}
                                     name="description"
-                                    rules={[
-                                        {
-                                            required: true,
-                                            message: "Введите описание",
-                                        },
-                                    ]}
                                 >
                                     <TextArea
                                         placeholder="Описание"
@@ -333,29 +327,28 @@ export const CreateUpdateSeries = ({
                         />
                     </Form.Item>
                 </Space>
-                <Form.Item
-                    style={{
-                        display: "flex",
-                        marginLeft: "auto",
-                        marginRight: "auto",
-                    }}
-                    name="releaseDate"
-                    rules={[
-                        {
-                            required: true,
-                            message: "Пожалуйста, укажите дату выхода!",
-                        },
-                    ]}
-                >
-                    <ConfigProvider locale={locale}>
+                <ConfigProvider locale={locale}>
+                    <Form.Item
+                        style={{
+                            display: "flex",
+                            marginLeft: "auto",
+                            marginRight: "auto",
+                        }}
+                        name="releaseDate"
+                        rules={[
+                            {
+                                required: true,
+                                message: "Пожалуйста, укажите дату выхода!",
+                            },
+                        ]}
+                    >
                         <DatePicker
                             style={{ width: 200 }}
                             placeholder="Дата выхода"
                             format="D MMMM YYYY"
-                            onChange={(date) => setReleaseDate(date.toString())}
                         />
-                    </ConfigProvider>
-                </Form.Item>
+                    </Form.Item>
+                </ConfigProvider>
                 <Form.Item
                     style={{
                         display: "flex",
