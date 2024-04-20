@@ -13,15 +13,9 @@ export const SearchBar = ({}) => {
         const handleOutSideClick = (event: any) => {
             if (!ref.current?.contains(event.target)) {
                 setIsShown(false);
-            } else {
-                handleClick();
             }
         };
         window.addEventListener("mousedown", handleOutSideClick);
-
-        return () => {
-            window.removeEventListener("mousedown", handleOutSideClick);
-        };
     }, [ref]);
 
     useEffect(() => {
@@ -31,14 +25,10 @@ export const SearchBar = ({}) => {
 
         return () => clearTimeout(timer);
     }, [query]);
-    const [isShown, setIsShown] = useState(false);
     const handleClick = () => {
-        // 👇️ toggle shown state
         setIsShown((current) => !current);
-
-        // 👇️ or simply set it to true
-        // setIsShown(true);
     };
+    const [isShown, setIsShown] = useState(false);
     const [series, setSeries] = useState<Series["item1"][] | any>([]);
     const fakeApi = async () => {
         const series = await getAllSeriesSearch(query);
@@ -55,6 +45,7 @@ export const SearchBar = ({}) => {
             }}
         >
             <Input
+                onClick={handleClick}
                 style={{ width: "300px" }}
                 placeholder="Найти сериал"
                 onChange={(e: { target: { value: any } }) =>

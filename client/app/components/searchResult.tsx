@@ -9,14 +9,7 @@ interface Props {
 export const SearchResult = ({ series }: Props) => {
     if (series === undefined) return;
     return (
-        <div
-            style={{
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                alignItems: "center",
-            }}
-        >
+        <div>
             {series.map((series: Series["item1"]) => (
                 <p>{series.description}</p>
             ))}
