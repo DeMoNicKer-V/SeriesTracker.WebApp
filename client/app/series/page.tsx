@@ -10,7 +10,6 @@ import {
     getAllSeriesCount,
     updateSeries,
 } from "../services/series";
-import Title from "antd/es/skeleton/Title";
 import { CreateUpdateSeries, Mode } from "../components/AddUpdateSeries";
 import { Pagination } from "antd";
 import { usePathname, useSearchParams } from "next/navigation";
@@ -21,7 +20,10 @@ export default function SeriesPage() {
     const defaultValues = {
         title: "",
         description: "",
-        lastEpisode: 1,
+        imagePath: "",
+        currentEpisode: 0,
+        lastEpisode: 0,
+        releaseDate: "",
     } as Series["item1"];
 
     const [values, setValues] = useState<Series["item1"]>(defaultValues);
@@ -80,11 +82,11 @@ export default function SeriesPage() {
     const openEditModel = (series: Series["item1"]) => {
         setMode(Mode.Edit);
         setValues(series);
-
         setIsModalOpen(true);
     };
 
     const openModal = () => {
+        setMode(Mode.Create);
         setIsModalOpen(true);
     };
 

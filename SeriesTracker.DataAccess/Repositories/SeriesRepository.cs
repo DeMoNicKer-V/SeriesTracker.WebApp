@@ -35,6 +35,7 @@ namespace SeriesTracker.DataAccess.Repositories
                 LastEpisode = series.LastEpisode,
                 Duration = series.Duration,
                 Rating = series.Rating,
+                ImagePath = series.ImagePath,
                 ReleaseDate = series.ReleaseDate,
                 AddedDate = series.AddedDate,
                 OverDate = series.OverDate,
@@ -50,7 +51,7 @@ namespace SeriesTracker.DataAccess.Repositories
         }
 
         public async Task<Guid> UpdateSeries(Guid id, string title, string description, int watched, int last, int duration,
-            float rating, string release, string overDate, string changed, bool over, bool favorite)
+            float rating, string image, string release, string changed, string overDate, bool over, bool favorite)
         {
             await _context.SeriesEntities.Where(s => s.Id == id)
                 .ExecuteUpdateAsync(s => s.SetProperty(s => s.Title, s => title)
@@ -59,6 +60,7 @@ namespace SeriesTracker.DataAccess.Repositories
                 .SetProperty(s => s.LastEpisode, s => last)
                 .SetProperty(s => s.Duration, s => duration)
                 .SetProperty(s => s.Rating, s => rating)
+                .SetProperty(s => s.ImagePath, s => image)
                 .SetProperty(s => s.ReleaseDate, s => release)
                 .SetProperty(s => s.OverDate, s => overDate)
                 .SetProperty(s => s.ChangedDate, s => changed)

@@ -75,7 +75,7 @@ namespace SeriesTracker.API.Controllers
         {
             var date = DateTime.Now.ToString();
             var seriesId = await _seriesService.UpdateSeries(id, request.Title, request.Description, request.WatchedEpisode, request.LastEpisode,
-                request.Duration, request.Rating, request.ReleaseDate, date, request.OverDate, request.IsOver, request.IsFavorite);
+                request.Duration, request.Rating, request.ImagePath, request.ReleaseDate, date, request.OverDate, request.IsOver, request.IsFavorite);
             return Ok(seriesId);
         }
 

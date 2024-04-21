@@ -22,6 +22,10 @@ export const Series = ({ series, handleDelete, handleOpen }: Props) => {
                     }
                     bordered={false}
                 >
+                    <img
+                        style={{ width: "100px" }}
+                        src={series.imagePath}
+                    ></img>
                     <p>{series.description}</p>
                     <div>
                         <Button

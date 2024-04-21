@@ -7,6 +7,7 @@ interface item1 {
     id: string;
     title: string;
     description: string;
+    imagePath: string;
     currentEpisode: number;
     lastEpisode: number;
     releaseDate: string;

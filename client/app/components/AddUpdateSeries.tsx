@@ -9,21 +9,17 @@ import {
     Input,
     InputNumber,
     Modal,
-    Slider,
     Space,
     Tooltip,
-    Upload,
     UploadProps,
 } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import locale from "antd/locale/ru_RU";
-import { LockOutlined, UserOutlined, PlusOutlined } from "@ant-design/icons";
+import { LockOutlined, PlusOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
 import "dayjs/locale/ru";
-import { Image } from "antd";
 import Dragger from "antd/es/upload/Dragger";
 
-const CorrectImage = Image as any;
 dayjs.locale("ru");
 
 interface Props {
@@ -48,14 +44,12 @@ export const CreateUpdateSeries = ({
     handleUpdate,
 }: Props) => {
     const [title, setTitle] = useState<string>("");
-    const [image, setImage] = useState<string>("");
     const [description, setDescription] = useState<string>("");
+    const [imagePath, setImageUrl] = useState<string>("");
     const [currentEpisode, setcurrentEpisode] = useState<number>(0);
     const [lastEpisode, setlastEpisode] = useState<number>(0);
     const [releaseDate, setReleaseDate] = useState<string>("");
 
-    const [loading, setLoading] = useState(false);
-    const [imageUrl, setImageUrl] = useState<string>();
     type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
     const getBase64 = (img: FileType, callback: (url: string) => void) => {
@@ -68,13 +62,10 @@ export const CreateUpdateSeries = ({
 
     const handleChange: UploadProps["onChange"] = (info) => {
         if (info.file.status === "uploading") {
-            setLoading(true);
             return;
         }
         if (info.file.status === "done") {
-            // Get this url from response in real world.
             getBase64(info.file.originFileObj as FileType, (url) => {
-                setLoading(false);
                 setImageUrl(url);
             });
         }
@@ -82,45 +73,31 @@ export const CreateUpdateSeries = ({
     useEffect(() => {
         setTitle(values.title);
         setDescription(values.description);
+        setImageUrl(values.imageUrl);
+        setcurrentEpisode(values.currentEpisode);
         setlastEpisode(values.lastEpisode);
+        setReleaseDate(values.releaseDate);
     }, [values]);
 
     const handleOnOk = async () => {
         const seriesRequest = {
             title,
             description,
+            imagePath,
             lastEpisode,
             currentEpisode,
             releaseDate,
         };
+        console.log(seriesRequest);
         mode == Mode.Create
             ? handleCreate(seriesRequest)
             : handleUpdate(values.id, seriesRequest);
+        onReset();
     };
-    const [form] = Form.useForm();
-    const [clientReady, setClientReady] = useState<boolean>(false);
+
     const [isShown, setIsShown] = useState(true);
     const handleClick = () => {
         setIsShown((current) => !current);
-    };
-    // To disable submit button at the beginning.
-    useEffect(() => {
-        setClientReady(true);
-    }, []);
-
-    const onFinish = (values: any) => {
-        console.log("Finish:", values);
-    };
-
-    const normFile = (e: any) => {
-        console.log("Upload event:", e);
-
-        if (Array.isArray(e)) {
-            return e;
-        }
-
-        //change "return e && e.fileList" for
-        return e && e.fileList.slice(-1);
     };
 
     const onReset = () => {
@@ -128,6 +105,8 @@ export const CreateUpdateSeries = ({
         setIsShown(true);
         form.resetFields();
     };
+
+    const [form] = Form.useForm<SeriesReqruest>();
     return (
         <Modal
             style={{
@@ -153,6 +132,7 @@ export const CreateUpdateSeries = ({
             footer={null}
         >
             <Form
+                onFinish={(e: any) => handleOnOk()}
                 style={{
                     display: "grid",
                     gap: "20px",
@@ -160,51 +140,55 @@ export const CreateUpdateSeries = ({
                     alignItems: "center",
                 }}
                 form={form}
-                name="horizontal_login"
                 layout="inline"
-                onFinish={onFinish}
             >
-                <Form.Item
+                <Dragger
                     style={{
                         display: "flex",
                         marginLeft: "auto",
                         marginRight: "auto",
+                        width: 220,
                     }}
+                    onChange={handleChange}
+                    showUploadList={false}
                 >
-                    <Dragger
-                        style={{ width: 220 }}
-                        onChange={handleChange}
-                        showUploadList={false}
-                    >
-                        {!imageUrl && (
-                            <div>
-                                <p className="ant-upload-drag-icon">
-                                    <LockOutlined />
-                                </p>
-                                <p
-                                    style={{ fontSize: 15 }}
-                                    className="ant-upload-text"
-                                >
-                                    Кликните или перетяните изображение для
-                                    добавления
-                                </p>
-                                <p
-                                    style={{ fontSize: 12 }}
-                                    className="ant-upload-hint"
-                                >
-                                    Поддерживаются только jpg/png файлы.
-                                </p>
-                            </div>
-                        )}
-                        {imageUrl && (
+                    {!imagePath && (
+                        <div>
+                            <p className="ant-upload-drag-icon">
+                                <LockOutlined />
+                            </p>
+                            <p
+                                style={{ fontSize: 15 }}
+                                className="ant-upload-text"
+                            >
+                                Кликните или перетяните изображение для
+                                добавления
+                            </p>
+                            <p
+                                style={{ fontSize: 12 }}
+                                className="ant-upload-hint"
+                            >
+                                Поддерживаются только jpg/png файлы.
+                            </p>
+                        </div>
+                    )}
+                    {imagePath && (
+                        <Form.Item
+                            style={{
+                                display: "flex",
+                                marginLeft: "auto",
+                                marginRight: "auto",
+                            }}
+                            name={"imagePath"}
+                        >
                             <img
-                                src={imageUrl}
-                                alt="avatar"
+                                src={imagePath}
+                                alt="poster"
                                 style={{ width: "100%" }}
                             />
-                        )}
-                    </Dragger>
-                </Form.Item>
+                        </Form.Item>
+                    )}
+                </Dragger>
 
                 <Form.Item
                     style={{
@@ -212,65 +196,73 @@ export const CreateUpdateSeries = ({
                         marginLeft: "auto",
                         marginRight: "auto",
                     }}
-                    name="title"
+                    name={"title"}
                 >
-                    <Input style={{ width: "400px" }} placeholder="Название" />
+                    <Input
+                        onChange={(e: {
+                            target: { value: SetStateAction<string> };
+                        }) => setTitle(e.target.value)}
+                        style={{ width: "400px" }}
+                        placeholder="Название"
+                    />
                 </Form.Item>
 
-                <Form.List name="users">
-                    {(
-                        fields: { [x: string]: any; key: any; name: any }[],
-                        { add, remove }: any
-                    ) => (
-                        <>
-                            {fields.map(({ name }) => (
-                                <Form.Item
-                                    style={{
-                                        display: "flex",
-                                        marginLeft: "auto",
-                                        marginRight: "auto",
-                                    }}
-                                    name="description"
-                                >
-                                    <TextArea
-                                        placeholder="Описание"
-                                        style={{
-                                            width: 400,
-                                        }}
-                                    />
-                                    <Button
-                                        type="link"
-                                        danger
-                                        style={{
-                                            display: "flex",
-                                            marginLeft: "auto",
-                                            marginRight: "auto",
-                                        }}
-                                        onClick={() => {
-                                            remove(name), handleClick();
-                                        }}
-                                    >
-                                        Удалить описание
-                                    </Button>
-                                </Form.Item>
-                            ))}
-                            {isShown && (
-                                <Form.Item>
-                                    <Button
-                                        type="link"
-                                        onClick={() => {
-                                            add(), handleClick();
-                                        }}
-                                        block
-                                        icon={<PlusOutlined />}
-                                    >
-                                        Добавить описание
-                                    </Button>
-                                </Form.Item>
-                            )}
-                        </>
-                    )}
-                </Form.List>
+                {!isShown && (
+                    <Space
+                        style={{
+                            display: "grid",
+                            marginLeft: "auto",
+                            marginRight: "auto",
+                        }}
+                    >
+                        <Form.Item
+                            style={{
+                                display: "flex",
+                                marginLeft: "auto",
+                                marginRight: "auto",
+                            }}
+                            name="description"
+                        >
+                            <TextArea
+                                onChange={(e: {
+                                    target: { value: SetStateAction<string> };
+                                }) => setDescription(e.target.value)}
+                                placeholder="Описание"
+                                style={{
+                                    width: 400,
+                                }}
+                            />
+                        </Form.Item>
+                        <Button
+                            type="link"
+                            danger
+                            style={{
+                                display: "flex",
+                                marginLeft: "auto",
+                                marginRight: "auto",
+                            }}
+                            onClick={() => {
+                                handleClick();
+                            }}
+                        >
+                            Удалить описание
+                        </Button>
+                    </Space>
+                )}
+                {isShown && (
+                    <Form.Item>
+                        <Button
+                            type="link"
+                            onClick={() => {
+                                handleClick();
+                            }}
+                            block
+                            icon={<PlusOutlined />}
+                        >
+                            Добавить описание
+                        </Button>
+                    </Form.Item>
+                )}
                 <Space
                     style={{
                         display: "flex",
@@ -288,6 +280,7 @@ export const CreateUpdateSeries = ({
                         ]}
                     >
                         <InputNumber
+                            onChange={(e: any) => setcurrentEpisode(Number(e))}
                             controls={false}
                             style={{ width: "150px" }}
                             addonBefore={
@@ -312,6 +305,7 @@ export const CreateUpdateSeries = ({
                         ]}
                     >
                         <InputNumber
+                            onChange={(e: any) => setlastEpisode(Number(e))}
                             controls={false}
                             style={{ width: "150px" }}
                             addonBefore={
@@ -345,6 +339,7 @@ export const CreateUpdateSeries = ({
                         <DatePicker
                             style={{ width: 200 }}
                             placeholder="Дата выхода"
+                            onChange={(date) => setReleaseDate(date.toString())}
                             format="D MMMM YYYY"
                         />
                     </Form.Item>

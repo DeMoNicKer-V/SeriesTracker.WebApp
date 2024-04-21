@@ -3,8 +3,9 @@ import { headers } from "next/headers";
 export interface SeriesReqruest {
     title: string;
     description: string;
-    currentEpisode: number;
+    imagePath: string;
     lastEpisode: number;
+    currentEpisode: number;
     releaseDate: string;
 }
 
@@ -38,6 +39,7 @@ export const getAllSeriesSearch = async (query: any) => {
 };
 
 export const createSeries = async (seriesReqruest: SeriesReqruest) => {
+    console.log(seriesReqruest);
     await fetch("http://localhost:5125/controller", {
         method: "POST",
         headers: {
