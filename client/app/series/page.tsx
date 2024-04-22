@@ -21,7 +21,7 @@ export default function SeriesPage() {
         title: "",
         description: "",
         imagePath: "",
-        currentEpisode: 0,
+        watchedEpisode: 0,
         lastEpisode: 0,
         releaseDate: "",
     } as Series["item1"];

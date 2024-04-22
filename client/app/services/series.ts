@@ -5,7 +5,7 @@ export interface SeriesReqruest {
     description: string;
     imagePath: string;
     lastEpisode: number;
-    currentEpisode: number;
+    watchedEpisode: number;
     releaseDate: string;
 }
 
@@ -23,6 +23,7 @@ export const getAllSeries = async (page: number, query: any) => {
         `http://localhost:5125/controller/${page}/${query}`
     );
     const series: Series = await response.json();
+    console.log(series);
     return series;
 };
 

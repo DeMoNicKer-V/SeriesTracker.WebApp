@@ -2,13 +2,16 @@ import { SetStateAction, useEffect, useState } from "react";
 import { SeriesReqruest } from "../services/series";
 import {
     Button,
+    Checkbox,
     ConfigProvider,
     DatePicker,
+    Divider,
     Form,
     GetProp,
     Input,
     InputNumber,
     Modal,
+    Rate,
     Space,
     Tooltip,
     UploadProps,
@@ -46,7 +49,7 @@ export const CreateUpdateSeries = ({
     const [title, setTitle] = useState<string>("");
     const [description, setDescription] = useState<string>("");
     const [imagePath, setImageUrl] = useState<string>("");
-    const [currentEpisode, setcurrentEpisode] = useState<number>(0);
+    const [watchedEpisode, setWatchedEpisode] = useState<number>(0);
     const [lastEpisode, setlastEpisode] = useState<number>(0);
     const [releaseDate, setReleaseDate] = useState<string>("");
 
@@ -71,10 +74,13 @@ export const CreateUpdateSeries = ({
         }
     };
     useEffect(() => {
+        console.log(values.releaseDate);
+        console.log(values.title);
         setTitle(values.title);
         setDescription(values.description);
-        setImageUrl(values.imageUrl);
-        setcurrentEpisode(values.currentEpisode);
+        setIsShown(values.description === "");
+        setImageUrl(values.imagePath);
+        setWatchedEpisode(values.watchedEpisode);
         setlastEpisode(values.lastEpisode);
         setReleaseDate(values.releaseDate);
     }, [values]);
@@ -85,7 +91,7 @@ export const CreateUpdateSeries = ({
             description,
             imagePath,
             lastEpisode,
-            currentEpisode,
+            watchedEpisode,
             releaseDate,
         };
         console.log(seriesRequest);
@@ -97,16 +103,20 @@ export const CreateUpdateSeries = ({
 
     const [isShown, setIsShown] = useState(true);
     const handleClick = () => {
+        setDescription("");
         setIsShown((current) => !current);
     };
 
     const onReset = () => {
-        setImageUrl("");
+        setTitle("");
+        setDescription("");
         setIsShown(true);
-        form.resetFields();
+        setImageUrl("");
+        setWatchedEpisode(0);
+        setlastEpisode(0);
+        setReleaseDate("");
     };
-
-    const [form] = Form.useForm<SeriesReqruest>();
+    var dayjs = require("dayjs");
     return (
         <Modal
             style={{
@@ -127,8 +137,12 @@ export const CreateUpdateSeries = ({
                         : "Редактирование сериал"}
                 </p>
             }
+            destroyOnClose={true}
             open={isModalOpen}
-            onCancel={handleCancel}
+            onCancel={() => {
+                handleCancel();
+                onReset();
+            }}
             footer={null}
         >
             <Form
@@ -139,73 +153,93 @@ export const CreateUpdateSeries = ({
                     justifyContent: "center",
                     alignItems: "center",
                 }}
-                form={form}
                 layout="inline"
             >
-                <Dragger
+                <Space
                     style={{
                         display: "flex",
                         marginLeft: "auto",
                         marginRight: "auto",
-                        width: 220,
                     }}
-                    onChange={handleChange}
-                    showUploadList={false}
                 >
-                    {!imagePath && (
-                        <div>
-                            <p className="ant-upload-drag-icon">
-                                <LockOutlined />
-                            </p>
-                            <p
-                                style={{ fontSize: 15 }}
-                                className="ant-upload-text"
+                    <Dragger
+                        style={{
+                            width: 220,
+                        }}
+                        onChange={handleChange}
+                        showUploadList={false}
+                    >
+                        {!imagePath && (
+                            <div>
+                                <p className="ant-upload-drag-icon">
+                                    <LockOutlined />
+                                </p>
+                                <p
+                                    style={{ fontSize: 15 }}
+                                    className="ant-upload-text"
+                                >
+                                    Нажмите или перетяните изображение для
+                                    добавления
+                                </p>
+                                <p
+                                    style={{ fontSize: 12 }}
+                                    className="ant-upload-hint"
+                                >
+                                    Поддерживаются только jpg/png файлы.
+                                </p>
+                            </div>
+                        )}
+                        {imagePath && (
+                            <Form.Item
+                                style={{
+                                    display: "flex",
+                                    marginLeft: "auto",
+                                    marginRight: "auto",
+                                }}
                             >
-                                Кликните или перетяните изображение для
-                                добавления
-                            </p>
-                            <p
-                                style={{ fontSize: 12 }}
-                                className="ant-upload-hint"
-                            >
-                                Поддерживаются только jpg/png файлы.
-                            </p>
-                        </div>
-                    )}
-                    {imagePath && (
-                        <Form.Item
-                            style={{
-                                display: "flex",
-                                marginLeft: "auto",
-                                marginRight: "auto",
-                            }}
-                            name={"imagePath"}
-                        >
-                            <img
-                                src={imagePath}
-                                alt="poster"
-                                style={{ width: "100%" }}
-                            />
-                        </Form.Item>
-                    )}
-                </Dragger>
-
+                                <img
+                                    src={imagePath}
+                                    alt="poster"
+                                    style={{ width: "100%" }}
+                                />
+                            </Form.Item>
+                        )}
+                    </Dragger>
+                </Space>
                 <Form.Item
                     style={{
                         display: "flex",
                         marginLeft: "auto",
                         marginRight: "auto",
                     }}
-                    name={"title"}
                 >
-                    <Input
-                        onChange={(e: {
-                            target: { value: SetStateAction<string> };
-                        }) => setTitle(e.target.value)}
-                        style={{ width: "400px" }}
-                        placeholder="Название"
-                    />
+                    <Rate count={10} allowHalf defaultValue={0} />
                 </Form.Item>
+                <Space
+                    style={{
+                        display: "flex",
+                        marginLeft: "auto",
+                        marginRight: "auto",
+                    }}
+                >
+                    <Form.Item>
+                        <TextArea
+                            autoSize={{ minRows: 1, maxRows: 2 }}
+                            maxLength={70}
+                            value={title}
+                            onChange={(e: {
+                                target: { value: SetStateAction<string> };
+                            }) => setTitle(e.target.value)}
+                            style={{ width: "300px", textAlign: "center" }}
+                            placeholder="Название"
+                        />
+                    </Form.Item>
+                    <Checkbox />
+                </Space>
+
+                <Divider
+                    style={{ marginTop: "-10px", marginBottom: "-10px" }}
+                />
 
                 {!isShown && (
                     <Space
@@ -221,16 +255,14 @@ export const CreateUpdateSeries = ({
                                 marginLeft: "auto",
                                 marginRight: "auto",
                             }}
-                            name="description"
                         >
                             <TextArea
+                                value={description}
                                 onChange={(e: {
                                     target: { value: SetStateAction<string> };
                                 }) => setDescription(e.target.value)}
                                 placeholder="Описание"
-                                style={{
-                                    width: 400,
-                                }}
+                                style={{ textAlign: "center", width: 400 }}
                             />
                         </Form.Item>
                         <Button
@@ -264,14 +296,10 @@ export const CreateUpdateSeries = ({
                     </Form.Item>
                 )}
                 <Space
-                    style={{
-                        display: "flex",
-                        marginLeft: "auto",
-                        marginRight: "auto",
-                    }}
+                    direction="horizontal"
+                    style={{ width: "100%", justifyContent: "center" }}
                 >
                     <Form.Item
-                        name="currentEpisode"
                         rules={[
                             {
                                 required: true,
@@ -280,9 +308,10 @@ export const CreateUpdateSeries = ({
                         ]}
                     >
                         <InputNumber
-                            onChange={(e: any) => setcurrentEpisode(Number(e))}
+                            value={watchedEpisode}
+                            onChange={(e: any) => setWatchedEpisode(Number(e))}
                             controls={false}
-                            style={{ width: "150px" }}
+                            style={{ width: "120px" }}
                             addonBefore={
                                 <Tooltip
                                     placement="bottom"
@@ -295,8 +324,10 @@ export const CreateUpdateSeries = ({
                             changeOnWheel
                         />
                     </Form.Item>
+                    <Form.Item>
+                        <Button type="text">#end</Button>
+                    </Form.Item>
                     <Form.Item
-                        name="lastEpisode"
                         rules={[
                             {
                                 required: true,
@@ -305,9 +336,10 @@ export const CreateUpdateSeries = ({
                         ]}
                     >
                         <InputNumber
+                            value={lastEpisode}
                             onChange={(e: any) => setlastEpisode(Number(e))}
                             controls={false}
-                            style={{ width: "150px" }}
+                            style={{ width: "120px" }}
                             addonBefore={
                                 <Tooltip
                                     placement="bottom"
@@ -328,7 +360,6 @@ export const CreateUpdateSeries = ({
                             marginLeft: "auto",
                             marginRight: "auto",
                         }}
-                        name="releaseDate"
                         rules={[
                             {
                                 required: true,
@@ -337,9 +368,17 @@ export const CreateUpdateSeries = ({
                         ]}
                     >
                         <DatePicker
+                            allowClear={false}
+                            value={
+                                releaseDate === ""
+                                    ? dayjs()
+                                    : dayjs(releaseDate)
+                            }
                             style={{ width: 200 }}
                             placeholder="Дата выхода"
-                            onChange={(date) => setReleaseDate(date.toString())}
+                            onChange={(date) => {
+                                setReleaseDate(date.toDate().toString());
+                            }}
                             format="D MMMM YYYY"
                         />
                     </Form.Item>
