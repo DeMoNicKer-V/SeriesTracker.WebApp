@@ -23,7 +23,10 @@ export default function SeriesPage() {
         imagePath: "",
         watchedEpisode: 0,
         lastEpisode: 0,
+        rating: 0,
         releaseDate: "",
+        isOver: false,
+        isFavorite: false,
     } as Series["item1"];
 
     const [values, setValues] = useState<Series["item1"]>(defaultValues);

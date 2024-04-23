@@ -62,7 +62,7 @@ namespace SeriesTracker.DataAccess.Repositories
                 .SetProperty(s => s.Rating, s => rating)
                 .SetProperty(s => s.ImagePath, s => image)
                 .SetProperty(s => s.ReleaseDate, s => release)
-                .SetProperty(s => s.OverDate, s => overDate)
+                .SetProperty(s => s.OverDate, s => over == false ? null: overDate)
                 .SetProperty(s => s.ChangedDate, s => changed)
                 .SetProperty(s => s.IsOver, s => over)
                 .SetProperty(s => s.IsFavorite, s => favorite));

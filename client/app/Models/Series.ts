@@ -10,7 +10,10 @@ interface item1 {
     imagePath: string;
     watchedEpisode: number;
     lastEpisode: number;
+    rating: number;
     releaseDate: string;
+    isOver: boolean;
+    isFavorite: boolean;
 }
 interface item2 {
     count: number;

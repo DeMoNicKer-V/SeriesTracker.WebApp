@@ -6,7 +6,10 @@ export interface SeriesReqruest {
     imagePath: string;
     lastEpisode: number;
     watchedEpisode: number;
+    rating: number;
     releaseDate: string;
+    isOver: boolean;
+    isFavorite: boolean;
 }
 
 export const getAllSeriesCount = async () => {
@@ -23,7 +26,7 @@ export const getAllSeries = async (page: number, query: any) => {
         `http://localhost:5125/controller/${page}/${query}`
     );
     const series: Series = await response.json();
-    console.log(series);
+
     return series;
 };
 
@@ -40,7 +43,6 @@ export const getAllSeriesSearch = async (query: any) => {
 };
 
 export const createSeries = async (seriesReqruest: SeriesReqruest) => {
-    console.log(seriesReqruest);
     await fetch("http://localhost:5125/controller", {
         method: "POST",
         headers: {

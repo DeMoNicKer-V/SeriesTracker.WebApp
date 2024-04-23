@@ -8,7 +8,6 @@ import {
     Divider,
     Form,
     GetProp,
-    Input,
     InputNumber,
     Modal,
     Rate,
@@ -51,7 +50,11 @@ export const CreateUpdateSeries = ({
     const [imagePath, setImageUrl] = useState<string>("");
     const [watchedEpisode, setWatchedEpisode] = useState<number>(0);
     const [lastEpisode, setlastEpisode] = useState<number>(0);
+    const [rating, setRating] = useState<number>(0);
     const [releaseDate, setReleaseDate] = useState<string>("");
+    const [isOver, setIsOver] = useState<boolean>(false);
+    const [isFavorite, setIsFavorite] = useState<boolean>(false);
+    const [isShown, setIsShown] = useState(true);
 
     type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
@@ -74,16 +77,36 @@ export const CreateUpdateSeries = ({
         }
     };
     useEffect(() => {
-        console.log(values.releaseDate);
-        console.log(values.title);
         setTitle(values.title);
         setDescription(values.description);
         setIsShown(values.description === "");
         setImageUrl(values.imagePath);
         setWatchedEpisode(values.watchedEpisode);
         setlastEpisode(values.lastEpisode);
+        setRating(values.rating);
         setReleaseDate(values.releaseDate);
+        setIsOver(values.isOver);
+        setIsFavorite(values.isFavorite);
     }, [values]);
+
+    useEffect(() => {
+        if (isModalOpen == true) {
+            form.setFieldsValue({
+                title: values.title,
+                description: values.description,
+                imagePath: values.imagePath,
+                lastEpisode: values.lastEpisode,
+                watchedEpisode: values.watchedEpisode,
+                rating: values.rating,
+                releaseDate:
+                    values.releaseDate === ""
+                        ? dayjs()
+                        : dayjs(values.releaseDate),
+                isOver: values.isOver,
+                isFavorite: values.isFavorite,
+            });
+        }
+    }, [isModalOpen]);
 
     const handleOnOk = async () => {
         const seriesRequest = {
@@ -92,16 +115,17 @@ export const CreateUpdateSeries = ({
             imagePath,
             lastEpisode,
             watchedEpisode,
+            rating,
             releaseDate,
+            isOver,
+            isFavorite,
         };
-        console.log(seriesRequest);
         mode == Mode.Create
             ? handleCreate(seriesRequest)
             : handleUpdate(values.id, seriesRequest);
         onReset();
     };
 
-    const [isShown, setIsShown] = useState(true);
     const handleClick = () => {
         setDescription("");
         setIsShown((current) => !current);
@@ -114,9 +138,13 @@ export const CreateUpdateSeries = ({
         setImageUrl("");
         setWatchedEpisode(0);
         setlastEpisode(0);
+        setRating(0);
         setReleaseDate("");
+        setIsOver(false);
+        setIsFavorite(false);
     };
-    var dayjs = require("dayjs");
+
+    const [form] = Form.useForm();
     return (
         <Modal
             style={{
@@ -146,6 +174,8 @@ export const CreateUpdateSeries = ({
             footer={null}
         >
             <Form
+                name="seriesForm"
+                form={form}
                 onFinish={(e: any) => handleOnOk()}
                 style={{
                     display: "grid",
@@ -191,29 +221,33 @@ export const CreateUpdateSeries = ({
                         )}
                         {imagePath && (
                             <Form.Item
+                                name={"imagePath"}
+                                valuePropName="src"
                                 style={{
                                     display: "flex",
                                     marginLeft: "auto",
                                     marginRight: "auto",
                                 }}
                             >
-                                <img
-                                    src={imagePath}
-                                    alt="poster"
-                                    style={{ width: "100%" }}
-                                />
+                                <img alt="poster" style={{ width: "100%" }} />
                             </Form.Item>
                         )}
                     </Dragger>
                 </Space>
                 <Form.Item
+                    name={"rating"}
                     style={{
                         display: "flex",
                         marginLeft: "auto",
                         marginRight: "auto",
                     }}
                 >
-                    <Rate count={10} allowHalf defaultValue={0} />
+                    <Rate
+                        onChange={(e: any) => setRating(Number(e))}
+                        count={10}
+                        allowHalf
+                        initialValues={0}
+                    />
                 </Form.Item>
                 <Space
                     style={{
@@ -222,11 +256,18 @@ export const CreateUpdateSeries = ({
                         marginRight: "auto",
                     }}
                 >
-                    <Form.Item>
+                    <Form.Item
+                        name={"title"}
+                        rules={[
+                            {
+                                required: true,
+                                message: "Введите название!",
+                            },
+                        ]}
+                    >
                         <TextArea
                             autoSize={{ minRows: 1, maxRows: 2 }}
                             maxLength={70}
-                            value={title}
                             onChange={(e: {
                                 target: { value: SetStateAction<string> };
                             }) => setTitle(e.target.value)}
@@ -234,7 +275,13 @@ export const CreateUpdateSeries = ({
                             placeholder="Название"
                         />
                     </Form.Item>
-                    <Checkbox />
+                    <Form.Item name={"isFavorite"} valuePropName="checked">
+                        <Checkbox
+                            onChange={(e: {
+                                target: { checked: SetStateAction<boolean> };
+                            }) => setIsFavorite(e.target.checked)}
+                        />
+                    </Form.Item>
                 </Space>
 
                 <Divider
@@ -250,6 +297,7 @@ export const CreateUpdateSeries = ({
                         }}
                     >
                         <Form.Item
+                            name={"description"}
                             style={{
                                 display: "flex",
                                 marginLeft: "auto",
@@ -257,7 +305,6 @@ export const CreateUpdateSeries = ({
                             }}
                         >
                             <TextArea
-                                value={description}
                                 onChange={(e: {
                                     target: { value: SetStateAction<string> };
                                 }) => setDescription(e.target.value)}
@@ -300,6 +347,7 @@ export const CreateUpdateSeries = ({
                     style={{ width: "100%", justifyContent: "center" }}
                 >
                     <Form.Item
+                        name={"watchedEpisode"}
                         rules={[
                             {
                                 required: true,
@@ -308,7 +356,7 @@ export const CreateUpdateSeries = ({
                         ]}
                     >
                         <InputNumber
-                            value={watchedEpisode}
+                            disabled={isOver}
                             onChange={(e: any) => setWatchedEpisode(Number(e))}
                             controls={false}
                             style={{ width: "120px" }}
@@ -325,9 +373,17 @@ export const CreateUpdateSeries = ({
                         />
                     </Form.Item>
                     <Form.Item>
-                        <Button type="text">#end</Button>
+                        <Button
+                            type="text"
+                            onClick={() => {
+                                setIsOver((current) => !current);
+                            }}
+                        >
+                            #end
+                        </Button>
                     </Form.Item>
                     <Form.Item
+                        name={"lastEpisode"}
                         rules={[
                             {
                                 required: true,
@@ -336,7 +392,6 @@ export const CreateUpdateSeries = ({
                         ]}
                     >
                         <InputNumber
-                            value={lastEpisode}
                             onChange={(e: any) => setlastEpisode(Number(e))}
                             controls={false}
                             style={{ width: "120px" }}
@@ -355,6 +410,7 @@ export const CreateUpdateSeries = ({
                 </Space>
                 <ConfigProvider locale={locale}>
                     <Form.Item
+                        name={"releaseDate"}
                         style={{
                             display: "flex",
                             marginLeft: "auto",
@@ -369,11 +425,6 @@ export const CreateUpdateSeries = ({
                     >
                         <DatePicker
                             allowClear={false}
-                            value={
-                                releaseDate === ""
-                                    ? dayjs()
-                                    : dayjs(releaseDate)
-                            }
                             style={{ width: 200 }}
                             placeholder="Дата выхода"
                             onChange={(date) => {
@@ -394,7 +445,7 @@ export const CreateUpdateSeries = ({
                         <Button type="primary" htmlType="submit">
                             {mode == Mode.Create ? "Добавить" : "Изменить"}
                         </Button>
-                        <Button htmlType="button" onClick={onReset}>
+                        <Button type="Button" onClick={onReset}>
                             Очистить
                         </Button>
                     </Space>
