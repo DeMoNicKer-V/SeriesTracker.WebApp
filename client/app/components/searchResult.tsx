@@ -11,7 +11,7 @@ export const SearchResult = ({ series }: Props) => {
     return (
         <div>
             {series.map((series: Series["item1"]) => (
-                <p>{series.description}</p>
+                <p>{series.title}</p>
             ))}
         </div>
     );

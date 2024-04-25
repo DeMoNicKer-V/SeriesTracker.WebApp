@@ -21,6 +21,7 @@ export default function RootLayout({
     children: React.ReactNode;
 }>) {
     const [collapsed, setCollapsed] = useState(false);
+    const [collapsed2, setCollapsed2] = useState(false);
     const {
         token: { colorBgContainer, borderRadiusLG },
     } = theme.useToken();
@@ -55,7 +56,25 @@ export default function RootLayout({
                                 color: "#fff",
                             }}
                         />
+
                         <SearchBar />
+                        <Button
+                            type="text"
+                            icon={
+                                collapsed ? (
+                                    <MenuUnfoldOutlined />
+                                ) : (
+                                    <MenuFoldOutlined />
+                                )
+                            }
+                            onClick={() => setCollapsed2(!collapsed2)}
+                            style={{
+                                marginLeft: "50px",
+                                height: 64,
+                                width: 64,
+                                color: "#fff",
+                            }}
+                        />
                     </Header>
                     <Layout
                         style={{
@@ -105,6 +124,19 @@ export default function RootLayout({
                                 <AZList />
                             </Footer>
                         </Layout>
+                        <Sider
+                            width={400}
+                            trigger={null}
+                            collapsible
+                            collapsed={collapsed2}
+                            style={{
+                                height: "90vh",
+                                maxHeight: "calc(100% - 80px)",
+                                position: "sticky",
+                                top: "80px",
+                                transform: "translateX(0%)",
+                            }}
+                        ></Sider>
                     </Layout>
                 </Layout>
             </body>

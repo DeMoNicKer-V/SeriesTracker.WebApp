@@ -19,6 +19,7 @@ import TextArea from "antd/es/input/TextArea";
 import locale from "antd/locale/ru_RU";
 import { LockOutlined, PlusOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
+import noimage from "../img/noimage.png";
 import "dayjs/locale/ru";
 import Dragger from "antd/es/upload/Dragger";
 
@@ -112,7 +113,7 @@ export const CreateUpdateSeries = ({
         const seriesRequest = {
             title,
             description,
-            imagePath,
+            imagePath: imagePath === "" ? noimage.src : imagePath,
             lastEpisode,
             watchedEpisode,
             rating,
@@ -221,15 +222,17 @@ export const CreateUpdateSeries = ({
                         )}
                         {imagePath && (
                             <Form.Item
-                                name={"imagePath"}
-                                valuePropName="src"
                                 style={{
                                     display: "flex",
                                     marginLeft: "auto",
                                     marginRight: "auto",
                                 }}
                             >
-                                <img alt="poster" style={{ width: "100%" }} />
+                                <img
+                                    src={imagePath}
+                                    alt="poster"
+                                    style={{ width: "100%" }}
+                                />
                             </Form.Item>
                         )}
                     </Dragger>
@@ -305,6 +308,7 @@ export const CreateUpdateSeries = ({
                             }}
                         >
                             <TextArea
+                                autoSize
                                 onChange={(e: {
                                     target: { value: SetStateAction<string> };
                                 }) => setDescription(e.target.value)}

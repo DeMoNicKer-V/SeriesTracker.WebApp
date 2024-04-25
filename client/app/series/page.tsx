@@ -11,7 +11,7 @@ import {
     updateSeries,
 } from "../services/series";
 import { CreateUpdateSeries, Mode } from "../components/AddUpdateSeries";
-import { Pagination } from "antd";
+import { Col, Pagination, Row } from "antd";
 import { usePathname, useSearchParams } from "next/navigation";
 
 export default function SeriesPage() {
@@ -99,16 +99,7 @@ export default function SeriesPage() {
     };
 
     return (
-        <div>
-            <Button
-                type="primary"
-                style={{ marginTop: "30px" }}
-                size="large"
-                onClick={openModal}
-            >
-                Добавить сериал
-            </Button>
-
+        <div className=".container">
             <CreateUpdateSeries
                 mode={mode}
                 values={values}
@@ -117,23 +108,48 @@ export default function SeriesPage() {
                 handleUpdate={handleUpdateSeries}
                 handleCancel={closeModal}
             />
+            <Row justify="end">
+                <Col span={12}>
+                    <h2>Ваши сериалы</h2>
+                </Col>
+                <Col span={12}>
+                    <div style={{ display: "flex", justifyContent: "end" }}>
+                        <Button onClick={openModal} type="text">
+                            Добавить сериал
+                        </Button>
+                        <Pagination
+                            current={page}
+                            onChange={(current: any) => {
+                                setPage(current);
+                                updateSeriesList(current);
+                            }}
+                            showTitle={false}
+                            pageSize={30}
+                            total={seriesCount}
+                        />
+                    </div>
+                </Col>
+            </Row>
 
             <Series
                 series={series}
                 handleOpen={openEditModel}
                 handleDelete={deleteThisSeries}
             />
-
-            <Pagination
-                current={page}
-                onChange={(current: any) => {
-                    setPage(current);
-                    updateSeriesList(current);
-                }}
-                showTitle={false}
-                pageSize={30}
-                total={seriesCount}
-            />
+            <Row justify="center">
+                <Col>
+                    <Pagination
+                        current={page}
+                        onChange={(current: any) => {
+                            setPage(current);
+                            updateSeriesList(current);
+                        }}
+                        showTitle={false}
+                        pageSize={30}
+                        total={seriesCount}
+                    />
+                </Col>
+            </Row>
         </div>
     );
 }
