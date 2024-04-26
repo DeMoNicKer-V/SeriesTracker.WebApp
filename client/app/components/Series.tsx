@@ -52,13 +52,13 @@ export const Series = ({ series, handleDelete, handleOpen }: Props) => {
         <Row gutter={[15, 25]} justify="center">
             {series.map((series: Series["item1"]) => (
                 <Col>
-                    <Card
-                        style={{ width: 200, height: 300 }}
-                        onMouseOver={() => handleMouseOver(series)}
-                        onMouseOut={handleMouseOut}
-                        key={series.id}
-                        cover={
-                            <a href={`/${series.title}`}>
+                    <a href={`/${series.title}`}>
+                        <Card
+                            style={{ width: 200, height: 300 }}
+                            onMouseOver={() => handleMouseOver(series)}
+                            onMouseOut={handleMouseOut}
+                            key={series.id}
+                            cover={
                                 <div
                                     style={{
                                         overflow: "hidden",
@@ -72,14 +72,24 @@ export const Series = ({ series, handleDelete, handleOpen }: Props) => {
                                         bottom: 0,
                                         position: "absolute",
                                     }}
-                                ></div>
-                            </a>
-                        }
-                    ></Card>
+                                >
+                                    <div
+                                        style={{
+                                            top: 0,
 
-                    <div style={{ maxWidth: 200 }} className="cardTitle">
-                        {series.title}
-                    </div>
+                                            right: 0,
+                                            margin: 5,
+                                            position: "absolute",
+                                        }}
+                                    >{`Просмотрено ${series.watchedEpisode} из ${series.lastEpisode}`}</div>
+                                </div>
+                            }
+                        ></Card>
+
+                        <div style={{ maxWidth: 200 }} className="cardTitle">
+                            {series.title}
+                        </div>
+                    </a>
                 </Col>
             ))}
             <div>{isHovering && <HoverText />}</div>

@@ -78,6 +78,7 @@ export const CreateUpdateSeries = ({
         }
     };
     useEffect(() => {
+        console.log(values.releaseDate);
         setTitle(values.title);
         setDescription(values.description);
         setIsShown(values.description === "");
@@ -249,7 +250,7 @@ export const CreateUpdateSeries = ({
                         onChange={(e: any) => setRating(Number(e))}
                         count={10}
                         allowHalf
-                        initialValues={0}
+                        initialvalues={0}
                     />
                 </Form.Item>
                 <Space
@@ -373,6 +374,7 @@ export const CreateUpdateSeries = ({
                                 </Tooltip>
                             }
                             min={0}
+                            initialvalues={0}
                             changeOnWheel
                         />
                     </Form.Item>
@@ -408,6 +410,7 @@ export const CreateUpdateSeries = ({
                                 </Tooltip>
                             }
                             min={1}
+                            initialvalues={1}
                             changeOnWheel
                         />
                     </Form.Item>

@@ -13,6 +13,7 @@ import {
 import { CreateUpdateSeries, Mode } from "../components/AddUpdateSeries";
 import { Col, Pagination, Row } from "antd";
 import { usePathname, useSearchParams } from "next/navigation";
+import dayjs from "dayjs";
 
 export default function SeriesPage() {
     const pathname = usePathname();
@@ -22,9 +23,9 @@ export default function SeriesPage() {
         description: "",
         imagePath: "",
         watchedEpisode: 0,
-        lastEpisode: 0,
+        lastEpisode: 10,
         rating: 0,
-        releaseDate: "",
+        releaseDate: dayjs().toDate().toString(),
         isOver: false,
         isFavorite: false,
     } as Series["item1"];
