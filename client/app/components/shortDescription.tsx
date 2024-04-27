@@ -16,7 +16,7 @@ const imgStyle: React.CSSProperties = {
 
 export const ShortDescription = ({ series, isOpen }: Props) => {
     return (
-        <table style={{ backgroundColor: "#784F11" }} className="iksweb">
+        <table className="iksweb">
             <tbody>
                 <tr>
                     <td rowSpan={4}>
