@@ -1,10 +1,39 @@
-* {
+html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    font-size: 16px;
+    overflow-x: hidden;
+    text-rendering: optimizeLegibility;
+    -webkit-text-size-adjust: 100%;
     box-sizing: border-box;
+    overflow-y: scroll;
+    -moz-tab-size: 4;
+    -o-tab-size: 4;
+    tab-size: 4;
+    word-break: normal;
+}
+
+body,
+html {
+    touch-action: pan-x pan-y;
+}
+*,
+:after,
+:before {
+    background-repeat: no-repeat;
+    box-sizing: inherit;
+}
+
+:after,
+:before {
+    text-decoration: inherit;
+    vertical-align: inherit;
+}
+
+* {
     padding: 0;
     margin: 0;
-}
-html {
-    height: max-content;
 }
 
 .cards {
@@ -53,9 +82,15 @@ html {
 }
 
 .cardTitle {
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    display: -webkit-box;
+    font-weight: 500;
+    letter-spacing: 0.0071428571em !important;
+    line-height: 1.375rem;
+    font-family: Nunito, sans-serif !important;
     overflow: hidden;
+    word-break: break-all;
 }
 
 .text {
@@ -69,21 +104,180 @@ html {
     line-clamp: 4;
     box-orient: vertical;
 }
-@media (min-width: 900px) {
-    .baseSider {
-        height: 90vh;
-        max-height: calc(100% - 80px);
-        position: sticky;
-        top: 80px;
-        transform: translateX(0%);
-    }
+
+.antd {
+    backface-visibility: hidden;
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    max-width: 100%;
+    min-height: 100vh;
+    position: relative;
 }
-@media (min-width: 1200px) {
-    .baseSider {
-        height: 90vh;
-        max-height: calc(100% - 80px);
-        position: sticky;
-        top: 80px;
-        transform: translateX(0%);
-    }
+.header {
+    height: 64px;
+    margin-top: 0px;
+    transform: translateY(0px);
+    left: 0px;
+    right: 0px;
+}
+.v-toolbar__content {
+    align-items: center;
+    display: flex;
+    position: relative;
+    z-index: 0;
+    height: 64px;
+    padding: 4px 16px;
+}
+
+.v-application .d-flex {
+    display: flex !important;
+}
+
+.col,
+.col-1,
+.col-10,
+.col-11,
+.col-12,
+.col-2,
+.col-3,
+.col-4,
+.col-5,
+.col-6,
+.col-7,
+.col-8,
+.col-9,
+.col-auto,
+.col-lg,
+.col-lg-1,
+.col-lg-10,
+.col-lg-11,
+.col-lg-12,
+.col-lg-2,
+.col-lg-3,
+.col-lg-4,
+.col-lg-5,
+.col-lg-6,
+.col-lg-7,
+.col-lg-8,
+.col-lg-9,
+.col-lg-auto,
+.col-md,
+.col-md-1,
+.col-md-10,
+.col-md-11,
+.col-md-12,
+.col-md-2,
+.col-md-3,
+.col-md-4,
+.col-md-5,
+.col-md-6,
+.col-md-7,
+.col-md-8,
+.col-md-9,
+.col-md-auto,
+.col-sm,
+.col-sm-1,
+.col-sm-10,
+.col-sm-11,
+.col-sm-12,
+.col-sm-2,
+.col-sm-3,
+.col-sm-4,
+.col-sm-5,
+.col-sm-6,
+.col-sm-7,
+.col-sm-8,
+.col-sm-9,
+.col-sm-auto,
+.col-xl,
+.col-xl-1,
+.col-xl-10,
+.col-xl-11,
+.col-xl-12,
+.col-xl-2,
+.col-xl-3,
+.col-xl-4,
+.col-xl-5,
+.col-xl-6,
+.col-xl-7,
+.col-xl-8,
+.col-xl-9,
+.col-xl-auto {
+    padding: 12px;
+    width: 100%;
+}
+
+.col {
+    flex-basis: 0;
+    flex-grow: 1;
+    max-width: 100%;
+}
+
+.col-auto {
+    flex: 0 0 auto;
+    max-width: 100%;
+    width: auto;
+}
+
+.col-1 {
+    flex: 0 0 8.3333333333%;
+    max-width: 8.3333333333%;
+}
+
+.col-2 {
+    flex: 0 0 16.6666666667%;
+    max-width: 16.6666666667%;
+}
+
+.col-3 {
+    flex: 0 0 25%;
+    max-width: 25%;
+}
+
+.col-4 {
+    flex: 0 0 33.3333333333%;
+    max-width: 33.3333333333%;
+}
+
+.v-application .align-center {
+    align-items: center !important;
+}
+
+.my {
+    max-height: 720px;
+    top: 50px;
+    left: 12px;
+    padding: 16px;
+    transform-origin: center center;
+    z-index: 1002;
+    border-radius: 4px;
+    box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
+        0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12);
+    contain: content;
+    display: inline-block;
+    max-width: 80%;
+    overflow-x: hidden;
+    overflow-y: auto;
+    position: absolute;
+}
+.grow,
+.spacer {
+    flex-grow: 1 !important;
+}
+
+.content {
+    align-items: center;
+    align-self: center;
+    display: flex;
+    flex: 1 1;
+    flex-wrap: wrap;
+    overflow: hidden;
+    padding: 12px 0;
+}
+
+.image_content {
+    height: 90px;
+    min-width: 40px;
+    width: 64px;
 }

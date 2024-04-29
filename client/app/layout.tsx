@@ -28,103 +28,108 @@ export default function RootLayout({
     return (
         <html lang="en">
             <body>
-                <Layout style={{ minHeight: "100%" }}>
-                    <Header
-                        style={{
-                            position: "sticky",
-                            top: 0,
-                            zIndex: 1,
-                            width: "100%",
-                            display: "flex",
-                            alignItems: "center",
-                        }}
-                    >
-                        <Button
-                            type="text"
-                            icon={
-                                collapsed ? (
-                                    <MenuUnfoldOutlined />
-                                ) : (
-                                    <MenuFoldOutlined />
-                                )
-                            }
-                            onClick={() => setCollapsed(!collapsed)}
-                            style={{
-                                marginLeft: "-50px",
-                                height: 64,
-                                width: 64,
-                                color: "#fff",
-                            }}
-                        />
-
-                        <SearchBar />
-                        <Button
-                            type="text"
-                            icon={
-                                collapsed ? (
-                                    <MenuUnfoldOutlined />
-                                ) : (
-                                    <MenuFoldOutlined />
-                                )
-                            }
-                            onClick={() => setCollapsed2(!collapsed2)}
-                            style={{
-                                marginLeft: "50px",
-                                height: 64,
-                                width: 64,
-                                color: "#fff",
-                            }}
-                        />
-                    </Header>
-                    <Layout
-                        style={{
-                            padding: 10,
-                        }}
-                    >
-                        <Sider
-                            trigger={null}
-                            collapsible
-                            collapsed={collapsed}
-                            style={{
-                                height: "90vh",
-                                maxHeight: "calc(100% - 80px)",
-                                position: "sticky",
-                                top: "80px",
-                                transform: "translateX(0%)",
-                            }}
-                        >
-                            <Menu
-                                theme="dark"
-                                mode="inline"
-                                defaultSelectedKeys={["series"]}
-                                items={[
-                                    {
-                                        key: "series",
-                                        icon: <VideoCameraOutlined />,
-                                        label: (
-                                            <Link href={"/series"}>Series</Link>
-                                        ),
-                                    },
-                                ]}
-                            />
-                        </Sider>
+                <div id={"STRACKER"}>
+                    <div id={"__layout"}>
                         <Layout>
-                            <Content
+                            <Header
                                 style={{
-                                    padding: 24,
-                                    margin: 0,
-                                    minHeight: 280,
-                                    background: colorBgContainer,
-                                    borderRadius: borderRadiusLG,
+                                    position: "sticky",
+                                    top: 0,
+                                    zIndex: 1,
+                                    width: "100%",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    height: 64,
+                                    marginTop: 0,
+                                    transform: "translateY(0px)",
+                                    left: "0px",
+                                    right: "0px",
                                 }}
                             >
-                                {children}
-                            </Content>
-                            <Footer style={{ textAlign: "left" }}>
-                                <AZList />
-                            </Footer>
-                        </Layout>
-                        <Sider
+                                <div
+                                    style={{
+                                        display: "flex",
+                                        alignItems: "center",
+                                        position: "relative",
+                                        zIndex: 0,
+                                        height: 64,
+                                        padding: "4px 16px",
+                                        width: "100%",
+                                    }}
+                                >
+                                    <Button
+                                        type="text"
+                                        icon={
+                                            collapsed ? (
+                                                <MenuUnfoldOutlined />
+                                            ) : (
+                                                <MenuFoldOutlined />
+                                            )
+                                        }
+                                        onClick={() => setCollapsed(!collapsed)}
+                                        style={{
+                                            marginLeft: "-50px",
+                                            height: 64,
+                                            width: 64,
+                                            color: "#fff",
+                                        }}
+                                    />
+                                    <div className="spacer" />
+                                    <SearchBar />
+                                    <div className="spacer" />
+                                </div>
+                            </Header>
+                            <Layout
+                                style={{
+                                    padding: 10,
+                                }}
+                            >
+                                <Sider
+                                    trigger={null}
+                                    collapsible
+                                    collapsed={collapsed}
+                                    style={{
+                                        height: "90vh",
+                                        maxHeight: "calc(100% - 80px)",
+                                        position: "sticky",
+                                        top: "80px",
+                                        transform: "translateX(0%)",
+                                    }}
+                                >
+                                    <Menu
+                                        theme="dark"
+                                        mode="inline"
+                                        defaultSelectedKeys={["series"]}
+                                        items={[
+                                            {
+                                                key: "series",
+                                                icon: <VideoCameraOutlined />,
+                                                label: (
+                                                    <Link href={"/series"}>
+                                                        Series
+                                                    </Link>
+                                                ),
+                                            },
+                                        ]}
+                                    />
+                                </Sider>
+                                <Layout>
+                                    <Content
+                                        style={{
+                                            padding: 24,
+                                            margin: 0,
+                                            minHeight: 280,
+                                            background: colorBgContainer,
+                                            borderRadius: borderRadiusLG,
+                                        }}
+                                    >
+                                        {children}
+                                    </Content>
+                                    <Footer style={{ textAlign: "left" }}>
+                                        <AZList />
+                                    </Footer>
+                                </Layout>
+                                {/* <Sider
                             width={400}
                             trigger={null}
                             collapsible
@@ -136,9 +141,11 @@ export default function RootLayout({
                                 top: "80px",
                                 transform: "translateX(0%)",
                             }}
-                        ></Sider>
-                    </Layout>
-                </Layout>
+                        ></Sider>*/}
+                            </Layout>
+                        </Layout>
+                    </div>
+                </div>
             </body>
         </html>
     );

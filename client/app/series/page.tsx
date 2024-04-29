@@ -100,7 +100,7 @@ export default function SeriesPage() {
     };
 
     return (
-        <div className=".container">
+        <div className="container">
             <CreateUpdateSeries
                 mode={mode}
                 values={values}

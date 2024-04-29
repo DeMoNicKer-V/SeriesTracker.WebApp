@@ -1,5 +1,6 @@
 "use client";
 import { getSeriesById } from "@/app/services/series";
+import { Col, Row } from "antd";
 import type { NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
@@ -17,18 +18,24 @@ export default function Doggo({ params }: { params: { id: string } }) {
         getSeries(params.id);
     }, []);
     return (
-        <div>
-            <Head>
-                <title>A Doggo</title>
-            </Head>
+        <div className="container">
+            <p style={{ color: "#0070f3" }}>
+                <Link href="/series">Back Home</Link>
+            </p>
 
-            <main>
-                {/* // -> Render the id on the screen  */}
-                <h1>This is Doggo: {series.title}.</h1>
-                <p style={{ color: "#0070f3" }}>
-                    <Link href="/series">Back Home</Link>
-                </p>
-            </main>
+            <div
+                style={{
+                    backgroundImage: `url(${series.imagePath})`,
+                    backgroundSize: "cover",
+                    backgroundRepeat: "no-repeat",
+                    backgroundPosition: "center center",
+                    height: "100%",
+                    width: "100%",
+                    left: 0,
+                    top: 0,
+                    position: "absolute",
+                }}
+            />
         </div>
     );
 }
