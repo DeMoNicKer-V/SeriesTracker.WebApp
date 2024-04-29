@@ -30,6 +30,13 @@ export const getAllSeries = async (page: number, query: any) => {
     return series;
 };
 
+export const getSeriesById = async (id: string) => {
+    const response = await fetch(`http://localhost:5125/controller/id/${id}`);
+    const series: Series["item1"] = await response.json();
+
+    return series;
+};
+
 export const getAllSeriesSearch = async (query: any) => {
     if (query === "") {
         return;

@@ -3,6 +3,7 @@ using SeriesTracker.API.Contracts;
 using SeriesTracker.Core.Abstractions;
 using SeriesTracker.Core.Models;
 using System.Text.RegularExpressions;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace SeriesTracker.API.Controllers
 {
@@ -23,6 +24,17 @@ namespace SeriesTracker.API.Controllers
             var seriesCount = await _seriesService.GetAllSeriesCount();
 
             return Ok(seriesCount);
+        }
+
+        [HttpGet("id/{id}")]
+        public async Task<ActionResult<int>> GetSeriesById(Guid id)
+        {
+            var s = await _seriesService.GetSeriesById(id);
+
+            var response = new SeriesResponse(s.Id, s.Title, s.Description, s.WatchedEpisode, s.LastEpisode, s.Duration, s.Rating, s.ImagePath,
+               s.ReleaseDate, s.AddedDate, s.AddedDate, s.OverDate, s.IsFavorite, s.IsFavorite);
+
+            return Ok(response);
         }
 
         [HttpGet("search/{query}")]

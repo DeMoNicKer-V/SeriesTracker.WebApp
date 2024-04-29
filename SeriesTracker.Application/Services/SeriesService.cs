@@ -17,6 +17,11 @@ namespace SeriesTracker.Application.Services
             return await _seriesRepository.GetSeriesList();
         }
 
+        public async Task<Series> GetSeriesById(Guid id)
+        {
+            return await _seriesRepository.GetSeriesById(id);
+        }
+
         public async Task<Guid> CreateSeries(Series series)
         {
             return await _seriesRepository.CreateSeries(series);

@@ -1,6 +1,7 @@
 import Card from "antd/es/card/Card";
 import ShortDescription from "./shortDescription";
 import { Col, Popover, Row } from "antd";
+import Link from "next/link";
 
 interface Props {
     series: Series["item1"][];
@@ -8,16 +9,12 @@ interface Props {
     handleOpen: (series: Series["item1"]) => void;
 }
 
-const openModal = () => {
-    const timer = setTimeout(() => {}, 500);
-    return () => clearTimeout(timer);
-};
 export const Series = ({ series, handleDelete, handleOpen }: Props) => {
     return (
         <Row gutter={[15, 25]} justify="center">
             {series.map((series: Series["item1"]) => (
                 <Col>
-                    <a href={`/${series.title}`}>
+                    <Link href={`/series/${series.id}`}>
                         <Popover
                             trigger={"hover"}
                             mouseEnterDelay={0.5}
@@ -64,7 +61,7 @@ export const Series = ({ series, handleDelete, handleOpen }: Props) => {
                                 }
                             ></Card>
                         </Popover>
-                    </a>
+                    </Link>
                     <h2
                         className="cardTitle"
                         style={{
