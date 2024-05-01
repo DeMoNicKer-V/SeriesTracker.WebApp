@@ -1,4 +1,13 @@
-import { Avatar, Col, ConfigProvider, Flex, Form, List, Row } from "antd";
+import {
+    Avatar,
+    Button,
+    Col,
+    ConfigProvider,
+    Flex,
+    Form,
+    List,
+    Row,
+} from "antd";
 import Input, { SearchProps } from "antd/es/input";
 import Search from "antd/es/transfer/search";
 import { useEffect, useRef, useState } from "react";
@@ -7,10 +16,13 @@ import { SearchResult } from "./searchResult";
 import {
     MenuFoldOutlined,
     MenuUnfoldOutlined,
+    SearchOutlined,
     InfoCircleOutlined,
     SmileOutlined,
 } from "@ant-design/icons";
 import Link from "next/link";
+import "./searchbar.css";
+import { redirect, useRouter } from "next/navigation";
 
 export const SearchBar = ({}) => {
     const ref = useRef<HTMLDivElement>(null);
@@ -53,86 +65,121 @@ export const SearchBar = ({}) => {
             <p>{nullString}</p>
         </div>
     );
+    const router = useRouter();
+    const onFinish = (values: any) => {
+        router.push(`/search?query=${values.query}`);
+    };
     return (
-        <div
-            className="d-flex align-center col col-4"
-            style={{ position: "relative" }}
-            ref={ref}
+        <ConfigProvider
+            theme={{
+                components: {
+                    Input: {
+                        borderRadius: 8,
+                    },
+                },
+            }}
+            renderEmpty={customizeRenderEmpty}
         >
-            <Form>
-                <Input
-                    onClick={handleClick}
-                    placeholder="Найти сериал"
-                    onChange={(e: { target: { value: any } }) =>
-                        setQuery(String(e.target.value))
-                    }
-                ></Input>
-            </Form>
-            {isShown && (
-                <div className="my">
-                    <ConfigProvider renderEmpty={customizeRenderEmpty}>
+            <div ref={ref} className="col-4" style={{ position: "relative" }}>
+                <Form
+                    onFinish={onFinish}
+                    noValidate={true}
+                    autoComplete="off"
+                    style={{ width: "100%" }}
+                >
+                    <Form.Item name={"query"} style={{ margin: 0 }}>
+                        <Input
+                            hasfeedback={"false"}
+                            spellCheck={"false"}
+                            variant="borderless"
+                            onClick={handleClick}
+                            placeholder="Найти сериал"
+                            onChange={(e: { target: { value: any } }) => {
+                                setIsShown(true);
+                                setQuery(String(e.target.value));
+                            }}
+                            name="query"
+                            addonAfter={
+                                <Button type="text" htmlType="submit">
+                                    <SearchOutlined />
+                                </Button>
+                            }
+                        />
+                    </Form.Item>
+                </Form>
+
+                {isShown && (
+                    <div className="v-card">
                         <List
+                            footer={
+                                <div
+                                    style={{
+                                        display: "flex",
+                                        flex: "0 0 auto",
+                                        justifyContent: "center",
+                                    }}
+                                >
+                                    <Button type="text">
+                                        <span>Расширенный поиск</span>
+                                    </Button>
+                                </div>
+                            }
                             grid={{ gutter: [0, 10], column: 1 }}
+                            style={{
+                                left: "0",
+                                right: "0",
+                                padding: "16px",
+                                position: "absolute",
+                                background: "red",
+                            }}
                             itemLayout="horizontal"
                             dataSource={series1}
                             renderItem={(item: Series["item1"]) => (
-                                <Link href={`/series/${item.id}`}>
-                                    <List.Item>
-                                        <Flex
-                                            align="center"
-                                            justify="flex-start"
-                                        >
-                                            <List.Item.Meta
-                                                avatar={
-                                                    <div
-                                                        className="image_content"
-                                                        style={{
-                                                            backgroundImage: `url(${item.imagePath})`,
-                                                            backgroundSize:
-                                                                "cover",
-                                                            backgroundRepeat:
-                                                                "no-repeat",
-                                                            backgroundPosition:
-                                                                "center center",
+                                <Link
+                                    style={{ display: "flex" }}
+                                    href={`/series/${item.id}`}
+                                >
+                                    <div
+                                        className="image_content"
+                                        style={{
+                                            backgroundImage: `url(${item.imagePath})`,
+                                            backgroundSize: "cover",
+                                            backgroundRepeat: "no-repeat",
+                                            backgroundPosition: "center center",
+                                            left: 0,
+                                            top: 0,
+                                            position: "relative",
+                                        }}
+                                    />
 
-                                                            left: 0,
-                                                            top: 0,
-                                                            position:
-                                                                "relative",
-                                                        }}
-                                                    />
-                                                }
-                                            />
-                                            <div className="content">
-                                                <div
-                                                    className="cardTitle"
-                                                    style={{
-                                                        fontSize: 18,
-                                                    }}
-                                                >
-                                                    <span>{item.title}</span>
-                                                </div>
-                                                <div
-                                                    className="cardTitle"
-                                                    style={{
-                                                        fontSize: 12,
-                                                    }}
-                                                >
-                                                    <span>
-                                                        {`Просмотрено ${item.watchedEpisode} из ${item.lastEpisode}`}
-                                                    </span>
-                                                    <div className="space"></div>
-                                                </div>
-                                            </div>
-                                        </Flex>
-                                    </List.Item>
+                                    <div className="item__content">
+                                        <div
+                                            className="cardTitle"
+                                            style={{
+                                                fontSize: 18,
+                                            }}
+                                        >
+                                            <span>{item.title}</span>
+                                        </div>
+                                        <div
+                                            className="cardTitle"
+                                            style={{
+                                                fontSize: 12,
+                                            }}
+                                        >
+                                            <span>
+                                                {`Просмотрено ${item.watchedEpisode} из ${item.lastEpisode}`}
+                                            </span>
+                                            <div className="space"></div>
+                                        </div>
+                                    </div>
                                 </Link>
                             )}
                         />
-                    </ConfigProvider>
-                </div>
-            )}
-        </div>
+                    </div>
+                )}
+            </div>
+        </ConfigProvider>
     );
 };
 
