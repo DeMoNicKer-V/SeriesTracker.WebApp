@@ -89,7 +89,6 @@ export const SearchBar = ({}) => {
                 >
                     <Form.Item name={"query"} style={{ margin: 0 }}>
                         <Input
-                            hasfeedback={"false"}
                             spellCheck={"false"}
                             variant="borderless"
                             onClick={handleClick}
@@ -109,7 +108,7 @@ export const SearchBar = ({}) => {
                 </Form>
 
                 {isShown && (
-                    <div className="v-card">
+                    <div className="search_result">
                         <List
                             footer={
                                 <div
@@ -152,7 +151,7 @@ export const SearchBar = ({}) => {
                                         }}
                                     />
 
-                                    <div className="item__content">
+                                    <div className="item_content">
                                         <div
                                             className="cardTitle"
                                             style={{

@@ -126,7 +126,7 @@ export default function SeriesPage() {
                             }}
                             showTitle={false}
                             pageSize={30}
-                            total={seriesCount}
+                            total={seriesCount?.count}
                         />
                     </div>
                 </Col>
@@ -147,7 +147,7 @@ export default function SeriesPage() {
                         }}
                         showTitle={false}
                         pageSize={30}
-                        total={seriesCount}
+                        total={seriesCount?.count}
                     />
                 </Col>
             </Row>

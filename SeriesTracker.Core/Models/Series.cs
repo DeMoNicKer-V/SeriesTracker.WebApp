@@ -16,8 +16,8 @@
             ImagePath = image;
             ReleaseDate = release;
             AddedDate = added;
-            OverDate = overDate;
             ChangedDate = changed;
+            OverDate = overDate;
             IsOver = over;
             IsFavorite = favorite;
         }
@@ -78,15 +78,16 @@
             get;
         } = string.Empty;
 
+        public string ChangedDate
+        {
+            get;
+        } = string.Empty;
+
         public string? OverDate
         {
             get;
         } = string.Empty;
 
-        public string ChangedDate
-        {
-            get;
-        } = string.Empty;
 
         public bool IsOver
         {

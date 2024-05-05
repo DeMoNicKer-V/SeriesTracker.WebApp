@@ -264,3 +264,26 @@ html {
     min-width: 40px;
     width: 64px;
 }
+.container {
+    margin-left: auto;
+    margin-right: auto;
+    padding: 12px;
+    width: 100%;
+}
+@media (min-width: 960px) {
+    .container {
+        max-width: 900px;
+    }
+}
+
+@media (min-width: 1264px) {
+    .container {
+        max-width: 1185px;
+    }
+}
+
+@media (min-width: 1904px) {
+    .container {
+        max-width: 1785px;
+    }
+}

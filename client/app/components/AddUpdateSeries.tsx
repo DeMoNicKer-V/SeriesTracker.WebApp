@@ -78,7 +78,6 @@ export const CreateUpdateSeries = ({
         }
     };
     useEffect(() => {
-        console.log(values.releaseDate);
         setTitle(values.title);
         setDescription(values.description);
         setIsShown(values.description === "");
@@ -92,11 +91,21 @@ export const CreateUpdateSeries = ({
     }, [values]);
 
     useEffect(() => {
+        setTitle(values.title);
+        setDescription(values.description);
+        setIsShown(values.description === "");
+        setImageUrl(values.imagePath);
+        setWatchedEpisode(values.watchedEpisode);
+        setlastEpisode(values.lastEpisode);
+        setRating(values.rating);
+        setReleaseDate(values.releaseDate);
+        setIsOver(values.isOver);
+        setIsFavorite(values.isFavorite);
+        setImageUrl(values.imagePath);
         if (isModalOpen == true) {
             form.setFieldsValue({
                 title: values.title,
                 description: values.description,
-                imagePath: values.imagePath,
                 lastEpisode: values.lastEpisode,
                 watchedEpisode: values.watchedEpisode,
                 rating: values.rating,
@@ -144,6 +153,7 @@ export const CreateUpdateSeries = ({
         setReleaseDate("");
         setIsOver(false);
         setIsFavorite(false);
+        form.resetFields();
     };
 
     const [form] = Form.useForm();
@@ -250,7 +260,7 @@ export const CreateUpdateSeries = ({
                         onChange={(e: any) => setRating(Number(e))}
                         count={10}
                         allowHalf
-                        initialvalues={0}
+                        value={0}
                     />
                 </Form.Item>
                 <Space
@@ -374,7 +384,7 @@ export const CreateUpdateSeries = ({
                                 </Tooltip>
                             }
                             min={0}
-                            initialvalues={0}
+                            value={0}
                             changeOnWheel
                         />
                     </Form.Item>
@@ -410,7 +420,7 @@ export const CreateUpdateSeries = ({
                                 </Tooltip>
                             }
                             min={1}
-                            initialvalues={1}
+                            value={1}
                             changeOnWheel
                         />
                     </Form.Item>
@@ -452,9 +462,7 @@ export const CreateUpdateSeries = ({
                         <Button type="primary" htmlType="submit">
                             {mode == Mode.Create ? "Добавить" : "Изменить"}
                         </Button>
-                        <Button type="Button" onClick={onReset}>
-                            Очистить
-                        </Button>
+                        <Button onClick={onReset}>Очистить</Button>
                     </Space>
                 </Form.Item>
             </Form>

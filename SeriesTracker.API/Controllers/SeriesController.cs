@@ -32,7 +32,7 @@ namespace SeriesTracker.API.Controllers
             var s = await _seriesService.GetSeriesById(id);
 
             var response = new SeriesResponse(s.Id, s.Title, s.Description, s.WatchedEpisode, s.LastEpisode, s.Duration, s.Rating, s.ImagePath,
-               s.ReleaseDate, s.AddedDate, s.AddedDate, s.OverDate, s.IsFavorite, s.IsFavorite);
+               s.ReleaseDate, s.AddedDate, s.ChangedDate, s.OverDate, s.IsOver, s.IsFavorite);
 
             return Ok(response);
         }
@@ -43,7 +43,7 @@ namespace SeriesTracker.API.Controllers
             var seriesList = await _seriesService.GetSeriesList();
 
             var response = seriesList.Select(s => new SeriesResponse(s.Id, s.Title, s.Description, s.WatchedEpisode, s.LastEpisode, s.Duration, s.Rating, s.ImagePath,
-                s.ReleaseDate, s.AddedDate, s.AddedDate, s.OverDate, s.IsFavorite, s.IsFavorite)).Where(s => s.Title.Contains(query)).Take(5);
+                s.ReleaseDate, s.AddedDate, s.ChangedDate, s.OverDate, s.IsOver, s.IsFavorite)).Where(s => s.Title.Contains(query)).Take(5);
 
             return Ok(response);
         }
@@ -56,7 +56,7 @@ namespace SeriesTracker.API.Controllers
 
             var regex = query == "null" ? null : $"(?i)^([{query}])(?-i)";
             var response = seriesList.Select(s => new SeriesResponse(s.Id, s.Title, s.Description, s.WatchedEpisode, s.LastEpisode, s.Duration, s.Rating, s.ImagePath,
-                s.ReleaseDate, s.AddedDate, s.AddedDate, s.OverDate, s.IsOver, s.IsFavorite)).Skip(30 * (page - 1)).Where(s => regex == null || Regex.IsMatch(s.Title, regex)).Take(30);
+                s.ReleaseDate, s.AddedDate, s.ChangedDate, s.OverDate, s.IsOver, s.IsFavorite)).Skip(30 * (page - 1)).Where(s => regex == null || Regex.IsMatch(s.Title, regex)).Take(30);
             var count = await _seriesService.GetAllSeriesCount();
             if (regex != null)
             {
@@ -71,7 +71,7 @@ namespace SeriesTracker.API.Controllers
         {
             var date = DateTime.Now.ToString();
             var (series, error) = Series.Create(Guid.NewGuid(), request.Title, request.Description, request.WatchedEpisode, request.LastEpisode,
-                request.Duration, request.Rating, request.ImagePath, request.ReleaseDate, date, date, request.OverDate, request.IsOver, request.IsFavorite);
+                request.Duration, request.Rating, request.ImagePath, request.ReleaseDate, date, date, date, request.IsOver, request.IsFavorite);
 
             if (!string.IsNullOrEmpty(error)) 
             {

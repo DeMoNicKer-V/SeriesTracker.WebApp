@@ -58,12 +58,13 @@
             get; set;
         } = string.Empty;
 
-        public string? OverDate
+
+        public string ChangedDate
         {
             get; set;
         } = string.Empty;
 
-        public string ChangedDate
+        public string? OverDate
         {
             get; set;
         } = string.Empty;

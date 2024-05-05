@@ -40,7 +40,7 @@ export const Series = ({ series, handleDelete, handleOpen }: Props) => {
                                             backgroundImage: `url(${series.imagePath})`,
                                             backgroundSize: "cover",
                                             backgroundRepeat: "no-repeat",
-                                            backgroundPosition: "center",
+                                            backgroundPosition: "center center",
                                             top: 0,
                                             left: 0,
                                             right: 0,
@@ -70,9 +70,9 @@ export const Series = ({ series, handleDelete, handleOpen }: Props) => {
                             marginTop: "10px",
                         }}
                     >
-                        <a href={`/${series.title}`}>
-                            <span>{series.title}</span>
-                        </a>
+                        <Link href={`/series/${series.id}`}>
+                            {series.title}
+                        </Link>
                     </h2>
                 </Col>
             ))}

@@ -1,8 +1,36 @@
 import Link from "next/link";
 
 export const AZList = ({}) => {
-    const lettersList = [
-        "0-9",
+    const engLettersList = [
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F",
+        "G",
+        "H",
+        "I",
+        "J",
+        "K",
+        "L",
+        "M",
+        "N",
+        "O",
+        "P",
+        "Q",
+        "R",
+        "S",
+        "T",
+        "U",
+        "V",
+        "W",
+        "X",
+        "Y",
+        "Z",
+    ];
+
+    const rusLettersList = [
         "A",
         "B",
         "C",
@@ -56,7 +84,7 @@ export const AZList = ({}) => {
                 >
                     <span>Всё</span>
                 </Link>
-                {lettersList.map((message) => (
+                {engLettersList.map((message) => (
                     <Link
                         key={message}
                         style={{ padding: "0 12px" }}
