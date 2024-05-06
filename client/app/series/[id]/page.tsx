@@ -5,9 +5,19 @@ import {
     getSeriesById,
     updateSeries,
 } from "@/app/services/series";
-import { Button, Card, Col, ConfigProvider, Flex, Row, Tag } from "antd";
-import { useEffect, useState } from "react";
-import { BookOutlined } from "@ant-design/icons";
+import {
+    Button,
+    Card,
+    Col,
+    ConfigProvider,
+    Flex,
+    InputNumber,
+    InputRef,
+    Row,
+    Tag,
+} from "antd";
+import { useEffect, useRef, useState } from "react";
+import { BookOutlined, EditOutlined } from "@ant-design/icons";
 import { useRouter } from "next/navigation";
 import { CreateUpdateSeries, Mode } from "@/app/components/AddUpdateSeries";
 import Meta from "antd/es/card/Meta";
@@ -22,6 +32,10 @@ export default function Doggo({ params }: { params: { id: string } }) {
         getSeries(params.id);
     }, []);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isChecked, setIsChecked] = useState(false);
+    const [isChecked2, setIsChecked2] = useState(false);
+    const inputRefEpisode = useRef<InputRef>(null);
+    const inputRefRating = useRef<InputRef>(null);
     const cardStyle: React.CSSProperties = {
         padding: "16px",
         height: "100%",
@@ -48,6 +62,13 @@ export default function Doggo({ params }: { params: { id: string } }) {
         await deleteSeries(id);
         router.push(`./`);
     };
+
+    const updateFavoriteSeries = async (id: string) => {
+        series.isFavorite = !series.isFavorite;
+        await updateSeries(id, series);
+        await getSeries(series.id);
+    };
+
     const closeModal = () => {
         setIsModalOpen(false);
     };
@@ -59,7 +80,6 @@ export default function Doggo({ params }: { params: { id: string } }) {
     const openModal = () => {
         setIsModalOpen(true);
     };
-    const [values, setValues] = useState<Series["item1"]>(series);
     return (
         <div className="container">
             <CreateUpdateSeries
@@ -166,13 +186,95 @@ export default function Doggo({ params }: { params: { id: string } }) {
                                         }}
                                     >
                                         <Flex gap="4px 0">
-                                            <Tag color="success">success</Tag>
-                                            <Tag color="processing">
-                                                processing
-                                            </Tag>
-                                            <Tag color="error">error</Tag>
-                                            <Tag color="warning">warning</Tag>
-                                            <Tag color="default">default</Tag>
+                                            <Tag.CheckableTag
+                                                onClick={() => {
+                                                    updateFavoriteSeries(
+                                                        series.id
+                                                    );
+                                                }}
+                                                checked={series.isFavorite}
+                                            >
+                                                Избранное
+                                                <BookOutlined />
+                                            </Tag.CheckableTag>
+
+                                            {!isChecked && (
+                                                <Tag
+                                                    style={{
+                                                        cursor: "default",
+                                                    }}
+                                                    onClick={() => {}}
+                                                    color="error"
+                                                >
+                                                    {`Просмотрено ${series.watchedEpisode} из ${series.lastEpisode} эп.`}{" "}
+                                                    <EditOutlined
+                                                        onClick={() => {
+                                                            setIsChecked2(
+                                                                false
+                                                            );
+                                                            setIsChecked(true);
+                                                            inputRefEpisode.current!.focus(
+                                                                {
+                                                                    cursor: "start",
+                                                                }
+                                                            );
+                                                        }}
+                                                    />
+                                                </Tag>
+                                            )}
+                                            {isChecked && (
+                                                <InputNumber
+                                                    //ref={inputRefEpisode}
+                                                    onPressEnter={() => {
+                                                        setIsChecked(false);
+                                                    }}
+                                                    style={{
+                                                        width: 230,
+                                                    }}
+                                                    maxLength={4}
+                                                    controls={false}
+                                                    addonBefore={"Просмотрено"}
+                                                    addonAfter={`из ${series.lastEpisode} эп.`}
+                                                    size="small"
+                                                    min={0}
+                                                    max={series.lastEpisode}
+                                                    defaultValue={
+                                                        series.watchedEpisode
+                                                    }
+                                                />
+                                            )}
+                                            {!isChecked2 && (
+                                                <Tag
+                                                    style={{
+                                                        cursor: "default",
+                                                    }}
+                                                    onClick={() => {}}
+                                                    color="error"
+                                                >
+                                                    {`Рейтинг ${series.rating} из 10`}{" "}
+                                                    <EditOutlined
+                                                        onClick={() => {
+                                                            setIsChecked(false);
+                                                            setIsChecked2(true);
+                                                        }}
+                                                    />
+                                                </Tag>
+                                            )}
+                                            {isChecked2 && (
+                                                <InputNumber
+                                                    onPressEnter={() => {
+                                                        setIsChecked2(false);
+                                                    }}
+                                                    style={{ width: 170 }}
+                                                    controls={false}
+                                                    addonBefore={"Рейтинг"}
+                                                    addonAfter={`из 10`}
+                                                    size="small"
+                                                    min={0}
+                                                    max={10}
+                                                    defaultValue={series.rating}
+                                                />
+                                            )}
                                         </Flex>
                                     </Card.Grid>
                                     <Card.Grid
@@ -245,24 +347,12 @@ export default function Doggo({ params }: { params: { id: string } }) {
 
             <Card>
                 <Meta
-                    title="Synopsis"
-                    description=" In the entertainment world, celebrities often show
-      exaggerated versions of themselves to the public,
-      concealing their true thoughts and struggles beneath
-      elaborate lies. Fans buy into these fabrications,
-      showering their idols with undying love and support,
-      until something breaks the illusion. Sixteen-year-old
-      rising star Ai Hoshino of pop idol group B Komachi has
-      the world captivated; however, when she announces a
-      hiatus due to health concerns, the news causes many to
-      become worried. As a huge fan of Ai, gynecologist Gorou
-      Amemiya cheers her on from his countryside medical
-      practice, wishing he could meet her in person one day.
-      His wish comes true when Ai shows up at his hospital—not
-      sick, but pregnant with twins! While the doctor promises
-      Ai to safely deliver her children, he wonders if this
-      encounter with the idol will forever change the nature
-      of his relationship with her."
+                    title="Описание"
+                    description={
+                        series.description === ""
+                            ? "Описание отсутствует"
+                            : series.description
+                    }
                 />
             </Card>
         </div>
