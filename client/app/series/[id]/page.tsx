@@ -123,6 +123,10 @@ export default function Doggo({ params }: { params: { id: string } }) {
                     overflow: "hidden",
                     position: "relative",
                     zIndex: 0,
+                    borderBottomRightRadius: "0",
+                    borderBottomLeftRadius: "0",
+                    borderTopRightRadius: "5px",
+                    borderTopLeftRadius: "5px",
                 }}
             >
                 <div
@@ -383,6 +387,13 @@ export default function Doggo({ params }: { params: { id: string } }) {
                 style={{
                     backgroundColor: "rgb(16, 16, 16)",
                     borderColor: "rgb(16, 16, 16)",
+
+                    borderBottomRightRadius: "5",
+
+                    borderBottomLeftRadius: "5",
+                    borderTopRightRadius: "0",
+
+                    borderTopLeftRadius: "0",
                 }}
             >
                 <Meta
