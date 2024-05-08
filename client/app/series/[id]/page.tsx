@@ -12,7 +12,7 @@ import {
     ConfigProvider,
     Flex,
     InputNumber,
-    InputRef,
+    Rate,
     Row,
     Tag,
 } from "antd";
@@ -23,6 +23,7 @@ import { CreateUpdateSeries, Mode } from "@/app/components/AddUpdateSeries";
 import Meta from "antd/es/card/Meta";
 
 export default function Doggo({ params }: { params: { id: string } }) {
+    const ref = useRef<HTMLDivElement>(null);
     const [series, setSeries] = useState<Series["item1"][] | any>([]);
     const getSeries = async (id: string) => {
         const series = await getSeriesById(id);
@@ -31,11 +32,20 @@ export default function Doggo({ params }: { params: { id: string } }) {
     useEffect(() => {
         getSeries(params.id);
     }, []);
+
+    useEffect(() => {
+        const handleOutSideClick = (event: any) => {
+            if (!ref.current?.contains(event.target)) {
+                setIsChecked(false);
+                setIsChecked2(false);
+            }
+        };
+        window.addEventListener("mousedown", handleOutSideClick);
+    }, [ref]);
+
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isChecked, setIsChecked] = useState(false);
     const [isChecked2, setIsChecked2] = useState(false);
-    const inputRefEpisode = useRef<InputRef>(null);
-    const inputRefRating = useRef<InputRef>(null);
     const cardStyle: React.CSSProperties = {
         padding: "16px",
         height: "100%",
@@ -63,9 +73,23 @@ export default function Doggo({ params }: { params: { id: string } }) {
         router.push(`./`);
     };
 
-    const updateFavoriteSeries = async (id: string) => {
+    const updateFavoriteSeries = async () => {
         series.isFavorite = !series.isFavorite;
-        await updateSeries(id, series);
+        await updateSeries(series.id, series);
+        await getSeries(series.id);
+    };
+    const [watchedEpisode, setWatchedEpisode] = useState(0);
+
+    const updateRatingSeries = async (value: number) => {
+        setIsChecked2(false);
+        series.rating = value;
+        await updateSeries(series.id, series);
+        await getSeries(series.id);
+    };
+    const updateEpisodeSeries = async () => {
+        setIsChecked(false);
+        series.watchedEpisode = watchedEpisode;
+        await updateSeries(series.id, series);
         await getSeries(series.id);
     };
 
@@ -185,12 +209,11 @@ export default function Doggo({ params }: { params: { id: string } }) {
                                             paddingTop: 0,
                                         }}
                                     >
-                                        <Flex gap="4px 0">
+                                        <Flex ref={ref} gap="4px 0">
                                             <Tag.CheckableTag
+                                                className="tag"
                                                 onClick={() => {
-                                                    updateFavoriteSeries(
-                                                        series.id
-                                                    );
+                                                    updateFavoriteSeries();
                                                 }}
                                                 checked={series.isFavorite}
                                             >
@@ -200,6 +223,7 @@ export default function Doggo({ params }: { params: { id: string } }) {
 
                                             {!isChecked && (
                                                 <Tag
+                                                    className="tag"
                                                     style={{
                                                         cursor: "default",
                                                     }}
@@ -213,24 +237,24 @@ export default function Doggo({ params }: { params: { id: string } }) {
                                                                 false
                                                             );
                                                             setIsChecked(true);
-                                                            inputRefEpisode.current!.focus(
-                                                                {
-                                                                    cursor: "start",
-                                                                }
-                                                            );
                                                         }}
                                                     />
                                                 </Tag>
                                             )}
                                             {isChecked && (
                                                 <InputNumber
-                                                    //ref={inputRefEpisode}
+                                                    changeOnWheel
                                                     onPressEnter={() => {
                                                         setIsChecked(false);
+                                                        updateEpisodeSeries();
                                                     }}
                                                     style={{
                                                         width: 230,
                                                     }}
+                                                    onChange={(value) =>
+                                                        setWatchedEpisode(value)
+                                                    }
+                                                    autoFocus
                                                     maxLength={4}
                                                     controls={false}
                                                     addonBefore={"Просмотрено"}
@@ -245,6 +269,7 @@ export default function Doggo({ params }: { params: { id: string } }) {
                                             )}
                                             {!isChecked2 && (
                                                 <Tag
+                                                    className="tag"
                                                     style={{
                                                         cursor: "default",
                                                     }}
@@ -261,19 +286,29 @@ export default function Doggo({ params }: { params: { id: string } }) {
                                                 </Tag>
                                             )}
                                             {isChecked2 && (
-                                                <InputNumber
-                                                    onPressEnter={() => {
-                                                        setIsChecked2(false);
-                                                    }}
-                                                    style={{ width: 170 }}
-                                                    controls={false}
-                                                    addonBefore={"Рейтинг"}
-                                                    addonAfter={`из 10`}
-                                                    size="small"
-                                                    min={0}
-                                                    max={10}
-                                                    defaultValue={series.rating}
-                                                />
+                                                <Flex
+                                                    justify="center"
+                                                    align="center"
+                                                >
+                                                    Ваш рейтинг:{" "}
+                                                    <Rate
+                                                        style={{
+                                                            fontSize: 14,
+                                                        }}
+                                                        onChange={(
+                                                            value: number
+                                                        ) => {
+                                                            updateRatingSeries(
+                                                                value
+                                                            );
+                                                        }}
+                                                        count={10}
+                                                        allowHalf
+                                                        defaultValue={
+                                                            series.rating
+                                                        }
+                                                    />
+                                                </Flex>
                                             )}
                                         </Flex>
                                     </Card.Grid>
@@ -294,8 +329,6 @@ export default function Doggo({ params }: { params: { id: string } }) {
                                                 {`Добавлено: ${series.addedDate}`}{" "}
                                                 {`Изменено: ${series.changedDate}`}
                                             </div>
-
-                                            <div>Статус: смотрю</div>
 
                                             <div>
                                                 {`Всего эпизодов: ${series.lastEpisode} эп.`}
@@ -345,7 +378,13 @@ export default function Doggo({ params }: { params: { id: string } }) {
                 </div>
             </Flex>
 
-            <Card>
+            <Card
+                bordered={false}
+                style={{
+                    backgroundColor: "rgb(16, 16, 16)",
+                    borderColor: "rgb(16, 16, 16)",
+                }}
+            >
                 <Meta
                     title="Описание"
                     description={
