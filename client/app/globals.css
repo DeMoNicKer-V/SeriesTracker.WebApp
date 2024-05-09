@@ -16,6 +16,7 @@ html {
 
 body,
 html {
+    background: #0f0f0f;
     touch-action: pan-x pan-y;
 }
 *,
@@ -295,4 +296,14 @@ html {
     -moz-user-select: none; /* Old versions of Firefox */
     -ms-user-select: none; /* Internet Explorer/Edge */
     user-select: none;
+}
+
+::-webkit-scrollbar {
+    background: #212121;
+    width: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #de1eb2;
+    border-radius: 10px;
 }

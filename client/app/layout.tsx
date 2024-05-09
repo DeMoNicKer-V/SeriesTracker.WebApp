@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import "./globals.css";
-import { Button, Layout, Menu, theme } from "antd";
+import { Button, ConfigProvider, Layout, Menu, theme } from "antd";
 
 import {
     MenuFoldOutlined,
@@ -22,39 +22,57 @@ export default function RootLayout({
 }>) {
     const [collapsed, setCollapsed] = useState(false);
     const [collapsed2, setCollapsed2] = useState(false);
-    const {
-        token: { colorBgContainer, borderRadiusLG },
-    } = theme.useToken();
+    const [currentTheme, setCurrentTheme] = useState(false);
+    const darkTheme = {
+        colorPrimary: "#DE1EB2",
+        colorInfo: "#DE1EB2",
+    };
+
+    const darkThemeLayout = {
+        Layout: {
+            headerBg: "#101010",
+            footerBg: "#101010",
+            siderBg: "#101010",
+            bodyBg: "#0f0f0f",
+        },
+        Menu: {
+            activeBarBorderWidth: 0,
+        },
+    };
+
+    const lightTheme = {};
+
     return (
         <html lang="en">
             <body>
                 <div id={"STRACKER"}>
                     <div id={"__layout"}>
-                        <Layout>
-                            <Header
-                                style={{
-                                    position: "sticky",
-                                    top: 0,
-                                    zIndex: 1,
-                                    width: "100%",
-                                    display: "flex",
-                                    alignItems: "center",
-                                    height: 64,
-                                    marginTop: 0,
-                                    transform: "translateY(0px)",
-                                    left: "0px",
-                                    right: "0px",
-                                }}
-                            >
-                                <div
+                        <ConfigProvider
+                            theme={{
+                                token: currentTheme ? lightTheme : darkTheme,
+                                algorithm: currentTheme
+                                    ? theme.defaultAlgorithm
+                                    : theme.darkAlgorithm,
+
+                                components: darkThemeLayout,
+                            }}
+                        >
+                            <Layout>
+                                <Header
                                     style={{
+                                        position: "sticky",
+                                        top: 0,
+                                        zIndex: 1,
+                                        width: "100%",
                                         display: "flex",
                                         alignItems: "center",
-                                        position: "relative",
-                                        zIndex: 0,
                                         height: 64,
-                                        padding: "4px 16px",
-                                        width: "100%",
+                                        marginTop: 0,
+                                        transform: "translateY(0px)",
+                                        left: "0px",
+                                        right: "0px",
+                                        boxShadow:
+                                            "0 2px 4px -1px rgba(0,0,0,.3), 0 4px 5px 0 rgba(0,0,0,.24), 0 1px 10px 0 rgba(0,0,0,.22)",
                                     }}
                                 >
                                     <Button
@@ -77,58 +95,68 @@ export default function RootLayout({
                                     <div className="spacer" />
                                     <SearchBar />
                                     <div className="spacer" />
-                                </div>
-                            </Header>
-                            <Layout
-                                style={{
-                                    padding: 10,
-                                }}
-                            >
-                                <Sider
-                                    trigger={null}
-                                    collapsible
-                                    collapsed={collapsed}
+                                </Header>
+                                <Layout
                                     style={{
-                                        height: "90vh",
-                                        maxHeight: "calc(100% - 80px)",
-                                        position: "sticky",
-                                        top: "80px",
-                                        transform: "translateX(0%)",
+                                        padding: 10,
                                     }}
                                 >
-                                    <Menu
-                                        theme="dark"
-                                        mode="inline"
-                                        defaultSelectedKeys={["series"]}
-                                        items={[
-                                            {
-                                                key: "series",
-                                                icon: <VideoCameraOutlined />,
-                                                label: (
-                                                    <Link href={"/series"}>
-                                                        Series
-                                                    </Link>
-                                                ),
-                                            },
-                                        ]}
-                                    />
-                                </Sider>
-                                <Layout>
-                                    <Content
+                                    <Sider
+                                        trigger={null}
+                                        collapsible
+                                        collapsed={collapsed}
                                         style={{
-                                            margin: 0,
-                                            minHeight: 280,
-                                            background: colorBgContainer,
-                                            borderRadius: borderRadiusLG,
+                                            height: "90vh",
+                                            maxHeight: "calc(100% - 80px)",
+                                            position: "sticky",
+                                            top: "80px",
+                                            transform: "translateX(0%)",
+                                            padding: "4px",
+                                            boxShadow:
+                                                "0 2px 4px -1px rgba(0,0,0,.3), 0 4px 5px 0 rgba(0,0,0,.24), 0 1px 10px 0 rgba(0,0,0,.22)",
                                         }}
                                     >
-                                        {children}
-                                    </Content>
-                                    <Footer style={{ textAlign: "left" }}>
-                                        <AZList />
-                                    </Footer>
-                                </Layout>
-                                {/* <Sider
+                                        <Menu
+                                            borde
+                                            mode="inline"
+                                            defaultSelectedKeys={["series"]}
+                                            items={[
+                                                {
+                                                    key: "series",
+                                                    icon: (
+                                                        <VideoCameraOutlined />
+                                                    ),
+                                                    label: (
+                                                        <Link href={"/series"}>
+                                                            Series
+                                                        </Link>
+                                                    ),
+                                                },
+                                                {
+                                                    key: "home",
+                                                    icon: (
+                                                        <VideoCameraOutlined />
+                                                    ),
+                                                    label: (
+                                                        <Link href={"/home"}>
+                                                            Home
+                                                        </Link>
+                                                    ),
+                                                },
+                                            ]}
+                                        />
+                                    </Sider>
+                                    <Layout>
+                                        <Content>{children}</Content>
+                                        <Footer
+                                            style={{
+                                                textAlign: "left",
+                                            }}
+                                        >
+                                            <AZList />
+                                        </Footer>
+                                    </Layout>
+                                    {/* <Sider
                             width={400}
                             trigger={null}
                             collapsible
@@ -141,8 +169,9 @@ export default function RootLayout({
                                 transform: "translateX(0%)",
                             }}
                         ></Sider>*/}
+                                </Layout>
                             </Layout>
-                        </Layout>
+                        </ConfigProvider>
                     </div>
                 </div>
             </body>
