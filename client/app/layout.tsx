@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./globals.css";
 import { Button, ConfigProvider, Layout, Menu, Switch, theme } from "antd";
 
@@ -13,7 +13,10 @@ import {
 import { Footer } from "antd/es/layout/layout";
 import Link from "next/link";
 import { AZList } from "./components/azList";
+
 import SearchBar from "./components/searchbar";
+import { getCookie, setCookie } from "cookies-next";
+import { OptionsType } from "cookies-next/lib/types";
 
 const { Header, Content, Sider } = Layout;
 
@@ -25,11 +28,21 @@ export default function RootLayout({
     const [collapsed, setCollapsed] = useState(false);
     const [collapsed2, setCollapsed2] = useState(false);
     const [currentTheme, setCurrentTheme] = useState(false);
+
+    useEffect(() => {
+        const colorThemeCookie = getCookie("theme");
+        const vv = colorThemeCookie === "false" ? false : true;
+        setCurrentTheme(vv);
+    }, []);
     const darkTheme = {
         colorPrimary: "#DE1EB2",
         colorInfo: "#DE1EB2",
     };
 
+    const setColorThemeCookie = (value: boolean) => {
+        setCurrentTheme(value);
+        setCookie("theme", value);
+    };
     const darkThemeLayout = {
         Layout: {
             headerBg: "#101010",
@@ -98,10 +111,11 @@ export default function RootLayout({
                                     <SearchBar />
                                     <div className="spacer" />
                                     <Switch
+                                        checked={currentTheme}
                                         checkedChildren={<MoonOutlined />}
                                         unCheckedChildren={<SunOutlined />}
                                         onChange={(checked: any) => {
-                                            setCurrentTheme(checked);
+                                            setColorThemeCookie(checked);
                                         }}
                                     />
                                 </Header>
@@ -144,11 +158,6 @@ export default function RootLayout({
                                                     key: "home",
                                                     icon: (
                                                         <VideoCameraOutlined />
-                                                    ),
-                                                    label: (
-                                                        <Link href={"/home"}>
-                                                            Home
-                                                        </Link>
                                                     ),
                                                 },
                                             ]}
