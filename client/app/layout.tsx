@@ -1,12 +1,14 @@
 "use client";
 import React, { useState } from "react";
 import "./globals.css";
-import { Button, ConfigProvider, Layout, Menu, theme } from "antd";
+import { Button, ConfigProvider, Layout, Menu, Switch, theme } from "antd";
 
 import {
     MenuFoldOutlined,
     MenuUnfoldOutlined,
     VideoCameraOutlined,
+    MoonOutlined,
+    SunOutlined,
 } from "@ant-design/icons";
 import { Footer } from "antd/es/layout/layout";
 import Link from "next/link";
@@ -49,10 +51,10 @@ export default function RootLayout({
                     <div id={"__layout"}>
                         <ConfigProvider
                             theme={{
-                                token: currentTheme ? lightTheme : darkTheme,
+                                token: currentTheme ? darkTheme : lightTheme,
                                 algorithm: currentTheme
-                                    ? theme.defaultAlgorithm
-                                    : theme.darkAlgorithm,
+                                    ? theme.darkAlgorithm
+                                    : theme.defaultAlgorithm,
 
                                 components: darkThemeLayout,
                             }}
@@ -95,6 +97,13 @@ export default function RootLayout({
                                     <div className="spacer" />
                                     <SearchBar />
                                     <div className="spacer" />
+                                    <Switch
+                                        checkedChildren={<MoonOutlined />}
+                                        unCheckedChildren={<SunOutlined />}
+                                        onChange={(checked: any) => {
+                                            setCurrentTheme(checked);
+                                        }}
+                                    />
                                 </Header>
                                 <Layout
                                     style={{
@@ -117,7 +126,6 @@ export default function RootLayout({
                                         }}
                                     >
                                         <Menu
-                                            borde
                                             mode="inline"
                                             defaultSelectedKeys={["series"]}
                                             items={[
