@@ -40,10 +40,10 @@ namespace SeriesTracker.API.Controllers
         [HttpGet("search/{query}")]
         public async Task<ActionResult<List<SeriesResponse>>> GetSeriesListSearch(string query)
         {
-            var seriesList = await _seriesService.GetSeriesList();
+            var seriesList = await _seriesService.GetSearchList(query.ToLowerInvariant());
 
             var response = seriesList.Select(s => new SeriesResponse(s.Id, s.Title, s.Description, s.WatchedEpisode, s.LastEpisode, s.Duration, s.Rating, s.ImagePath,
-                s.ReleaseDate, s.AddedDate, s.ChangedDate, s.OverDate, s.IsOver, s.IsFavorite)).Where(s => s.Title.Contains(query)).Take(5);
+                s.ReleaseDate, s.AddedDate, s.ChangedDate, s.OverDate, s.IsOver, s.IsFavorite)).Take(5);
 
             return Ok(response);
         }

@@ -11,7 +11,7 @@ interface Props {
 
 export const Series = ({ series, handleDelete, handleOpen }: Props) => {
     return (
-        <Row gutter={[15, 25]} justify="center">
+        <Row gutter={[20, 25]} justify="center">
             {series.map((series: Series["item1"]) => (
                 <Col>
                     <Link href={`/series/${series.id}`}>

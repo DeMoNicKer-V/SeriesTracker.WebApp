@@ -24,6 +24,16 @@ namespace SeriesTracker.DataAccess.Repositories
             return seiresList;
         }
 
+        public async Task<List<Series>> GetSearchList(string query)
+        {
+            var seriesEntities = await _context.SeriesEntities.AsNoTracking().ToListAsync();
+
+            var seiresList = seriesEntities.Select(s => Series.Create(s.Id, s.Title, s.Description, s.WatchedEpisode, s.LastEpisode, s.Duration,
+                s.Rating, s.ImagePath, s.ReleaseDate, s.AddedDate, s.ChangedDate, s.OverDate, s.IsOver, s.IsFavorite).Series).Where(s => s.Title.ToLowerInvariant().Contains(query)).ToList();
+
+            return seiresList;
+        }
+
         public async Task<Series> GetSeriesById(Guid id)
         {
             var s = await _context.SeriesEntities.AsNoTracking().Where(s => s.Id == id).FirstAsync();

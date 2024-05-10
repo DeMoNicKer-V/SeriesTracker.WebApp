@@ -1,7 +1,17 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import "./globals.css";
-import { Button, ConfigProvider, Layout, Menu, Switch, theme } from "antd";
+import {
+    Button,
+    Col,
+    ConfigProvider,
+    Divider,
+    Layout,
+    Menu,
+    Row,
+    Switch,
+    theme,
+} from "antd";
 
 import {
     MenuFoldOutlined,
@@ -37,6 +47,7 @@ export default function RootLayout({
     const darkTheme = {
         colorPrimary: "#DE1EB2",
         colorInfo: "#DE1EB2",
+        marginLG: "5px 0 24px",
     };
 
     const setColorThemeCookie = (value: boolean) => {
@@ -79,45 +90,60 @@ export default function RootLayout({
                                         top: 0,
                                         zIndex: 1,
                                         width: "100%",
-                                        display: "flex",
+
                                         alignItems: "center",
-                                        height: 64,
-                                        marginTop: 0,
-                                        transform: "translateY(0px)",
-                                        left: "0px",
-                                        right: "0px",
                                         boxShadow:
                                             "0 2px 4px -1px rgba(0,0,0,.3), 0 4px 5px 0 rgba(0,0,0,.24), 0 1px 10px 0 rgba(0,0,0,.22)",
                                     }}
                                 >
-                                    <Button
-                                        type="text"
-                                        icon={
-                                            collapsed ? (
-                                                <MenuUnfoldOutlined />
-                                            ) : (
-                                                <MenuFoldOutlined />
-                                            )
-                                        }
-                                        onClick={() => setCollapsed(!collapsed)}
-                                        style={{
-                                            marginLeft: "-50px",
-                                            height: 64,
-                                            width: 64,
-                                            color: "#fff",
-                                        }}
-                                    />
-                                    <div className="spacer" />
-                                    <SearchBar />
-                                    <div className="spacer" />
-                                    <Switch
-                                        checked={currentTheme}
-                                        checkedChildren={<MoonOutlined />}
-                                        unCheckedChildren={<SunOutlined />}
-                                        onChange={(checked: any) => {
-                                            setColorThemeCookie(checked);
-                                        }}
-                                    />
+                                    <Row align="middle">
+                                        <Col span={1}>
+                                            <Button
+                                                type="text"
+                                                icon={
+                                                    collapsed ? (
+                                                        <MenuUnfoldOutlined />
+                                                    ) : (
+                                                        <MenuFoldOutlined />
+                                                    )
+                                                }
+                                                onClick={() =>
+                                                    setCollapsed(!collapsed)
+                                                }
+                                                style={{
+                                                    marginLeft: "-50px",
+                                                    height: 64,
+                                                    width: 64,
+                                                    color: "#fff",
+                                                }}
+                                            />
+                                        </Col>
+                                        <Col span={6}>
+                                            <div className="spacer" />{" "}
+                                        </Col>
+                                        <Col span={8}>
+                                            <SearchBar />{" "}
+                                        </Col>
+                                        <Col span={6}>
+                                            <div className="spacer" />{" "}
+                                        </Col>
+                                        <Col span={1}>
+                                            <Switch
+                                                checked={currentTheme}
+                                                checkedChildren={
+                                                    <MoonOutlined />
+                                                }
+                                                unCheckedChildren={
+                                                    <SunOutlined />
+                                                }
+                                                onChange={(checked: any) => {
+                                                    setColorThemeCookie(
+                                                        checked
+                                                    );
+                                                }}
+                                            />
+                                        </Col>
+                                    </Row>
                                 </Header>
                                 <Layout
                                     style={{
@@ -164,7 +190,9 @@ export default function RootLayout({
                                         />
                                     </Sider>
                                     <Layout>
-                                        <Content>{children}</Content>
+                                        <Content style={{ padding: 30 }}>
+                                            {children}
+                                        </Content>
                                         <Footer
                                             style={{
                                                 textAlign: "left",

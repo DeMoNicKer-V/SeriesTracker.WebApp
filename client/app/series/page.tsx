@@ -11,8 +11,18 @@ import {
     updateSeries,
 } from "../services/series";
 import { CreateUpdateSeries, Mode } from "../components/AddUpdateSeries";
-import { Col, Pagination, Row } from "antd";
+import {
+    Col,
+    Divider,
+    Flex,
+    Pagination,
+    PaginationProps,
+    Row,
+    Space,
+    Tag,
+} from "antd";
 import { usePathname, useSearchParams } from "next/navigation";
+import { RightOutlined, LeftOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
 
 export default function SeriesPage() {
@@ -98,7 +108,17 @@ export default function SeriesPage() {
         setValues(defaultValues);
         setIsModalOpen(false);
     };
-
+    const [ii, setii] = useState<number>(1);
+    const itemRender: PaginationProps["itemRender"] = (
+        _,
+        type,
+        originalElement
+    ) => {
+        if (type === "jump-next") {
+            return <a>Previous</a>;
+        }
+        return originalElement;
+    };
     return (
         <div className="container">
             <CreateUpdateSeries
@@ -109,37 +129,42 @@ export default function SeriesPage() {
                 handleUpdate={handleUpdateSeries}
                 handleCancel={closeModal}
             />
-            <Row justify="end">
+            <Row align={"middle"} justify={"center"}>
                 <Col span={12}>
                     <h2>Ваши сериалы</h2>
                 </Col>
                 <Col span={12}>
-                    <div style={{ display: "flex", justifyContent: "end" }}>
-                        <Button onClick={openModal} type="text">
-                            Добавить сериал
-                        </Button>
-                        <Pagination
-                            current={page}
-                            onChange={(current: any) => {
-                                setPage(current);
-                                updateSeriesList(current);
-                            }}
-                            showTitle={false}
-                            pageSize={30}
-                            total={seriesCount?.count}
-                        />
-                    </div>
+                    <Row align={"middle"} justify={"end"}>
+                        <Col>
+                            <Button disabled={page === 1} type="default">
+                                <LeftOutlined />
+                                Назад
+                            </Button>
+                            <Divider type="vertical" />
+                            <Button
+                                disabled={
+                                    Number(seriesCount) + 1 <= 30 ? true : false
+                                }
+                                type="default"
+                            >
+                                Вперед <RightOutlined />
+                            </Button>
+                            <Divider type="vertical" />
+                            <Tag>{`Всего: ${seriesCount}`}</Tag>
+                        </Col>
+                    </Row>
                 </Col>
             </Row>
-
+            <Divider />
             <Series
                 series={series}
                 handleOpen={openEditModel}
                 handleDelete={deleteThisSeries}
             />
-            <Row justify="center">
+            <Row style={{ marginTop: 20 }} justify="center">
                 <Col>
                     <Pagination
+                        responsive
                         current={page}
                         onChange={(current: any) => {
                             setPage(current);
@@ -147,7 +172,8 @@ export default function SeriesPage() {
                         }}
                         showTitle={false}
                         pageSize={30}
-                        total={seriesCount?.count}
+                        total={500}
+                        showSizeChanger={false}
                     />
                 </Col>
             </Row>

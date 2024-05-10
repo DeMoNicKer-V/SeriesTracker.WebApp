@@ -80,7 +80,7 @@ export const SearchBar = ({}) => {
             }}
             renderEmpty={customizeRenderEmpty}
         >
-            <div ref={ref} className="col-4" style={{ position: "relative" }}>
+            <div ref={ref} style={{ position: "relative" }}>
                 <Form
                     onFinish={onFinish}
                     noValidate={true}
