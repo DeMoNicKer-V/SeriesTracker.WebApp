@@ -23,6 +23,7 @@ import {
 import Link from "next/link";
 import "./searchbar.css";
 import { redirect, useRouter } from "next/navigation";
+import { useForm } from "antd/es/form/Form";
 
 export const SearchBar = ({}) => {
     const ref = useRef<HTMLDivElement>(null);
@@ -65,8 +66,11 @@ export const SearchBar = ({}) => {
             <p>{nullString}</p>
         </div>
     );
+    const [form] = Form.useForm();
     const router = useRouter();
     const onFinish = (values: any) => {
+        setIsShown(false);
+        form.resetFields();
         router.push(`/search?query=${values.query}`);
     };
     return (
@@ -82,6 +86,7 @@ export const SearchBar = ({}) => {
         >
             <div ref={ref} style={{ position: "relative" }}>
                 <Form
+                    form={form}
                     onFinish={onFinish}
                     noValidate={true}
                     autoComplete="off"
@@ -89,6 +94,7 @@ export const SearchBar = ({}) => {
                 >
                     <Form.Item name={"query"} style={{ margin: 0 }}>
                         <Input
+                            className="searchInput"
                             spellCheck={"false"}
                             variant="borderless"
                             onClick={handleClick}

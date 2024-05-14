@@ -22,7 +22,7 @@ import {
     Tag,
 } from "antd";
 import { usePathname, useSearchParams } from "next/navigation";
-import { RightOutlined, LeftOutlined } from "@ant-design/icons";
+import { RightOutlined, LeftOutlined, PlusOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
 
 export default function SeriesPage() {
@@ -136,6 +136,10 @@ export default function SeriesPage() {
                 <Col span={12}>
                     <Row align={"middle"} justify={"end"}>
                         <Col>
+                            <Button onClick={openModal} type="dashed">
+                                <PlusOutlined /> Добавить сериал
+                            </Button>
+                            <Divider type="vertical" />
                             <Button disabled={page === 1} type="default">
                                 <LeftOutlined />
                                 Назад

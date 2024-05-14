@@ -181,3 +181,8 @@ html {
     background: #de1eb2;
     border-radius: 10px;
 }
+
+input,
+.searchInput {
+    cursor: pointer;
+}
