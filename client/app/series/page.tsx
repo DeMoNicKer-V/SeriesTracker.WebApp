@@ -172,7 +172,7 @@ export default function SeriesPage() {
                         }}
                         showTitle={false}
                         pageSize={30}
-                        total={500}
+                        total={Number(seriesCount)}
                         showSizeChanger={false}
                     />
                 </Col>
