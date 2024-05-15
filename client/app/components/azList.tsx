@@ -1,7 +1,16 @@
+import { Button, Col, Radio, RadioChangeEvent, Row } from "antd";
 import Link from "next/link";
-
-export const AZList = ({}) => {
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { SwapOutlined } from "@ant-design/icons";
+interface Props {
+    handleClickAll: () => void;
+    handleClickALetter: () => void;
+}
+export const AZList = ({ handleClickAll, handleClickALetter }: Props) => {
     const engLettersList = [
+        "Все",
+        "0-9",
         "A",
         "B",
         "C",
@@ -31,75 +40,82 @@ export const AZList = ({}) => {
     ];
 
     const rusLettersList = [
-        "A",
-        "B",
-        "C",
-        "D",
-        "E",
-        "F",
-        "G",
-        "H",
-        "I",
-        "J",
-        "K",
-        "L",
-        "M",
-        "N",
-        "O",
-        "P",
-        "Q",
-        "R",
-        "S",
-        "T",
-        "U",
-        "V",
-        "W",
-        "X",
-        "Y",
-        "Z",
+        "Все",
+        "0-9",
+        "А",
+        "Б",
+        "В",
+        "Г",
+        "Д",
+        "Е",
+        "Ё",
+        "Ж",
+        "З",
+        "И",
+        "Й",
+        "К",
+        "Л",
+        "М",
+        "Н",
+        "О",
+        "П",
+        "Р",
+        "С",
+        "Т",
+        "У",
+        "Ф",
+        "Х",
+        "Ц",
+        "Ч",
+        "Ш",
+        "Щ",
+        "Ъ",
+        "Ы",
+        "Ь",
+        "Э",
+        "Ю",
+        "Я",
     ];
+    const router = useRouter();
+    const [value, setValue] = useState("Все");
+    const [options, setOptions] = useState(engLettersList);
 
+    const [optionsFlag, setFlag] = useState(false);
+    const changeOptions = () => {
+        setFlag((current) => !current);
+    };
+
+    useEffect(() => {
+        optionsFlag === true
+            ? setOptions(rusLettersList)
+            : setOptions(engLettersList);
+    }, [optionsFlag]);
+
+    const onChange = (e: RadioChangeEvent) => {
+        setValue(e.target.value);
+        if (e.target.value === "Все") {
+            router.push(`/series`);
+            handleClickAll();
+        } else {
+            router.push(`/search?alphabet=${e.target.value}`);
+            handleClickALetter();
+        }
+    };
     return (
-        <div>
-            <div
-                className="d-flex align-center mb-1"
-                style={{
-                    display: "inline-flex",
-                    padding: "0 12px",
-                }}
-            >
-                <div className="text-subtitle-2 text-uppercase font-weight-bold primary--text">
-                    A-Z List
-                </div>
-                <div className="vertical-divider mx-4">|</div>
-                <div className="text-caption">
-                    Searching anime order by alphabet name A to Z.
-                </div>
-            </div>
-            <div>
-                <Link
-                    key={"all"}
-                    style={{ padding: "0 12px" }}
-                    href={"/series"}
-                >
-                    <span>Всё</span>
-                </Link>
-                {engLettersList.map((message) => (
-                    <Link
-                        key={message}
-                        style={{ padding: "0 12px" }}
-                        href={{
-                            pathname: "/series",
-                            query: {
-                                query: message,
-                            },
-                        }}
-                    >
-                        <span>{message}</span>
-                    </Link>
-                ))}
-            </div>
-        </div>
+        <Row>
+            <Col>
+                <Radio.Group
+                    onChange={onChange}
+                    value={value}
+                    options={options}
+                    optionType="button"
+                />
+                <Button
+                    onClick={changeOptions}
+                    icon={<SwapOutlined />}
+                ></Button>
+            </Col>
+        </Row>
     );
 };
 

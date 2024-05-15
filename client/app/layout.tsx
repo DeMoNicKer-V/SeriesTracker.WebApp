@@ -14,9 +14,10 @@ import {
 } from "antd";
 
 import {
+    SearchOutlined,
     MenuFoldOutlined,
     MenuUnfoldOutlined,
-    VideoCameraOutlined,
+    HomeOutlined,
     MoonOutlined,
     SunOutlined,
 } from "@ant-design/icons";
@@ -38,6 +39,7 @@ export default function RootLayout({
     const [collapsed, setCollapsed] = useState(false);
     const [collapsed2, setCollapsed2] = useState(false);
     const [currentTheme, setCurrentTheme] = useState(false);
+    const [currentKey, setCurrentKey] = useState("home");
 
     useEffect(() => {
         const colorThemeCookie = getCookie("theme");
@@ -64,6 +66,9 @@ export default function RootLayout({
         Menu: {
             activeBarBorderWidth: 0,
         },
+        Radio: {
+            colorBorder: "transparent",
+        },
     };
 
     const lightTheme = {};
@@ -84,6 +89,7 @@ export default function RootLayout({
                             }}
                         >
                             <Layout>
+                                <title>Series Tracker</title>
                                 <Header
                                     style={{
                                         position: "sticky",
@@ -166,24 +172,31 @@ export default function RootLayout({
                                         }}
                                     >
                                         <Menu
+                                            onSelect={({ key }) =>
+                                                setCurrentKey(key)
+                                            }
+                                            selectedKeys={[currentKey]}
+                                            style={{
+                                                background: "transparent",
+                                            }}
                                             mode="inline"
-                                            defaultSelectedKeys={["series"]}
                                             items={[
                                                 {
-                                                    key: "series",
-                                                    icon: (
-                                                        <VideoCameraOutlined />
-                                                    ),
+                                                    key: "home",
+                                                    icon: <HomeOutlined />,
                                                     label: (
                                                         <Link href={"/series"}>
-                                                            Series
+                                                            Ваши сериалы
                                                         </Link>
                                                     ),
                                                 },
                                                 {
-                                                    key: "home",
-                                                    icon: (
-                                                        <VideoCameraOutlined />
+                                                    key: "search",
+                                                    icon: <SearchOutlined />,
+                                                    label: (
+                                                        <Link href={"/search"}>
+                                                            Поиск
+                                                        </Link>
                                                     ),
                                                 },
                                             ]}
@@ -198,7 +211,14 @@ export default function RootLayout({
                                                 textAlign: "left",
                                             }}
                                         >
-                                            <AZList />
+                                            <AZList
+                                                handleClickAll={() => {
+                                                    setCurrentKey("home");
+                                                }}
+                                                handleClickALetter={() => {
+                                                    setCurrentKey("search");
+                                                }}
+                                            />
                                         </Footer>
                                     </Layout>
                                     {/* <Sider

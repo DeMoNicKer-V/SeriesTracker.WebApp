@@ -9,7 +9,7 @@ export default function SearchPage() {
             <title>Series Tracker - Поиск</title>
             <Row align={"middle"} justify={"center"}>
                 <Col span={12}>
-                    <Input value={String(search)} />
+                    <Input spellCheck={false} value={String(search)} />
                 </Col>
             </Row>
             <Row align={"middle"} justify={"center"}>
