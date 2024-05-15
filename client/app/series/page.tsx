@@ -160,11 +160,7 @@ export default function SeriesPage() {
                 </Col>
             </Row>
             <Divider />
-            <Series
-                series={series}
-                handleOpen={openEditModel}
-                handleDelete={deleteThisSeries}
-            />
+            <Series series={series} />
             <Row style={{ marginTop: 20 }} justify="center">
                 <Col>
                     <Pagination

@@ -5,11 +5,9 @@ import Link from "next/link";
 
 interface Props {
     series: Series["item1"][];
-    handleDelete: (id: string) => void;
-    handleOpen: (series: Series["item1"]) => void;
 }
 
-export const Series = ({ series, handleDelete, handleOpen }: Props) => {
+export const Series = ({ series }: Props) => {
     return (
         <Row gutter={[20, 25]} justify="center">
             {series.map((series: Series["item1"]) => (
