@@ -39,9 +39,12 @@ export default function RootLayout({
     const [collapsed, setCollapsed] = useState(false);
     const [collapsed2, setCollapsed2] = useState(false);
     const [currentTheme, setCurrentTheme] = useState(false);
-    const [currentKey, setCurrentKey] = useState("home");
+    const [currentKey, setCurrentKey] = useState(
+        window.location.href.split("/")[3].toString() || "series"
+    );
 
     useEffect(() => {
+        console.log(currentKey);
         const colorThemeCookie = getCookie("theme");
         const vv = colorThemeCookie === "false" ? false : true;
         setCurrentTheme(vv);
@@ -70,7 +73,6 @@ export default function RootLayout({
             colorBorder: "transparent",
         },
     };
-
     const lightTheme = {};
 
     return (
@@ -182,7 +184,7 @@ export default function RootLayout({
                                             mode="inline"
                                             items={[
                                                 {
-                                                    key: "home",
+                                                    key: "series",
                                                     icon: <HomeOutlined />,
                                                     label: (
                                                         <Link href={"/series"}>
