@@ -37,7 +37,7 @@ namespace SeriesTracker.API.Controllers
             return Ok(response);
         }
 
-        [HttpGet("search/{query}")]
+        [HttpGet("{query}")]
         public async Task<ActionResult<List<SeriesResponse>>> GetSeriesListSearch(string query)
         {
             var seriesList = await _seriesService.GetSearchList(query.ToLowerInvariant());
@@ -66,16 +66,15 @@ namespace SeriesTracker.API.Controllers
             return Ok(Tuple.Create(response, count));
         }
 
-        [HttpGet("{page:int}/search/{alphabet}")]
-        public async Task<ActionResult<List<SeriesResponse>>> GetAlphabetSeriesList(int page = 1, string? alphabet = null)
+        [HttpGet("{page:int}/search/{query}")]
+        public async Task<ActionResult<List<SeriesResponse>>> GetSeriesListSearch(int page = 1, string? query = null)
         {
-            var seriesList = await _seriesService.GetSeriesList();
+            var seriesList = await _seriesService.GetSearchList(query.ToLowerInvariant());
 
-            var regex = alphabet == "null" ? null : $"(?i)^([{alphabet}])(?-i)";
             var response = seriesList.Select(s => new SeriesResponse(s.Id, s.Title, s.Description, s.WatchedEpisode, s.LastEpisode, s.Duration, s.Rating, s.ImagePath,
-                s.ReleaseDate, s.AddedDate, s.ChangedDate, s.OverDate, s.IsOver, s.IsFavorite)).Skip(30 * (page - 1)).Where(s => regex == null || Regex.IsMatch(s.Title, regex)).Take(30);
+                s.ReleaseDate, s.AddedDate, s.ChangedDate, s.OverDate, s.IsOver, s.IsFavorite)).Skip(30 * (page - 1)).Take(30);
             var count = await _seriesService.GetAllSeriesCount();
-            if (regex != null)
+            if (query != null)
             {
                 count = response.Count();
             }

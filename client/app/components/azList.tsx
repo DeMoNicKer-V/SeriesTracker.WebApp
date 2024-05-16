@@ -1,7 +1,7 @@
 import { Button, Col, Radio, RadioChangeEvent, Row } from "antd";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { SwapOutlined } from "@ant-design/icons";
 interface Props {
     handleClickAll: () => void;
@@ -84,12 +84,18 @@ export const AZList = ({ handleClickAll, handleClickALetter }: Props) => {
     const changeOptions = () => {
         setFlag((current) => !current);
     };
-
+    const searchParams = useSearchParams();
     useEffect(() => {
         optionsFlag === true
             ? setOptions(rusLettersList)
             : setOptions(engLettersList);
     }, [optionsFlag]);
+
+    useEffect(() => {
+        if (searchParams.get("alphabet") === null) {
+            setValue("Все");
+        }
+    }, [searchParams]);
 
     const onChange = (e: RadioChangeEvent) => {
         setValue(e.target.value);

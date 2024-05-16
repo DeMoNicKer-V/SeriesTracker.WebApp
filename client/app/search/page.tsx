@@ -7,12 +7,14 @@ import {
     getAllSeries,
     getAllSeriesSearch,
     getAlphabetSeries,
+    getSeriesSearch,
 } from "../services/series";
 import {
     InfoCircleOutlined,
     FrownOutlined,
     SearchOutlined,
 } from "@ant-design/icons";
+
 export default function SearchPage() {
     const pathname = usePathname();
     const searchParams = useSearchParams();
@@ -21,26 +23,44 @@ export default function SearchPage() {
     const [page, setPage] = useState<number>(1);
     const [seriesCount, setseriesCount] = useState<Series["item2"] | number>(0);
     const [series, setSeries] = useState<Series["item1"][] | any>([]);
-
-    const getSeries = async () => {
-        if (
-            searchParams.get("alphabet") === "" ||
-            searchParams.get("alphabet") === null
-        ) {
-            const series = await getAllSeriesSearch(searchParams.get("query"));
-            setSeries(series);
-            return;
-        }
-        const series = await getAlphabetSeries(
-            page,
-            searchParams.get("alphabet")
-        );
+    const router = useRouter();
+    const getSeriesQuery = async (query: any) => {
+        const series = await getSeriesSearch(page, query);
         setseriesCount(series["item2"]);
         setSeries(series["item1"]);
+        return;
     };
+
+    const handle = (value: any) => {
+        if (value === "") {
+            router.push(`/search`);
+            return;
+        }
+        setQuery(value);
+        router.push(`?query=${value}`);
+    };
+
+    const getSeriesAlphabet = async (alphabet: any) => {
+        console.log("A");
+        const series = await getAlphabetSeries(page, alphabet);
+        setseriesCount(series["item2"]);
+        setSeries(series["item1"]);
+        return;
+    };
+
     useEffect(() => {
-        getSeries();
-    }, [pathname, searchParams]);
+        getSeriesQuery(query);
+    }, [query]);
+
+    useEffect(() => {
+        if (alphabet === null) return;
+        getSeriesAlphabet(alphabet);
+    }, [alphabet]);
+
+    useEffect(() => {
+        setQuery(searchParams.get("query") || "");
+        setAlphabet(searchParams.get("alphabet") || null);
+    }, [searchParams]);
 
     return (
         <div className="container">
@@ -48,16 +68,15 @@ export default function SearchPage() {
             <Row align={"middle"} justify={"center"}>
                 <Col span={12}>
                     <Input
+                        value={String(query)}
+                        onChange={(e: { target: { value: any } }) => {
+                            handle(e.target.value);
+                        }}
                         placeholder="Введите для поиска"
                         prefix={<SearchOutlined />}
                         count={{ show: true }}
                         spellCheck={false}
                     />
-                </Col>
-            </Row>
-            <Row style={{ margin: 20 }} align={"middle"} justify={"center"}>
-                <Col>
-                    <Pagination current={page} total={Number(seriesCount)} />
                 </Col>
             </Row>
             {Number(seriesCount) <= 0 && (
@@ -77,17 +96,47 @@ export default function SearchPage() {
                     </Col>
                     <Col>
                         <span style={{ fontSize: 18 }}>
-                            К сожалению, по вашему запросу ничего не найдено.
+                            {!query &&
+                                !alphabet &&
+                                "Пожалуйста, укажите параметры для поиска!"}
+
+                            {(query || alphabet) &&
+                                "По вашему запросу ничего не найдено."}
                         </span>
                     </Col>
                 </Row>
             )}
-            <Series series={series} />
-            <Row style={{ margin: 20 }} align={"middle"} justify={"center"}>
-                <Col>
-                    <Pagination current={page} total={Number(seriesCount)} />
-                </Col>
-            </Row>
+
+            {Number(seriesCount) > 0 && (
+                <div>
+                    <Row
+                        style={{ margin: 20 }}
+                        align={"middle"}
+                        justify={"center"}
+                    >
+                        <Col>
+                            <Pagination
+                                current={page}
+                                total={Number(seriesCount)}
+                            />
+                        </Col>
+                    </Row>
+
+                    <Series series={series} />
+                    <Row
+                        style={{ margin: 20 }}
+                        align={"middle"}
+                        justify={"center"}
+                    >
+                        <Col>
+                            <Pagination
+                                current={page}
+                                total={Number(seriesCount)}
+                            />
+                        </Col>
+                    </Row>
+                </div>
+            )}
         </div>
     );
 }
