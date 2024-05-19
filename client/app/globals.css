@@ -212,8 +212,8 @@ input,
 .loading::after {
     content: "";
     position: absolute;
-    inset: -0.1rem;
-    z-index: -1;
+    inset: -0.05rem;
+    z-index: -99;
     background: conic-gradient(
         from var(--gradient-angle),
         var(--clr-1),
@@ -231,4 +231,8 @@ input,
     100% {
         --gradient-angle: 360deg;
     }
+}
+
+.container {
+    min-height: 100%;
 }

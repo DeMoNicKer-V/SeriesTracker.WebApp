@@ -1,5 +1,5 @@
 "use client";
-import { Col, Empty, Flex, Input, Pagination, Row } from "antd";
+import { Col, Empty, Flex, Input, Pagination, Row, Spin } from "antd";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Series } from "../components/Series";
 import { useEffect, useState } from "react";
@@ -17,6 +17,7 @@ import {
 
 export default function SearchPage() {
     const pathname = usePathname();
+    const [loading, setLoading] = useState(false);
     const searchParams = useSearchParams();
     const [query, setQuery] = useState<string | null>(null);
     const [alphabet, setAlphabet] = useState<string | null>(null);
@@ -28,6 +29,9 @@ export default function SearchPage() {
         const series = await getSeriesSearch(page, query);
         setseriesCount(series["item2"]);
         setSeries(series["item1"]);
+
+        setLoading(false);
+
         return;
     };
 
@@ -44,11 +48,16 @@ export default function SearchPage() {
         const series = await getAlphabetSeries(page, alphabet);
         setseriesCount(series["item2"]);
         setSeries(series["item1"]);
+
         return;
     };
 
     useEffect(() => {
-        getSeriesQuery(query);
+        setLoading(true);
+        const timer = setTimeout(() => {
+            getSeriesQuery(query);
+        }, 1000);
+        return () => clearTimeout(timer);
     }, [query]);
 
     useEffect(() => {
@@ -64,21 +73,35 @@ export default function SearchPage() {
     return (
         <div className="container">
             <title>Series Tracker - Поиск</title>
+            <Spin
+                size="large"
+                spinning={loading}
+                style={{
+                    position: "absolute",
+                    top: "50%",
+                    left: "50%",
+                }}
+            />
             <Row align={"middle"} justify={"center"}>
                 <Col span={12}>
-                    <Input
-                        value={String(query)}
-                        onChange={(e: { target: { value: any } }) => {
-                            handle(e.target.value);
-                        }}
-                        placeholder="Введите для поиска"
-                        prefix={<SearchOutlined />}
-                        count={{ show: true }}
-                        spellCheck={false}
-                    />
+                    <div
+                        style={{ zIndex: 1 }}
+                        className={loading === true ? "loading" : ""}
+                    >
+                        <Input
+                            value={String(query)}
+                            onChange={(e: { target: { value: any } }) => {
+                                handle(e.target.value);
+                            }}
+                            placeholder="Введите для поиска"
+                            suffix={<SearchOutlined />}
+                            spellCheck={false}
+                        />
+                    </div>
                 </Col>
             </Row>
-            {Number(seriesCount) <= 0 && (
+
+            {Number(seriesCount) <= 0 && loading === false && (
                 <Row
                     gutter={[10, 0]}
                     style={{
@@ -106,7 +129,7 @@ export default function SearchPage() {
                 </Row>
             )}
 
-            {Number(seriesCount) > 0 && (
+            {Number(seriesCount) > 0 && loading === false && (
                 <div>
                     <Row
                         style={{ margin: 20 }}
