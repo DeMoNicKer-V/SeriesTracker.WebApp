@@ -7,6 +7,8 @@ import {
     Form,
     List,
     Row,
+    Skeleton,
+    Spin,
 } from "antd";
 import Input, { SearchProps } from "antd/es/input";
 import Search from "antd/es/transfer/search";
@@ -39,9 +41,10 @@ export const SearchBar = ({}) => {
     }, [ref]);
 
     useEffect(() => {
+        setLoading(true);
         const timer = setTimeout(() => {
             fakeApi();
-        }, 500);
+        }, 1000);
 
         return () => clearTimeout(timer);
     }, [query]);
@@ -49,6 +52,7 @@ export const SearchBar = ({}) => {
         setIsShown((current) => !current);
     };
     const [isShown, setIsShown] = useState(false);
+    const [loading, setLoading] = useState(false);
     const [nullString, setNullString] = useState("Введите для поиска");
     const [series1, setSeries] = useState<Series["item1"][] | any>([]);
     const fakeApi = async () => {
@@ -58,6 +62,8 @@ export const SearchBar = ({}) => {
         query === ""
             ? setNullString("Введите для поиска.")
             : setNullString("Ничего не найдено.");
+
+        setLoading(false);
         if (series1 === undefined) return;
     };
     const customizeRenderEmpty = () => (
@@ -90,11 +96,11 @@ export const SearchBar = ({}) => {
                     onFinish={onFinish}
                     noValidate={true}
                     autoComplete="off"
-                    style={{ width: "100%" }}
+                    style={{ width: "100%", marginBottom: 3 }}
                 >
                     <Form.Item name={"query"} style={{ margin: 0 }}>
                         <Input
-                            className="searchInput"
+                            className={loading === true ? "loading" : ""}
                             spellCheck={"false"}
                             variant="borderless"
                             onClick={handleClick}

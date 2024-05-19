@@ -41,7 +41,6 @@ export default function SearchPage() {
     };
 
     const getSeriesAlphabet = async (alphabet: any) => {
-        console.log("A");
         const series = await getAlphabetSeries(page, alphabet);
         setseriesCount(series["item2"]);
         setSeries(series["item1"]);

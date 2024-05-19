@@ -186,3 +186,49 @@ input,
 .searchInput {
     cursor: pointer;
 }
+
+.ant-skeleton-element {
+    display: grid !important;
+}
+
+@property --gradient-angle {
+    syntax: "<angle>";
+    initial-value: 0deg;
+    inherits: false;
+}
+
+:root {
+    --clr-1: #0f0f0f;
+    --clr-2: #de1eb2;
+}
+
+.loading {
+    background: #0f0f0f;
+    border-radius: 5px;
+    position: relative;
+}
+
+.loading::before,
+.loading::after {
+    content: "";
+    position: absolute;
+    inset: -0.1rem;
+    z-index: -1;
+    background: conic-gradient(
+        from var(--gradient-angle),
+        var(--clr-1),
+        var(--clr-1),
+        var(--clr-2)
+    );
+    border-radius: inherit;
+    animation: rotation 2.5s linear infinite;
+}
+
+@keyframes rotation {
+    0% {
+        --gradient-angle: 0deg;
+    }
+    100% {
+        --gradient-angle: 360deg;
+    }
+}
