@@ -1,12 +1,27 @@
 import Card from "antd/es/card/Card";
 import ShortDescription from "./shortDescription";
-import { Col, Popover, Row } from "antd";
+import {
+    Button,
+    Col,
+    Dropdown,
+    Empty,
+    Flex,
+    MenuProps,
+    Popover,
+    Row,
+    Tag,
+} from "antd";
 import Link from "next/link";
+import {
+    FileImageOutlined,
+    EllipsisOutlined,
+    EditOutlined,
+    DeleteOutlined,
+} from "@ant-design/icons";
 
 interface Props {
     series: Series["item1"][];
 }
-
 export const Series = ({ series }: Props) => {
     return (
         <Row gutter={[20, 25]} justify="center">
@@ -20,52 +35,72 @@ export const Series = ({ series }: Props) => {
                             placement="bottomLeft"
                             arrow={false}
                             content={
-                                <div style={{ width: 480 }}>
-                                    <ShortDescription
-                                        series={series}
-                                        isOpen={false}
-                                    />
-                                </div>
+                                <ShortDescription
+                                    series={series}
+                                    isOpen={false}
+                                />
                             }
                         >
                             <Card
                                 style={{ width: 200, height: 300 }}
                                 key={series.id}
                                 cover={
-                                    <div
-                                        style={{
-                                            overflow: "hidden",
-                                            backgroundImage: `url(${series.imagePath})`,
-                                            backgroundSize: "cover",
-                                            backgroundRepeat: "no-repeat",
-                                            backgroundPosition: "center center",
-                                            top: 0,
-                                            left: 0,
-                                            right: 0,
-                                            bottom: 0,
-                                            position: "absolute",
-                                        }}
-                                    >
+                                    <Flex justify={"end"}>
                                         <div
                                             style={{
+                                                overflow: "hidden",
+                                                backgroundImage: `url(${series.imagePath})`,
+                                                backgroundSize: "cover",
+                                                backgroundRepeat: "no-repeat",
+                                                backgroundPosition:
+                                                    "center center",
                                                 top: 0,
-
+                                                left: 0,
                                                 right: 0,
-                                                margin: 5,
+                                                bottom: 0,
                                                 position: "absolute",
                                             }}
-                                        >{`Просмотрено ${series.watchedEpisode} из ${series.lastEpisode}`}</div>
-                                    </div>
+                                        ></div>
+                                        <Tag
+                                            color="#DE1EB2"
+                                            style={{
+                                                display: "inline-block",
+                                                margin: 0,
+                                            }}
+                                        >{`Просмотрено ${series.watchedEpisode} из ${series.lastEpisode}`}</Tag>
+                                    </Flex>
                                 }
-                            ></Card>
+                            >
+                                {series.imagePath === "" && (
+                                    <Empty
+                                        style={{
+                                            marginTop: 25,
+                                        }}
+                                        image={<FileImageOutlined />}
+                                        imageStyle={{ fontSize: 60 }}
+                                        description={
+                                            <span
+                                                style={{
+                                                    fontSize: 18,
+                                                    fontStyle: "italic",
+                                                }}
+                                            >
+                                                Изображение отсутствует
+                                            </span>
+                                        }
+                                    ></Empty>
+                                )}
+                            </Card>
                         </Popover>
                     </Link>
+
                     <h2
                         className="cardTitle"
                         style={{
                             fontSize: 14,
                             maxWidth: 200,
                             marginTop: "10px",
+                            flex: 1,
                         }}
                     >
                         <Link href={`/series/${series.id}`}>

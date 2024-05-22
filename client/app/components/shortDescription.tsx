@@ -1,5 +1,13 @@
-import { Button, Card, Col, Flex, Row, Typography } from "antd";
-
+import { Button, Card, Col, Flex, Row, Tag, Typography } from "antd";
+import {
+    FileImageOutlined,
+    CalendarOutlined,
+    EditOutlined,
+    YoutubeOutlined,
+    DeleteOutlined,
+    InfoCircleOutlined,
+    StarOutlined,
+} from "@ant-design/icons";
 interface Props {
     series: Series["item1"];
     isOpen: boolean;
@@ -16,44 +24,76 @@ const imgStyle: React.CSSProperties = {
 
 export const ShortDescription = ({ series, isOpen }: Props) => {
     return (
-        <table className="iksweb">
-            <tbody>
-                <tr>
-                    <td rowSpan={4}>
-                        <img src={series.imagePath} width={133} />
-                    </td>
-                    <td>
-                        <div className="textTitle">{series.title}</div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <div className="text">
-                            Lorem ipsum dolor sit amet, consectetur adipiscing
-                            elit. Aliquam consectetur venenatis blandit.
-                            Praesent vehicula, libero non pretium vulputate,
-                            lacus arcu facilisis lectus, sed feugiat tellus
-                            nulla eu dolor. Nulla porta bibendum lectus quis
-                            euismod. Aliquam volutpat ultricies porttitor. Cras
-                            risus nisi, accumsan vel cursus ut, sollicitudin
-                            vitae dolor. Fusce scelerisque eleifend lectus in
-                            bibendum. Suspendisse lacinia egestas felis a
-                            volutpat.
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <div>{series.releaseDate}</div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <Button>Anime Info</Button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+        <Row gutter={[30, 0]} style={{ height: 250, width: 550 }}>
+            <Col span={8} offset={1}>
+                <div
+                    style={{
+                        overflow: "hidden",
+                        backgroundImage: `url(${series.imagePath})`,
+                        backgroundSize: "cover",
+                        backgroundRepeat: "no-repeat",
+                        backgroundPosition: "center center",
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        position: "absolute",
+                    }}
+                ></div>
+            </Col>
+            <Col span={15}>
+                <Row style={{ marginBottom: 10 }}>
+                    <Col>{series.title}</Col>
+                </Row>
+                <Row style={{ marginBottom: 5 }}>
+                    <Col>
+                        {series.description === ""
+                            ? "Описание отсутствует"
+                            : series.description}
+                    </Col>
+                </Row>
+                <Row>
+                    <Col>
+                        <Tag>
+                            <Flex gap={3} align={"center"} justify={"center"}>
+                                <CalendarOutlined />
+                                {new Date(series.releaseDate).toLocaleString(
+                                    "ru-Ru",
+                                    {
+                                        year: "numeric",
+                                        month: "long",
+                                        day: "numeric",
+                                    }
+                                )}
+                                <InfoCircleOutlined />
+                            </Flex>
+                        </Tag>
+
+                        <Tag>
+                            <Flex gap={3} align={"center"} justify={"center"}>
+                                <YoutubeOutlined />
+                                {`${series.watchedEpisode} из ${series.lastEpisode}`}
+                            </Flex>
+                        </Tag>
+                        <Tag>
+                            <Flex gap={3} align={"center"} justify={"center"}>
+                                <StarOutlined />
+                                {`${series.rating} из 10`}
+                            </Flex>
+                        </Tag>
+                    </Col>
+                </Row>
+                <Row style={{ position: "absolute", bottom: 0 }}>
+                    <Col>
+                        <Flex gap={5}>
+                            <Button>Подробнее</Button>
+                            <Button>Изменить</Button>
+                            <Button>Удалить</Button>
+                        </Flex>
+                    </Col>
+                </Row>
+            </Col>
+        </Row>
     );
 };
 export default ShortDescription;

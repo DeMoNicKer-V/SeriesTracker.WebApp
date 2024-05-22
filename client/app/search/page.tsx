@@ -1,5 +1,5 @@
 "use client";
-import { Col, Empty, Flex, Input, Pagination, Row, Spin } from "antd";
+import { Col, Divider, Empty, Flex, Input, Pagination, Row, Spin } from "antd";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Series } from "../components/Series";
 import { useEffect, useState } from "react";
@@ -53,6 +53,12 @@ export default function SearchPage() {
     };
 
     useEffect(() => {
+        if (query === "") {
+            setseriesCount(0);
+            setSeries([]);
+            setLoading(false);
+            return;
+        }
         setLoading(true);
         const timer = setTimeout(() => {
             getSeriesQuery(query);
@@ -83,7 +89,7 @@ export default function SearchPage() {
                 }}
             />
             <Row align={"middle"} justify={"center"}>
-                <Col span={12}>
+                <Col span={16}>
                     <div
                         style={{ zIndex: 1 }}
                         className={loading === true ? "loading" : ""}
@@ -100,31 +106,33 @@ export default function SearchPage() {
                     </div>
                 </Col>
             </Row>
-
+            <Divider dashed style={{ margin: 15 }}></Divider>
             {Number(seriesCount) <= 0 && loading === false && (
                 <Row
-                    gutter={[10, 0]}
-                    style={{
-                        margin: 20,
-                        padding: 15,
-                        borderRadius: 5,
-                        border: "1px solid #DE1EB2",
-                    }}
-                    align={"middle"}
-                    justify={"start"}
+                    style={{ marginTop: 40, marginBottom: 40 }}
+                    gutter={[20, 20]}
                 >
-                    <Col>
-                        <InfoCircleOutlined style={{ fontSize: 32 }} />
-                    </Col>
-                    <Col>
-                        <span style={{ fontSize: 18 }}>
-                            {!query &&
-                                !alphabet &&
-                                "Пожалуйста, укажите параметры для поиска!"}
+                    <Col span={16} offset={4}>
+                        <Flex
+                            style={{
+                                padding: 20,
+                                borderRadius: 5,
+                                border: "1px solid #DE1EB2",
+                            }}
+                            justify="center"
+                            align="middle"
+                            gap={10}
+                        >
+                            <InfoCircleOutlined style={{ fontSize: 32 }} />
+                            <span style={{ fontSize: 22 }}>
+                                {!query &&
+                                    !alphabet &&
+                                    "Пожалуйста, укажите параметры для поиска!"}
 
-                            {(query || alphabet) &&
-                                "По вашему запросу ничего не найдено."}
-                        </span>
+                                {(query || alphabet) &&
+                                    "По вашему запросу ничего не найдено."}
+                            </span>
+                        </Flex>
                     </Col>
                 </Row>
             )}

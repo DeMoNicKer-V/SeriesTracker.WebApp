@@ -236,3 +236,7 @@ input,
 .container {
     min-height: 100%;
 }
+
+.ant-flex {
+    display: flex !important;
+}

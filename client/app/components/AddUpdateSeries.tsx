@@ -19,7 +19,6 @@ import TextArea from "antd/es/input/TextArea";
 import locale from "antd/locale/ru_RU";
 import { LockOutlined, PlusOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
-import noimage from "../img/noimage.png";
 import "dayjs/locale/ru";
 import Dragger from "antd/es/upload/Dragger";
 
@@ -123,7 +122,7 @@ export const CreateUpdateSeries = ({
         const seriesRequest = {
             title,
             description,
-            imagePath: imagePath === "" ? noimage.src : imagePath,
+            imagePath,
             lastEpisode,
             watchedEpisode,
             rating,
