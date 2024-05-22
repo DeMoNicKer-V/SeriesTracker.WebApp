@@ -330,7 +330,7 @@ export default function Doggo({ params }: { params: { id: string } }) {
                                                 {`Дата выхода: ${series.releaseDate}`}
                                             </div>
                                             <div>
-                                                {`Добавлено: ${series.addedDate}`}{" "}
+                                                {`Добавлено: ${series.addedDate}`}
                                                 {`Изменено: ${series.changedDate}`}
                                             </div>
 

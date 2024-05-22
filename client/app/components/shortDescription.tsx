@@ -1,4 +1,4 @@
-import { Button, Card, Col, Flex, Row, Tag, Typography } from "antd";
+import { Button, Card, Col, Flex, Row, Tag, Tooltip, Typography } from "antd";
 import {
     FileImageOutlined,
     CalendarOutlined,
@@ -57,7 +57,7 @@ export const ShortDescription = ({ series, isOpen }: Props) => {
                         <Tag>
                             <Flex gap={3} align={"center"} justify={"center"}>
                                 <CalendarOutlined />
-                                {new Date(series.releaseDate).toLocaleString(
+                                {new Date(series.addedDate).toLocaleString(
                                     "ru-Ru",
                                     {
                                         year: "numeric",
@@ -65,22 +65,52 @@ export const ShortDescription = ({ series, isOpen }: Props) => {
                                         day: "numeric",
                                     }
                                 )}
-                                <InfoCircleOutlined />
+
+                                <Tooltip
+                                    placement="top"
+                                    title={`Изменено: ${new Date(
+                                        series.changedDate
+                                    ).toLocaleString("ru-Ru", {
+                                        year: "numeric",
+                                        month: "long",
+                                        day: "numeric",
+                                    })}`}
+                                >
+                                    <InfoCircleOutlined />
+                                </Tooltip>
                             </Flex>
                         </Tag>
 
-                        <Tag>
-                            <Flex gap={3} align={"center"} justify={"center"}>
-                                <YoutubeOutlined />
-                                {`${series.watchedEpisode} из ${series.lastEpisode}`}
-                            </Flex>
-                        </Tag>
-                        <Tag>
-                            <Flex gap={3} align={"center"} justify={"center"}>
-                                <StarOutlined />
-                                {`${series.rating} из 10`}
-                            </Flex>
-                        </Tag>
+                        <Tooltip
+                            placement="top"
+                            title={`Вы посмотрели ${series.watchedEpisode} из ${series.lastEpisode} эп.`}
+                        >
+                            <Tag>
+                                <Flex
+                                    gap={3}
+                                    align={"center"}
+                                    justify={"center"}
+                                >
+                                    <YoutubeOutlined />
+                                    {`${series.watchedEpisode} из ${series.lastEpisode}`}
+                                </Flex>
+                            </Tag>
+                        </Tooltip>
+                        <Tooltip
+                            placement="top"
+                            title={`Вы оценили сериал в ${series.rating} из 10`}
+                        >
+                            <Tag>
+                                <Flex
+                                    gap={3}
+                                    align={"center"}
+                                    justify={"center"}
+                                >
+                                    <StarOutlined />
+                                    {`${series.rating} из 10`}
+                                </Flex>
+                            </Tag>
+                        </Tooltip>
                     </Col>
                 </Row>
                 <Row style={{ position: "absolute", bottom: 0 }}>

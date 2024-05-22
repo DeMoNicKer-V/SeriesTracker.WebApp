@@ -85,7 +85,7 @@ namespace SeriesTracker.API.Controllers
         [HttpPost]
         public async Task<ActionResult<Guid>> CreateSeries([FromBody] SeriesRequest request) 
         {
-            var date = DateTime.Now.ToString();
+            var date = DateTime.Now.ToString("s");
             var (series, error) = Series.Create(Guid.NewGuid(), request.Title, request.Description, request.WatchedEpisode, request.LastEpisode,
                 request.Duration, request.Rating, request.ImagePath, request.ReleaseDate, date, date, date, request.IsOver, request.IsFavorite);
 
@@ -101,7 +101,7 @@ namespace SeriesTracker.API.Controllers
         [HttpPut("{id:guid}")]
         public async Task<ActionResult<Guid>> UpdateSeries(Guid id, [FromBody] SeriesRequest request)
         {
-            var date = DateTime.Now.ToString();
+            var date = DateTime.Now.ToString("s");
             var seriesId = await _seriesService.UpdateSeries(id, request.Title, request.Description, request.WatchedEpisode, request.LastEpisode,
                 request.Duration, request.Rating, request.ImagePath, request.ReleaseDate, date, date, request.IsOver, request.IsFavorite);
             return Ok(seriesId);
