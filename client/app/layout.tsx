@@ -216,7 +216,7 @@ export default function RootLayout({
                                         >
                                             <AZList
                                                 handleClickAll={() => {
-                                                    setCurrentKey("home");
+                                                    setCurrentKey("series");
                                                 }}
                                                 handleClickALetter={() => {
                                                     setCurrentKey("search");

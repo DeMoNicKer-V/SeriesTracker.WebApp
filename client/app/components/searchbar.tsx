@@ -1,14 +1,18 @@
 import {
     Avatar,
     Button,
+    Card,
     Col,
     ConfigProvider,
+    Empty,
     Flex,
     Form,
     List,
     Row,
     Skeleton,
     Spin,
+    Tag,
+    Typography,
 } from "antd";
 import Input, { SearchProps } from "antd/es/input";
 import Search from "antd/es/transfer/search";
@@ -21,6 +25,7 @@ import {
     SearchOutlined,
     InfoCircleOutlined,
     SmileOutlined,
+    FileImageOutlined,
 } from "@ant-design/icons";
 import Link from "next/link";
 import "./searchbar.css";
@@ -72,6 +77,8 @@ export const SearchBar = ({}) => {
             <p>{nullString}</p>
         </div>
     );
+    const { Link } = Typography;
+    const { Text } = Typography;
     const [form] = Form.useForm();
     const router = useRouter();
     const onFinish = (values: any) => {
@@ -110,8 +117,8 @@ export const SearchBar = ({}) => {
                                 setQuery(String(e.target.value));
                             }}
                             name="query"
-                            addonAfter={
-                                <Button type="text" htmlType="submit">
+                            suffix={
+                                <Button type="link" htmlType="submit">
                                     <SearchOutlined />
                                 </Button>
                             }
@@ -136,54 +143,117 @@ export const SearchBar = ({}) => {
                                 </div>
                             }
                             grid={{ gutter: [0, 10], column: 1 }}
-                            style={{
-                                left: "0",
-                                right: "0",
-                                padding: "16px",
-                                position: "absolute",
-                                background: "red",
-                            }}
                             itemLayout="horizontal"
                             dataSource={series1}
                             renderItem={(item: Series["item1"]) => (
                                 <Link
-                                    style={{ display: "flex" }}
+                                    target="_self"
                                     href={`/series/${item.id}`}
                                 >
-                                    <div
-                                        className="image_content"
+                                    <Card
+                                        bordered={false}
+                                        hoverable
                                         style={{
-                                            backgroundImage: `url(${item.imagePath})`,
-                                            backgroundSize: "cover",
-                                            backgroundRepeat: "no-repeat",
-                                            backgroundPosition: "center center",
-                                            left: 0,
-                                            top: 0,
-                                            position: "relative",
+                                            padding: 10,
+                                            background: "transparent",
+                                            width: "100%",
                                         }}
-                                    />
+                                    >
+                                        <Card.Grid
+                                            hoverable={false}
+                                            style={{
+                                                boxShadow: "none",
+                                                width: "18%",
+                                                margin: 0,
+                                                padding: 0,
+                                                display: "flex",
+                                                alignItems: "center",
+                                                justifyContent: "start",
+                                            }}
+                                        >
+                                            {item.imagePath === "" && (
+                                                <div
+                                                    className="image_content"
+                                                    style={{
+                                                        overflow: "hidden",
+                                                        backgroundSize: "cover",
+                                                        backgroundRepeat:
+                                                            "no-repeat",
+                                                        backgroundPosition:
+                                                            "center center",
+                                                    }}
+                                                >
+                                                    <FileImageOutlined />
+                                                </div>
+                                            )}
+                                            {item.imagePath !== "" && (
+                                                <div
+                                                    className="image_content"
+                                                    style={{
+                                                        overflow: "hidden",
+                                                        backgroundImage: `url(${item.imagePath})`,
+                                                        backgroundSize: "cover",
+                                                        backgroundRepeat:
+                                                            "no-repeat",
+                                                        backgroundPosition:
+                                                            "center center",
+                                                    }}
+                                                ></div>
+                                            )}
+                                        </Card.Grid>
+                                        <Card.Grid
+                                            hoverable={false}
+                                            style={{
+                                                boxShadow: "none",
+                                                width: "60%",
+                                                margin: 0,
+                                                padding: 0,
+                                                display: "flex",
+                                                alignItems: "center",
+                                                justifyContent: "start",
+                                            }}
+                                        >
+                                            <div>
+                                                <Text
+                                                    strong
+                                                    style={{ fontSize: 12 }}
+                                                >
+                                                    {item.title}
+                                                </Text>
 
-                                    <div className="item_content">
-                                        <div
-                                            className="cardTitle"
+                                                <Flex>
+                                                    <Tag
+                                                        style={{ fontSize: 10 }}
+                                                    >{`Просмотрено ${item.watchedEpisode} из ${item.lastEpisode}`}</Tag>
+                                                    <Tag
+                                                        style={{ fontSize: 10 }}
+                                                    >{`Рейтинг ${item.rating} из 10`}</Tag>
+                                                </Flex>
+                                            </div>
+                                        </Card.Grid>
+                                        <Card.Grid
+                                            hoverable={false}
                                             style={{
-                                                fontSize: 18,
+                                                boxShadow: "none",
+                                                width: "22%",
+                                                margin: 0,
+                                                padding: 0,
+                                                display: "flex",
+                                                alignItems: "center",
+                                                justifyContent: "end",
                                             }}
                                         >
-                                            <span>{item.title}</span>
-                                        </div>
-                                        <div
-                                            className="cardTitle"
-                                            style={{
-                                                fontSize: 12,
-                                            }}
-                                        >
-                                            <span>
-                                                {`Просмотрено ${item.watchedEpisode} из ${item.lastEpisode}`}
-                                            </span>
-                                            <div className="space"></div>
-                                        </div>
-                                    </div>
+                                            <div style={{ fontSize: 12 }}>
+                                                {new Date(
+                                                    item.addedDate
+                                                ).toLocaleString("ru-Ru", {
+                                                    year: "numeric",
+                                                    month: "short",
+                                                    day: "numeric",
+                                                })}
+                                            </div>
+                                        </Card.Grid>
+                                    </Card>
                                 </Link>
                             )}
                         />

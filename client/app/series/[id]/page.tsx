@@ -105,7 +105,10 @@ export default function Doggo({ params }: { params: { id: string } }) {
         setIsModalOpen(true);
     };
     return (
-        <div className="container">
+        <div
+            className="container"
+            style={{ maxWidth: 1185, marginLeft: "auto", marginRight: "auto" }}
+        >
             <CreateUpdateSeries
                 mode={mode}
                 values={series}
@@ -134,7 +137,7 @@ export default function Doggo({ params }: { params: { id: string } }) {
                         flex: "1 0",
                         transition:
                             "padding-bottom 0.2s cubic-bezier(0.25, 0.8, 0.5, 1)",
-                        paddingBottom: "56.857%",
+                        paddingBottom: "60%",
                     }}
                 ></div>
                 <div
@@ -168,11 +171,12 @@ export default function Doggo({ params }: { params: { id: string } }) {
                                         flex: "1 0",
                                         transition:
                                             "padding-bottom 0.2s cubic-bezier(0.25, 0.8, 0.5, 1)",
-                                        paddingBottom: "142.857%",
+                                        paddingBottom: "140%",
                                     }}
                                 ></div>
                                 <div
                                     style={{
+                                        borderRadius: "5px",
                                         backgroundImage: `url(${series.imagePath})`,
                                         backgroundPosition: "center center",
                                         backgroundRepeat: "no-repeat",
