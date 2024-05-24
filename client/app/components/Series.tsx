@@ -10,6 +10,7 @@ import {
     Popover,
     Row,
     Tag,
+    Typography,
 } from "antd";
 import Link from "next/link";
 import {
@@ -23,6 +24,7 @@ interface Props {
     series: Series["item1"][];
 }
 export const Series = ({ series }: Props) => {
+    const { Title } = Typography;
     return (
         <Row gutter={[20, 25]} justify="center">
             {series.map((series: Series["item1"]) => (
@@ -94,19 +96,18 @@ export const Series = ({ series }: Props) => {
                         </Popover>
                     </Link>
 
-                    <h2
+                    <Title
+                        level={5}
                         className="cardTitle"
                         style={{
-                            fontSize: 14,
                             maxWidth: 200,
                             marginTop: "10px",
-                            flex: 1,
                         }}
                     >
                         <Link href={`/series/${series.id}`}>
                             {series.title}
                         </Link>
-                    </h2>
+                    </Title>
                 </Col>
             ))}
         </Row>

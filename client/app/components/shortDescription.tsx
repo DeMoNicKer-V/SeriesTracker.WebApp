@@ -1,4 +1,14 @@
-import { Button, Card, Col, Flex, Row, Tag, Tooltip, Typography } from "antd";
+import {
+    Button,
+    Card,
+    Col,
+    Empty,
+    Flex,
+    Row,
+    Tag,
+    Tooltip,
+    Typography,
+} from "antd";
 import {
     FileImageOutlined,
     CalendarOutlined,
@@ -40,6 +50,25 @@ export const ShortDescription = ({ series, isOpen }: Props) => {
                         position: "absolute",
                     }}
                 ></div>
+                {series.imagePath === "" && (
+                    <Empty
+                        style={{
+                            marginTop: 25,
+                        }}
+                        image={<FileImageOutlined />}
+                        imageStyle={{ fontSize: 60 }}
+                        description={
+                            <span
+                                style={{
+                                    fontSize: 18,
+                                    fontStyle: "italic",
+                                }}
+                            >
+                                Изображение отсутствует
+                            </span>
+                        }
+                    ></Empty>
+                )}
             </Col>
             <Col span={15}>
                 <Row style={{ marginBottom: 10 }}>

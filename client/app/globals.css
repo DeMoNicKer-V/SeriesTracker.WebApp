@@ -86,12 +86,13 @@ html {
     -webkit-line-clamp: 1;
     -webkit-box-orient: vertical;
     display: -webkit-box;
+    margin-top: 8px;
+    overflow: hidden;
+    word-break: break-all;
+    font-size: 0.875rem !important;
     font-weight: 500;
     letter-spacing: 0.0071428571em !important;
     line-height: 1.375rem;
-    font-family: Nunito, sans-serif !important;
-    overflow: hidden;
-    word-break: break-all;
 }
 
 .text {

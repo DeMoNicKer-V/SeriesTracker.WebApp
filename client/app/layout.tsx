@@ -53,6 +53,7 @@ export default function RootLayout({
         colorPrimary: "#DE1EB2",
         colorInfo: "#DE1EB2",
         marginLG: "5px 0 24px",
+        colorLink: "#fff",
     };
 
     const setColorThemeCookie = (value: boolean) => {
