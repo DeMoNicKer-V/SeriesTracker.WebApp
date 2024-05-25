@@ -12,6 +12,7 @@ import {
     Skeleton,
     Spin,
     Tag,
+    Tooltip,
     Typography,
 } from "antd";
 import Input, { SearchProps } from "antd/es/input";
@@ -25,6 +26,7 @@ import {
     SearchOutlined,
     InfoCircleOutlined,
     SmileOutlined,
+    LoadingOutlined,
     FileImageOutlined,
 } from "@ant-design/icons";
 import Link from "next/link";
@@ -72,10 +74,10 @@ export const SearchBar = ({}) => {
         if (series1 === undefined) return;
     };
     const customizeRenderEmpty = () => (
-        <div style={{ textAlign: "center" }}>
-            <InfoCircleOutlined style={{ fontSize: 20 }} />
-            <p>{nullString}</p>
-        </div>
+        <Flex justify="center" gap={5}>
+            <InfoCircleOutlined style={{ fontSize: 30 }} />{" "}
+            <Text>{nullString}</Text>
+        </Flex>
     );
     const { Link } = Typography;
     const { Text } = Typography;
@@ -105,8 +107,16 @@ export const SearchBar = ({}) => {
                     autoComplete="off"
                     style={{ width: "100%", marginBottom: 3 }}
                 >
-                    <Form.Item name={"query"} style={{ margin: 0 }}>
+                    <Form.Item
+                        name={"query"}
+                        style={{
+                            margin: 0,
+                            background: "#1e1e1e",
+                            borderRadius: 5,
+                        }}
+                    >
                         <Input
+                            style={{ background: "none" }}
                             className={loading === true ? "loading" : ""}
                             spellCheck={"false"}
                             variant="borderless"
@@ -130,17 +140,15 @@ export const SearchBar = ({}) => {
                     <div className="search_result">
                         <List
                             footer={
-                                <div
-                                    style={{
-                                        display: "flex",
-                                        flex: "0 0 auto",
-                                        justifyContent: "center",
-                                    }}
-                                >
-                                    <Button type="text">
-                                        <span>Расширенный поиск</span>
-                                    </Button>
-                                </div>
+                                <Flex justify="end">
+                                    <Tooltip title="Расширенный поиск">
+                                        <Button
+                                            type="dashed"
+                                            shape="circle"
+                                            icon={<SearchOutlined />}
+                                        />
+                                    </Tooltip>
+                                </Flex>
                             }
                             grid={{ gutter: [0, 10], column: 1 }}
                             itemLayout="horizontal"

@@ -257,6 +257,6 @@ input,
     position: absolute !important;
     left: 0px;
     right: 0px;
-    padding: 16px;
+    padding: 16px 16px 0px 16px;
     background: #1e1e1e;
 }
