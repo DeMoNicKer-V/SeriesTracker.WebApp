@@ -11,10 +11,10 @@ namespace SeriesTracker.API.Controllers
     {
         private readonly ShikimoriService ShikimoriService = new();
 
-        [HttpGet]
-        public async Task<ActionResult> GetAnimes()
+        [HttpGet("{page}")]
+        public async Task<ActionResult> GetAnimes(int page)
         {
-            GraphQLResponse<ShikimoriAnimeList> graphQLResponse = await ShikimoriService.GetAnimes(1);
+            GraphQLResponse<ShikimoriAnimeList> graphQLResponse = await ShikimoriService.GetAnimes(page);
             return Ok(graphQLResponse.Data.Animes);
         }
     }

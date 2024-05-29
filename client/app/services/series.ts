@@ -14,7 +14,6 @@ export interface SeriesReqruest {
 
 export const getAllSeriesCount = async () => {
     const response = await fetch("http://localhost:5125/controller");
-
     return response.json();
 };
 
