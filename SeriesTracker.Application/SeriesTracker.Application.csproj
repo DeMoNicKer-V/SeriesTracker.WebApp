@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="GraphQL.Client.Serializer.Newtonsoft" Version="6.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\SeriesTracker.Core\SeriesTracker.Core.csproj" />
   </ItemGroup>
 
