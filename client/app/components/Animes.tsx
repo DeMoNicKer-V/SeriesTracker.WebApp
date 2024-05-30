@@ -29,54 +29,57 @@ export const Animes = ({ animes }: Props) => {
         <Row gutter={[20, 25]} justify="center">
             {animes.map((animes: Anime) => (
                 <Col>
-                    <Card
-                        style={{ width: 200, height: 300 }}
-                        cover={
-                            <Flex justify={"end"}>
-                                <div
-                                    style={{
-                                        overflow: "hidden",
-                                        backgroundImage: `url(${animes.pictureUrl})`,
-                                        backgroundSize: "cover",
-                                        backgroundRepeat: "no-repeat",
-                                        backgroundPosition: "center center",
-                                        top: 0,
-                                        left: 0,
-                                        right: 0,
-                                        bottom: 0,
-                                        position: "absolute",
-                                    }}
-                                ></div>
-                                <Tag
-                                    color="#DE1EB2"
-                                    style={{
-                                        display: "inline-block",
-                                        margin: 0,
-                                    }}
-                                >{`Всего эпизодов ${animes.episodes}`}</Tag>
-                            </Flex>
-                        }
-                    >
-                        {animes.pictureUrl === "" && (
-                            <Empty
-                                style={{
-                                    marginTop: 25,
-                                }}
-                                image={<FileImageOutlined />}
-                                imageStyle={{ fontSize: 60 }}
-                                description={
-                                    <span
+                    <Link href={`/shikimori/${animes.id}`}>
+                        <Card
+                            style={{ width: 200, height: 300 }}
+                            key={animes.id}
+                            cover={
+                                <Flex justify={"end"}>
+                                    <div
                                         style={{
-                                            fontSize: 18,
-                                            fontStyle: "italic",
+                                            overflow: "hidden",
+                                            backgroundImage: `url(${animes.pictureUrl})`,
+                                            backgroundSize: "cover",
+                                            backgroundRepeat: "no-repeat",
+                                            backgroundPosition: "center center",
+                                            top: 0,
+                                            left: 0,
+                                            right: 0,
+                                            bottom: 0,
+                                            position: "absolute",
                                         }}
-                                    >
-                                        Изображение отсутствует
-                                    </span>
-                                }
-                            ></Empty>
-                        )}
-                    </Card>
+                                    ></div>
+                                    <Tag
+                                        color="#DE1EB2"
+                                        style={{
+                                            display: "inline-block",
+                                            margin: 0,
+                                        }}
+                                    >{`Всего эпизодов: ${animes.episodes}`}</Tag>
+                                </Flex>
+                            }
+                        >
+                            {animes.pictureUrl === "" && (
+                                <Empty
+                                    style={{
+                                        marginTop: 25,
+                                    }}
+                                    image={<FileImageOutlined />}
+                                    imageStyle={{ fontSize: 60 }}
+                                    description={
+                                        <span
+                                            style={{
+                                                fontSize: 18,
+                                                fontStyle: "italic",
+                                            }}
+                                        >
+                                            Изображение отсутствует
+                                        </span>
+                                    }
+                                ></Empty>
+                            )}
+                        </Card>
+                    </Link>
 
                     <Title
                         level={5}
@@ -86,7 +89,9 @@ export const Animes = ({ animes }: Props) => {
                             marginTop: "10px",
                         }}
                     >
-                        {animes.title}
+                        <Link href={`/shikimori/${animes.id}`}>
+                            {animes.title}
+                        </Link>
                     </Title>
                 </Col>
             ))}

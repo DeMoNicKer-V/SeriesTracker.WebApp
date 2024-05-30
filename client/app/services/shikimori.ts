@@ -10,3 +10,9 @@ export const getAnimes = async (page: number) => {
     const animes: Anime = await response.json();
     return animes;
 };
+
+export const getAnimeById = async (id: string) => {
+    const response = await fetch(`http://localhost:5125/shikimori/id/${id}`);
+    const animes: Anime = await response.json();
+    return animes;
+};
