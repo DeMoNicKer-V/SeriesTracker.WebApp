@@ -17,5 +17,12 @@ namespace SeriesTracker.API.Controllers
             GraphQLResponse<ShikimoriAnimeList> graphQLResponse = await ShikimoriService.GetAnimes(page);
             return Ok(graphQLResponse.Data.Animes);
         }
+
+        [HttpGet("id/{id}")]
+        public async Task<ActionResult> GetAnimeById(int id)
+        {
+            GraphQLResponse<ShikimoriAnimeList> graphQLResponse = await ShikimoriService.GetAnimesById(id.ToString());
+            return Ok(graphQLResponse.Data.Animes);
+        }
     }
 }

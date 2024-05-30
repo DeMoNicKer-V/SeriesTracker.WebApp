@@ -18,6 +18,7 @@ namespace SeriesTracker.Core.Models.Shikimori
             set { }
         }
 
+        [JsonProperty("id")] public override int Id { get; set; }
         [JsonIgnore] public override string Description { get { return string.IsNullOrEmpty(description) ? description : Regex.Replace(description, @" ?\[.*?\]", " "); } set { } }
         [JsonProperty("duration")] public override double Duration { get; set; }
         [JsonProperty("episodes")] public int EpisodesInfo { get; set; }

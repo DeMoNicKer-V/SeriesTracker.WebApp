@@ -9,9 +9,10 @@ using System.Threading.Tasks;
 
 namespace SeriesTracker.Core.Abstractions
 {
-    internal interface IShikimoriService
+    public interface IShikimoriService
     {
-        Task<GraphQLResponse<ShikimoriAnimeList>> GetAnimes();
-        Task<GraphQLResponse<ShikimoriAnimeList>> GetAnimesByName();
+        Task<GraphQLResponse<ShikimoriAnimeList>> GetAnimes(int page);
+        Task<GraphQLResponse<ShikimoriAnimeList>> GetAnimesByName(int page, string name);
+        Task<GraphQLResponse<ShikimoriAnimeList>> GetAnimeById(string Id);
     }
 }

@@ -9,6 +9,7 @@ namespace SeriesTracker.Core.Models
 {
     public abstract class AnimeBase
     {
+        [JsonIgnore] public abstract int Id { get; set; }
         [JsonIgnore] public abstract string Description { get; set; }
         [JsonIgnore] public abstract string Genres { get; set; }
         [JsonIgnore] public abstract double Duration { get; set; }
