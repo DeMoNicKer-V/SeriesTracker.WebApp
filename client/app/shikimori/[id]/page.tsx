@@ -43,7 +43,7 @@ export default function AnimePage({ params }: { params: { id: string } }) {
     }, []);
 
     const cardStyle: React.CSSProperties = {
-        padding: "16px",
+        padding: "22% 20px 20px 20px",
         height: "100%",
         alignItems: "flex-end",
     };
@@ -51,7 +51,8 @@ export default function AnimePage({ params }: { params: { id: string } }) {
     const subCol: React.CSSProperties = {
         display: "grid",
         gridAutoFlow: "row",
-        gap: "2px",
+        gap: "3px",
+        padding: "10px",
     };
     const { Title, Text } = Typography;
     return (
@@ -67,7 +68,6 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                 cover={
                     <Flex
                         style={{
-                            flex: "1 0 auto",
                             maxWidth: "100%",
                             overflow: "hidden",
                             position: "relative",
@@ -78,35 +78,29 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                             borderTopLeftRadius: "5px",
                         }}
                     >
-                        <div
-                            style={{
-                                flex: "1 0",
-                                transition:
-                                    "padding-bottom 0.2s cubic-bezier(0.25, 0.8, 0.5, 1)",
-                                paddingBottom: "56.25%",
-                            }}
-                        ></div>
                         <AbsoluteImage src={animes.pictureUrl} />
                         <div
                             style={{
                                 backgroundImage:
                                     "linear-gradient(180deg, transparent -50%, #121212)",
-                                flex: "1 0 0px",
-                                maxWidth: "100%",
-                                marginLeft: "-100%",
+                                width: "100%",
                             }}
                         >
                             <Row style={cardStyle}>
                                 <Col span={6}>
                                     <Image
-                                        style={{ pointerEvents: "none" }}
+                                        style={{
+                                            height: "380px",
+                                            pointerEvents: "none",
+                                            borderRadius: 5,
+                                        }}
                                         preview={false}
                                         src={animes.pictureUrl}
                                     />
                                 </Col>
-                                <Col style={subCol} offset={1} span={17}>
+                                <Col style={subCol} span={18}>
                                     <Title level={4}>{animes.title}</Title>
-                                    <Flex ref={ref} gap="4px 0">
+                                    <Flex gap="4px 0">
                                         {genres.map((genre: string) => (
                                             <Tag
                                                 className="tag"
@@ -120,7 +114,10 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                                             </Tag>
                                         ))}
                                     </Flex>
-                                    <Flex gap="10px">
+                                    <Flex
+                                        style={{ cursor: "default" }}
+                                        gap="10px"
+                                    >
                                         <Flex gap={5}>
                                             <InfoCircleOutlined />
                                             <Text>{animes.kind}</Text>
