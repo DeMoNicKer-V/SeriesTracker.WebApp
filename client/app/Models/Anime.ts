@@ -3,6 +3,7 @@ interface Anime {
     title: string;
     subTitle: string;
     description: string;
+    duration: number;
     genres: string;
     startDate: string;
     episodes: number;

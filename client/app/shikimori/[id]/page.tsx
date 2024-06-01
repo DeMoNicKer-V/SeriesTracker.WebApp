@@ -1,16 +1,42 @@
 "use client";
-import { Card, Col, ConfigProvider, Flex, Row, Tag } from "antd";
+import {
+    Avatar,
+    Button,
+    Card,
+    Col,
+    ConfigProvider,
+    Flex,
+    Image,
+    Row,
+    Tag,
+    Typography,
+} from "antd";
 import { useEffect, useRef, useState } from "react";
 import Meta from "antd/es/card/Meta";
 import { getAnimeById } from "@/app/services/shikimori";
+import AbsoluteImage from "@/app/components/AbsoluteImage";
+import {
+    StarOutlined,
+    CalendarOutlined,
+    ClockCircleOutlined,
+    TeamOutlined,
+    EyeOutlined,
+    FireOutlined,
+    DesktopOutlined,
+    CopyrightOutlined,
+    InfoCircleOutlined,
+} from "@ant-design/icons";
 
 export default function AnimePage({ params }: { params: { id: string } }) {
     const ref = useRef<HTMLDivElement>(null);
     const [animes, setAnimes] = useState<Anime[] | any>([]);
+    const [genres, setGenres] = useState<string[]>([]);
     const getAnimes = async (id: string) => {
         console.log(id);
         const series = await getAnimeById(id);
         setAnimes(series);
+        const gg = series.genres.split(",");
+        setGenres(gg);
     };
     useEffect(() => {
         getAnimes(params.id);
@@ -22,175 +48,127 @@ export default function AnimePage({ params }: { params: { id: string } }) {
         alignItems: "flex-end",
     };
 
+    const subCol: React.CSSProperties = {
+        display: "grid",
+        gridAutoFlow: "row",
+        gap: "2px",
+    };
+    const { Title, Text } = Typography;
     return (
         <div
-            className="container"
-            style={{ maxWidth: 1185, marginLeft: "auto", marginRight: "auto" }}
+            className="container detail"
+            style={{
+                maxWidth: 1185,
+                marginLeft: "auto",
+                marginRight: "auto",
+            }}
         >
-            <Flex
-                style={{
-                    flex: "1 0 auto",
-                    maxWidth: "100%",
-                    overflow: "hidden",
-                    position: "relative",
-                    zIndex: 0,
-                    borderBottomRightRadius: "0",
-                    borderBottomLeftRadius: "0",
-                    borderTopRightRadius: "5px",
-                    borderTopLeftRadius: "5px",
-                }}
-            >
-                <div
-                    style={{
-                        flex: "1 0",
-                        transition:
-                            "padding-bottom 0.2s cubic-bezier(0.25, 0.8, 0.5, 1)",
-                        paddingBottom: "60%",
-                    }}
-                ></div>
-                <div
-                    style={{
-                        backgroundImage: `url(${animes.pictureUrl})`,
-                        backgroundPosition: "top",
-                        backgroundRepeat: "no-repeat",
-                        backgroundSize: "cover",
-                        height: "100%",
-                        left: "0",
-                        position: "absolute",
-                        top: "0",
-                        width: "100%",
-                        zIndex: "-1",
-                    }}
-                ></div>
-                <div
-                    style={{
-                        backgroundImage:
-                            "linear-gradient(180deg, transparent -50%, #121212)",
-                        flex: "1 0 0px",
-                        maxWidth: "100%",
-                        marginLeft: "-100%",
-                    }}
-                >
-                    <Row style={cardStyle}>
-                        <Col span={6}>
-                            <div style={{ position: "relative", zIndex: 0 }}>
-                                <div
-                                    style={{
-                                        flex: "1 0",
-                                        transition:
-                                            "padding-bottom 0.2s cubic-bezier(0.25, 0.8, 0.5, 1)",
-                                        paddingBottom: "140%",
-                                    }}
-                                ></div>
-                                <div
-                                    style={{
-                                        borderRadius: "5px",
-                                        backgroundImage: `url(${animes.pictureUrl})`,
-                                        backgroundPosition: "center center",
-                                        backgroundRepeat: "no-repeat",
-                                        backgroundSize: "cover",
-                                        height: "100%",
-                                        left: "0",
-                                        position: "absolute",
-                                        top: "0",
-                                        width: "100%",
-                                        zIndex: "-1",
-                                    }}
-                                ></div>
-                            </div>
-                        </Col>
-                        <Col span={18}>
-                            <ConfigProvider
-                                theme={{
-                                    components: {
-                                        Card: {
-                                            colorBgContainer: "transparent",
-                                            colorBorderSecondary: "trasparent",
-                                            colorTextDescription: "#ffffff",
-                                            colorTextHeading: "#ffffff",
-                                        },
-                                        Tag: {
-                                            colorPrimaryHover: "red",
-                                            colorFillSecondary: "red",
-                                        },
-                                    },
-                                }}
-                            >
-                                <Card title={animes.title}>
-                                    <Card.Grid
-                                        hoverable={false}
-                                        style={{
-                                            width: "100%",
-                                            paddingBottom: 0,
-                                            paddingTop: 0,
-                                        }}
-                                    >
-                                        <Flex ref={ref} gap="4px 0">
-                                            <Tag
-                                                className="tag"
-                                                style={{
-                                                    cursor: "default",
-                                                }}
-                                                onClick={() => {}}
-                                                color="error"
-                                            >
-                                                {`Всего ${animes.episodes} эп.`}
-                                            </Tag>
-
-                                            <Tag
-                                                className="tag"
-                                                style={{
-                                                    cursor: "default",
-                                                }}
-                                                onClick={() => {}}
-                                                color="error"
-                                            >
-                                                {`Рейтинг ${animes.rating} из 10`}{" "}
-                                            </Tag>
-                                        </Flex>
-                                    </Card.Grid>
-                                    <Card.Grid
-                                        hoverable={false}
-                                        style={{
-                                            width: "100%",
-                                            color: "#ffffff",
-                                            paddingBottom: 0,
-                                            paddingTop: 5,
-                                        }}
-                                    >
-                                        <div>
-                                            {`Дата выхода: ${animes.startDate}`}
-                                        </div>
-                                    </Card.Grid>
-                                </Card>
-                            </ConfigProvider>
-                        </Col>
-                    </Row>
-                </div>
-            </Flex>
-
             <Card
-                bordered={false}
-                style={{
-                    backgroundColor: "rgb(16, 16, 16)",
-                    borderColor: "rgb(16, 16, 16)",
+                cover={
+                    <Flex
+                        style={{
+                            flex: "1 0 auto",
+                            maxWidth: "100%",
+                            overflow: "hidden",
+                            position: "relative",
+                            zIndex: 0,
+                            borderBottomRightRadius: "0",
+                            borderBottomLeftRadius: "0",
+                            borderTopRightRadius: "5px",
+                            borderTopLeftRadius: "5px",
+                        }}
+                    >
+                        <div
+                            style={{
+                                flex: "1 0",
+                                transition:
+                                    "padding-bottom 0.2s cubic-bezier(0.25, 0.8, 0.5, 1)",
+                                paddingBottom: "56.25%",
+                            }}
+                        ></div>
+                        <AbsoluteImage src={animes.pictureUrl} />
+                        <div
+                            style={{
+                                backgroundImage:
+                                    "linear-gradient(180deg, transparent -50%, #121212)",
+                                flex: "1 0 0px",
+                                maxWidth: "100%",
+                                marginLeft: "-100%",
+                            }}
+                        >
+                            <Row style={cardStyle}>
+                                <Col span={6}>
+                                    <Image
+                                        style={{ pointerEvents: "none" }}
+                                        preview={false}
+                                        src={animes.pictureUrl}
+                                    />
+                                </Col>
+                                <Col style={subCol} offset={1} span={17}>
+                                    <Title level={4}>{animes.title}</Title>
+                                    <Flex ref={ref} gap="4px 0">
+                                        {genres.map((genre: string) => (
+                                            <Tag
+                                                className="tag"
+                                                style={{
+                                                    cursor: "default",
+                                                    backgroundColor:
+                                                        "transparent",
+                                                }}
+                                            >
+                                                {genre}
+                                            </Tag>
+                                        ))}
+                                    </Flex>
+                                    <Flex gap="10px">
+                                        <Flex gap={5}>
+                                            <InfoCircleOutlined />
+                                            <Text>{animes.kind}</Text>
+                                        </Flex>
 
-                    borderBottomRightRadius: "5",
-
-                    borderBottomLeftRadius: "5",
-                    borderTopRightRadius: "0",
-
-                    borderTopLeftRadius: "0",
-                }}
+                                        <Text>•</Text>
+                                        <Flex gap={5}>
+                                            <TeamOutlined />
+                                            <Text>{animes.rating}</Text>
+                                        </Flex>
+                                        <Text>•</Text>
+                                        <Flex gap={5}>
+                                            <FireOutlined />
+                                            <Text>{animes.status}</Text>
+                                        </Flex>
+                                        <Text>•</Text>
+                                        <Flex gap={5}>
+                                            <CalendarOutlined />
+                                            <Text>
+                                                {new Date(
+                                                    animes.startDate
+                                                ).getFullYear()}
+                                            </Text>
+                                        </Flex>
+                                        <Text>•</Text>
+                                        <Flex gap={5}>
+                                            <ClockCircleOutlined />
+                                            <Text>{`${animes.duration} мин.`}</Text>
+                                        </Flex>
+                                        <Text>•</Text>
+                                        <Flex gap={5}>
+                                            <StarOutlined />
+                                            <Text>{animes.score}</Text>
+                                        </Flex>
+                                    </Flex>
+                                    <Button
+                                        style={{ width: "100%" }}
+                                        type="dashed"
+                                    >
+                                        Добавить в мой список
+                                    </Button>
+                                </Col>
+                            </Row>
+                        </div>
+                    </Flex>
+                }
             >
-                <Meta
-                    title="Описание"
-                    description={
-                        animes.description === ""
-                            ? "Описание отсутствует"
-                            : animes.description
-                    }
-                />
+                <Meta title="Описание" description={animes.description} />
             </Card>
         </div>
     );

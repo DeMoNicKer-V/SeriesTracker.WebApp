@@ -229,9 +229,7 @@ export default function RootLayout({
                                         />
                                     </Sider>
                                     <Layout>
-                                        <Content style={{ padding: 30 }}>
-                                            {children}
-                                        </Content>
+                                        <Content>{children}</Content>
                                         <Footer
                                             style={{
                                                 textAlign: "left",

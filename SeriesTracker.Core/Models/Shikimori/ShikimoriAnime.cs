@@ -24,7 +24,9 @@ namespace SeriesTracker.Core.Models.Shikimori
         [JsonProperty("episodes")] public int EpisodesInfo { get; set; }
         [JsonIgnore] public override int Episodes { get { return EpisodesInfo > 0 ? EpisodesInfo : 1; } set { } }
 
-        [JsonProperty("kind")] public override string Kind { get; set; }
+        [JsonIgnore] public override string Kind { get { return kindInfo.ToUpper(); } set { } }
+
+        [JsonProperty("kind")] private string kindInfo { get; set; }
         [JsonProperty("status")] public string StatuscInfo { get; set; }
 
         [JsonIgnore]
@@ -51,10 +53,6 @@ namespace SeriesTracker.Core.Models.Shikimori
         {
             get
             {
-                if (airedOne.Date != null)
-                {
-                    return DateTime.Parse(airedOne.Date).ToString("d MMMM, yyyy") + " г.";
-                }
                 return airedOne.Date;
             }
             set { }
@@ -69,21 +67,21 @@ namespace SeriesTracker.Core.Models.Shikimori
             switch (ratingName)
             {
                 case "pg_13":
-                    return "pg13";
+                    return "PG-13";
 
                 case "pg":
-                    return "pg";
+                    return "PG";
 
                 case "g":
-                    return "g0";
+                    return "G";
 
                 case "r":
-                    return "r16";
+                    return "R-16";
 
                 case "r_plus":
-                    return "rplus";
+                    return "R+";
 
-                case null: return "none";
+                case null: return "None";
                 default:
                     return ratingName;
             }

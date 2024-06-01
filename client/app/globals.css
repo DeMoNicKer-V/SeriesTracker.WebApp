@@ -173,6 +173,9 @@ html {
     -ms-user-select: none; /* Internet Explorer/Edge */
     user-select: none;
 }
+.tag:hover {
+    background-color: rgba(0, 0, 0, 0.3) !important;
+}
 
 ::-webkit-scrollbar {
     background: #212121;
@@ -239,7 +242,11 @@ input,
 }
 
 .container {
+    padding: 30px;
     min-height: 100%;
+}
+.container.detail {
+    padding: 0px 0px 30px 0px !important;
 }
 
 .ant-flex {
