@@ -9,6 +9,7 @@ import {
     Image,
     Row,
     Tag,
+    Tooltip,
     Typography,
 } from "antd";
 import { useEffect, useRef, useState } from "react";
@@ -134,24 +135,45 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                                             <Text>{animes.status}</Text>
                                         </Flex>
                                         <Text>•</Text>
-                                        <Flex gap={5}>
-                                            <CalendarOutlined />
-                                            <Text>
-                                                {new Date(
-                                                    animes.startDate
-                                                ).getFullYear()}
-                                            </Text>
-                                        </Flex>
+                                        <Tooltip
+                                            arrow={false}
+                                            title={`Дата выхода: ${new Date(
+                                                animes.startDate
+                                            ).toLocaleString("ru-Ru", {
+                                                year: "numeric",
+                                                month: "short",
+                                                day: "numeric",
+                                            })}`}
+                                        >
+                                            <Flex gap={5}>
+                                                <CalendarOutlined />
+                                                <Text>
+                                                    {new Date(
+                                                        animes.startDate
+                                                    ).getFullYear()}
+                                                </Text>
+                                            </Flex>
+                                        </Tooltip>
                                         <Text>•</Text>
-                                        <Flex gap={5}>
-                                            <ClockCircleOutlined />
-                                            <Text>{`${animes.duration} мин.`}</Text>
-                                        </Flex>
+                                        <Tooltip
+                                            arrow={false}
+                                            title={`Ср. длительность эпизода:  ${animes.duration} мин.`}
+                                        >
+                                            <Flex gap={5}>
+                                                <ClockCircleOutlined />
+                                                <Text>{`${animes.duration} мин.`}</Text>
+                                            </Flex>
+                                        </Tooltip>
                                         <Text>•</Text>
-                                        <Flex gap={5}>
-                                            <StarOutlined />
-                                            <Text>{animes.score}</Text>
-                                        </Flex>
+                                        <Tooltip
+                                            arrow={false}
+                                            title={`Оценка ${animes.score} из 10`}
+                                        >
+                                            <Flex gap={5}>
+                                                <StarOutlined />
+                                                <Text>{animes.score}</Text>
+                                            </Flex>
+                                        </Tooltip>
                                     </Flex>
                                     <Button
                                         style={{ width: "100%" }}
