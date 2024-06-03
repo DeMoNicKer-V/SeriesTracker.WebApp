@@ -4,6 +4,7 @@ using GraphQL.Client.Http;
 using GraphQL.Client.Serializer.Newtonsoft;
 using SeriesTracker.Core.Models.Shikimori;
 using SeriesTracker.Core.Abstractions;
+using SeriesTracker.Core.Models;
 
 namespace SeriesTracker.Application.Services
 {
@@ -30,6 +31,11 @@ namespace SeriesTracker.Application.Services
         public async Task<GraphQLResponse<ShikimoriAnimeList>> GetAnimeById(string Id)
         {
             return await graphQLClient.SendQueryAsync<ShikimoriAnimeList>(GetRequest(Id));
+        }
+
+        public async Task<GraphQLResponse<GenreList>> GetGenres()
+        {
+            return await graphQLClient.SendQueryAsync<GenreList>(GetRequest());
         }
 
         private static GraphQLRequest GetRequest(int page)
@@ -66,8 +72,22 @@ namespace SeriesTracker.Application.Services
             };
         }
 
-        private static GraphQLRequest GetRequest(int page, string name)
+        private static GraphQLRequest GetRequest()
         {
+            return new GraphQLRequest
+            {
+                Query = @"query GetGenres() {
+                                genres(entryType: Anime) {
+                                    id
+                                    russian
+                                }
+                            }",
+                OperationName = "GetGenres",
+            };
+        }
+
+        private static GraphQLRequest GetRequest(int page, string name)
+        {   
             return new GraphQLRequest
             {
                 Query = @"query GetByName($name: String, $page: Int) {

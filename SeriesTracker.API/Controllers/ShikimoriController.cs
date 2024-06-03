@@ -1,6 +1,7 @@
 ﻿using GraphQL;
 using Microsoft.AspNetCore.Mvc;
 using SeriesTracker.Application.Services;
+using SeriesTracker.Core.Models;
 using SeriesTracker.Core.Models.Shikimori;
 
 namespace SeriesTracker.API.Controllers
@@ -11,7 +12,14 @@ namespace SeriesTracker.API.Controllers
     {
         private readonly ShikimoriService ShikimoriService = new();
 
-        [HttpGet("{page}")]
+        [HttpGet]
+        public async Task<ActionResult> GetGenres()
+        {
+            GraphQLResponse<GenreList> graphQLResponse = await ShikimoriService.GetGenres();
+            return Ok(graphQLResponse.Data.Genres);
+        }
+
+        [HttpGet("page/{page}")]
         public async Task<ActionResult> GetAnimes(int page)
         {
             GraphQLResponse<ShikimoriAnimeList> graphQLResponse = await ShikimoriService.GetAnimes(page);
