@@ -85,8 +85,13 @@ namespace SeriesTracker.API.Controllers
         [HttpPost]
         public async Task<ActionResult<Guid>> CreateSeries([FromBody] SeriesRequest request) 
         {
+            bool isAnime = await _seriesService.GetSeriesByAnimeId(request.AnimeId);
+            if (isAnime)
+            {
+                return BadRequest("Данный сериал уже есть в вашем списке.");
+            }
             var date = DateTime.Now.ToString("s");
-            var (series, error) = Series.Create(Guid.NewGuid(), request.Title, request.Description, request.WatchedEpisode, request.LastEpisode,
+            var (series, error) = Series.Create(Guid.NewGuid(), request.AnimeId, request.Title, request.Description, request.WatchedEpisode, request.LastEpisode,
                 request.Duration, request.Rating, request.ImagePath, request.ReleaseDate, date, date, date, request.IsOver, request.IsFavorite);
 
             if (!string.IsNullOrEmpty(error)) 
@@ -102,7 +107,7 @@ namespace SeriesTracker.API.Controllers
         public async Task<ActionResult<Guid>> UpdateSeries(Guid id, [FromBody] SeriesRequest request)
         {
             var date = DateTime.Now.ToString("s");
-            var seriesId = await _seriesService.UpdateSeries(id, request.Title, request.Description, request.WatchedEpisode, request.LastEpisode,
+            var seriesId = await _seriesService.UpdateSeries(id, request.AnimeId, request.Title, request.Description, request.WatchedEpisode, request.LastEpisode,
                 request.Duration, request.Rating, request.ImagePath, request.ReleaseDate, date, date, request.IsOver, request.IsFavorite);
             return Ok(seriesId);
         }

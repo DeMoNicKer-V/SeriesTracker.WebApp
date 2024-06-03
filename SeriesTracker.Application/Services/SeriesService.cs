@@ -32,7 +32,7 @@ namespace SeriesTracker.Application.Services
             return await _seriesRepository.CreateSeries(series);
         }
 
-        public async Task<Guid> UpdateSeries(Guid id, string title, string description, int watched, int last, int duration,
+        public async Task<Guid> UpdateSeries(Guid id, int animeId, string title, string description, int watched, int last, int duration,
             float rating, string image, string release, string changed, string overDate, bool over, bool favorite)
         {
             return await _seriesRepository.UpdateSeries(id, title, description, watched, last, duration, rating, image, release, changed, overDate, over, favorite);
@@ -48,5 +48,9 @@ namespace SeriesTracker.Application.Services
             return await _seriesRepository.GetAllSeriesCount();
         }
 
+        public async Task<bool> GetSeriesByAnimeId(int id)
+        {
+            return await _seriesRepository.GetSeriesByAnimeId(id);
+        }
     }
 }

@@ -12,7 +12,7 @@ using SeriesTracker.DataAccess;
 namespace SeriesTracker.DataAccess.Migrations
 {
     [DbContext(typeof(SeriesTrackerDbContext))]
-    [Migration("20240412171122_init")]
+    [Migration("20240603141351_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -35,12 +35,14 @@ namespace SeriesTracker.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int>("AnimeId")
+                        .HasColumnType("integer");
+
                     b.Property<string>("ChangedDate")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<int>("Duration")
@@ -51,7 +53,6 @@ namespace SeriesTracker.DataAccess.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("ImagePath")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<bool>("IsFavorite")
@@ -64,7 +65,6 @@ namespace SeriesTracker.DataAccess.Migrations
                         .HasColumnType("integer");
 
                     b.Property<string>("OverDate")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<float>("Rating")

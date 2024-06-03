@@ -18,7 +18,7 @@ namespace SeriesTracker.DataAccess.Repositories
         {
             var seriesEntities = await _context.SeriesEntities.AsNoTracking().ToListAsync();
 
-            var seiresList = seriesEntities.Select(s => Series.Create(s.Id, s.Title, s.Description, s.WatchedEpisode, s.LastEpisode, s.Duration,
+            var seiresList = seriesEntities.Select(s => Series.Create(s.Id, s.AnimeId, s.Title, s.Description, s.WatchedEpisode, s.LastEpisode, s.Duration,
                 s.Rating, s.ImagePath, s.ReleaseDate, s.AddedDate, s.ChangedDate, s.OverDate, s.IsOver, s.IsFavorite).Series).ToList();
 
             return seiresList;
@@ -28,7 +28,7 @@ namespace SeriesTracker.DataAccess.Repositories
         {
             var seriesEntities = await _context.SeriesEntities.AsNoTracking().ToListAsync();
 
-            var seiresList = seriesEntities.Select(s => Series.Create(s.Id, s.Title, s.Description, s.WatchedEpisode, s.LastEpisode, s.Duration,
+            var seiresList = seriesEntities.Select(s => Series.Create(s.Id, s.AnimeId, s.Title, s.Description, s.WatchedEpisode, s.LastEpisode, s.Duration,
                 s.Rating, s.ImagePath, s.ReleaseDate, s.AddedDate, s.ChangedDate, s.OverDate, s.IsOver, s.IsFavorite).Series).Where(s => s.Title.ToLowerInvariant().Contains(query)).ToList();
 
             return seiresList;
@@ -38,7 +38,7 @@ namespace SeriesTracker.DataAccess.Repositories
         {
             var s = await _context.SeriesEntities.AsNoTracking().Where(s => s.Id == id).FirstAsync();
 
-            var seires = Series.Create(s.Id, s.Title, s.Description, s.WatchedEpisode, s.LastEpisode, s.Duration,
+            var seires = Series.Create(s.Id, s.AnimeId, s.Title, s.Description, s.WatchedEpisode, s.LastEpisode, s.Duration,
                 s.Rating, s.ImagePath, s.ReleaseDate, s.AddedDate, s.ChangedDate, s.OverDate, s.IsOver, s.IsFavorite).Series;
 
             return seires;
@@ -49,6 +49,7 @@ namespace SeriesTracker.DataAccess.Repositories
             var seriesEntity = new SeriesEntity
             {
                 Id = series.Id,
+                AnimeId = series.AnimeId,
                 Title = series.Title,
                 Description = series.Description,
                 WatchedEpisode = series.WatchedEpisode,
@@ -100,6 +101,11 @@ namespace SeriesTracker.DataAccess.Repositories
         public async Task<int> GetAllSeriesCount()
         {
             return await _context.SeriesEntities.CountAsync();
+        }
+
+        public async Task<bool> GetSeriesByAnimeId(int id)
+        {
+            return await _context.SeriesEntities.FirstOrDefaultAsync(s => s.AnimeId == id) != null;
         }
     }
 }

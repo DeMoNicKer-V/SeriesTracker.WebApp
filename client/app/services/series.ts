@@ -1,6 +1,7 @@
 import { headers } from "next/headers";
 
 export interface SeriesReqruest {
+    animeId: number;
     title: string;
     description: string;
     imagePath: string;

@@ -120,6 +120,7 @@ export const CreateUpdateSeries = ({
 
     const handleOnOk = async () => {
         const seriesRequest = {
+            animeId: 0,
             title,
             description,
             imagePath,

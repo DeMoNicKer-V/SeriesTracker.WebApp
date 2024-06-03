@@ -2,10 +2,11 @@
 {
     public class Series
     {
-        private Series(Guid id, string title, string description, int watched, int last, int duration,
+        private Series(Guid id, int animeId, string title, string description, int watched, int last, int duration,
             float rating, string image, string release, string added, string changed, string overDate, bool over, bool favorite)
         {
             Id = id;
+            AnimeId = animeId;
             Title = title;
             HiddenTitle = title.ToLower();
             Description = description;
@@ -26,6 +27,11 @@
         {
             get;
         }
+
+        public int AnimeId
+        {
+            get;
+        } = 0;
 
         public string Title
         {
@@ -99,7 +105,7 @@
             get;
         } = false;
 
-        public static (Series Series, string Error) Create(Guid id, string title, string description, int watched, int last, int duration,
+        public static (Series Series, string Error) Create(Guid id, int animeId, string title, string description, int watched, int last, int duration,
             float rating, string image, string release, string added, string changed, string overDate, bool over, bool favorite)
         {
             string error = string.Empty;
@@ -119,7 +125,7 @@
             {
                 error = "Некоректная дата выхода сериала.";
             }
-            Series series = new Series(id, title, description, watched, last, duration, rating, image, release, added, changed, overDate, over, favorite);
+            Series series = new Series(id, animeId, title, description, watched, last, duration, rating, image, release, added, changed, overDate, over, favorite);
 
             return (series, error);
         }

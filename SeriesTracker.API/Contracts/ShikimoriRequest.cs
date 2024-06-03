@@ -1,8 +1,7 @@
 ﻿namespace SeriesTracker.API.Contracts
 {
-    public record SeriesRequest
-    (
-        int AnimeId,
+    public record ShikimoriRequest
+ (
         string Title,
         string? Description,
         int WatchedEpisode,

@@ -27,6 +27,9 @@ import {
     CopyrightOutlined,
     InfoCircleOutlined,
 } from "@ant-design/icons";
+import { title } from "process";
+import { createSeries } from "@/app/services/series";
+import { useRouter } from "next/navigation";
 
 export default function AnimePage({ params }: { params: { id: string } }) {
     const ref = useRef<HTMLDivElement>(null);
@@ -42,6 +45,23 @@ export default function AnimePage({ params }: { params: { id: string } }) {
     useEffect(() => {
         getAnimes(params.id);
     }, []);
+    const router = useRouter();
+    const AddToMyList = async () => {
+        const seriesRequest = {
+            animeId: animes.id,
+            title: animes.title,
+            description: animes.description,
+            imagePath: animes.pictureUrl,
+            lastEpisode: animes.episodes,
+            watchedEpisode: 0,
+            rating: animes.score,
+            releaseDate: animes.startDate.toString(),
+            isOver: false,
+            isFavorite: false,
+        };
+        await createSeries(seriesRequest);
+        router.push(`./`);
+    };
 
     const cardStyle: React.CSSProperties = {
         padding: "22% 20px 20px 20px",
@@ -176,6 +196,7 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                                         </Tooltip>
                                     </Flex>
                                     <Button
+                                        onClick={AddToMyList}
                                         style={{ width: "100%" }}
                                         type="dashed"
                                     >
