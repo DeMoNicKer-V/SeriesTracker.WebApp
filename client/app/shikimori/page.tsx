@@ -26,6 +26,8 @@ import {
     PlusOutlined,
     SearchOutlined,
     AppstoreOutlined,
+    FilterFilled,
+    FilterOutlined,
     MailOutlined,
     SettingOutlined,
 } from "@ant-design/icons";
@@ -66,15 +68,20 @@ export default function ShikimoriPage() {
         });
     }
     const date = dayjs();
-    const [selectedTags, setSelectedTags] = useState<Genre[]>([]);
-    const handleChange = (genre: Genre, checked: boolean) => {
-        const nextSelectedTags = checked
-            ? [...selectedTags, genre]
-            : selectedTags.filter((t) => t.id !== genre.id);
-        setSelectedTags(nextSelectedTags);
+    const [selectedItems, setSelectedItems] = useState<string[]>([]);
+    const valueChange = (value: any, key: string) => {
+        if (!value) {
+            const index = selectedItems.indexOf(key);
+            selectedItems.splice(index, 1);
+        } else {
+            selectedItems.push(key);
+        }
+        console.log(value);
     };
-    const onReset = () => {
-        form.resetFields();
+
+    const onClear = (key: string) => {
+        const index = selectedItems.indexOf(key);
+        selectedItems.splice(index, 1);
     };
     const items: MenuItem[] = [
         {
@@ -85,9 +92,11 @@ export default function ShikimoriPage() {
                 {
                     key: "11",
                     disabled: true,
-                    style: { cursor: "default" },
+                    style: { cursor: "default", margin: 10 },
                     label: (
                         <DatePicker
+                            onChange={(date) => valueChange(date, "1")}
+                            variant="borderless"
                             inputReadOnly
                             minDate={dayjs(1967)}
                             maxDate={date}
@@ -107,9 +116,12 @@ export default function ShikimoriPage() {
                 {
                     key: "21",
                     disabled: true,
-                    style: { cursor: "default" },
+                    style: { cursor: "default", margin: 10 },
                     label: (
                         <Select
+                            allowClear
+                            onChange={(value) => valueChange(value, "2")}
+                            variant="borderless"
                             placeholder="Статус"
                             maxTagCount={"responsive"}
                             style={{ width: "100%" }}
@@ -119,17 +131,21 @@ export default function ShikimoriPage() {
                 },
             ],
         },
+
         {
             key: "3",
             icon: <AppstoreOutlined />,
-            label: "Возв. рейтинг",
+            label: "Тип",
             children: [
                 {
-                    key: "21",
+                    key: "31",
                     disabled: true,
-                    style: { cursor: "default" },
+                    style: { cursor: "default", margin: 10 },
                     label: (
                         <Select
+                            allowClear
+                            onChange={(value) => valueChange(value, "3")}
+                            variant="borderless"
                             placeholder="Статус"
                             maxTagCount={"responsive"}
                             style={{ width: "100%" }}
@@ -141,37 +157,25 @@ export default function ShikimoriPage() {
         },
         {
             key: "4",
-            icon: <AppstoreOutlined />,
-            label: "Тип сериала",
-            children: [
-                {
-                    key: "21",
-                    disabled: true,
-                    style: { cursor: "default" },
-                    label: (
-                        <Select
-                            placeholder="Статус"
-                            maxTagCount={"responsive"}
-                            style={{ width: "100%" }}
-                            options={options2}
-                        />
-                    ),
-                },
-            ],
-        },
-        {
-            key: "5",
             icon: <SettingOutlined />,
             label: "Жанр",
             children: [
                 {
-                    style: { width: 400, cursor: "default" },
+                    style: { width: 400, cursor: "default", margin: 10 },
                     disabled: true,
 
-                    key: "31",
+                    key: "41",
                     label: (
                         <Select
-                            placeholder="Найти кокретный"
+                            onClear={() => {
+                                onClear("4");
+                            }}
+                            allowClear
+                            onChange={(value) =>
+                                valueChange(value.toString(), "4")
+                            }
+                            variant="borderless"
+                            placeholder="Выбирите жанры (макс. 5)"
                             maxTagCount={"responsive"}
                             maxCount={5}
                             mode="multiple"
@@ -185,22 +189,30 @@ export default function ShikimoriPage() {
             ],
         },
         {
-            key: "6",
+            key: "5",
             style: { cursor: "default" },
             disabled: true,
 
             label: <Divider type="vertical" />,
         },
         {
-            key: "7",
-            icon: <SettingOutlined />,
-            style: { cursor: "default" },
-            disabled: true,
+            key: "6",
 
-            label: <Button type="text">Сбросить</Button>,
+            style: { cursor: "default" },
+
+            label: (
+                <Button icon={<SettingOutlined />} type="link">
+                    Сбросить
+                </Button>
+            ),
         },
     ];
 
+    const [collapsed, setCollapsed] = useState(false);
+
+    const toggleCollapsed = () => {
+        setCollapsed(!collapsed);
+    };
     return (
         <div className="container">
             <title>Series Tracker - Shikimori</title>
@@ -214,8 +226,8 @@ export default function ShikimoriPage() {
                 }}
             />
 
-            <Row align={"middle"} justify={"center"}>
-                <Col span={16}>
+            <Row align={"middle"} justify={"end"}>
+                <Col span={12}>
                     <div
                         style={{ zIndex: 1 }}
                         className={loading === true ? "loading" : ""}
@@ -227,27 +239,53 @@ export default function ShikimoriPage() {
                         />
                     </div>
                 </Col>
+                <Col span={5}></Col>
+                <Col span={1}>
+                    <Button
+                        icon={<FilterOutlined />}
+                        type="link"
+                        onClick={toggleCollapsed}
+                        style={
+                            collapsed
+                                ? { backgroundColor: "#DE1EB2" }
+                                : { backgroundColor: "transparent" }
+                        }
+                    ></Button>
+                </Col>
             </Row>
 
             <Divider dashed style={{ margin: 15 }}></Divider>
-            <Row
-                gutter={[10, 10]}
-                style={{ margin: 20 }}
-                justify={"center"}
-                align={"middle"}
-            >
-                <Menu
+            <Row justify={"center"} align={"middle"}>
+                <Col span={10}>
+                    <Menu
+                        selectedKeys={selectedItems}
+                        triggerSubMenuAction={"click"}
+                        style={{
+                            alignItems: "center",
+                            justifyContent: "center",
+                            opacity: !collapsed ? "0" : "1",
+                            transition: "all .2s",
+                            visibility: !collapsed ? "hidden" : "visible",
+                        }}
+                        selectable={false}
+                        multiple
+                        mode="horizontal"
+                        items={items}
+                    ></Menu>
+                </Col>
+
+                <Col
+                    span={21}
                     style={{
                         alignItems: "center",
                         justifyContent: "center",
+                        marginTop: !collapsed ? -30 : 30,
+                        transition: "all .2s",
                     }}
-                    selectable={false}
-                    multiple
-                    mode="horizontal"
-                    items={items}
-                ></Menu>
+                >
+                    <Animes animes={animes} />
+                </Col>
             </Row>
-            <Animes animes={animes} />
         </div>
     );
 }
