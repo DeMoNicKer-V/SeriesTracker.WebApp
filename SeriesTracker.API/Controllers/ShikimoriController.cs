@@ -1,5 +1,6 @@
 ﻿using GraphQL;
 using Microsoft.AspNetCore.Mvc;
+using SeriesTracker.API.Contracts;
 using SeriesTracker.Application.Services;
 using SeriesTracker.Core.Models;
 using SeriesTracker.Core.Models.Shikimori;
@@ -31,6 +32,13 @@ namespace SeriesTracker.API.Controllers
         {
             GraphQLResponse<ShikimoriAnimeList> graphQLResponse = await ShikimoriService.GetAnimeById(id.ToString());
             return Ok(graphQLResponse.Data.Animes[0]);
+        }
+
+        [HttpPost("animes")]
+        public async Task<ActionResult> GetAnimesByAllParams([FromBody] ShikimoriParamsRequest request)
+        {
+            GraphQLResponse<ShikimoriAnimeList> graphQLResponse = await ShikimoriService.GetAnimesByAllParams(request.Page, request.Name, request.Season, request.Status, request.Kind, request.Genre);
+            return Ok(graphQLResponse.Data.Animes);
         }
     }
 }

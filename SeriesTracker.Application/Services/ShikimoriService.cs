@@ -33,6 +33,11 @@ namespace SeriesTracker.Application.Services
             return await graphQLClient.SendQueryAsync<ShikimoriAnimeList>(GetRequest(Id));
         }
 
+        public async Task<GraphQLResponse<ShikimoriAnimeList>> GetAnimesByAllParams(int page, string name, string season, string status, string kind, string genre)
+        {
+            return await graphQLClient.SendQueryAsync<ShikimoriAnimeList>(GetRequest(page, name, season, status, kind, genre));
+        }
+
         public async Task<GraphQLResponse<GenreList>> GetGenres()
         {
             return await graphQLClient.SendQueryAsync<GenreList>(GetRequest());
@@ -117,6 +122,45 @@ namespace SeriesTracker.Application.Services
                 {
                     name,
                     page
+                }
+            };
+        }
+
+        private static GraphQLRequest GetRequest(int page, string name, string season, string status,string kind, string genre)
+        {
+            return new GraphQLRequest
+            {
+                Query = @"query GetByAllParams($page: Int, $name: String, $season: SeasonString, $status: AnimeStatusString, $kind: AnimeKindString, $genre: String) {
+                                animes(page: $page, search: $name, season: $season, status: $status, kind: $kind, genre: $genre, limit: 30) {
+                                    id
+                                    russian
+                                    name
+                                    description
+                                    kind
+                                    rating
+                                    duration
+                                    episodes
+                                    genres{ id name russian }
+                                    episodesAired
+                                    status
+                                    score
+                                    airedOn {
+                                        date
+                                    }
+                                    poster {
+                                        originalUrl
+                                    }
+                                }
+                            }",
+                OperationName = "GetByAllParams",
+                Variables = new
+                {
+                    page = page,
+                    name = name,
+                    season = season,
+                    status = status,
+                    kind = kind,
+                    genre = genre
                 }
             };
         }

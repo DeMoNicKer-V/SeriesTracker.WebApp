@@ -1,7 +1,12 @@
 "use client";
 import { useEffect, useState } from "react";
 import { Animes } from "../components/Animes";
-import { getAnimes, getGenres } from "../services/shikimori";
+import {
+    ShikimoriRequest,
+    getAnimes,
+    getAnimesByParams,
+    getGenres,
+} from "../services/shikimori";
 import {
     Button,
     Col,
@@ -34,36 +39,76 @@ import {
 import dayjs from "dayjs";
 export default function ShikimoriPage() {
     type MenuItem = Required<MenuProps>["items"][number];
-    const options2: SelectProps["options"] = [
+    const statusOptions: SelectProps["options"] = [
         { label: "Анонс", value: "anons" },
         { label: "Онгоинг", value: "ongoing" },
         { label: "Вышло", value: "released" },
     ];
+
     const [loading, setLoading] = useState(false);
     const [animes, setAnimes] = useState<Anime[] | any>([]);
     const [genres, setGenres] = useState<Genre[] | any>([]);
 
-    const getSeries = async (page: number) => {
-        const animes = await getAnimes(page);
-        setAnimes(animes);
-    };
+    const [query, setQuery] = useState<string>("");
+    const [status, setStatus] = useState<string>("");
+    const [kind, setKind] = useState<string>("");
+    const [genre, setGenre] = useState<string>("");
+    const [season, setSeason] = useState<string>("");
+    const [request, setRequest] = useState<ShikimoriRequest | any>({
+        page: 1,
+        name: "",
+        season: "",
+        status: "",
+        kind: "",
+        genre: "",
+    });
 
     const getGenresList = async () => {
         const list = await getGenres();
         setGenres(list);
     };
-    const [form] = Form.useForm();
     useEffect(() => {
         getGenresList();
-        getSeries(1);
+        getAnimes(request);
     }, []);
-    const options: SelectProps["options"] = [];
 
-    const options3: SelectProps["options"] = [];
+    const getAnimes = async (req: ShikimoriRequest) => {
+        const animes = await getAnimesByParams(req);
+        setAnimes(animes);
+    };
+
+    useEffect(() => {
+        const req: ShikimoriRequest = {
+            page: 1,
+            name: query,
+            season: season,
+            status: status,
+            kind: kind,
+            genre: genre,
+        };
+
+        const timer = setTimeout(() => {
+            getAnimes(req);
+        }, 1000);
+
+        return () => clearTimeout(timer);
+    }, [query, season, status, kind, genre]);
+
+    const kindOptions: SelectProps["options"] = [
+        { label: "TV-Сериал", value: "tv" },
+        { label: "П/ф", value: "movie" },
+        { label: "ONA", value: "ona" },
+        { label: "OVA", value: "ova" },
+        { label: "Спешл", value: "special" },
+        { label: "TV-Спешл", value: "tv_special" },
+        { label: "Музыка", value: "music" },
+    ];
+
+    const genreOptions: SelectProps["options"] = [];
     for (let index = 0; index < genres.length; index++) {
-        options?.push({
+        genreOptions?.push({
             label: genres[index].russian,
-            value: genres[index].russian,
+            value: genres[index].id,
             key: genres[index].id,
         });
     }
@@ -76,7 +121,14 @@ export default function ShikimoriPage() {
         } else {
             selectedItems.push(key);
         }
-        console.log(value);
+    };
+
+    const resetAllFields = (key: string) => {
+        setQuery("");
+        setStatus("");
+        setKind("");
+        setGenre("");
+        setSeason("");
     };
 
     const onClear = (key: string) => {
@@ -95,7 +147,10 @@ export default function ShikimoriPage() {
                     style: { cursor: "default", margin: 10 },
                     label: (
                         <DatePicker
-                            onChange={(date) => valueChange(date, "1")}
+                            onChange={(date) => {
+                                setSeason(date.format("YYYY").toString());
+                                valueChange(date, "1");
+                            }}
                             variant="borderless"
                             inputReadOnly
                             minDate={dayjs(1967)}
@@ -120,12 +175,15 @@ export default function ShikimoriPage() {
                     label: (
                         <Select
                             allowClear
-                            onChange={(value) => valueChange(value, "2")}
+                            onChange={(value) => {
+                                setStatus(value.toString());
+                                valueChange(value, "2");
+                            }}
                             variant="borderless"
                             placeholder="Статус"
                             maxTagCount={"responsive"}
                             style={{ width: "100%" }}
-                            options={options2}
+                            options={statusOptions}
                         />
                     ),
                 },
@@ -144,12 +202,15 @@ export default function ShikimoriPage() {
                     label: (
                         <Select
                             allowClear
-                            onChange={(value) => valueChange(value, "3")}
+                            onChange={(value) => {
+                                setKind(value.toString());
+                                valueChange(value, "3");
+                            }}
                             variant="borderless"
-                            placeholder="Статус"
+                            placeholder="Тип"
                             maxTagCount={"responsive"}
                             style={{ width: "100%" }}
-                            options={options2}
+                            options={kindOptions}
                         />
                     ),
                 },
@@ -171,9 +232,10 @@ export default function ShikimoriPage() {
                                 onClear("4");
                             }}
                             allowClear
-                            onChange={(value) =>
-                                valueChange(value.toString(), "4")
-                            }
+                            onChange={(value) => {
+                                setGenre(value.toString());
+                                valueChange(value.toString(), "4");
+                            }}
                             variant="borderless"
                             placeholder="Выбирите жанры (макс. 5)"
                             maxTagCount={"responsive"}
@@ -182,7 +244,7 @@ export default function ShikimoriPage() {
                             style={{
                                 width: "100%",
                             }}
-                            options={options}
+                            options={genreOptions}
                         />
                     ),
                 },
@@ -201,7 +263,11 @@ export default function ShikimoriPage() {
             style: { cursor: "default" },
 
             label: (
-                <Button icon={<SettingOutlined />} type="link">
+                <Button
+                    onClick={() => resetAllFields}
+                    icon={<SettingOutlined />}
+                    type="link"
+                >
                     Сбросить
                 </Button>
             ),
@@ -233,6 +299,9 @@ export default function ShikimoriPage() {
                         className={loading === true ? "loading" : ""}
                     >
                         <Input
+                            onChange={(e: { target: { value: any } }) => {
+                                setQuery(String(e.target.value));
+                            }}
                             placeholder="Введите для поиска"
                             suffix={<SearchOutlined />}
                             spellCheck={false}
