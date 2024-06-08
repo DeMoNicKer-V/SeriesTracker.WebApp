@@ -12,6 +12,7 @@ import {
     Col,
     DatePicker,
     Divider,
+    Flex,
     Form,
     Input,
     List,
@@ -22,6 +23,7 @@ import {
     SelectProps,
     Space,
     Spin,
+    Switch,
     Tag,
     Typography,
 } from "antd";
@@ -54,6 +56,7 @@ export default function ShikimoriPage() {
     const [kind, setKind] = useState<string>("");
     const [genre, setGenre] = useState<string>("");
     const [season, setSeason] = useState<string>("");
+    const [page, setPage] = useState<number>(1);
     const [request, setRequest] = useState<ShikimoriRequest | any>({
         page: 1,
         name: "",
@@ -69,17 +72,23 @@ export default function ShikimoriPage() {
     };
     useEffect(() => {
         getGenresList();
-        getAnimes(request);
+        getAnimesFirst();
     }, []);
 
-    const getAnimes = async (req: ShikimoriRequest) => {
+    const getAnimesPost = async (req: ShikimoriRequest) => {
         const animes = await getAnimesByParams(req);
+        setAnimes(animes);
+        setLoading(false);
+    };
+
+    const getAnimesFirst = async () => {
+        const animes = await getAnimes(1);
         setAnimes(animes);
     };
 
     useEffect(() => {
         const req: ShikimoriRequest = {
-            page: 1,
+            page: page,
             name: query,
             season: season,
             status: status,
@@ -87,12 +96,13 @@ export default function ShikimoriPage() {
             genre: genre,
         };
 
+        setLoading(true);
         const timer = setTimeout(() => {
-            getAnimes(req);
+            getAnimesPost(req);
         }, 1000);
 
         return () => clearTimeout(timer);
-    }, [query, season, status, kind, genre]);
+    }, [page, query, season, status, kind, genre]);
 
     const kindOptions: SelectProps["options"] = [
         { label: "TV-Сериал", value: "tv" },
@@ -121,9 +131,11 @@ export default function ShikimoriPage() {
         } else {
             selectedItems.push(key);
         }
+        setPage(1);
     };
 
     const resetAllFields = (key: string) => {
+        setPage(1);
         setQuery("");
         setStatus("");
         setKind("");
@@ -148,7 +160,9 @@ export default function ShikimoriPage() {
                     label: (
                         <DatePicker
                             onChange={(date) => {
-                                setSeason(date.format("YYYY").toString());
+                                if (date) {
+                                    setSeason(date.format("YYYY").toString());
+                                } else setSeason("");
                                 valueChange(date, "1");
                             }}
                             variant="borderless"
@@ -176,7 +190,9 @@ export default function ShikimoriPage() {
                         <Select
                             allowClear
                             onChange={(value) => {
-                                setStatus(value.toString());
+                                if (value) {
+                                    setStatus(value.toString());
+                                } else setStatus("");
                                 valueChange(value, "2");
                             }}
                             variant="borderless"
@@ -203,7 +219,9 @@ export default function ShikimoriPage() {
                         <Select
                             allowClear
                             onChange={(value) => {
-                                setKind(value.toString());
+                                if (value) {
+                                    setKind(value.toString());
+                                } else setKind("");
                                 valueChange(value, "3");
                             }}
                             variant="borderless"
@@ -233,7 +251,9 @@ export default function ShikimoriPage() {
                             }}
                             allowClear
                             onChange={(value) => {
-                                setGenre(value.toString());
+                                if (value) {
+                                    setGenre(value.toString());
+                                } else setGenre("");
                                 valueChange(value.toString(), "4");
                             }}
                             variant="borderless"
@@ -279,18 +299,22 @@ export default function ShikimoriPage() {
     const toggleCollapsed = () => {
         setCollapsed(!collapsed);
     };
+
+    const updatePage = (flag: boolean) => {
+        switch (flag) {
+            case true:
+                setPage((current) => current + 1);
+                break;
+
+            case false:
+                setPage((current) => current - 1);
+                break;
+        }
+    };
     return (
         <div className="container">
             <title>Series Tracker - Shikimori</title>
-            <Spin
-                size="large"
-                spinning={loading}
-                style={{
-                    position: "absolute",
-                    top: "50%",
-                    left: "50%",
-                }}
-            />
+            <Spin size="large" fullscreen spinning={loading} />
 
             <Row align={"middle"} justify={"end"}>
                 <Col span={12}>
@@ -324,6 +348,7 @@ export default function ShikimoriPage() {
             </Row>
 
             <Divider dashed style={{ margin: 15 }}></Divider>
+
             <Row justify={"center"} align={"middle"}>
                 <Col span={10}>
                     <Menu
@@ -342,7 +367,9 @@ export default function ShikimoriPage() {
                         items={items}
                     ></Menu>
                 </Col>
+            </Row>
 
+            <Row justify={"center"} align={"middle"}>
                 <Col
                     span={21}
                     style={{
@@ -352,6 +379,25 @@ export default function ShikimoriPage() {
                         transition: "all .2s",
                     }}
                 >
+                    <Flex justify={"end"} align={"center"}>
+                        <Button>По рейтингу</Button>
+                        <Button>По названию</Button>
+                        <Button>По дате выхода</Button>
+                        <Divider type="vertical" />
+                        <Button
+                            onClick={() => updatePage(false)}
+                            disabled={page === 1 ? true : false}
+                            type="default"
+                        >
+                            <LeftOutlined />
+                            Назад
+                        </Button>
+                        <Divider type="vertical" />
+                        <Button onClick={() => updatePage(true)} type="default">
+                            Вперед <RightOutlined />
+                        </Button>
+                    </Flex>
+                    <Divider dashed style={{ margin: 15 }}></Divider>
                     <Animes animes={animes} />
                 </Col>
             </Row>

@@ -14,9 +14,35 @@ export interface ShikimoriRequest {
     genre: string;
 }
 
+export interface Anime {
+    id: number;
+    name: string;
+    russian: string;
+    url: string;
+    kind: string;
+    score: string;
+    status: string;
+    episodes: number;
+    episodes_aired: number;
+    aired_on: string;
+    released_on: string;
+}
+
+export interface CalendarItem {
+    next_episode: number;
+    next_episode_at: Date;
+    duration: number;
+    anime: Anime;
+}
 export const getGenres = async () => {
     const response = await fetch(`http://localhost:5125/shikimori/`);
     const genres: Genre = await response.json();
+    return genres;
+};
+
+export const aaa = async () => {
+    const response = await fetch(`https://shikimori.one/api/calendar/`);
+    const genres: CalendarItem = await response.json();
     return genres;
 };
 

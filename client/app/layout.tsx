@@ -17,6 +17,8 @@ import Icon, {
     SearchOutlined,
     MenuFoldOutlined,
     MenuUnfoldOutlined,
+    CalendarOutlined,
+    QuestionOutlined,
     HomeOutlined,
     MoonOutlined,
     SunOutlined,
@@ -234,6 +236,28 @@ export default function RootLayout({
                                                             href={"/shikimori"}
                                                         >
                                                             Shikimori
+                                                        </Link>
+                                                    ),
+                                                },
+                                                {
+                                                    key: "calendar",
+                                                    icon: <CalendarOutlined />,
+                                                    label: (
+                                                        <Link
+                                                            href={"/calendar"}
+                                                        >
+                                                            Календарь выхода
+                                                        </Link>
+                                                    ),
+                                                },
+                                                {
+                                                    key: "random",
+                                                    icon: <QuestionOutlined />,
+                                                    label: (
+                                                        <Link
+                                                            href={"/shikimori"}
+                                                        >
+                                                            Случайное аниме
                                                         </Link>
                                                     ),
                                                 },
