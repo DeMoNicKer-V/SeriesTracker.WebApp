@@ -34,8 +34,33 @@ export default function CalendarPage() {
                 label: days[i % 7],
             });
         }
+        return datesArray;
+    }
 
-        console.log(datesArray);
+    function getSevenDates(): customDate[] {
+        const currentDate = new Date();
+        const datesArray = [];
+
+        const days = [
+            "Воскресенье",
+            "Понедельник",
+            "Вторник",
+            "Среда",
+            "Четверг",
+            "Пятница",
+            "Суббота",
+        ];
+        // Добавляем три дня до текущей даты и три дня после текущей даты
+        for (let i = -3; i <= 3; i++) {
+            const date = new Date(currentDate);
+            date.setDate(currentDate.getDate() + i);
+
+            datesArray.push({
+                value: date,
+                label: days[date.getDay()],
+            });
+        }
+
         return datesArray;
     }
 
@@ -69,11 +94,9 @@ export default function CalendarPage() {
         const b = getDatesForCurrentWeek();
         getGenresList();
         setGenres(b);
+        const sevenDates = getSevenDates();
+        console.log(sevenDates);
     }, []);
-
-    useEffect(() => {
-        console.log(value);
-    }, [value]);
     return (
         <div className="container">
             <Segmented<Date>
