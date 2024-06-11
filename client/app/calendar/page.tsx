@@ -1,9 +1,9 @@
 "use client";
-import { Col, List, Row, Segmented, Image, Card, Typography } from "antd";
+import { Col, List, Row, Segmented, Image, Card, Typography, Flex } from "antd";
 import { useEffect, useState } from "react";
 import { CalendarItem, aaa } from "../services/shikimori";
 
-import { CheckOutlined } from "@ant-design/icons";
+import { CheckOutlined, QuestionCircleOutlined } from "@ant-design/icons";
 import Link from "next/link";
 interface customDate {
     label: JSX.Element;
@@ -134,19 +134,25 @@ export default function CalendarPage() {
                                             >
                                                 <Col span={10}>
                                                     <div>
-                                                        {item.anime.russian}
+                                                        {item.anime.russian
+                                                            ? item.anime.russian
+                                                            : item.anime.name}
                                                     </div>
                                                 </Col>
                                                 <Col span={4}>
-                                                    <div>{`${
-                                                        item.next_episode
-                                                    } из ${
-                                                        item.anime.episodes ===
-                                                        0
-                                                            ? "?"
-                                                            : item.anime
-                                                                  .episodes
-                                                    } эпизодов`}</div>
+                                                    <Flex gap={5}>
+                                                        {item.next_episode}
+                                                        <Text>из</Text>
+                                                        {item.anime.episodes >
+                                                        0 ? (
+                                                            item.anime.episodes
+                                                        ) : (
+                                                            <div>
+                                                                <QuestionCircleOutlined />
+                                                            </div>
+                                                        )}
+                                                        <Text>эпизодов</Text>
+                                                    </Flex>
                                                 </Col>
                                                 <Col span={4}>
                                                     <div>
