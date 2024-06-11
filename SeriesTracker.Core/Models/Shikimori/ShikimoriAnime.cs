@@ -36,7 +36,7 @@ namespace SeriesTracker.Core.Models.Shikimori
             set { }
         }
 
-        [JsonIgnore] public override string PictureUrl { get { return poster.OriginalUrl; } }
+        [JsonIgnore] public override string PictureUrl { get { return poster.MainUrl; } }
 
         [JsonIgnore]
         public override string Rating

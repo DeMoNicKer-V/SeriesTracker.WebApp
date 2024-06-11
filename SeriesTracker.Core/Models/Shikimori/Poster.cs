@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,8 @@ namespace SeriesTracker.Core.Models.Shikimori
 {
     public class Poster
     {
-        public string? OriginalUrl { get; set; }
+        //[JsonProperty("originalUrl")] public string? OriginalUrl { get; set; }
+
+        [JsonProperty("mainUrl")] public string? MainUrl { get; set; }
     }
 }

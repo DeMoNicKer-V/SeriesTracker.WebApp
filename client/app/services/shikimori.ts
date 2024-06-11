@@ -15,7 +15,7 @@ export interface ShikimoriRequest {
 }
 
 export interface Anime {
-    id: number;
+    id: string;
     name: string;
     russian: string;
     url: string;
@@ -30,7 +30,7 @@ export interface Anime {
 
 export interface CalendarItem {
     next_episode: number;
-    next_episode_at: Date;
+    next_episode_at: string;
     duration: number;
     anime: Anime;
 }
@@ -42,7 +42,7 @@ export const getGenres = async () => {
 
 export const aaa = async () => {
     const response = await fetch(`https://shikimori.one/api/calendar/`);
-    const genres: CalendarItem = await response.json();
+    const genres: CalendarItem[] = await response.json();
     return genres;
 };
 

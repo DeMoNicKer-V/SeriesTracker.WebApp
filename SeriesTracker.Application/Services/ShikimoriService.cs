@@ -113,7 +113,7 @@ namespace SeriesTracker.Application.Services
                                         date
                                     }
                                     poster {
-                                        originalUrl
+                                        mainUrl
                                     }
                                 }
                             }",
@@ -148,7 +148,8 @@ namespace SeriesTracker.Application.Services
                                         date
                                     }
                                     poster {
-                                        originalUrl
+                                        
+                                        mainUrl
                                     }
                                 }
                             }",
@@ -187,7 +188,8 @@ namespace SeriesTracker.Application.Services
                                         date
                                     }
                                     poster {
-                                        originalUrl
+                                        
+                                        mainUrl
                                     }
                                 }
                             }",

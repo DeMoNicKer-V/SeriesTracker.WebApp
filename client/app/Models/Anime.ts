@@ -7,6 +7,7 @@ interface Anime {
     genres: string;
     startDate: string;
     episodes: number;
+    score: number;
     rating: string;
     kind: string;
     status: string;
