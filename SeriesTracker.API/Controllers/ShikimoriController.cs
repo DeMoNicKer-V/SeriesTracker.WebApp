@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using SeriesTracker.API.Contracts;
 using SeriesTracker.Application.Services;
+using SeriesTracker.Core.Abstractions;
 using SeriesTracker.Core.Models;
 using SeriesTracker.Core.Models.Shikimori;
 
@@ -12,6 +13,13 @@ namespace SeriesTracker.API.Controllers
     public class ShikimoriController : ControllerBase
     {
         private readonly ShikimoriService ShikimoriService = new();
+
+        private readonly ISeriesService _seriesService;
+
+        public ShikimoriController(ISeriesService seriesService)
+        {
+            _seriesService = seriesService;
+        }
 
         [HttpGet]
         public async Task<ActionResult> GetGenres()
@@ -30,8 +38,10 @@ namespace SeriesTracker.API.Controllers
         [HttpGet("id/{id}")]
         public async Task<ActionResult> GetAnimeById(int id)
         {
+            bool isSeries = await _seriesService.GetSeriesByAnimeId(id);
             GraphQLResponse<ShikimoriAnimeList> graphQLResponse = await ShikimoriService.GetAnimeById(id.ToString());
-            return Ok(graphQLResponse.Data.Animes[0]);
+            var response = new ShikimoriResponseIdInfo(graphQLResponse.Data.Animes[0], isSeries);
+            return Ok(response);
         }
 
         [HttpPost("animes")]

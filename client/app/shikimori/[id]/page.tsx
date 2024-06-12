@@ -34,12 +34,13 @@ import { useRouter } from "next/navigation";
 export default function AnimePage({ params }: { params: { id: string } }) {
     const ref = useRef<HTMLDivElement>(null);
     const [animes, setAnimes] = useState<Anime[] | any>([]);
+    const [isSeries, setIsSeries] = useState<boolean>(false);
     const [genres, setGenres] = useState<string[]>([]);
     const getAnimes = async (id: string) => {
-        console.log(id);
         const series = await getAnimeById(id);
-        setAnimes(series);
-        const gg = series.genres.split(",");
+        setAnimes(series.anime);
+        setIsSeries(series.isSeries);
+        const gg = series.anime.genres.split(",");
         setGenres(gg);
     };
     useEffect(() => {
@@ -197,11 +198,14 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                                         </Tooltip>
                                     </Flex>
                                     <Button
+                                        disabled={isSeries}
                                         onClick={AddToMyList}
                                         style={{ width: "100%" }}
                                         type="dashed"
                                     >
-                                        Добавить в мой список
+                                        {!isSeries && "Добавить в мой список"}
+                                        {isSeries &&
+                                            "Данное аниме уже находится в вашем списке"}
                                     </Button>
                                 </Col>
                             </Row>

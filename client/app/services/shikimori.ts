@@ -14,18 +14,9 @@ export interface ShikimoriRequest {
     genre: string;
 }
 
-export interface Anime {
-    id: string;
-    name: string;
-    russian: string;
-    url: string;
-    kind: string;
-    score: string;
-    status: string;
-    episodes: number;
-    episodes_aired: number;
-    aired_on: string;
-    released_on: string;
+export interface AnimeInfo {
+    anime: Anime;
+    isSeries: boolean;
 }
 
 export interface CalendarItem {
@@ -68,6 +59,6 @@ export const getAnimesByParams = async (request: ShikimoriRequest) => {
 
 export const getAnimeById = async (id: string) => {
     const response = await fetch(`http://localhost:5125/shikimori/id/${id}`);
-    const animes: Anime = await response.json();
+    const animes: AnimeInfo = await response.json();
     return animes;
 };

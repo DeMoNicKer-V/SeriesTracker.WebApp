@@ -67,7 +67,11 @@ export const Animes = ({ animes }: Props) => {
                                                 display: "inline-block",
                                                 margin: 0,
                                             }}
-                                        >{`Всего эпизодов: ${animes.episodes}`}</Tag>
+                                        >
+                                            {new Date(
+                                                animes.startDate
+                                            ).getFullYear()}
+                                        </Tag>
                                     </Flex>
                                 }
                             >
@@ -106,6 +110,11 @@ export const Animes = ({ animes }: Props) => {
                             {animes.title}
                         </Link>
                     </Title>
+                    <Flex>
+                        <Tag>{animes.kind}</Tag>
+                        <Tag>{animes.status}</Tag>
+                        <Tag>{`${animes.episodes} эп.`}</Tag>
+                    </Flex>
                 </Col>
             ))}
         </Row>

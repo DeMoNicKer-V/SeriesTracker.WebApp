@@ -1,6 +1,8 @@
+"use client";
 import {
     Button,
     Card,
+    Carousel,
     Col,
     Empty,
     Flex,
@@ -18,21 +20,36 @@ import {
     InfoCircleOutlined,
     StarOutlined,
 } from "@ant-design/icons";
+import { useEffect, useState } from "react";
 interface Props {
     animes: Anime;
     isOpen: boolean;
 }
 
-const cardStyle: React.CSSProperties = {
-    width: "100%",
-};
-
-const imgStyle: React.CSSProperties = {
-    display: "block",
-    width: 133,
-};
-
 export const AnimePopover = ({ animes }: Props) => {
+    const MyObject = () => {
+        let obj = [];
+        let obj2 = [];
+        const a = animes.genres.split(",");
+        for (let index = 0; index < a.length; index++) {
+            obj.push(<Tag>{a[index]}</Tag>);
+            if (index % 3 === 0) {
+                obj2.push(<Flex>{obj}</Flex>);
+                obj = [];
+            } else if (index === a.length) {
+                obj2.push(<Flex>{obj}</Flex>);
+            }
+        }
+
+        return obj2;
+    };
+    const { Text } = Typography;
+    const [genres, setGenres] = useState<JSX.Element[]>([]);
+
+    useEffect(() => {
+        const a = MyObject();
+        setGenres(a);
+    }, []);
     return (
         <Row gutter={[30, 0]} style={{ height: 250, width: 550 }}>
             <Col span={8} offset={1}>
@@ -76,9 +93,11 @@ export const AnimePopover = ({ animes }: Props) => {
                 </Row>
                 <Row style={{ marginBottom: 5 }}>
                     <Col>
-                        {animes.description === ""
-                            ? "Описание отсутствует"
-                            : animes.description}
+                        <Text className="text">
+                            {animes.description === ""
+                                ? "Описание отсутствует"
+                                : animes.description}
+                        </Text>
                     </Col>
                 </Row>
                 <Row>
@@ -108,14 +127,14 @@ export const AnimePopover = ({ animes }: Props) => {
                                 {`${animes.score} из 10`}
                             </Flex>
                         </Tag>
+                        <Carousel>
+                            {genres.map((animes: JSX.Element) => animes)}
+                        </Carousel>
                     </Col>
                 </Row>
                 <Row style={{ position: "absolute", bottom: 0 }}>
                     <Col>
-                        <Flex gap={5}>
-                            <Button>Подробнее</Button>
-                            <Button>Добавить</Button>
-                        </Flex>
+                        <Button>Подробнее</Button>
                     </Col>
                 </Row>
             </Col>
