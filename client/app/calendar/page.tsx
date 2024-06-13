@@ -10,40 +10,37 @@ interface customDate {
     value: Date;
 }
 export default function CalendarPage() {
-    const currentDate = new Date();
-    const currentDay = currentDate.getDay();
-    const firstDayOfWeek =
-        currentDate.getDate() - currentDay + (currentDay === 0 ? -6 : 1);
-    const startDate = new Date(currentDate.setDate(firstDayOfWeek));
-
-    function getDatesForCurrentWeek(): customDate[] {
+    function getDatesArray(): customDate[] {
         const datesArray = [];
+        const currentDate = new Date();
 
         const days = [
+            "Воскресенье",
             "Понедельник",
             "Вторник",
             "Среда",
             "Четверг",
             "Пятница",
             "Суббота",
-            "Воскресенье",
         ];
 
-        for (let i = 1; i <= 7; i++) {
-            const newDate = new Date(startDate);
-            newDate.setDate(startDate.getDate() + i);
+        for (let i = 0; i < 7; i++) {
+            const newDate = new Date(currentDate);
+            newDate.setDate(currentDate.getDate() + i);
             datesArray.push({
                 value: newDate,
                 label: (
                     <div style={{ padding: 4 }}>
-                        <div>{days[i % 7]}</div>
+                        <div>{days[newDate.getDay()]}</div>
                         <div>{formatDate(newDate)}</div>
                     </div>
                 ),
             });
         }
+
         return datesArray;
     }
+
     const months: string[] = [
         "января",
         "февраля",
@@ -91,7 +88,7 @@ export default function CalendarPage() {
     };
     const [value, setValue] = useState<Date>(new Date());
     useEffect(() => {
-        const b = getDatesForCurrentWeek();
+        const b = getDatesArray();
         setGenres(b);
         setValue(b[0].value);
         getGenresList();
@@ -132,7 +129,12 @@ export default function CalendarPage() {
                                                 align={"middle"}
                                                 justify={"center"}
                                             >
-                                                <Col span={10}>
+                                                <Col span={4}>
+                                                    <Image
+                                                        src={`https://desu.shikimori.one${item.anime.image.preview}`}
+                                                    ></Image>
+                                                </Col>
+                                                <Col span={6}>
                                                     <div>
                                                         {item.anime.russian
                                                             ? item.anime.russian

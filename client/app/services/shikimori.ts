@@ -23,7 +23,26 @@ export interface CalendarItem {
     next_episode: number;
     next_episode_at: string;
     duration: number;
-    anime: Anime;
+    anime: CalendarAnime;
+}
+
+export interface AnimeImage {
+    original: string;
+    preview: string;
+}
+export interface CalendarAnime {
+    id: number;
+    name: string;
+    russian: string;
+    image: AnimeImage;
+    url: string;
+    kind: string;
+    score: string;
+    status: string;
+    episodes: number;
+    episodes_aired: number;
+    aired_on: string;
+    released_on: string;
 }
 export const getGenres = async () => {
     const response = await fetch(`http://localhost:5125/shikimori/`);
