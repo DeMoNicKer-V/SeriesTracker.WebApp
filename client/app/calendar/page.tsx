@@ -3,7 +3,11 @@ import { Col, List, Row, Segmented, Image, Card, Typography, Flex } from "antd";
 import { useEffect, useState } from "react";
 import { CalendarItem, aaa } from "../services/shikimori";
 
-import { CheckOutlined, QuestionCircleOutlined } from "@ant-design/icons";
+import {
+    CheckCircleOutlined,
+    QuestionCircleOutlined,
+    ClockCircleOutlined,
+} from "@ant-design/icons";
 import Link from "next/link";
 interface customDate {
     label: JSX.Element;
@@ -70,8 +74,20 @@ export default function CalendarPage() {
         );
     }
 
-    function dateComparer(date1: Date, date2: Date) {
-        return date1.getTime() > date2.getTime();
+    /* function compareDates(date1: Date, date2: Date): JSX.Element {
+        const newDate1 = new Date(date1.toDateString());
+        const newDate2 = new Date(date2.toDateString());
+      
+        if (newDate1.getTime() === newDate2.getTime()) {
+            return 
+        }
+   
+      }*/
+
+    function dateComparer(date1: Date, date2: Date): JSX.Element {
+        if (date1.getTime() > date2.getTime()) {
+            return <CheckCircleOutlined />;
+        } else return <ClockCircleOutlined />;
     }
 
     const [genres, setGenres] = useState<customDate[]>([]);
@@ -87,19 +103,22 @@ export default function CalendarPage() {
         setAA(list);
     };
     const [value, setValue] = useState<Date>(new Date());
+
+    const [loading, setLoading] = useState<boolean>(true);
     useEffect(() => {
         const b = getDatesArray();
         setGenres(b);
         setValue(b[0].value);
         getGenresList();
     }, []);
-    const { Text } = Typography;
+    const { Text, Title } = Typography;
     useEffect(() => {
         const filteredData = aa.filter((item: CalendarItem) =>
             isDatesEqual(new Date(item.next_episode_at), value)
         );
         setFilter(filteredData);
     }, [value]);
+
     return (
         <div className="container">
             <Row gutter={[20, 20]} align={"middle"} justify={"center"}>
@@ -131,59 +150,64 @@ export default function CalendarPage() {
                                             >
                                                 <Col span={4}>
                                                     <Image
+                                                        width={100}
                                                         src={`https://desu.shikimori.one${item.anime.image.preview}`}
                                                     ></Image>
                                                 </Col>
-                                                <Col span={6}>
-                                                    <div>
+                                                <Col span={14}>
+                                                    <Title level={3}>
                                                         {item.anime.russian
                                                             ? item.anime.russian
                                                             : item.anime.name}
-                                                    </div>
-                                                </Col>
-                                                <Col span={4}>
+                                                    </Title>
                                                     <Flex gap={5}>
-                                                        {item.next_episode}
-                                                        <Text>из</Text>
+                                                        <Text>
+                                                            {
+                                                                item.anime
+                                                                    .episodes_aired
+                                                            }
+                                                        </Text>
+                                                        <Text>{"из"}</Text>
                                                         {item.anime.episodes >
                                                         0 ? (
-                                                            item.anime.episodes
+                                                            <Text>
+                                                                {
+                                                                    item.anime
+                                                                        .episodes
+                                                                }
+                                                            </Text>
                                                         ) : (
-                                                            <div>
-                                                                <QuestionCircleOutlined />
-                                                            </div>
+                                                            <QuestionCircleOutlined />
                                                         )}
-                                                        <Text>эпизодов</Text>
+                                                        <Text>
+                                                            {"эпизодов"}
+                                                        </Text>
                                                     </Flex>
                                                 </Col>
-                                                <Col span={4}>
-                                                    <div>
-                                                        {new Date(
-                                                            item.next_episode_at
-                                                        ).toLocaleTimeString(
-                                                            "ru-RU",
-                                                            {
-                                                                hour: "numeric",
-                                                                minute: "numeric",
-                                                            }
-                                                        )}
-                                                    </div>
-                                                </Col>
                                                 <Col offset={4} span={2}>
-                                                    <div>
+                                                    <Title level={3}>
+                                                        {`${item.next_episode} эп.`}
+                                                    </Title>
+                                                    <Flex gap={5}>
+                                                        <Text>
+                                                            {new Date(
+                                                                item.next_episode_at
+                                                            ).toLocaleTimeString(
+                                                                "ru-RU",
+                                                                {
+                                                                    hour: "numeric",
+                                                                    minute: "numeric",
+                                                                }
+                                                            )}
+                                                        </Text>
+
                                                         {dateComparer(
                                                             new Date(),
                                                             new Date(
                                                                 item.next_episode_at
                                                             )
-                                                        ) && <CheckOutlined />}
-                                                        {!dateComparer(
-                                                            new Date(),
-                                                            new Date(
-                                                                item.next_episode_at
-                                                            )
-                                                        ) && <Text>soon</Text>}
-                                                    </div>
+                                                        )}
+                                                    </Flex>
                                                 </Col>
                                             </Row>
                                         </Card>
