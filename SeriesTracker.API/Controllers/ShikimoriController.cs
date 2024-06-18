@@ -44,6 +44,13 @@ namespace SeriesTracker.API.Controllers
             return Ok(response);
         }
 
+        [HttpGet("random")]
+        public async Task<ActionResult> GetRandomAnime()
+        {
+            GraphQLResponse<ShikimoriAnimeList> graphQLResponse = await ShikimoriService.GetRandomAnime();
+            return Ok(graphQLResponse.Data.Animes[0].Id);
+        }
+
         [HttpPost("animes")]
         public async Task<ActionResult> GetAnimesByAllParams([FromBody] ShikimoriParamsRequest request)
         {

@@ -150,12 +150,19 @@ export default function CalendarPage() {
                                             >
                                                 <Col span={4}>
                                                     <Image
+                                                        style={{
+                                                            borderRadius: 5,
+                                                        }}
+                                                        preview={false}
                                                         width={100}
                                                         src={`https://desu.shikimori.one${item.anime.image.preview}`}
                                                     ></Image>
                                                 </Col>
                                                 <Col span={14}>
-                                                    <Title level={3}>
+                                                    <Title
+                                                        className="calendar-card-text"
+                                                        level={3}
+                                                    >
                                                         {item.anime.russian
                                                             ? item.anime.russian
                                                             : item.anime.name}

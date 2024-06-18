@@ -8,13 +8,13 @@ namespace SeriesTracker.Core.Models.Shikimori
     {
         [JsonProperty("airedOn")] public AiredDate airedOne = new();
         [JsonProperty("poster")] public Poster poster = new(); 
-        [JsonProperty("genres")] public Genre[] Genre { get; set; }
+        [JsonProperty("genres")] public Genre[]? Genre { get; set; }
 
         [JsonIgnore]
         public override string Genres
         {
             get
-            { return string.Join(", ", Genre.Select(l => l.Russian)); }
+            { return Genre != null ?  string.Join(", ", Genre.Select(l => l.Russian)) :""; }
             set { }
         }
 
@@ -24,10 +24,10 @@ namespace SeriesTracker.Core.Models.Shikimori
         [JsonProperty("episodes")] public int EpisodesInfo { get; set; }
         [JsonIgnore] public override int Episodes { get { return EpisodesInfo > 0 ? EpisodesInfo : 1; } set { } }
 
-        [JsonIgnore] public override string Kind { get { return kindInfo.ToUpper(); } set { } }
+        [JsonIgnore] public override string Kind { get { return kindInfo != null ? kindInfo.ToUpper() : ""; } set { } }
 
-        [JsonProperty("kind")] private string kindInfo { get; set; }
-        [JsonProperty("status")] public string StatuscInfo { get; set; }
+        [JsonProperty("kind")] private string? kindInfo { get; set; }
+        [JsonProperty("status")] public string? StatuscInfo { get; set; }
 
         [JsonIgnore]
         public override string Status
@@ -36,7 +36,7 @@ namespace SeriesTracker.Core.Models.Shikimori
             set { }
         }
 
-        [JsonIgnore] public override string PictureUrl { get { return poster.MainUrl; } }
+        [JsonIgnore] public override string PictureUrl { get { return poster.MainUrl != null? poster.MainUrl: ""; } }
 
         [JsonIgnore]
         public override string Rating
@@ -45,7 +45,7 @@ namespace SeriesTracker.Core.Models.Shikimori
             set { }
         }
 
-        [JsonProperty("rating")] public string RatingInfo { get; set; }
+        [JsonProperty("rating")] public string? RatingInfo { get; set; }
         [JsonProperty("score")] public override double Score { get; set; }
 
         [JsonIgnore]

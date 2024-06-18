@@ -10,6 +10,7 @@ import {
     Menu,
     Row,
     Switch,
+    Typography,
     theme,
 } from "antd";
 
@@ -31,7 +32,8 @@ import SearchBar from "./components/searchbar";
 import { getCookie, setCookie } from "cookies-next";
 import { OptionsType } from "cookies-next/lib/types";
 import type { GetProps } from "antd";
-
+import { getRandomAnime } from "./services/shikimori";
+import { redirect, useRouter } from "next/navigation";
 type CustomIconComponentProps = GetProps<typeof Icon>;
 const { Header, Content, Sider } = Layout;
 
@@ -42,13 +44,15 @@ export default function RootLayout({
 }>) {
     const [collapsed, setCollapsed] = useState(false);
     const [collapsed2, setCollapsed2] = useState(false);
+
+    const [randomAnimeId, setRandomAnimeId] = useState<string>("");
+
     const [currentTheme, setCurrentTheme] = useState(false);
     const [currentKey, setCurrentKey] = useState(
         window.location.href.split("/")[3].toString() || "series"
     );
 
     useEffect(() => {
-        console.log(currentKey);
         const colorThemeCookie = getCookie("theme");
         const vv = colorThemeCookie === "false" ? false : true;
         setCurrentTheme(vv);
@@ -99,7 +103,16 @@ export default function RootLayout({
     const HeartIcon = (props: Partial<CustomIconComponentProps>) => (
         <Icon component={HeartSvg} {...props} />
     );
+    const { Text, Title } = Typography;
+    const router = useRouter();
 
+    const getRandomAnimeId = async () => {
+        const id = await getRandomAnime();
+        setCurrentKey("shikimori");
+        if (id) {
+            router.push(`/shikimori/${id}`);
+        }
+    };
     return (
         <html lang="en">
             <body>
@@ -252,13 +265,12 @@ export default function RootLayout({
                                                 },
                                                 {
                                                     key: "random",
+                                                    onClick: getRandomAnimeId,
                                                     icon: <QuestionOutlined />,
                                                     label: (
-                                                        <Link
-                                                            href={"/shikimori"}
-                                                        >
+                                                        <Text>
                                                             Случайное аниме
-                                                        </Link>
+                                                        </Text>
                                                     ),
                                                 },
                                             ]}

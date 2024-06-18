@@ -44,7 +44,9 @@ export default function AnimePage({ params }: { params: { id: string } }) {
         setGenres(gg);
     };
     useEffect(() => {
-        getAnimes(params.id);
+        if (params.id) {
+            getAnimes(params.id);
+        }
     }, []);
     const router = useRouter();
     const AddToMyList = async () => {

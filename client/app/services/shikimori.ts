@@ -81,3 +81,9 @@ export const getAnimeById = async (id: string) => {
     const animes: AnimeInfo = await response.json();
     return animes;
 };
+
+export const getRandomAnime = async () => {
+    const response = await fetch(`http://localhost:5125/shikimori/random/`);
+    const id: string = await response.json();
+    return id;
+};

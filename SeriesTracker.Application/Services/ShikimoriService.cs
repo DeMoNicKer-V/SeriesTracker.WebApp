@@ -5,6 +5,7 @@ using GraphQL.Client.Serializer.Newtonsoft;
 using SeriesTracker.Core.Models.Shikimori;
 using SeriesTracker.Core.Abstractions;
 using SeriesTracker.Core.Models;
+using System.Xml.Linq;
 
 namespace SeriesTracker.Application.Services
 {
@@ -41,6 +42,11 @@ namespace SeriesTracker.Application.Services
         public async Task<GraphQLResponse<GenreList>> GetGenres()
         {
             return await graphQLClient.SendQueryAsync<GenreList>(GetRequest());
+        }
+
+        public async Task<GraphQLResponse<ShikimoriAnimeList>> GetRandomAnime()
+        {
+            return await graphQLClient.SendQueryAsync<ShikimoriAnimeList>(RandomRequest());
         }
 
         private static GraphQLRequest GetRequest(int page)
@@ -90,6 +96,21 @@ namespace SeriesTracker.Application.Services
                 OperationName = "GetGenres",
             };
         }
+
+        private static GraphQLRequest RandomRequest()
+        {
+            return new GraphQLRequest
+            {
+                Query = @"query GetRandom() {
+                                animes(order: random) {
+                                    id
+                                }
+                            }",
+                OperationName = "GetRandom",
+           
+        };
+        }
+
 
         private static GraphQLRequest GetRequest(int page, string name)
         {   
