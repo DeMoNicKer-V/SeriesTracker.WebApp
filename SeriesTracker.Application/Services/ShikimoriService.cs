@@ -19,9 +19,9 @@ namespace SeriesTracker.Application.Services
             graphQLClient = new GraphQLHttpClient(apiUrl, new NewtonsoftJsonSerializer());
         }
 
-        public async Task<GraphQLResponse<ShikimoriAnimeList>> GetAnimes(int page)
+        public async Task<GraphQLResponse<ShikimoriAnimeList>> GetAnimes(int page, string order)
         {
-            return await graphQLClient.SendQueryAsync<ShikimoriAnimeList>(GetRequest(page));
+            return await graphQLClient.SendQueryAsync<ShikimoriAnimeList>(GetAnimesRequest(page, order));
         }
 
         public async Task<GraphQLResponse<ShikimoriAnimeList>> GetAnimesByName(int page, string name)
@@ -49,12 +49,12 @@ namespace SeriesTracker.Application.Services
             return await graphQLClient.SendQueryAsync<ShikimoriAnimeList>(RandomRequest());
         }
 
-        private static GraphQLRequest GetRequest(int page)
+        private static GraphQLRequest GetAnimesRequest(int page, string order)
         {
             return new GraphQLRequest
             {
-                Query = @"query GetAll($page: Int) {
-                                animes(page: $page, limit: 30) {
+                Query = @"query GetAll($page: Int, $order: OrderEnum) {
+                                animes(page: $page, order: $order, status: ""!anons"",  limit: 20) {
                                     id
                                     russian
                                     name
@@ -71,6 +71,7 @@ namespace SeriesTracker.Application.Services
                                         date
                                     }
                                     poster {
+                                        mainUrl
                                         originalUrl
                                     }
                                 }
@@ -78,7 +79,8 @@ namespace SeriesTracker.Application.Services
                 OperationName = "GetAll",
                 Variables = new
                 {
-                    page
+                    page,
+                    order
                 }
             };
         }

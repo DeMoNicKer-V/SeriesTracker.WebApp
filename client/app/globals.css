@@ -279,3 +279,9 @@ input,
     padding: 16px 16px 0px 16px;
     background: #1e1e1e;
 }
+
+.ant-menu-horizontal,
+.ant-menu-item::after,
+.ant-menu-submenu::after {
+    border: none !important;
+}

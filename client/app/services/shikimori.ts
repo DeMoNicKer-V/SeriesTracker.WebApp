@@ -56,9 +56,9 @@ export const aaa = async () => {
     return genres;
 };
 
-export const getAnimes = async (page: number) => {
+export const getAnimes = async (page: number, order: string) => {
     const response = await fetch(
-        `http://localhost:5125/shikimori/page/${page}`
+        `http://localhost:5125/shikimori/page/${page}/order/${order}`
     );
     const animes: Anime = await response.json();
     return animes;

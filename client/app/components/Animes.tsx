@@ -20,6 +20,7 @@ import {
     DeleteOutlined,
 } from "@ant-design/icons";
 import AnimePopover from "./AnimePopover";
+import AbsoluteImage from "./AbsoluteImage";
 
 interface Props {
     animes: Anime[];
@@ -29,7 +30,7 @@ export const Animes = ({ animes }: Props) => {
     return (
         <Row gutter={[20, 25]} justify="center">
             {animes.map((animes: Anime) => (
-                <Col>
+                <Col key={`anime_${animes.id}`}>
                     <Link href={`/shikimori/${animes.id}`}>
                         <Popover
                             trigger={"hover"}
@@ -42,30 +43,21 @@ export const Animes = ({ animes }: Props) => {
                             }
                         >
                             <Card
-                                style={{ width: 200, height: 300 }}
-                                key={animes.id}
+                                style={{
+                                    width: 200,
+                                    height: 300,
+                                    borderRadius: 5,
+                                }}
                                 cover={
                                     <Flex justify={"end"}>
-                                        <div
-                                            style={{
-                                                overflow: "hidden",
-                                                backgroundImage: `url(${animes.pictureUrl})`,
-                                                backgroundSize: "cover",
-                                                backgroundRepeat: "no-repeat",
-                                                backgroundPosition:
-                                                    "center center",
-                                                top: 0,
-                                                left: 0,
-                                                right: 0,
-                                                bottom: 0,
-                                                position: "absolute",
-                                            }}
-                                        ></div>
+                                        <AbsoluteImage
+                                            src={animes.pictureUrl}
+                                        />
                                         <Tag
                                             color="#DE1EB2"
                                             style={{
                                                 display: "inline-block",
-                                                margin: 0,
+                                                margin: 1,
                                             }}
                                         >
                                             {new Date(

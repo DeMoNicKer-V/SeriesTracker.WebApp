@@ -1,20 +1,21 @@
 interface Props {
-    src: () => string;
+    src: string;
 }
 export const AbsoluteImage = ({ src }: Props) => {
     return (
         <div
             style={{
+                overflow: "hidden",
                 backgroundImage: `url(${src})`,
-                backgroundPosition: "top",
-                backgroundRepeat: "no-repeat",
                 backgroundSize: "cover",
-                height: "100%",
-                left: "0",
+                backgroundRepeat: "no-repeat",
+                backgroundPosition: "center center",
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
                 position: "absolute",
-                top: "0",
-                width: "100%",
-                zIndex: "-1",
+                borderRadius: 5,
             }}
         ></div>
     );

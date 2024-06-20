@@ -6,6 +6,7 @@ import {
     Col,
     ConfigProvider,
     Divider,
+    FloatButton,
     Layout,
     Menu,
     Row,
@@ -310,6 +311,7 @@ export default function RootLayout({
                             </Layout>
                         </ConfigProvider>
                     </div>
+                    <FloatButton.BackTop />
                 </div>
             </body>
         </html>

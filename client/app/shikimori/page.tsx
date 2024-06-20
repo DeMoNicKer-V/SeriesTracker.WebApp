@@ -10,6 +10,7 @@ import {
 import {
     Button,
     Col,
+    ConfigProvider,
     DatePicker,
     Divider,
     Flex,
@@ -18,6 +19,7 @@ import {
     List,
     Menu,
     MenuProps,
+    Radio,
     Row,
     Select,
     SelectProps,
@@ -57,14 +59,12 @@ export default function ShikimoriPage() {
     const [genre, setGenre] = useState<string>("");
     const [season, setSeason] = useState<string>("");
     const [page, setPage] = useState<number>(1);
-    const [request, setRequest] = useState<ShikimoriRequest | any>({
-        page: 1,
-        name: "",
-        season: "",
-        status: "",
-        kind: "",
-        genre: "",
-    });
+
+    const [current, setCurrent] = useState("ranked");
+
+    const onClick: MenuProps["onSelect"] = (e) => {
+        setCurrent(e.key);
+    };
 
     const getGenresList = async () => {
         const list = await getGenres();
@@ -72,8 +72,11 @@ export default function ShikimoriPage() {
     };
     useEffect(() => {
         getGenresList();
-        getAnimesFirst();
     }, []);
+
+    useEffect(() => {
+        getAnimesFirst();
+    }, [current]);
 
     const getAnimesPost = async (req: ShikimoriRequest) => {
         const animes = await getAnimesByParams(req);
@@ -82,7 +85,7 @@ export default function ShikimoriPage() {
     };
 
     const getAnimesFirst = async () => {
-        const animes = await getAnimes(1);
+        const animes = await getAnimes(page, current);
         setAnimes(animes);
     };
 
@@ -311,6 +314,46 @@ export default function ShikimoriPage() {
                 break;
         }
     };
+
+    const items2: MenuItem[] = [
+        {
+            label: "По рейтингу",
+            key: "ranked",
+            icon: <SettingOutlined />,
+        },
+        {
+            label: "По популярности",
+            key: "popularity",
+            icon: <SettingOutlined />,
+        },
+        {
+            label: "По алфавиту",
+            key: "name",
+            icon: <SettingOutlined />,
+        },
+        {
+            label: "По дате выхода",
+            key: "aired_on",
+            icon: <SettingOutlined />,
+        },
+
+        {
+            key: "divider",
+            disabled: true,
+            label: <Divider type="vertical"></Divider>,
+        },
+        {
+            key: "prev",
+            disabled: true,
+            label: <Button shape="circle" icon={<LeftOutlined />}></Button>,
+        },
+        {
+            key: "next",
+            disabled: true,
+            label: <Button shape="circle" icon={<RightOutlined />}></Button>,
+        },
+    ];
+
     return (
         <div className="container">
             <title>Series Tracker - Shikimori</title>
@@ -379,25 +422,25 @@ export default function ShikimoriPage() {
                         transition: "all .2s",
                     }}
                 >
-                    <Flex justify={"end"} align={"center"}>
-                        <Button>По рейтингу</Button>
-                        <Button>По названию</Button>
-                        <Button>По дате выхода</Button>
-                        <Divider type="vertical" />
-                        <Button
-                            onClick={() => updatePage(false)}
-                            disabled={page === 1 ? true : false}
-                            type="default"
-                        >
-                            <LeftOutlined />
-                            Назад
-                        </Button>
-                        <Divider type="vertical" />
-                        <Button onClick={() => updatePage(true)} type="default">
-                            Вперед <RightOutlined />
-                        </Button>
-                    </Flex>
-                    <Divider dashed style={{ margin: 15 }}></Divider>
+                    <ConfigProvider
+                        theme={{
+                            components: {
+                                Menu: {
+                                    itemBg: "transparent",
+                                    darkItemBg: "transparent",
+                                },
+                            },
+                        }}
+                    >
+                        <Menu
+                            onSelect={onClick}
+                            style={{ margin: 15, padding: 0 }}
+                            defaultSelectedKeys={[current]}
+                            items={items2}
+                            mode="horizontal"
+                        />
+                    </ConfigProvider>
+
                     <Animes animes={animes} />
                 </Col>
             </Row>

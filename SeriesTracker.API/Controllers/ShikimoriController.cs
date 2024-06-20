@@ -28,10 +28,10 @@ namespace SeriesTracker.API.Controllers
             return Ok(graphQLResponse.Data.Genres);
         }
 
-        [HttpGet("page/{page}")]
-        public async Task<ActionResult> GetAnimes(int page)
+        [HttpGet("page/{page}/order/{order}")]
+        public async Task<ActionResult> GetAnimes(int page, string order)
         {
-            GraphQLResponse<ShikimoriAnimeList> graphQLResponse = await ShikimoriService.GetAnimes(page);
+            GraphQLResponse<ShikimoriAnimeList> graphQLResponse = await ShikimoriService.GetAnimes(page, order);
             return Ok(graphQLResponse.Data.Animes);
         }
 
