@@ -44,7 +44,7 @@ export const Series = ({ series }: Props) => {
                                 style={{ width: 200, height: 300 }}
                                 key={series.id}
                                 cover={
-                                    <Flex justify={"end"}>
+                                    <Flex justify="end">
                                         <div
                                             style={{
                                                 overflow: "hidden",
@@ -59,12 +59,28 @@ export const Series = ({ series }: Props) => {
                                                 bottom: 0,
                                                 position: "absolute",
                                             }}
-                                        ></div>
+                                        >
+                                            {series.isFavorite && (
+                                                <Tag
+                                                    color="#DE1EB2"
+                                                    style={{
+                                                        position: "absolute",
+                                                        zIndex: 0,
+                                                        width: "100%",
+                                                        bottom: 0,
+                                                        textAlign: "center",
+                                                        backgroundColor:
+                                                            "f5bf34",
+                                                    }}
+                                                >{`Избранное`}</Tag>
+                                            )}
+                                        </div>
                                         <Tag
                                             color="#DE1EB2"
                                             style={{
-                                                display: "inline-block",
-                                                margin: 0,
+                                                opacity: 0.85,
+                                                margin: 5,
+                                                textAlign: "center",
                                             }}
                                         >{`Просмотрено ${series.watchedEpisode} из ${series.lastEpisode}`}</Tag>
                                     </Flex>
