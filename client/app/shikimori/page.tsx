@@ -359,19 +359,15 @@ export default function ShikimoriPage() {
 
             <Row align={"middle"} justify={"end"}>
                 <Col span={12}>
-                    <div
-                        style={{ zIndex: 1 }}
-                        className={loading === true ? "loading" : ""}
-                    >
-                        <Input
-                            onChange={(e: { target: { value: any } }) => {
-                                setQuery(String(e.target.value));
-                            }}
-                            placeholder="Введите для поиска"
-                            suffix={<SearchOutlined />}
-                            spellCheck={false}
-                        />
-                    </div>
+                    <Input
+                        style={{ fontSize: 18, padding: 10 }}
+                        onChange={(e: { target: { value: any } }) => {
+                            setQuery(String(e.target.value));
+                        }}
+                        placeholder="Введите для поиска"
+                        suffix={<SearchOutlined />}
+                        spellCheck={false}
+                    />
                 </Col>
                 <Col span={5}></Col>
                 <Col span={1}>

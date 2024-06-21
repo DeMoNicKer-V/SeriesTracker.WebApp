@@ -52,7 +52,7 @@ export const Animes = ({ animes }: Props) => {
                                     <Flex justify={"end"}>
                                         <AbsoluteImage
                                             src={animes.pictureUrl}
-                                            zIndex={1}
+                                            zIndex={0}
                                         />
                                         <Tag
                                             color="#DE1EB2"

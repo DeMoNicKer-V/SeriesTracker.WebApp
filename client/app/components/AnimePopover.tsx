@@ -31,12 +31,13 @@ export const AnimePopover = ({ animes }: Props) => {
         let obj = [];
         let obj2 = [];
         const a = animes.genres.split(",");
+
         for (let index = 0; index < a.length; index++) {
             obj.push(<Tag>{a[index]}</Tag>);
-            if (index % 3 === 0) {
+            if (obj.length === 3) {
                 obj2.push(<Flex>{obj}</Flex>);
                 obj = [];
-            } else if (index === a.length) {
+            } else if (index === a.length - 1) {
                 obj2.push(<Flex>{obj}</Flex>);
             }
         }
