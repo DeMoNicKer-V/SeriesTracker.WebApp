@@ -9,7 +9,7 @@
         "lint": "next lint"
     },
     "dependencies": {
-        "antd": "^5.16.5",
+        "antd": "^5.18.3",
         "cookies-next": "^4.1.1",
         "date-picker-nextjs": "^0.1.29",
         "next": "14.2.1",

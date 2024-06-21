@@ -1,5 +1,5 @@
 import Card from "antd/es/card/Card";
-import ShortDescription from "./shortDescription";
+import ShortDescription from "./SeriesPopover";
 import {
     Button,
     Col,
@@ -29,20 +29,17 @@ export const Series = ({ series }: Props) => {
         <Row gutter={[20, 25]} justify="center">
             {series.map((series: Series["item1"]) => (
                 <Col>
-                    <Link href={`/series/${series.id}`}>
-                        <Popover
-                            trigger={"hover"}
-                            mouseEnterDelay={0.5}
-                            mouseLeaveDelay={0.2}
-                            placement="bottomLeft"
-                            arrow={false}
-                            content={
-                                <ShortDescription
-                                    series={series}
-                                    isOpen={false}
-                                />
-                            }
-                        >
+                    <Popover
+                        trigger={"hover"}
+                        mouseEnterDelay={0.5}
+                        mouseLeaveDelay={0.2}
+                        placement="bottomLeft"
+                        arrow={false}
+                        content={
+                            <ShortDescription series={series} isOpen={false} />
+                        }
+                    >
+                        <Link href={`/series/${series.id}`}>
                             <Card
                                 style={{ width: 200, height: 300 }}
                                 key={series.id}
@@ -93,8 +90,8 @@ export const Series = ({ series }: Props) => {
                                     ></Empty>
                                 )}
                             </Card>
-                        </Popover>
-                    </Link>
+                        </Link>
+                    </Popover>
 
                     <Title
                         level={5}

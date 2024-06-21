@@ -128,7 +128,7 @@ export const AnimePopover = ({ animes }: Props) => {
                                 {`${animes.score} из 10`}
                             </Flex>
                         </Tag>
-                        <Carousel>
+                        <Carousel arrows>
                             {genres.map((animes: JSX.Element) => animes)}
                         </Carousel>
                     </Col>

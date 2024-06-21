@@ -1,5 +1,5 @@
 import Card from "antd/es/card/Card";
-import ShortDescription from "./shortDescription";
+import ShortDescription from "./SeriesPopover";
 import {
     Button,
     Col,

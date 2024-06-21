@@ -31,8 +31,8 @@ const imgStyle: React.CSSProperties = {
     display: "block",
     width: 133,
 };
-
-export const ShortDescription = ({ series, isOpen }: Props) => {
+const { Text } = Typography;
+export const SeriesPopover = ({ series, isOpen }: Props) => {
     return (
         <Row gutter={[30, 0]} style={{ height: 250, width: 550 }}>
             <Col span={8} offset={1}>
@@ -76,9 +76,11 @@ export const ShortDescription = ({ series, isOpen }: Props) => {
                 </Row>
                 <Row style={{ marginBottom: 5 }}>
                     <Col>
-                        {series.description === ""
-                            ? "Описание отсутствует"
-                            : series.description}
+                        <Text className="text">
+                            {series.description === ""
+                                ? "Описание отсутствует"
+                                : series.description}
+                        </Text>
                     </Col>
                 </Row>
                 <Row>
@@ -155,4 +157,4 @@ export const ShortDescription = ({ series, isOpen }: Props) => {
         </Row>
     );
 };
-export default ShortDescription;
+export default SeriesPopover;
