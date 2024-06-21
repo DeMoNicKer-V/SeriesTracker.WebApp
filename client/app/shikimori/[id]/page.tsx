@@ -103,7 +103,7 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                             borderTopLeftRadius: "5px",
                         }}
                     >
-                        <AbsoluteImage src={animes.pictureUrl} />
+                        <AbsoluteImage src={animes.pictureUrl} zIndex={-1} />
                         <div
                             style={{
                                 backgroundImage:

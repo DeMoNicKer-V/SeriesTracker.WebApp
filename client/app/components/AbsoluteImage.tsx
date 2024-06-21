@@ -1,7 +1,8 @@
 interface Props {
     src: string;
+    zIndex: number;
 }
-export const AbsoluteImage = ({ src }: Props) => {
+export const AbsoluteImage = ({ src, zIndex }: Props) => {
     return (
         <div
             style={{
@@ -16,6 +17,7 @@ export const AbsoluteImage = ({ src }: Props) => {
                 bottom: 0,
                 position: "absolute",
                 borderRadius: 5,
+                zIndex: zIndex,
             }}
         ></div>
     );

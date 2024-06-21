@@ -336,21 +336,19 @@ export default function ShikimoriPage() {
             key: "aired_on",
             icon: <SettingOutlined />,
         },
-
         {
-            key: "divider",
+            style: {
+                cursor: "default",
+                marginLeft: "auto",
+            },
+            key: "prev_next",
             disabled: true,
-            label: <Divider type="vertical"></Divider>,
-        },
-        {
-            key: "prev",
-            disabled: true,
-            label: <Button shape="circle" icon={<LeftOutlined />}></Button>,
-        },
-        {
-            key: "next",
-            disabled: true,
-            label: <Button shape="circle" icon={<RightOutlined />}></Button>,
+            label: (
+                <Space split={<Divider type="vertical" />}>
+                    <Button icon={<LeftOutlined />}>Назад</Button>
+                    <Button icon={<RightOutlined />}>Вперед</Button>
+                </Space>
+            ),
         },
     ];
 
@@ -414,7 +412,7 @@ export default function ShikimoriPage() {
 
             <Row justify={"center"} align={"middle"}>
                 <Col
-                    span={21}
+                    span={23}
                     style={{
                         alignItems: "center",
                         justifyContent: "center",
@@ -434,13 +432,16 @@ export default function ShikimoriPage() {
                     >
                         <Menu
                             onSelect={onClick}
-                            style={{ margin: 15, padding: 0 }}
+                            style={{
+                                marginBottom: 20,
+                            }}
                             defaultSelectedKeys={[current]}
                             items={items2}
                             mode="horizontal"
                         />
                     </ConfigProvider>
-
+                </Col>
+                <Col>
                     <Animes animes={animes} />
                 </Col>
             </Row>

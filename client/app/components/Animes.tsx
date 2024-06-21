@@ -28,7 +28,7 @@ interface Props {
 export const Animes = ({ animes }: Props) => {
     const { Title } = Typography;
     return (
-        <Row gutter={[20, 25]} justify="center">
+        <Row gutter={[25, 25]} justify="center">
             {animes.map((animes: Anime) => (
                 <Col key={`anime_${animes.id}`}>
                     <Link href={`/shikimori/${animes.id}`}>
@@ -52,6 +52,7 @@ export const Animes = ({ animes }: Props) => {
                                     <Flex justify={"end"}>
                                         <AbsoluteImage
                                             src={animes.pictureUrl}
+                                            zIndex={1}
                                         />
                                         <Tag
                                             color="#DE1EB2"
