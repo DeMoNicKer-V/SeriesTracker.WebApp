@@ -119,6 +119,18 @@ html {
     box-orient: vertical;
 }
 
+.calendar-card-text-drawer {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -moz-box;
+    -moz-box-orient: vertical;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    line-clamp: 2;
+    box-orient: vertical;
+}
+
 .antd {
     backface-visibility: hidden;
     display: flex;

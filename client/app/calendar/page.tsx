@@ -74,16 +74,6 @@ export default function CalendarPage() {
         );
     }
 
-    /* function compareDates(date1: Date, date2: Date): JSX.Element {
-        const newDate1 = new Date(date1.toDateString());
-        const newDate2 = new Date(date2.toDateString());
-      
-        if (newDate1.getTime() === newDate2.getTime()) {
-            return 
-        }
-   
-      }*/
-
     function dateComparer(date1: Date, date2: Date): JSX.Element {
         if (date1.getTime() > date2.getTime()) {
             return <CheckCircleOutlined />;
