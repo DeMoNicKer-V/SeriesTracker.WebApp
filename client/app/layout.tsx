@@ -402,7 +402,7 @@ export default function RootLayout({
                                         style={{ width: "100%" }}
                                         href={`/shikimori/${item.anime.id}`}
                                     >
-                                        <Card hoverable>
+                                        <Card hoverable style={{ padding: 10 }}>
                                             <Row
                                                 style={{ width: "100%" }}
                                                 align={"middle"}
@@ -429,7 +429,15 @@ export default function RootLayout({
                                                     </Title>
                                                     <Row justify={"end"}>
                                                         <Col>
-                                                            <Flex gap={5}>
+                                                            <Flex
+                                                                justify="center"
+                                                                align="center"
+                                                                gap={5}
+                                                            >
+                                                                <Text>
+                                                                    {`${item.next_episode} эп.`}
+                                                                </Text>
+                                                                <Divider type="vertical" />
                                                                 <Text>
                                                                     {new Date(
                                                                         item.next_episode_at
