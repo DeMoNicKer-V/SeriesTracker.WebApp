@@ -297,3 +297,7 @@ input,
 .ant-menu-submenu::after {
     border: none !important;
 }
+.ant-card-body {
+    height: 100%;
+    padding: 0 !important;
+}

@@ -19,6 +19,7 @@ import {
     EditOutlined,
     DeleteOutlined,
 } from "@ant-design/icons";
+import AbsoluteImage from "./AbsoluteImage";
 
 interface Props {
     series: Series["item1"][];
@@ -44,67 +45,41 @@ export const Series = ({ series }: Props) => {
                                 style={{ width: 200, height: 300 }}
                                 key={series.id}
                                 cover={
-                                    <Flex justify="end">
-                                        <div
-                                            style={{
-                                                overflow: "hidden",
-                                                backgroundImage: `url(${series.imagePath})`,
-                                                backgroundSize: "cover",
-                                                backgroundRepeat: "no-repeat",
-                                                backgroundPosition:
-                                                    "center center",
-                                                top: 0,
-                                                left: 0,
-                                                right: 0,
-                                                bottom: 0,
-                                                position: "absolute",
-                                            }}
-                                        >
-                                            {series.isFavorite && (
-                                                <Tag
-                                                    color="#DE1EB2"
-                                                    style={{
-                                                        position: "absolute",
-                                                        zIndex: 0,
-                                                        width: "100%",
-                                                        bottom: 0,
-                                                        textAlign: "center",
-                                                        backgroundColor:
-                                                            "f5bf34",
-                                                    }}
-                                                >{`Избранное`}</Tag>
-                                            )}
-                                        </div>
+                                    <AbsoluteImage
+                                        src={series.imagePath}
+                                        zIndex={0}
+                                    />
+                                }
+                            >
+                                <Flex
+                                    align="end"
+                                    style={{
+                                        flexDirection: "column",
+                                        height: "100%",
+                                    }}
+                                >
+                                    <Tag
+                                        color="#DE1EB2"
+                                        style={{
+                                            margin: 5,
+                                            textAlign: "center",
+                                        }}
+                                    >{`Просмотрено ${series.watchedEpisode} из ${series.lastEpisode}`}</Tag>
+                                    {series.isFavorite && (
                                         <Tag
                                             color="#DE1EB2"
                                             style={{
-                                                opacity: 0.85,
-                                                margin: 5,
                                                 textAlign: "center",
+                                                margin: "auto 0px -1px 0px",
+                                                width: "100%",
+                                                borderBottomRightRadius: "5px",
+                                                borderBottomLeftRadius: "5px",
+                                                borderTopLeftRadius: "0px",
+                                                borderTopRightRadius: "0px",
                                             }}
-                                        >{`Просмотрено ${series.watchedEpisode} из ${series.lastEpisode}`}</Tag>
-                                    </Flex>
-                                }
-                            >
-                                {series.imagePath === "" && (
-                                    <Empty
-                                        style={{
-                                            marginTop: 25,
-                                        }}
-                                        image={<FileImageOutlined />}
-                                        imageStyle={{ fontSize: 60 }}
-                                        description={
-                                            <span
-                                                style={{
-                                                    fontSize: 18,
-                                                    fontStyle: "italic",
-                                                }}
-                                            >
-                                                Изображение отсутствует
-                                            </span>
-                                        }
-                                    ></Empty>
-                                )}
+                                        >{`Избранное`}</Tag>
+                                    )}
+                                </Flex>
                             </Card>
                         </Link>
                     </Popover>

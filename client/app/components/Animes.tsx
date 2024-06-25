@@ -58,7 +58,7 @@ export const Animes = ({ animes }: Props) => {
                                             color="#DE1EB2"
                                             style={{
                                                 display: "inline-block",
-                                                margin: 1,
+                                                margin: 5,
                                             }}
                                         >
                                             {new Date(
@@ -67,27 +67,7 @@ export const Animes = ({ animes }: Props) => {
                                         </Tag>
                                     </Flex>
                                 }
-                            >
-                                {animes.pictureUrl === "" && (
-                                    <Empty
-                                        style={{
-                                            marginTop: 25,
-                                        }}
-                                        image={<FileImageOutlined />}
-                                        imageStyle={{ fontSize: 60 }}
-                                        description={
-                                            <span
-                                                style={{
-                                                    fontSize: 18,
-                                                    fontStyle: "italic",
-                                                }}
-                                            >
-                                                Изображение отсутствует
-                                            </span>
-                                        }
-                                    ></Empty>
-                                )}
-                            </Card>
+                            ></Card>
                         </Popover>
                     </Link>
 
