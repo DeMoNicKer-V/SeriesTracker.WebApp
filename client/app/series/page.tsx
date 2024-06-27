@@ -13,16 +13,26 @@ import {
 import { CreateUpdateSeries, Mode } from "../components/AddUpdateSeries";
 import {
     Col,
+    ConfigProvider,
     Divider,
     Flex,
+    FloatButton,
+    Menu,
+    MenuProps,
     Pagination,
     PaginationProps,
     Row,
     Space,
     Tag,
+    Typography,
 } from "antd";
 import { usePathname, useSearchParams } from "next/navigation";
-import { RightOutlined, LeftOutlined, PlusOutlined } from "@ant-design/icons";
+import {
+    RightOutlined,
+    LeftOutlined,
+    PlusOutlined,
+    SettingOutlined,
+} from "@ant-design/icons";
 import dayjs from "dayjs";
 
 export default function SeriesPage() {
@@ -40,6 +50,7 @@ export default function SeriesPage() {
         isFavorite: false,
     } as Series["item1"];
 
+    type MenuItem = Required<MenuProps>["items"][number];
     const [values, setValues] = useState<Series["item1"]>(defaultValues);
     const [query, setQuery] = useState<string | null>(null);
     const [page, setPage] = useState<number>(1);
@@ -108,6 +119,7 @@ export default function SeriesPage() {
         setValues(defaultValues);
         setIsModalOpen(false);
     };
+    const { Text, Title } = Typography;
     const [ii, setii] = useState<number>(1);
     const itemRender: PaginationProps["itemRender"] = (
         _,
@@ -119,6 +131,43 @@ export default function SeriesPage() {
         }
         return originalElement;
     };
+    const items2: MenuItem[] = [
+        {
+            style: {
+                marginLeft: "auto",
+            },
+            label: "По дате изменения",
+            key: "changed",
+            icon: <SettingOutlined />,
+        },
+        {
+            label: "По дате добавления",
+            key: "added",
+            icon: <SettingOutlined />,
+        },
+        {
+            label: "По избранным",
+            key: "favorite",
+            icon: <SettingOutlined />,
+        },
+        {
+            style: {
+                cursor: "default",
+
+                padding: 0,
+            },
+            key: "prev_next",
+            disabled: true,
+            label: (
+                <Space split={<Divider type="vertical" />}>
+                    <Button icon={<LeftOutlined />}>Назад</Button>
+                    <Button iconPosition="end" icon={<RightOutlined />}>
+                        Вперед
+                    </Button>
+                </Space>
+            ),
+        },
+    ];
     return (
         <div className="container">
             <CreateUpdateSeries
@@ -130,33 +179,27 @@ export default function SeriesPage() {
                 handleCancel={closeModal}
             />
             <Row align={"middle"} justify={"center"}>
-                <Col span={12}>
-                    <h2>Ваши сериалы</h2>
+                <Col span={10}>
+                    <Title style={{ margin: 0 }} level={3}>
+                        Ваши сериалы
+                    </Title>
+                    <Tag
+                        style={{ cursor: "default" }}
+                    >{`Всего: ${seriesCount}`}</Tag>
                 </Col>
-                <Col span={12}>
-                    <Row align={"middle"} justify={"end"}>
-                        <Col>
-                            <Button onClick={openModal} type="dashed">
-                                <PlusOutlined /> Добавить сериал
-                            </Button>
-                            <Divider type="vertical" />
-                            <Button disabled={page === 1} type="default">
-                                <LeftOutlined />
-                                Назад
-                            </Button>
-                            <Divider type="vertical" />
-                            <Button
-                                disabled={
-                                    Number(seriesCount) + 1 <= 30 ? true : false
-                                }
-                                type="default"
-                            >
-                                Вперед <RightOutlined />
-                            </Button>
-                            <Divider type="vertical" />
-                            <Tag>{`Всего: ${seriesCount}`}</Tag>
-                        </Col>
-                    </Row>
+                <Col span={14}>
+                    <ConfigProvider
+                        theme={{
+                            components: {
+                                Menu: {
+                                    itemBg: "transparent",
+                                    darkItemBg: "transparent",
+                                },
+                            },
+                        }}
+                    >
+                        <Menu items={items2} mode="horizontal" />
+                    </ConfigProvider>
                 </Col>
             </Row>
             <Divider />
