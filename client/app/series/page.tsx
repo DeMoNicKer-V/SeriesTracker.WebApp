@@ -160,8 +160,14 @@ export default function SeriesPage() {
             disabled: true,
             label: (
                 <Space split={<Divider type="vertical" />}>
-                    <Button icon={<LeftOutlined />}>Назад</Button>
-                    <Button iconPosition="end" icon={<RightOutlined />}>
+                    <Button size="small" icon={<LeftOutlined />}>
+                        Назад
+                    </Button>
+                    <Button
+                        size="small"
+                        iconPosition="end"
+                        icon={<RightOutlined />}
+                    >
                         Вперед
                     </Button>
                 </Space>
@@ -198,7 +204,11 @@ export default function SeriesPage() {
                             },
                         }}
                     >
-                        <Menu items={items2} mode="horizontal" />
+                        <Menu
+                            defaultSelectedKeys={["changed"]}
+                            items={items2}
+                            mode="horizontal"
+                        />
                     </ConfigProvider>
                 </Col>
             </Row>

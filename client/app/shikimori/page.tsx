@@ -44,7 +44,6 @@ import dayjs from "dayjs";
 export default function ShikimoriPage() {
     type MenuItem = Required<MenuProps>["items"][number];
     const statusOptions: SelectProps["options"] = [
-        { label: "Анонс", value: "anons" },
         { label: "Онгоинг", value: "ongoing" },
         { label: "Вышло", value: "released" },
     ];
@@ -128,16 +127,20 @@ export default function ShikimoriPage() {
     const date = dayjs();
     const [selectedItems, setSelectedItems] = useState<string[]>([]);
     const valueChange = (value: any, key: string) => {
+        const index = selectedItems.indexOf(key);
+        console.log(index);
         if (!value) {
-            const index = selectedItems.indexOf(key);
             selectedItems.splice(index, 1);
         } else {
-            selectedItems.push(key);
+            if (index === -1) {
+                selectedItems.push(key);
+            }
         }
         setPage(1);
     };
 
-    const resetAllFields = (key: string) => {
+    const resetAllFields = () => {
+        console.log("aaa");
         setPage(1);
         setQuery("");
         setStatus("");
@@ -260,7 +263,7 @@ export default function ShikimoriPage() {
                                 valueChange(value.toString(), "4");
                             }}
                             variant="borderless"
-                            placeholder="Выбирите жанры (макс. 5)"
+                            placeholder="Выберите жанры (макс. 5)"
                             maxTagCount={"responsive"}
                             maxCount={5}
                             mode="multiple"
@@ -287,7 +290,7 @@ export default function ShikimoriPage() {
 
             label: (
                 <Button
-                    onClick={() => resetAllFields}
+                    onClick={resetAllFields}
                     icon={<SettingOutlined />}
                     type="link"
                 >
@@ -301,18 +304,6 @@ export default function ShikimoriPage() {
 
     const toggleCollapsed = () => {
         setCollapsed(!collapsed);
-    };
-
-    const updatePage = (flag: boolean) => {
-        switch (flag) {
-            case true:
-                setPage((current) => current + 1);
-                break;
-
-            case false:
-                setPage((current) => current - 1);
-                break;
-        }
     };
 
     const items2: MenuItem[] = [
