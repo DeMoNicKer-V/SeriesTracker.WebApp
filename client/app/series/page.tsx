@@ -1,5 +1,5 @@
 "use client";
-import Button from "antd/es/button";
+import Button, { ButtonProps } from "antd/es/button";
 import { Series } from "../components/Series";
 import { useEffect, useState } from "react";
 import {
@@ -21,6 +21,7 @@ import {
     MenuProps,
     Pagination,
     PaginationProps,
+    Popconfirm,
     Row,
     Space,
     Tag,
@@ -32,10 +33,17 @@ import {
     LeftOutlined,
     PlusOutlined,
     SettingOutlined,
+    EditOutlined,
+    InfoCircleOutlined,
+    CalendarOutlined,
 } from "@ant-design/icons";
 import dayjs from "dayjs";
+import { redirect, useRouter } from "next/navigation";
+import { ShikimoriLogo } from "../img/ShikimoriLogo";
+import SeriesDrawer from "../components/SeriesDrawer";
 
 export default function SeriesPage() {
+    const router = useRouter();
     const pathname = usePathname();
     const searchParams = useSearchParams();
     const defaultValues = {
@@ -57,6 +65,7 @@ export default function SeriesPage() {
     const [seriesCount, setseriesCount] = useState<Series["item2"]>();
     const [series, setSeries] = useState<Series["item1"][] | any>([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
+
     const [mode, setMode] = useState(Mode.Create);
 
     const getSeries = async (query: any) => {
@@ -76,6 +85,10 @@ export default function SeriesPage() {
         const series = await getAllSeries(page, query);
         setseriesCount(series["item2"]);
         setSeries(series["item1"]);
+    };
+
+    const gotoShikimori = () => {
+        router.push("/shikimori");
     };
 
     const updateSeriesList = async (page: number) => {
@@ -120,17 +133,7 @@ export default function SeriesPage() {
         setIsModalOpen(false);
     };
     const { Text, Title } = Typography;
-    const [ii, setii] = useState<number>(1);
-    const itemRender: PaginationProps["itemRender"] = (
-        _,
-        type,
-        originalElement
-    ) => {
-        if (type === "jump-next") {
-            return <a>Previous</a>;
-        }
-        return originalElement;
-    };
+
     const items2: MenuItem[] = [
         {
             style: {
@@ -153,7 +156,6 @@ export default function SeriesPage() {
         {
             style: {
                 cursor: "default",
-
                 padding: 0,
             },
             key: "prev_next",
@@ -174,6 +176,40 @@ export default function SeriesPage() {
             ),
         },
     ];
+    const buttonOk: ButtonProps = {
+        size: "middle",
+        type: "default",
+        style: {
+            fontSize: 16,
+            marginBottom: 10,
+            marginLeft: 10,
+            marginRight: 10,
+            marginTop: 0,
+        },
+        icon: <EditOutlined />,
+    };
+    const buttonCancel: ButtonProps = {
+        size: "middle",
+        type: "default",
+        style: {
+            fontSize: 16,
+            marginBottom: 10,
+            marginLeft: 10,
+            marginRight: 10,
+            marginTop: 0,
+        },
+        icon: <ShikimoriLogo />,
+    };
+
+    const [openDrawer, setOpenDrawer] = useState(false);
+
+    const showDrawer = () => {
+        setOpenDrawer(true);
+    };
+
+    const closeDrawer = () => {
+        setOpenDrawer(false);
+    };
     return (
         <div className="container">
             <CreateUpdateSeries
@@ -189,9 +225,37 @@ export default function SeriesPage() {
                     <Title style={{ margin: 0 }} level={3}>
                         Ваши сериалы
                     </Title>
-                    <Tag
-                        style={{ cursor: "default" }}
-                    >{`Всего: ${seriesCount}`}</Tag>
+                    <Flex justify="start">
+                        <Tag
+                            style={{ cursor: "default" }}
+                        >{`Всего: ${seriesCount}`}</Tag>
+
+                        <Popconfirm
+                            placement="bottomLeft"
+                            title={
+                                <Title level={4}>
+                                    {"Что вы хотите добавить?"}
+                                </Title>
+                            }
+                            icon={
+                                <InfoCircleOutlined style={{ fontSize: 28 }} />
+                            }
+                            okButtonProps={buttonOk}
+                            cancelButtonProps={buttonCancel}
+                            okText="Свой сериал"
+                            cancelText="Аниме Shikimori"
+                            onCancel={gotoShikimori}
+                            onConfirm={openModal}
+                        >
+                            <Button
+                                size="small"
+                                type="link"
+                                icon={<PlusOutlined />}
+                            >
+                                Добавить
+                            </Button>
+                        </Popconfirm>
+                    </Flex>
                 </Col>
                 <Col span={14}>
                     <ConfigProvider
@@ -230,6 +294,13 @@ export default function SeriesPage() {
                     />
                 </Col>
             </Row>
+            <SeriesDrawer isOpen={openDrawer} onClose={closeDrawer} />
+            <FloatButton
+                onClick={() => showDrawer()}
+                style={{ right: 24 }}
+                shape="circle"
+                icon={<CalendarOutlined />}
+            ></FloatButton>
         </div>
     );
 }

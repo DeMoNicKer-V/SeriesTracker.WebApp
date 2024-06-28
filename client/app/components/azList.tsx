@@ -1,4 +1,14 @@
-import { Button, Col, Radio, RadioChangeEvent, Row } from "antd";
+import {
+    Button,
+    Col,
+    Divider,
+    Flex,
+    Radio,
+    RadioChangeEvent,
+    Row,
+    Segmented,
+    Typography,
+} from "antd";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -107,19 +117,33 @@ export const AZList = ({ handleClickAll, handleClickALetter }: Props) => {
             handleClickALetter();
         }
     };
+    const { Text, Title } = Typography;
     return (
-        <Row>
-            <Col>
+        <Row gutter={[10, 10]}>
+            <Col span={24}>
+                <Flex gap={5} justify="start" align="center">
+                    <Segmented<Boolean>
+                        options={[
+                            { label: "A-Z", value: false },
+                            { label: "А-Я", value: true },
+                        ]}
+                        onChange={changeOptions}
+                    />
+                    <Divider type="vertical" />
+                    <Text>
+                        {
+                            "Поиск ваших сериалов в алфавитном порядке по названию."
+                        }
+                    </Text>
+                </Flex>
+            </Col>
+            <Col span={24}>
                 <Radio.Group
                     onChange={onChange}
                     value={value}
                     options={options}
                     optionType="button"
                 />
-                <Button
-                    onClick={changeOptions}
-                    icon={<SwapOutlined />}
-                ></Button>
             </Col>
         </Row>
     );
