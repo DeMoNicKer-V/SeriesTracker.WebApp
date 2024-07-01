@@ -90,12 +90,33 @@ export default function RootLayout({
             colorBgContainer: "#121212",
             colorBorderSecondary: "transparent",
         },
+        Segmented: {
+            itemHoverBg: "transparent",
+        },
+        Drawer: {
+            colorBgElevated: "#101010",
+        },
+        List: {
+            style: {
+                backgroundColor: "red",
+            },
+        },
     };
     const lightTheme = {};
 
     const lightThemeLayout = {
+        Layout: {
+            headerBg: "#ffffff",
+            siderBg: "#ffffff",
+        },
+        Menu: {
+            activeBarBorderWidth: 0,
+        },
+        Radio: {
+            colorBorder: "transparent",
+        },
         Card: {
-            colorBgContainer: "yellow",
+            colorBgContainer: "#121212",
             colorBorderSecondary: "transparent",
         },
     };
@@ -116,190 +137,174 @@ export default function RootLayout({
 
     return (
         <html lang="en">
-            <body>
-                <div id={"STRACKER"}>
-                    <div id={"__layout"}>
-                        <ConfigProvider
-                            theme={{
-                                token: currentTheme ? darkTheme : lightTheme,
-                                algorithm: currentTheme
-                                    ? theme.darkAlgorithm
-                                    : theme.defaultAlgorithm,
+            <body style={{ background: currentTheme ? "#0f0f0f" : "#ffffff" }}>
+                <ConfigProvider
+                    theme={{
+                        token: currentTheme ? darkTheme : lightTheme,
+                        algorithm: currentTheme
+                            ? theme.darkAlgorithm
+                            : theme.defaultAlgorithm,
 
-                                components: currentTheme
-                                    ? darkThemeLayout
-                                    : lightThemeLayout,
+                        components: currentTheme
+                            ? darkThemeLayout
+                            : lightThemeLayout,
+                    }}
+                >
+                    <Layout>
+                        <title>Series Tracker</title>
+                        <Header
+                            style={{
+                                position: "sticky",
+                                top: 0,
+                                zIndex: 1,
+                                width: "100%",
+
+                                alignItems: "center",
+                                boxShadow:
+                                    "0 2px 4px -1px rgba(0,0,0,.3), 0 4px 5px 0 rgba(0,0,0,.24), 0 1px 10px 0 rgba(0,0,0,.22)",
                             }}
                         >
-                            <Layout>
-                                <title>Series Tracker</title>
-                                <Header
-                                    style={{
-                                        position: "sticky",
-                                        top: 0,
-                                        zIndex: 1,
-                                        width: "100%",
-
-                                        alignItems: "center",
-                                        boxShadow:
-                                            "0 2px 4px -1px rgba(0,0,0,.3), 0 4px 5px 0 rgba(0,0,0,.24), 0 1px 10px 0 rgba(0,0,0,.22)",
-                                    }}
-                                >
-                                    <Row align="middle">
-                                        <Col span={1}>
-                                            <Button
-                                                type="text"
-                                                icon={
-                                                    collapsed ? (
-                                                        <MenuUnfoldOutlined />
-                                                    ) : (
-                                                        <MenuFoldOutlined />
-                                                    )
-                                                }
-                                                onClick={() =>
-                                                    setCollapsed(!collapsed)
-                                                }
-                                                style={{
-                                                    marginLeft: "-50px",
-                                                    height: 64,
-                                                    width: 64,
-                                                    color: "#fff",
-                                                }}
-                                            />
-                                        </Col>
-                                        <Col span={6}>
-                                            <div className="spacer" />{" "}
-                                        </Col>
-                                        <Col span={8}>
-                                            <SearchBar />{" "}
-                                        </Col>
-                                        <Col span={6}>
-                                            <div className="spacer" />{" "}
-                                        </Col>
-                                        <Col span={1}>
-                                            <Switch
-                                                checked={currentTheme}
-                                                checkedChildren={
-                                                    <MoonOutlined />
-                                                }
-                                                unCheckedChildren={
-                                                    <SunOutlined />
-                                                }
-                                                onChange={(checked: any) => {
-                                                    setColorThemeCookie(
-                                                        checked
-                                                    );
-                                                }}
-                                            />
-                                        </Col>
-                                    </Row>
-                                </Header>
-                                <Layout
-                                    style={{
-                                        padding: 10,
-                                    }}
-                                >
-                                    <Sider
-                                        trigger={null}
-                                        collapsible
-                                        collapsed={collapsed}
+                            <Row align="middle">
+                                <Col span={1}>
+                                    <Button
+                                        type="text"
+                                        icon={
+                                            collapsed ? (
+                                                <MenuUnfoldOutlined />
+                                            ) : (
+                                                <MenuFoldOutlined />
+                                            )
+                                        }
+                                        onClick={() => setCollapsed(!collapsed)}
                                         style={{
-                                            height: "90vh",
-                                            maxHeight: "calc(100% - 80px)",
-                                            position: "sticky",
-                                            top: "80px",
-                                            transform: "translateX(0%)",
-                                            padding: "4px",
-                                            boxShadow:
-                                                "0 2px 4px -1px rgba(0,0,0,.3), 0 4px 5px 0 rgba(0,0,0,.24), 0 1px 10px 0 rgba(0,0,0,.22)",
+                                            marginLeft: "-50px",
+                                            height: 64,
+                                            width: 64,
+                                            color: "#fff",
                                         }}
-                                    >
-                                        <Menu
-                                            onSelect={({ key }) =>
-                                                setCurrentKey(key)
-                                            }
-                                            selectedKeys={[currentKey]}
-                                            style={{
-                                                background: "transparent",
-                                            }}
-                                            mode="inline"
-                                            items={[
-                                                {
-                                                    key: "series",
-                                                    icon: <HomeOutlined />,
-                                                    label: (
-                                                        <Link href={"/series"}>
-                                                            Ваши сериалы
-                                                        </Link>
-                                                    ),
-                                                },
-                                                {
-                                                    key: "search",
-                                                    icon: <SearchOutlined />,
-                                                    label: (
-                                                        <Link href={"/search"}>
-                                                            Поиск
-                                                        </Link>
-                                                    ),
-                                                },
-                                                {
-                                                    key: "shikimori",
-                                                    icon: <HeartIcon />,
-                                                    label: (
-                                                        <Link
-                                                            href={"/shikimori"}
-                                                        >
-                                                            Shikimori
-                                                        </Link>
-                                                    ),
-                                                },
-                                                {
-                                                    key: "calendar",
-                                                    icon: <CalendarOutlined />,
-                                                    label: (
-                                                        <Link
-                                                            href={"/calendar"}
-                                                        >
-                                                            Календарь выхода
-                                                        </Link>
-                                                    ),
-                                                },
-                                                {
-                                                    key: "random",
-                                                    onClick: getRandomAnimeId,
-                                                    icon: <QuestionOutlined />,
-                                                    label: (
-                                                        <Text>
-                                                            Случайное аниме
-                                                        </Text>
-                                                    ),
-                                                },
-                                            ]}
-                                        />
-                                    </Sider>
-                                    <Layout>
-                                        <Content>{children}</Content>
-                                        <Footer
-                                            style={{
-                                                textAlign: "left",
-                                            }}
-                                        >
-                                            <AZList
-                                                handleClickAll={() => {
-                                                    setCurrentKey("series");
-                                                }}
-                                                handleClickALetter={() => {
-                                                    setCurrentKey("search");
-                                                }}
-                                            />
-                                        </Footer>
-                                    </Layout>
-                                </Layout>
+                                    />
+                                </Col>
+                                <Col span={6}>
+                                    <div className="spacer" />{" "}
+                                </Col>
+                                <Col span={8}>
+                                    <SearchBar
+                                        listBG={
+                                            currentTheme ? "#1e1e1e" : "#ffffff"
+                                        }
+                                    />
+                                </Col>
+                                <Col span={6}>
+                                    <div className="spacer" />{" "}
+                                </Col>
+                                <Col span={1}>
+                                    <Switch
+                                        checked={currentTheme}
+                                        checkedChildren={<MoonOutlined />}
+                                        unCheckedChildren={<SunOutlined />}
+                                        onChange={(checked: any) => {
+                                            setColorThemeCookie(checked);
+                                        }}
+                                    />
+                                </Col>
+                            </Row>
+                        </Header>
+                        <Layout
+                            style={{
+                                padding: 10,
+                            }}
+                        >
+                            <Sider
+                                trigger={null}
+                                collapsible
+                                collapsed={collapsed}
+                                style={{
+                                    height: "90vh",
+                                    maxHeight: "calc(100% - 80px)",
+                                    position: "sticky",
+                                    top: "80px",
+                                    transform: "translateX(0%)",
+                                    padding: "4px",
+                                    boxShadow:
+                                        "0 2px 4px -1px rgba(0,0,0,.3), 0 4px 5px 0 rgba(0,0,0,.24), 0 1px 10px 0 rgba(0,0,0,.22)",
+                                    borderRadius: 5,
+                                }}
+                            >
+                                <Menu
+                                    onSelect={({ key }) => setCurrentKey(key)}
+                                    selectedKeys={[currentKey]}
+                                    style={{
+                                        background: "transparent",
+                                    }}
+                                    mode="inline"
+                                    items={[
+                                        {
+                                            key: "series",
+                                            icon: <HomeOutlined />,
+                                            label: (
+                                                <Link href={"/series"}>
+                                                    Ваши сериалы
+                                                </Link>
+                                            ),
+                                        },
+                                        {
+                                            key: "search",
+                                            icon: <SearchOutlined />,
+                                            label: (
+                                                <Link href={"/search"}>
+                                                    Поиск
+                                                </Link>
+                                            ),
+                                        },
+                                        {
+                                            key: "shikimori",
+                                            icon: <HeartIcon />,
+                                            label: (
+                                                <Link href={"/shikimori"}>
+                                                    Shikimori
+                                                </Link>
+                                            ),
+                                        },
+                                        {
+                                            key: "calendar",
+                                            icon: <CalendarOutlined />,
+                                            label: (
+                                                <Link href={"/calendar"}>
+                                                    Календарь выхода
+                                                </Link>
+                                            ),
+                                        },
+                                        {
+                                            key: "random",
+                                            onClick: getRandomAnimeId,
+                                            icon: <QuestionOutlined />,
+                                            label: <Text>Случайное аниме</Text>,
+                                        },
+                                    ]}
+                                />
+                            </Sider>
+                            <Layout>
+                                <Content>{children}</Content>
+                                <Footer
+                                    style={{
+                                        textAlign: "left",
+                                    }}
+                                >
+                                    <AZList
+                                        handleClickAll={() => {
+                                            setCurrentKey("series");
+                                        }}
+                                        handleClickALetter={() => {
+                                            setCurrentKey("search");
+                                        }}
+                                    />
+                                </Footer>
                             </Layout>
-                        </ConfigProvider>
-                    </div>
-                    <FloatButton.BackTop />
-                </div>
+                        </Layout>
+                    </Layout>
+                </ConfigProvider>
+
+                <FloatButton.BackTop />
             </body>
         </html>
     );

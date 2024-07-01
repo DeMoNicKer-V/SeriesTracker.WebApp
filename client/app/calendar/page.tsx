@@ -112,8 +112,9 @@ export default function CalendarPage() {
     return (
         <div className="container">
             <Row gutter={[20, 20]} align={"middle"} justify={"center"}>
-                <Col>
+                <Col span={20}>
                     <Segmented<Date>
+                        block
                         options={genres}
                         value={value}
                         onChange={(value) => {

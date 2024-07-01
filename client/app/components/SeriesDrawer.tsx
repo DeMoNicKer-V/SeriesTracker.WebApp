@@ -86,22 +86,39 @@ export const SeriesDrawer = ({ isOpen, onClose }: Props) => {
     return (
         <Drawer
             title={
-                <Flex justify="center" align="center" gap={10}>
-                    <Title level={5}>Ближайшие релизы</Title>
-                    <Button>Подробнее</Button>
-                </Flex>
+                <Row justify={"end"} align={"middle"}>
+                    <Col span={16}>
+                        <Title italic style={{ margin: 0 }} level={5}>
+                            Ближайшие релизы
+                        </Title>
+                    </Col>
+                    <Col span={8}>
+                        <Button type="text" href={"/calendar"}>
+                            <Text strong style={{ color: "#DE1EB2" }} italic>
+                                Подробнее
+                            </Text>
+                        </Button>
+                    </Col>
+                </Row>
             }
             onClose={onClose}
             open={isOpen}
         >
             <Segmented<Date>
+                block
                 options={dates}
                 defaultValue={dates[0].value}
                 onChange={(value) => {
-                    console.log(value);
                     setValue(value);
                 }}
             />
+            <Title italic level={4} style={{ textAlign: "center", margin: 10 }}>
+                {new Date(value).toLocaleDateString("ru-RU", {
+                    weekday: "long",
+                    day: "numeric",
+                    month: "long",
+                })}
+            </Title>
             <List
                 bordered={false}
                 dataSource={filter}
