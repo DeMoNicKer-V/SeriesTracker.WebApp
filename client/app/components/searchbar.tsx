@@ -52,7 +52,14 @@ export const SearchBar = ({ listBG }: Props) => {
     }, [ref]);
 
     useEffect(() => {
+        if (!query) {
+            setIsShown(false);
+            setNullString("Введите для поиска");
+            setLoading(false);
+            return;
+        }
         setLoading(true);
+        setNullString("");
         const timer = setTimeout(() => {
             fakeApi();
         }, 1000);
@@ -69,23 +76,14 @@ export const SearchBar = ({ listBG }: Props) => {
     const fakeApi = async () => {
         const series = await getAllSeriesSearch(query);
         setSeries(series);
-
-        query === ""
-            ? setNullString("Введите для поиска")
-            : setNullString("Ничего не найдено :(");
-
         setLoading(false);
-        if (series1 === undefined) return;
-    };
-    const customizeRenderEmpty = () => (
-        <Flex gap={10} justify="center">
-            <InfoCircleFilled style={{ fontSize: 20, color: "#fff" }} />
 
-            <Text style={{ fontSize: 16 }} strong>
-                {nullString}
-            </Text>
-        </Flex>
-    );
+        if (!series.length) {
+            setNullString("Ничего не найдено");
+            return;
+        }
+    };
+    const customizeRenderEmpty = () => <></>;
     const { Link } = Typography;
     const { Text, Title } = Typography;
     const [form] = Form.useForm();
@@ -147,6 +145,18 @@ export const SearchBar = ({ listBG }: Props) => {
                     <List
                         style={{ background: listBG }}
                         className="search_result"
+                        header={
+                            nullString && (
+                                <Flex gap={10} justify="center">
+                                    <InfoCircleFilled
+                                        style={{ fontSize: 20, color: "#fff" }}
+                                    />
+                                    <Text style={{ fontSize: 16 }} strong>
+                                        {nullString}
+                                    </Text>
+                                </Flex>
+                            )
+                        }
                         footer={
                             <Flex justify="end">
                                 <Button type="text" href={"/search"}>
@@ -164,11 +174,7 @@ export const SearchBar = ({ listBG }: Props) => {
                         itemLayout="horizontal"
                         dataSource={series1}
                         renderItem={(item: Series["item1"]) => (
-                            <Link
-                                tabIndex={0}
-                                target="_self"
-                                href={`/series/${item.id}`}
-                            >
+                            <Link target="_self" href={`/series/${item.id}`}>
                                 <Card
                                     bordered={false}
                                     hoverable
