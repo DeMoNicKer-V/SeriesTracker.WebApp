@@ -1,5 +1,15 @@
 "use client";
-import { Col, Divider, Empty, Flex, Input, Pagination, Row, Spin } from "antd";
+import {
+    Col,
+    Divider,
+    Empty,
+    Flex,
+    Input,
+    Pagination,
+    Row,
+    Spin,
+    Typography,
+} from "antd";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Series } from "../components/Series";
 import { useEffect, useState } from "react";
@@ -18,6 +28,7 @@ import {
 export default function SearchPage() {
     const pathname = usePathname();
     const [loading, setLoading] = useState(false);
+    const [inputFocus, setInputFocus] = useState(false);
     const searchParams = useSearchParams();
     const [query, setQuery] = useState<string | null>(null);
     const [alphabet, setAlphabet] = useState<string | null>(null);
@@ -90,18 +101,36 @@ export default function SearchPage() {
             />
             <Row align={"middle"} justify={"center"}>
                 <Col span={16}>
-                    <div
-                        style={{ zIndex: 1 }}
-                        className={loading === true ? "loading" : ""}
-                    >
+                    <div>
+                        <Typography.Title
+                            level={5}
+                            style={{
+                                position: "absolute",
+                                background: "rgb(15,15,15)",
+                                zIndex: 1,
+                                left: 20,
+                                top: -15,
+                                padding: 3,
+                                color: inputFocus ? "#DE1EB2" : "",
+                                fontSize: 14,
+                            }}
+                        >
+                            Поиск
+                        </Typography.Title>
                         <Input
                             value={String(query)}
                             onChange={(e: { target: { value: any } }) => {
                                 handle(e.target.value);
                             }}
                             placeholder="Введите для поиска"
-                            suffix={<SearchOutlined />}
-                            spellCheck={false}
+                            style={{
+                                fontSize: 18,
+                                padding: 10,
+                                background: "none",
+                            }}
+                            spellCheck={"false"}
+                            onFocus={() => setInputFocus(true)}
+                            onBlur={() => setInputFocus(false)}
                         />
                     </div>
                 </Col>

@@ -156,9 +156,8 @@ export default function RootLayout({
                             style={{
                                 position: "sticky",
                                 top: 0,
-                                zIndex: 1,
+                                zIndex: 99,
                                 width: "100%",
-
                                 alignItems: "center",
                                 boxShadow:
                                     "0 2px 4px -1px rgba(0,0,0,.3), 0 4px 5px 0 rgba(0,0,0,.24), 0 1px 10px 0 rgba(0,0,0,.22)",
