@@ -14,6 +14,7 @@ import {
     DatePicker,
     Divider,
     Flex,
+    FloatButton,
     Form,
     Input,
     List,
@@ -48,6 +49,7 @@ export default function ShikimoriPage() {
         { label: "Вышло", value: "released" },
     ];
 
+    const [inputFocus, setInputFocus] = useState(false);
     const [loading, setLoading] = useState(false);
     const [animes, setAnimes] = useState<Anime[] | any>([]);
     const [genres, setGenres] = useState<Genre[] | any>([]);
@@ -98,8 +100,8 @@ export default function ShikimoriPage() {
             genre: genre,
         };
 
-        setLoading(true);
         const timer = setTimeout(() => {
+            setLoading(true);
             getAnimesPost(req);
         }, 1000);
 
@@ -154,6 +156,42 @@ export default function ShikimoriPage() {
         selectedItems.splice(index, 1);
     };
     const items: MenuItem[] = [
+        {
+            key: "0",
+            style: { minWidth: 200, maxWidth: 500 },
+            label: (
+                <div style={{ width: "100%" }}>
+                    <Typography.Title
+                        level={5}
+                        style={{
+                            position: "absolute",
+                            background: "#141414",
+                            zIndex: 1,
+                            left: 20,
+                            top: -15,
+                            padding: 3,
+                            color: inputFocus ? "#DE1EB2" : "",
+                            fontSize: 14,
+                        }}
+                    >
+                        Поиск
+                    </Typography.Title>
+                    <Input
+                        onChange={(e: { target: { value: any } }) => {
+                            setQuery(String(e.target.value));
+                        }}
+                        suffix={<SearchOutlined />}
+                        style={{
+                            fontSize: 18,
+                            background: "none",
+                        }}
+                        spellCheck={false}
+                        onFocus={() => setInputFocus(true)}
+                        onBlur={() => setInputFocus(false)}
+                    />
+                </div>
+            ),
+        },
         {
             key: "1",
             icon: <MailOutlined />,
@@ -356,47 +394,20 @@ export default function ShikimoriPage() {
         <div className="container">
             <title>Series Tracker - Shikimori</title>
             <Spin size="large" fullscreen spinning={loading} />
-
-            <Row align={"middle"} justify={"end"}>
-                <Col span={12}>
-                    <Input
-                        style={{ fontSize: 18, padding: 10 }}
-                        onChange={(e: { target: { value: any } }) => {
-                            setQuery(String(e.target.value));
-                        }}
-                        placeholder="Введите для поиска"
-                        suffix={<SearchOutlined />}
-                        spellCheck={false}
-                    />
-                </Col>
-                <Col span={5}></Col>
-                <Col span={1}>
-                    <Button
-                        icon={<FilterOutlined />}
-                        type="link"
-                        onClick={toggleCollapsed}
-                        style={
-                            collapsed
-                                ? { backgroundColor: "#DE1EB2" }
-                                : { backgroundColor: "transparent" }
-                        }
-                    ></Button>
-                </Col>
-            </Row>
-
-            <Divider dashed style={{ margin: 15 }}></Divider>
-
             <Row justify={"center"} align={"middle"}>
-                <Col span={10}>
+                <Col span={18}>
                     <Menu
                         selectedKeys={selectedItems}
                         triggerSubMenuAction={"click"}
                         style={{
+                            display: "flex",
                             alignItems: "center",
                             justifyContent: "center",
                             opacity: !collapsed ? "0" : "1",
                             transition: "all .2s",
                             visibility: !collapsed ? "hidden" : "visible",
+                            padding: 15,
+                            borderRadius: 10,
                         }}
                         selectable={false}
                         multiple
@@ -412,14 +423,24 @@ export default function ShikimoriPage() {
                 style={{
                     alignItems: "center",
                     justifyContent: "center",
-                    marginTop: !collapsed ? -30 : 30,
+                    marginTop: !collapsed ? -60 : 30,
                     transition: "all .2s",
                 }}
             >
                 <Col span={10}>
-                    <Typography.Title style={{ margin: 0 }} level={3}>
-                        Shikimori.One
-                    </Typography.Title>
+                    <Flex gap={5}>
+                        <Typography.Title style={{ margin: 0 }} level={3}>
+                            Shikimori.One
+                        </Typography.Title>
+                        <Button
+                            type="primary"
+                            shape="circle"
+                            ghost={!collapsed}
+                            onClick={() => toggleCollapsed()}
+                            icon={<SearchOutlined />}
+                        ></Button>
+                    </Flex>
+
                     <Flex justify="start">
                         <Tag
                             style={{ cursor: "default" }}
