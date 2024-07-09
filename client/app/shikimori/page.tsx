@@ -308,6 +308,7 @@ export default function ShikimoriPage() {
 
     const items2: MenuItem[] = [
         {
+            style: { marginLeft: "auto" },
             label: "По рейтингу",
             key: "ranked",
             icon: <SettingOutlined />,
@@ -330,14 +331,22 @@ export default function ShikimoriPage() {
         {
             style: {
                 cursor: "default",
-                marginLeft: "auto",
+                padding: 0,
             },
             key: "prev_next",
             disabled: true,
             label: (
                 <Space split={<Divider type="vertical" />}>
-                    <Button icon={<LeftOutlined />}>Назад</Button>
-                    <Button icon={<RightOutlined />}>Вперед</Button>
+                    <Button size="small" icon={<LeftOutlined />}>
+                        Назад
+                    </Button>
+                    <Button
+                        size="small"
+                        iconPosition="end"
+                        icon={<RightOutlined />}
+                    >
+                        Вперед
+                    </Button>
                 </Space>
             ),
         },
@@ -397,16 +406,27 @@ export default function ShikimoriPage() {
                 </Col>
             </Row>
 
-            <Row justify={"center"} align={"middle"}>
-                <Col
-                    span={23}
-                    style={{
-                        alignItems: "center",
-                        justifyContent: "center",
-                        marginTop: !collapsed ? -30 : 30,
-                        transition: "all .2s",
-                    }}
-                >
+            <Row
+                align={"middle"}
+                justify={"center"}
+                style={{
+                    alignItems: "center",
+                    justifyContent: "center",
+                    marginTop: !collapsed ? -30 : 30,
+                    transition: "all .2s",
+                }}
+            >
+                <Col span={10}>
+                    <Typography.Title style={{ margin: 0 }} level={3}>
+                        Shikimori.One
+                    </Typography.Title>
+                    <Flex justify="start">
+                        <Tag
+                            style={{ cursor: "default" }}
+                        >{`Страница: ${page}`}</Tag>
+                    </Flex>
+                </Col>
+                <Col span={14}>
                     <ConfigProvider
                         theme={{
                             components: {
@@ -418,20 +438,15 @@ export default function ShikimoriPage() {
                         }}
                     >
                         <Menu
-                            onSelect={onClick}
-                            style={{
-                                marginBottom: 20,
-                            }}
-                            defaultSelectedKeys={[current]}
+                            defaultSelectedKeys={["ranked"]}
                             items={items2}
                             mode="horizontal"
                         />
                     </ConfigProvider>
                 </Col>
-                <Col>
-                    <Animes animes={animes} />
-                </Col>
             </Row>
+            <Divider />
+            <Animes animes={animes} />
         </div>
     );
 }

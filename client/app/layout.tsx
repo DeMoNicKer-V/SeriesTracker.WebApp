@@ -92,6 +92,7 @@ export default function RootLayout({
         },
         Segmented: {
             itemHoverBg: "transparent",
+            itemSelectedBg: "#DE1EB2",
         },
         Drawer: {
             colorBgElevated: "#101010",
