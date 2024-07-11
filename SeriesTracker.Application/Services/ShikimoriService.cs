@@ -54,7 +54,7 @@ namespace SeriesTracker.Application.Services
             return new GraphQLRequest
             {
                 Query = @"query GetAll($page: Int, $order: OrderEnum) {
-                                animes(page: $page, order: $order, status: ""!anons"",  limit: 20) {
+                                animes(page: $page, order: $order, kind: !music, status: !anons,  limit: 20) {
                                     id
                                     russian
                                     name
@@ -119,7 +119,7 @@ namespace SeriesTracker.Application.Services
             return new GraphQLRequest
             {
                 Query = @"query GetByName($name: String, $page: Int) {
-                                animes(search: $name, page: $page, limit: 30) {
+                                animes(search: $name, kind: !music, status: !anons, page: $page, limit: 30) {
                                     id
                                     russian
                                     name
@@ -151,6 +151,7 @@ namespace SeriesTracker.Application.Services
 
         private static GraphQLRequest GetRequest(int page, string name, string season, string status,string kind, string genre)
         {
+
             return new GraphQLRequest
             {
                 Query = @"query GetByAllParams($page: Int, $name: String, $season: SeasonString, $status: AnimeStatusString, $kind: AnimeKindString, $genre: String) {
@@ -182,8 +183,8 @@ namespace SeriesTracker.Application.Services
                     page = page,
                     name = name,
                     season = season,
-                    status = status,
-                    kind = kind,
+                    status = string.IsNullOrEmpty(status) ? "!anons": status,
+                    kind = string.IsNullOrEmpty(kind) ? "!music" : kind,
                     genre = genre
                 }
             };

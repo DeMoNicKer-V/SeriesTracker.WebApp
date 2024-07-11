@@ -115,7 +115,6 @@ export default function ShikimoriPage() {
         { label: "OVA", value: "ova" },
         { label: "Спешл", value: "special" },
         { label: "TV-Спешл", value: "tv_special" },
-        { label: "Музыка", value: "music" },
     ];
 
     const genreOptions: SelectProps["options"] = [];
@@ -142,7 +141,8 @@ export default function ShikimoriPage() {
     };
 
     const resetAllFields = () => {
-        console.log("aaa");
+        form.resetFields();
+        setSelectedItems([]);
         setPage(1);
         setQuery("");
         setStatus("");
@@ -155,10 +155,11 @@ export default function ShikimoriPage() {
         const index = selectedItems.indexOf(key);
         selectedItems.splice(index, 1);
     };
+    const [form] = Form.useForm();
     const items: MenuItem[] = [
         {
             key: "0",
-            style: { minWidth: 200, maxWidth: 500 },
+            style: { minWidth: 200, maxWidth: 500, flex: "1 1 auto" },
             label: (
                 <div style={{ width: "100%" }}>
                     <Typography.Title
@@ -180,6 +181,7 @@ export default function ShikimoriPage() {
                         onChange={(e: { target: { value: any } }) => {
                             setQuery(String(e.target.value));
                         }}
+                        value={query}
                         suffix={<SearchOutlined />}
                         style={{
                             fontSize: 18,
@@ -202,21 +204,25 @@ export default function ShikimoriPage() {
                     disabled: true,
                     style: { cursor: "default", margin: 10 },
                     label: (
-                        <DatePicker
-                            onChange={(date) => {
-                                if (date) {
-                                    setSeason(date.format("YYYY").toString());
-                                } else setSeason("");
-                                valueChange(date, "1");
-                            }}
-                            variant="borderless"
-                            inputReadOnly
-                            minDate={dayjs(1967)}
-                            maxDate={date}
-                            placeholder="Год выхода"
-                            style={{ width: "100%" }}
-                            picker="year"
-                        />
+                        <Form.Item name={"season"}>
+                            <DatePicker
+                                onChange={(date) => {
+                                    if (date) {
+                                        setSeason(
+                                            date.format("YYYY").toString()
+                                        );
+                                    } else setSeason("");
+                                    valueChange(date, "1");
+                                }}
+                                variant="borderless"
+                                inputReadOnly
+                                minDate={dayjs(1967)}
+                                maxDate={date}
+                                placeholder="Год выхода"
+                                style={{ width: "100%" }}
+                                picker="year"
+                            />
+                        </Form.Item>
                     ),
                 },
             ],
@@ -231,20 +237,22 @@ export default function ShikimoriPage() {
                     disabled: true,
                     style: { cursor: "default", margin: 10 },
                     label: (
-                        <Select
-                            allowClear
-                            onChange={(value) => {
-                                if (value) {
-                                    setStatus(value.toString());
-                                } else setStatus("");
-                                valueChange(value, "2");
-                            }}
-                            variant="borderless"
-                            placeholder="Статус"
-                            maxTagCount={"responsive"}
-                            style={{ width: "100%" }}
-                            options={statusOptions}
-                        />
+                        <Form.Item name={"status"}>
+                            <Select
+                                allowClear
+                                onChange={(value) => {
+                                    if (value) {
+                                        setStatus(value.toString());
+                                    } else setStatus("");
+                                    valueChange(value, "2");
+                                }}
+                                variant="borderless"
+                                placeholder="Статус"
+                                maxTagCount={"responsive"}
+                                style={{ width: "100%" }}
+                                options={statusOptions}
+                            />
+                        </Form.Item>
                     ),
                 },
             ],
@@ -260,20 +268,22 @@ export default function ShikimoriPage() {
                     disabled: true,
                     style: { cursor: "default", margin: 10 },
                     label: (
-                        <Select
-                            allowClear
-                            onChange={(value) => {
-                                if (value) {
-                                    setKind(value.toString());
-                                } else setKind("");
-                                valueChange(value, "3");
-                            }}
-                            variant="borderless"
-                            placeholder="Тип"
-                            maxTagCount={"responsive"}
-                            style={{ width: "100%" }}
-                            options={kindOptions}
-                        />
+                        <Form.Item name={"kind"}>
+                            <Select
+                                allowClear
+                                onChange={(value) => {
+                                    if (value) {
+                                        setKind(value.toString());
+                                    } else setKind("");
+                                    valueChange(value, "3");
+                                }}
+                                variant="borderless"
+                                placeholder="Тип"
+                                maxTagCount={"responsive"}
+                                style={{ width: "100%" }}
+                                options={kindOptions}
+                            />
+                        </Form.Item>
                     ),
                 },
             ],
@@ -286,30 +296,31 @@ export default function ShikimoriPage() {
                 {
                     style: { width: 400, cursor: "default", margin: 10 },
                     disabled: true,
-
                     key: "41",
                     label: (
-                        <Select
-                            onClear={() => {
-                                onClear("4");
-                            }}
-                            allowClear
-                            onChange={(value) => {
-                                if (value) {
-                                    setGenre(value.toString());
-                                } else setGenre("");
-                                valueChange(value.toString(), "4");
-                            }}
-                            variant="borderless"
-                            placeholder="Выберите жанры (макс. 5)"
-                            maxTagCount={"responsive"}
-                            maxCount={5}
-                            mode="multiple"
-                            style={{
-                                width: "100%",
-                            }}
-                            options={genreOptions}
-                        />
+                        <Form.Item name={"genre"}>
+                            <Select
+                                onClear={() => {
+                                    onClear("4");
+                                }}
+                                allowClear
+                                onChange={(value) => {
+                                    if (value) {
+                                        setGenre(value.toString());
+                                    } else setGenre("");
+                                    valueChange(value.toString(), "4");
+                                }}
+                                variant="borderless"
+                                placeholder="Выберите жанры (макс. 5)"
+                                maxTagCount={"responsive"}
+                                maxCount={5}
+                                mode="multiple"
+                                style={{
+                                    width: "100%",
+                                }}
+                                options={genreOptions}
+                            />
+                        </Form.Item>
                     ),
                 },
             ],
@@ -396,24 +407,26 @@ export default function ShikimoriPage() {
             <Spin size="large" fullscreen spinning={loading} />
             <Row justify={"center"} align={"middle"}>
                 <Col span={18}>
-                    <Menu
-                        selectedKeys={selectedItems}
-                        triggerSubMenuAction={"click"}
-                        style={{
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            opacity: !collapsed ? "0" : "1",
-                            transition: "all .2s",
-                            visibility: !collapsed ? "hidden" : "visible",
-                            padding: 15,
-                            borderRadius: 10,
-                        }}
-                        selectable={false}
-                        multiple
-                        mode="horizontal"
-                        items={items}
-                    ></Menu>
+                    <Form form={form}>
+                        <Menu
+                            selectedKeys={selectedItems}
+                            triggerSubMenuAction={"click"}
+                            style={{
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                opacity: !collapsed ? "0" : "1",
+                                transition: "all .2s",
+                                visibility: !collapsed ? "hidden" : "visible",
+                                padding: 15,
+                                borderRadius: 10,
+                            }}
+                            selectable={false}
+                            multiple
+                            mode="horizontal"
+                            items={items}
+                        ></Menu>
+                    </Form>
                 </Col>
             </Row>
 
@@ -427,7 +440,7 @@ export default function ShikimoriPage() {
                     transition: "all .2s",
                 }}
             >
-                <Col span={10}>
+                <Col span={12}>
                     <Flex gap={5}>
                         <Typography.Title style={{ margin: 0 }} level={3}>
                             Shikimori.One
@@ -447,7 +460,7 @@ export default function ShikimoriPage() {
                         >{`Страница: ${page}`}</Tag>
                     </Flex>
                 </Col>
-                <Col span={14}>
+                <Col span={12}>
                     <ConfigProvider
                         theme={{
                             components: {
