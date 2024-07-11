@@ -34,9 +34,9 @@ namespace SeriesTracker.Application.Services
             return await graphQLClient.SendQueryAsync<ShikimoriAnimeList>(GetRequest(Id));
         }
 
-        public async Task<GraphQLResponse<ShikimoriAnimeList>> GetAnimesByAllParams(int page, string name, string season, string status, string kind, string genre)
+        public async Task<GraphQLResponse<ShikimoriAnimeList>> GetAnimesByAllParams(int page, string name, string season, string status, string kind, string genre, string order)
         {
-            return await graphQLClient.SendQueryAsync<ShikimoriAnimeList>(GetRequest(page, name, season, status, kind, genre));
+            return await graphQLClient.SendQueryAsync<ShikimoriAnimeList>(GetRequest(page, name, season, status, kind, genre, order));
         }
 
         public async Task<GraphQLResponse<GenreList>> GetGenres()
@@ -54,7 +54,7 @@ namespace SeriesTracker.Application.Services
             return new GraphQLRequest
             {
                 Query = @"query GetAll($page: Int, $order: OrderEnum) {
-                                animes(page: $page, order: $order, kind: !music, status: !anons,  limit: 20) {
+                                animes(page: $page, order: $order, kind: ""!music"", status: ""!anons"",  limit: 28) {
                                     id
                                     russian
                                     name
@@ -119,7 +119,7 @@ namespace SeriesTracker.Application.Services
             return new GraphQLRequest
             {
                 Query = @"query GetByName($name: String, $page: Int) {
-                                animes(search: $name, kind: !music, status: !anons, page: $page, limit: 30) {
+                                animes(search: $name, kind: ""!music"", status: ""!anons"", page: $page, limit: 28) {
                                     id
                                     russian
                                     name
@@ -149,13 +149,13 @@ namespace SeriesTracker.Application.Services
             };
         }
 
-        private static GraphQLRequest GetRequest(int page, string name, string season, string status,string kind, string genre)
+        private static GraphQLRequest GetRequest(int page, string name, string season, string status,string kind, string genre, string order)
         {
 
             return new GraphQLRequest
             {
-                Query = @"query GetByAllParams($page: Int, $name: String, $season: SeasonString, $status: AnimeStatusString, $kind: AnimeKindString, $genre: String) {
-                                animes(page: $page, search: $name, season: $season, status: $status, kind: $kind, genre: $genre, limit: 30) {
+                Query = @"query GetByAllParams($page: Int, $name: String, $season: SeasonString, $status: AnimeStatusString, $kind: AnimeKindString, $genre: String, $order: OrderEnum) {
+                                animes(page: $page, search: $name, season: $season, status: $status, kind: $kind, genre: $genre, order: $order, limit: 28) {
                                     id
                                     russian
                                     name
@@ -185,7 +185,8 @@ namespace SeriesTracker.Application.Services
                     season = season,
                     status = string.IsNullOrEmpty(status) ? "!anons": status,
                     kind = string.IsNullOrEmpty(kind) ? "!music" : kind,
-                    genre = genre
+                    genre = genre,
+                    order = order
                 }
             };
         }

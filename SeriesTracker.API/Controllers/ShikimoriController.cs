@@ -54,7 +54,7 @@ namespace SeriesTracker.API.Controllers
         [HttpPost("animes")]
         public async Task<ActionResult> GetAnimesByAllParams([FromBody] ShikimoriParamsRequest request)
         {
-            GraphQLResponse<ShikimoriAnimeList> graphQLResponse = await ShikimoriService.GetAnimesByAllParams(request.Page, request.Name, request.Season, request.Status, request.Kind, request.Genre);
+            GraphQLResponse<ShikimoriAnimeList> graphQLResponse = await ShikimoriService.GetAnimesByAllParams(request.Page, request.Name, request.Season, request.Status, request.Kind, request.Genre, request.Order);
             return Ok(graphQLResponse.Data.Animes);
         }
     }

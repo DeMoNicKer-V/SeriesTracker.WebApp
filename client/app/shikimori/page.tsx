@@ -59,12 +59,12 @@ export default function ShikimoriPage() {
     const [kind, setKind] = useState<string>("");
     const [genre, setGenre] = useState<string>("");
     const [season, setSeason] = useState<string>("");
+    const [order, setOrder] = useState<string>("ranked");
     const [page, setPage] = useState<number>(1);
 
-    const [current, setCurrent] = useState("ranked");
-
     const onClick: MenuProps["onSelect"] = (e) => {
-        setCurrent(e.key);
+        setQuery("");
+        setOrder(e.key);
     };
 
     const getGenresList = async () => {
@@ -75,22 +75,16 @@ export default function ShikimoriPage() {
         getGenresList();
     }, []);
 
-    useEffect(() => {
-        getAnimesFirst();
-    }, [current]);
-
     const getAnimesPost = async (req: ShikimoriRequest) => {
         const animes = await getAnimesByParams(req);
         setAnimes(animes);
         setLoading(false);
     };
 
-    const getAnimesFirst = async () => {
-        const animes = await getAnimes(page, current);
-        setAnimes(animes);
-    };
-
     useEffect(() => {
+        if (query) {
+            setOrder("ranked");
+        }
         const req: ShikimoriRequest = {
             page: page,
             name: query,
@@ -98,6 +92,7 @@ export default function ShikimoriPage() {
             status: status,
             kind: kind,
             genre: genre,
+            order: order,
         };
 
         const timer = setTimeout(() => {
@@ -106,7 +101,7 @@ export default function ShikimoriPage() {
         }, 1000);
 
         return () => clearTimeout(timer);
-    }, [page, query, season, status, kind, genre]);
+    }, [page, query, season, status, kind, genre, order]);
 
     const kindOptions: SelectProps["options"] = [
         { label: "TV-Сериал", value: "tv" },
@@ -144,6 +139,7 @@ export default function ShikimoriPage() {
         form.resetFields();
         setSelectedItems([]);
         setPage(1);
+        setOrder("ranked");
         setQuery("");
         setStatus("");
         setKind("");
@@ -472,7 +468,8 @@ export default function ShikimoriPage() {
                         }}
                     >
                         <Menu
-                            defaultSelectedKeys={["ranked"]}
+                            onSelect={onClick}
+                            selectedKeys={[order]}
                             items={items2}
                             mode="horizontal"
                         />

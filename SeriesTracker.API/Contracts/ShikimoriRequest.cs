@@ -24,6 +24,7 @@
         string Season = "",
         string Status = "",
         string Kind = "",
-        string Genre = ""
+        string Genre = "",
+        string Order = ""
     );
 }

@@ -12,6 +12,7 @@ export interface ShikimoriRequest {
     status: string;
     kind: string;
     genre: string;
+    order: string;
 }
 
 export interface AnimeInfo {
