@@ -19,6 +19,7 @@ import {
     Image,
     theme,
     Segmented,
+    Input,
 } from "antd";
 
 import Icon, {
@@ -102,6 +103,9 @@ export default function RootLayout({
                 backgroundColor: "red",
             },
         },
+        Input: {
+            colorPrimaryHover: "#fff",
+        },
     };
     const lightTheme = {};
 
@@ -151,7 +155,7 @@ export default function RootLayout({
                             : lightThemeLayout,
                     }}
                 >
-                    <Layout>
+                    <Layout className={currentTheme ? "darkTheme" : ""}>
                         <title>Series Tracker</title>
                         <Header
                             style={{
@@ -222,7 +226,7 @@ export default function RootLayout({
                                     height: "90vh",
                                     maxHeight: "calc(100% - 80px)",
                                     position: "sticky",
-                                    top: "80px",
+
                                     transform: "translateX(0%)",
                                     padding: "4px",
                                     boxShadow:

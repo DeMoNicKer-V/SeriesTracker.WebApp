@@ -28,6 +28,7 @@ import {
     Spin,
     Switch,
     Tag,
+    Tooltip,
     Typography,
 } from "antd";
 import {
@@ -38,6 +39,7 @@ import {
     AppstoreOutlined,
     FilterFilled,
     FilterOutlined,
+    DoubleLeftOutlined,
     MailOutlined,
     SettingOutlined,
 } from "@ant-design/icons";
@@ -64,6 +66,7 @@ export default function ShikimoriPage() {
 
     const onClick: MenuProps["onSelect"] = (e) => {
         setQuery("");
+        setPage(1);
         setOrder(e.key);
     };
 
@@ -81,6 +84,19 @@ export default function ShikimoriPage() {
         setLoading(false);
     };
 
+    const nextPage = () => {
+        setPage(page + 1);
+    };
+
+    const prePage = () => {
+        if (page > 1) {
+            setPage(page - 1);
+        }
+    };
+
+    const firstPage = () => {
+        setPage(1);
+    };
     useEffect(() => {
         if (query) {
             setOrder("ranked");
@@ -97,6 +113,7 @@ export default function ShikimoriPage() {
 
         const timer = setTimeout(() => {
             setLoading(true);
+            setInputFocus(false);
             getAnimesPost(req);
         }, 1000);
 
@@ -160,20 +177,23 @@ export default function ShikimoriPage() {
                 <div style={{ width: "100%" }}>
                     <Typography.Title
                         level={5}
+                        className={
+                            inputFocus ? "input-label focus" : "input-label"
+                        }
                         style={{
                             position: "absolute",
-                            background: "#141414",
                             zIndex: 1,
                             left: 20,
                             top: -15,
                             padding: 3,
-                            color: inputFocus ? "#DE1EB2" : "",
-                            fontSize: 14,
+                            fontSize: 18,
+                            transform: "scale(.75)",
                         }}
                     >
                         Поиск
                     </Typography.Title>
                     <Input
+                        disabled={loading}
                         onChange={(e: { target: { value: any } }) => {
                             setQuery(String(e.target.value));
                         }}
@@ -335,6 +355,7 @@ export default function ShikimoriPage() {
 
             label: (
                 <Button
+                    disabled={loading}
                     onClick={resetAllFields}
                     icon={<SettingOutlined />}
                     type="link"
@@ -382,13 +403,20 @@ export default function ShikimoriPage() {
             disabled: true,
             label: (
                 <Space split={<Divider type="vertical" />}>
-                    <Button size="small" icon={<LeftOutlined />}>
+                    <Button
+                        onClick={prePage}
+                        disabled={page <= 1 || loading}
+                        size="small"
+                        icon={<LeftOutlined />}
+                    >
                         Назад
                     </Button>
                     <Button
+                        disabled={loading}
                         size="small"
                         iconPosition="end"
                         icon={<RightOutlined />}
+                        onClick={nextPage}
                     >
                         Вперед
                     </Button>
@@ -400,11 +428,20 @@ export default function ShikimoriPage() {
     return (
         <div className="container">
             <title>Series Tracker - Shikimori</title>
-            <Spin size="large" fullscreen spinning={loading} />
+            <Spin
+                size="large"
+                spinning={loading}
+                style={{
+                    position: "absolute",
+                    top: "50%",
+                    left: "50%",
+                }}
+            />
             <Row justify={"center"} align={"middle"}>
                 <Col span={18}>
                     <Form form={form}>
                         <Menu
+                            disabled={loading}
                             selectedKeys={selectedItems}
                             triggerSubMenuAction={"click"}
                             style={{
@@ -442,6 +479,7 @@ export default function ShikimoriPage() {
                             Shikimori.One
                         </Typography.Title>
                         <Button
+                            disabled={loading}
                             type="primary"
                             shape="circle"
                             ghost={!collapsed}
@@ -451,8 +489,22 @@ export default function ShikimoriPage() {
                     </Flex>
 
                     <Flex justify="start">
+                        {page > 1 && (
+                            <Tooltip title={"В начало"}>
+                                <Button
+                                    size="small"
+                                    type="link"
+                                    onClick={firstPage}
+                                    icon={<DoubleLeftOutlined />}
+                                />
+                            </Tooltip>
+                        )}
                         <Tag
-                            style={{ cursor: "default" }}
+                            style={{
+                                cursor: "default",
+                                marginLeft: page <= 1 ? 0 : 5,
+                                transition: "all .2s",
+                            }}
                         >{`Страница: ${page}`}</Tag>
                     </Flex>
                 </Col>
@@ -468,6 +520,7 @@ export default function ShikimoriPage() {
                         }}
                     >
                         <Menu
+                            disabled={loading}
                             onSelect={onClick}
                             selectedKeys={[order]}
                             items={items2}
@@ -477,7 +530,7 @@ export default function ShikimoriPage() {
                 </Col>
             </Row>
             <Divider />
-            <Animes animes={animes} />
+            {!loading && <Animes animes={animes} />}
         </div>
     );
 }

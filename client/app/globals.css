@@ -264,3 +264,21 @@ input,
     height: 100%;
     padding: 0 !important;
 }
+
+.input-label {
+    color: black !important;
+    background-color: #ffffff !important;
+}
+
+.input-label.focus {
+    color: red !important;
+}
+
+.darkTheme .input-label {
+    color: hsla(0, 0%, 100%, 0.7) !important;
+    background-color: #141414 !important;
+}
+
+.darkTheme .input-label.focus {
+    color: #de1eb2 !important;
+}
