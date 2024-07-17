@@ -60,6 +60,7 @@ export default function ShikimoriPage() {
         { label: "Вышло", value: "released" },
     ];
 
+    const { Text, Title } = Typography;
     const [inputFocus, setInputFocus] = useState(false);
     const [loading, setLoading] = useState(false);
     const [animes, setAnimes] = useState<Anime[] | any>([]);
@@ -131,7 +132,7 @@ export default function ShikimoriPage() {
 
     useEffect(() => {
         resetAllFields();
-    }, [order]);
+    }, [safe]);
 
     const kindOptions: SelectProps["options"] = [
         { label: "TV-Сериал", value: "tv" },
@@ -287,6 +288,12 @@ export default function ShikimoriPage() {
             ],
         },
         {
+            key: "divider1",
+            style: { cursor: "default", margin: 0, padding: 0 },
+            disabled: true,
+            label: <Text>•</Text>,
+        },
+        {
             key: "2",
             label: "Статус",
             children: [
@@ -315,7 +322,12 @@ export default function ShikimoriPage() {
                 },
             ],
         },
-
+        {
+            key: "divider2",
+            disabled: true,
+            style: { cursor: "default", margin: 0, padding: 0 },
+            label: <Text>•</Text>,
+        },
         {
             key: "3",
             label: "Тип",
@@ -344,6 +356,12 @@ export default function ShikimoriPage() {
                     ),
                 },
             ],
+        },
+        {
+            key: "divider3",
+            disabled: true,
+            style: { cursor: "default", margin: 0, padding: 0 },
+            label: <Text>•</Text>,
         },
         {
             key: "4",
