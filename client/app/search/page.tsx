@@ -101,18 +101,20 @@ export default function SearchPage() {
             />
             <Row align={"middle"} justify={"center"}>
                 <Col span={16}>
-                    <div>
+                    <div className="searchpage-input">
                         <Typography.Title
                             level={5}
+                            className={
+                                inputFocus ? "input-label focus" : "input-label"
+                            }
                             style={{
                                 position: "absolute",
-                                background: "rgb(15,15,15)",
                                 zIndex: 1,
                                 left: 20,
                                 top: -15,
                                 padding: 3,
-                                color: inputFocus ? "#DE1EB2" : "",
-                                fontSize: 14,
+                                fontSize: 18,
+                                transform: "scale(.75)",
                             }}
                         >
                             Поиск
@@ -143,11 +145,7 @@ export default function SearchPage() {
                 >
                     <Col span={16} offset={4}>
                         <Flex
-                            style={{
-                                padding: 20,
-                                borderRadius: 5,
-                                border: "1px solid #DE1EB2",
-                            }}
+                            className="emptyview"
                             justify="center"
                             align="middle"
                             gap={10}

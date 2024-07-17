@@ -265,20 +265,48 @@ input,
     padding: 0 !important;
 }
 
-.input-label {
-    color: black !important;
+.lightTheme .searchpage-input .input-label {
     background-color: #ffffff !important;
 }
 
-.input-label.focus {
+.lightTheme .searchpage-input .input-label.focus {
     color: red !important;
 }
 
-.darkTheme .input-label {
+.darkTheme .searchpage-input .input-label {
+    color: hsla(0, 0%, 100%, 0.7) !important;
+    background-color: #0f0f0f !important;
+}
+
+.darkTheme .searchpage-input .input-label.focus {
+    color: #de1eb2 !important;
+}
+
+.lightTheme .shikimoripage-input .input-label {
+    background-color: #ffffff !important;
+}
+
+.lightTheme .shikimoripage-input .input-label.focus {
+    color: red !important;
+}
+
+.darkTheme .shikimoripage-input .input-label {
     color: hsla(0, 0%, 100%, 0.7) !important;
     background-color: #141414 !important;
 }
 
-.darkTheme .input-label.focus {
+.darkTheme .shikimoripage-input .input-label.focus {
     color: #de1eb2 !important;
+}
+
+.darkTheme .emptyview {
+    padding: 20px;
+    border-radius: 5px;
+    border: 1px solid #de1eb2;
+}
+
+.lightTheme .emptyview {
+    padding: 20px;
+    border-radius: 5px;
+    border: 1px solid yellow;
 }

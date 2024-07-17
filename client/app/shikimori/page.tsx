@@ -39,6 +39,7 @@ import {
     AppstoreOutlined,
     FilterFilled,
     FilterOutlined,
+    InfoCircleOutlined,
     DoubleLeftOutlined,
     MailOutlined,
     SettingOutlined,
@@ -110,10 +111,8 @@ export default function ShikimoriPage() {
             genre: genre,
             order: order,
         };
-
+        setLoading(true);
         const timer = setTimeout(() => {
-            setLoading(true);
-            setInputFocus(false);
             getAnimesPost(req);
         }, 1000);
 
@@ -174,7 +173,7 @@ export default function ShikimoriPage() {
             key: "0",
             style: { minWidth: 200, maxWidth: 500, flex: "1 1 auto" },
             label: (
-                <div style={{ width: "100%" }}>
+                <div className="shikimoripage-input" style={{ width: "100%" }}>
                     <Typography.Title
                         level={5}
                         className={
@@ -193,7 +192,6 @@ export default function ShikimoriPage() {
                         Поиск
                     </Typography.Title>
                     <Input
-                        disabled={loading}
                         onChange={(e: { target: { value: any } }) => {
                             setQuery(String(e.target.value));
                         }}
@@ -530,6 +528,23 @@ export default function ShikimoriPage() {
                 </Col>
             </Row>
             <Divider />
+            {Number(animes.length) <= 0 && loading === false && (
+                <Row>
+                    <Col span={16} offset={4}>
+                        <Flex
+                            className="emptyview"
+                            justify="center"
+                            align="middle"
+                            gap={10}
+                        >
+                            <InfoCircleOutlined style={{ fontSize: 32 }} />
+                            <span style={{ fontSize: 22 }}>
+                                {"По вашему запросу ничего не найдено."}
+                            </span>
+                        </Flex>
+                    </Col>
+                </Row>
+            )}
             {!loading && <Animes animes={animes} />}
         </div>
     );

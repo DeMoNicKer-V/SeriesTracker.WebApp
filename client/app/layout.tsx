@@ -98,11 +98,6 @@ export default function RootLayout({
         Drawer: {
             colorBgElevated: "#101010",
         },
-        List: {
-            style: {
-                backgroundColor: "red",
-            },
-        },
         Input: {
             colorPrimaryHover: "#fff",
         },
@@ -155,7 +150,9 @@ export default function RootLayout({
                             : lightThemeLayout,
                     }}
                 >
-                    <Layout className={currentTheme ? "darkTheme" : ""}>
+                    <Layout
+                        className={currentTheme ? "darkTheme" : "lightTheme"}
+                    >
                         <title>Series Tracker</title>
                         <Header
                             style={{
