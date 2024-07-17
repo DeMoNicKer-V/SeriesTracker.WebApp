@@ -34,9 +34,9 @@ namespace SeriesTracker.Application.Services
             return await graphQLClient.SendQueryAsync<ShikimoriAnimeList>(GetRequest(Id));
         }
 
-        public async Task<GraphQLResponse<ShikimoriAnimeList>> GetAnimesByAllParams(int page, string name, string season, string status, string kind, string genre, string order)
+        public async Task<GraphQLResponse<ShikimoriAnimeList>> GetAnimesByAllParams(int page, string name, string season, string status, string kind, string genre, string order, bool censored)
         {
-            return await graphQLClient.SendQueryAsync<ShikimoriAnimeList>(GetRequest(page, name, season, status, kind, genre, order));
+            return await graphQLClient.SendQueryAsync<ShikimoriAnimeList>(GetRequest(page, name, season, status, kind, genre, order, censored));
         }
 
         public async Task<GraphQLResponse<GenreList>> GetGenres()
@@ -149,13 +149,13 @@ namespace SeriesTracker.Application.Services
             };
         }
 
-        private static GraphQLRequest GetRequest(int page, string name, string season, string status,string kind, string genre, string order)
+        private static GraphQLRequest GetRequest(int page, string name, string season, string status,string kind, string genre, string order, bool censored)
         {
 
             return new GraphQLRequest
             {
-                Query = @"query GetByAllParams($page: Int, $name: String, $season: SeasonString, $status: AnimeStatusString, $kind: AnimeKindString, $genre: String, $order: OrderEnum) {
-                                animes(page: $page, search: $name, season: $season, status: $status, kind: $kind, genre: $genre, order: $order, limit: 28) {
+                Query = @"query GetByAllParams($page: Int, $name: String, $season: SeasonString, $status: AnimeStatusString, $kind: AnimeKindString, $genre: String, $order: OrderEnum, $censored: Boolean) {
+                                animes(page: $page, search: $name, season: $season, status: $status, kind: $kind, genre: $genre, order: $order, censored: $censored, limit: 28) {
                                     id
                                     russian
                                     name
@@ -186,7 +186,8 @@ namespace SeriesTracker.Application.Services
                     status = string.IsNullOrEmpty(status) ? "!anons": status,
                     kind = string.IsNullOrEmpty(kind) ? "!music" : kind,
                     genre = genre,
-                    order = order
+                    order = order,
+                    censored = censored
                 }
             };
         }

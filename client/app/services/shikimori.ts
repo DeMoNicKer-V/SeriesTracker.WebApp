@@ -13,6 +13,7 @@ export interface ShikimoriRequest {
     kind: string;
     genre: string;
     order: string;
+    censored: boolean;
 }
 
 export interface AnimeInfo {

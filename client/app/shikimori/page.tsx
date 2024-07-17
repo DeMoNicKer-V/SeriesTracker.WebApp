@@ -34,7 +34,7 @@ import {
 import {
     RightOutlined,
     LeftOutlined,
-    PlusOutlined,
+    CloseOutlined,
     SearchOutlined,
     AppstoreOutlined,
     FilterFilled,
@@ -43,6 +43,14 @@ import {
     DoubleLeftOutlined,
     MailOutlined,
     SettingOutlined,
+    LikeOutlined,
+    StarOutlined,
+    FontColorsOutlined,
+    TeamOutlined,
+    EllipsisOutlined,
+    CalendarOutlined,
+    EyeOutlined,
+    EyeInvisibleOutlined,
 } from "@ant-design/icons";
 import dayjs from "dayjs";
 export default function ShikimoriPage() {
@@ -64,6 +72,7 @@ export default function ShikimoriPage() {
     const [season, setSeason] = useState<string>("");
     const [order, setOrder] = useState<string>("ranked");
     const [page, setPage] = useState<number>(1);
+    const [safe, setSafe] = useState<boolean>(false);
 
     const onClick: MenuProps["onSelect"] = (e) => {
         setQuery("");
@@ -110,6 +119,7 @@ export default function ShikimoriPage() {
             kind: kind,
             genre: genre,
             order: order,
+            censored: safe,
         };
         setLoading(true);
         const timer = setTimeout(() => {
@@ -117,7 +127,11 @@ export default function ShikimoriPage() {
         }, 1000);
 
         return () => clearTimeout(timer);
-    }, [page, query, season, status, kind, genre, order]);
+    }, [page, query, season, status, kind, genre, order, safe]);
+
+    /*useEffect(() => {
+        resetAllFields();
+    }, [safe]);*/
 
     const kindOptions: SelectProps["options"] = [
         { label: "TV-Сериал", value: "tv" },
@@ -170,6 +184,35 @@ export default function ShikimoriPage() {
     const [form] = Form.useForm();
     const items: MenuItem[] = [
         {
+            key: "safe",
+            label: (
+                <Tooltip
+                    title={
+                        !safe
+                            ? "Вкл. безопасный поиск"
+                            : "Выкл. безопасный поиск"
+                    }
+                >
+                    <Button
+                        danger={!safe}
+                        onClick={() => setSafe(!safe)}
+                        shape="circle"
+                        size="large"
+                        type="dashed"
+                        icon={
+                            safe ? (
+                                <EyeInvisibleOutlined
+                                    style={{ fontSize: 20 }}
+                                />
+                            ) : (
+                                <EyeOutlined style={{ fontSize: 20 }} />
+                            )
+                        }
+                    />
+                </Tooltip>
+            ),
+        },
+        {
             key: "0",
             style: { minWidth: 200, maxWidth: 500, flex: "1 1 auto" },
             label: (
@@ -210,7 +253,6 @@ export default function ShikimoriPage() {
         },
         {
             key: "1",
-            icon: <MailOutlined />,
             label: "Год выхода",
             children: [
                 {
@@ -243,7 +285,6 @@ export default function ShikimoriPage() {
         },
         {
             key: "2",
-            icon: <AppstoreOutlined />,
             label: "Статус",
             children: [
                 {
@@ -274,7 +315,6 @@ export default function ShikimoriPage() {
 
         {
             key: "3",
-            icon: <AppstoreOutlined />,
             label: "Тип",
             children: [
                 {
@@ -304,7 +344,6 @@ export default function ShikimoriPage() {
         },
         {
             key: "4",
-            icon: <SettingOutlined />,
             label: "Жанр",
             children: [
                 {
@@ -355,7 +394,7 @@ export default function ShikimoriPage() {
                 <Button
                     disabled={loading}
                     onClick={resetAllFields}
-                    icon={<SettingOutlined />}
+                    icon={<CloseOutlined />}
                     type="link"
                 >
                     Сбросить
@@ -375,22 +414,22 @@ export default function ShikimoriPage() {
             style: { marginLeft: "auto" },
             label: "По рейтингу",
             key: "ranked",
-            icon: <SettingOutlined />,
+            icon: <StarOutlined />,
         },
         {
             label: "По популярности",
             key: "popularity",
-            icon: <SettingOutlined />,
+            icon: <TeamOutlined />,
         },
         {
             label: "По алфавиту",
             key: "name",
-            icon: <SettingOutlined />,
+            icon: <FontColorsOutlined />,
         },
         {
             label: "По дате выхода",
             key: "aired_on",
-            icon: <SettingOutlined />,
+            icon: <CalendarOutlined />,
         },
         {
             style: {
