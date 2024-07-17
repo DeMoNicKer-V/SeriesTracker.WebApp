@@ -129,9 +129,9 @@ export default function ShikimoriPage() {
         return () => clearTimeout(timer);
     }, [page, query, season, status, kind, genre, order, safe]);
 
-    /*useEffect(() => {
+    useEffect(() => {
         resetAllFields();
-    }, [safe]);*/
+    }, [order]);
 
     const kindOptions: SelectProps["options"] = [
         { label: "TV-Сериал", value: "tv" },
@@ -150,6 +150,9 @@ export default function ShikimoriPage() {
             key: genres[index].id,
         });
     }
+    const safeGenreOptions = genreOptions.filter(
+        (obj) => obj.key !== 34 && obj.key !== 12 && obj.key !== 33
+    );
     const date = dayjs();
     const [selectedItems, setSelectedItems] = useState<string[]>([]);
     const valueChange = (value: any, key: string) => {
@@ -371,7 +374,9 @@ export default function ShikimoriPage() {
                                 style={{
                                     width: "100%",
                                 }}
-                                options={genreOptions}
+                                options={
+                                    !safe ? genreOptions : safeGenreOptions
+                                }
                             />
                         </Form.Item>
                     ),
