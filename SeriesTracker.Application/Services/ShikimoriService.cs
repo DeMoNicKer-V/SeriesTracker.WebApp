@@ -54,7 +54,7 @@ namespace SeriesTracker.Application.Services
             return new GraphQLRequest
             {
                 Query = @"query GetAll($page: Int, $order: OrderEnum) {
-                                animes(page: $page, order: $order, kind: ""!music"", status: ""!anons"",  limit: 28) {
+                                animes(page: $page, order: $order, kind: ""!music,!pv,!cm"", status: ""!anons"",  limit: 28) {
                                     id
                                     russian
                                     name
@@ -104,7 +104,7 @@ namespace SeriesTracker.Application.Services
             return new GraphQLRequest
             {
                 Query = @"query GetRandom() {
-                                animes(order: random) {
+                                animes(order: random, score: 1, kind: ""!music,!pv,!cm"") {
                                     id
                                 }
                             }",
@@ -119,7 +119,7 @@ namespace SeriesTracker.Application.Services
             return new GraphQLRequest
             {
                 Query = @"query GetByName($name: String, $page: Int) {
-                                animes(search: $name, kind: ""!music"", status: ""!anons"", page: $page, limit: 28) {
+                                animes(search: $name, kind: ""!music,!pv,!cm"", status: ""!anons"", page: $page, limit: 28) {
                                     id
                                     russian
                                     name
@@ -155,7 +155,7 @@ namespace SeriesTracker.Application.Services
             return new GraphQLRequest
             {
                 Query = @"query GetByAllParams($page: Int, $name: String, $season: SeasonString, $status: AnimeStatusString, $kind: AnimeKindString, $genre: String, $order: OrderEnum, $censored: Boolean) {
-                                animes(page: $page, search: $name, season: $season, status: $status, kind: $kind, genre: $genre, order: $order, censored: $censored, limit: 28) {
+                                animes(page: $page, search: $name, season: $season, status: $status, kind: $kind, genre: $genre, order: $order, censored: $censored, score: 1, limit: 28) {
                                     id
                                     russian
                                     name
@@ -184,7 +184,7 @@ namespace SeriesTracker.Application.Services
                     name = name,
                     season = season,
                     status = string.IsNullOrEmpty(status) ? "!anons": status,
-                    kind = string.IsNullOrEmpty(kind) ? "!music" : kind,
+                    kind = string.IsNullOrEmpty(kind) ? "!music,!pv,!cm" : kind,
                     genre = genre,
                     order = order,
                     censored = censored

@@ -47,10 +47,9 @@ export default function CalendarPage() {
             datesArray.push({
                 value: newDate,
                 label: (
-                    <div
+                    <Flex
                         style={{
                             padding: 4,
-                            display: "flex",
                             flexDirection: "column",
                         }}
                     >
@@ -60,7 +59,7 @@ export default function CalendarPage() {
                         <Text italic style={{ fontSize: 15 }}>
                             {formatDate(newDate)}
                         </Text>
-                    </div>
+                    </Flex>
                 ),
             });
         }
@@ -159,7 +158,7 @@ export default function CalendarPage() {
         <div className="container">
             <title>Series Tracker - Расписание</title>
             <Row gutter={[20, 20]} align={"middle"} justify={"center"}>
-                <Col span={20}>
+                <Col span={21}>
                     <Segmented<Date>
                         block
                         disabled={filter.length <= 0 && loading}
@@ -170,7 +169,7 @@ export default function CalendarPage() {
                         }}
                     />
                 </Col>
-                <Col span={20}>
+                <Col span={21}>
                     <ConfigProvider
                         theme={{
                             components: {
