@@ -88,7 +88,11 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                 marginRight: "auto",
             }}
         >
-            <title>Series Tracker - {animes.title}</title>
+            <title>
+                {!animes.title
+                    ? "Series Tracker"
+                    : `Series Tracker - ${animes.title}`}
+            </title>
             <Card
                 cover={
                     <Flex
