@@ -1,5 +1,16 @@
 "use client";
-import { Col, List, Row, Segmented, Image, Card, Typography, Flex } from "antd";
+import {
+    Col,
+    List,
+    Row,
+    Segmented,
+    Image,
+    Card,
+    Typography,
+    Flex,
+    Spin,
+    ConfigProvider,
+} from "antd";
 import { useEffect, useState } from "react";
 import { CalendarItem, aaa } from "../services/shikimori";
 
@@ -7,6 +18,8 @@ import {
     CheckCircleOutlined,
     QuestionCircleOutlined,
     ClockCircleOutlined,
+    InfoCircleOutlined,
+    LoadingOutlined,
 } from "@ant-design/icons";
 import Link from "next/link";
 interface customDate {
@@ -34,9 +47,19 @@ export default function CalendarPage() {
             datesArray.push({
                 value: newDate,
                 label: (
-                    <div style={{ padding: 4 }}>
-                        <div>{days[newDate.getDay()]}</div>
-                        <div>{formatDate(newDate)}</div>
+                    <div
+                        style={{
+                            padding: 4,
+                            display: "flex",
+                            flexDirection: "column",
+                        }}
+                    >
+                        <Text strong style={{ fontSize: 16 }}>
+                            {days[newDate.getDay()]}
+                        </Text>
+                        <Text italic style={{ fontSize: 15 }}>
+                            {formatDate(newDate)}
+                        </Text>
                     </div>
                 ),
             });
@@ -59,6 +82,23 @@ export default function CalendarPage() {
         "ноября",
         "декабря",
     ];
+    const customizeRenderEmpty = () => (
+        <Flex className="emptyview" justify="center" align="middle" gap={10}>
+            <InfoCircleOutlined style={{ fontSize: 32 }} />
+            <Text style={{ fontSize: 22 }}>
+                {"На данную дату новых релизов не найдено"}
+            </Text>
+        </Flex>
+    );
+
+    const customizeRenderEmptyLoading = () => (
+        <Flex className="emptyview" justify="center" align="middle" gap={10}>
+            <LoadingOutlined style={{ fontSize: 32 }} />
+            <Text style={{ fontSize: 22 }}>
+                {"Пожалуйста, подождите немного!"}
+            </Text>
+        </Flex>
+    );
 
     function formatDate(date: Date): string {
         const day: number = date.getDate();
@@ -84,37 +124,45 @@ export default function CalendarPage() {
     const [aa, setAA] = useState<CalendarItem[] | any>([]);
     const [filter, setFilter] = useState<CalendarItem[] | any>([]);
 
-    const getGenresList = async () => {
-        const list = await aaa();
-        const filteredData = list.filter((item: CalendarItem) =>
+    const filterItems = (items: CalendarItem[]) => {
+        const filteredData = items.filter((item: CalendarItem) =>
             isDatesEqual(new Date(item.next_episode_at), value)
         );
+        filteredData.length <= 0 ? setLoading(false) : setLoading(true);
+        console.log(value);
         setFilter(filteredData);
+    };
+    const getGenresList = async () => {
+        const list = await aaa();
+        filterItems(list);
         setAA(list);
     };
     const [value, setValue] = useState<Date>(new Date());
 
     const [loading, setLoading] = useState<boolean>(true);
     useEffect(() => {
-        const b = getDatesArray();
-        setGenres(b);
-        setValue(b[0].value);
-        getGenresList();
+        return () => {
+            const b = getDatesArray();
+            setGenres(b);
+            setValue(b[0].value);
+            getGenresList();
+        };
     }, []);
     const { Text, Title } = Typography;
     useEffect(() => {
-        const filteredData = aa.filter((item: CalendarItem) =>
-            isDatesEqual(new Date(item.next_episode_at), value)
-        );
-        setFilter(filteredData);
+        if (aa.length <= 0) {
+            return;
+        } else filterItems(aa);
     }, [value]);
 
     return (
         <div className="container">
+            <title>Series Tracker - Расписание</title>
             <Row gutter={[20, 20]} align={"middle"} justify={"center"}>
                 <Col span={20}>
                     <Segmented<Date>
                         block
+                        disabled={filter.length <= 0 && loading}
                         options={genres}
                         value={value}
                         onChange={(value) => {
@@ -123,7 +171,20 @@ export default function CalendarPage() {
                     />
                 </Col>
                 <Col span={20}>
-                    {filter.length > 0 && (
+                    <ConfigProvider
+                        theme={{
+                            components: {
+                                Input: {
+                                    borderRadius: 8,
+                                },
+                            },
+                        }}
+                        renderEmpty={
+                            loading
+                                ? customizeRenderEmptyLoading
+                                : customizeRenderEmpty
+                        }
+                    >
                         <List
                             bordered={false}
                             dataSource={filter}
@@ -135,7 +196,10 @@ export default function CalendarPage() {
                                     >
                                         <Card hoverable>
                                             <Row
-                                                style={{ width: "100%" }}
+                                                style={{
+                                                    width: "100%",
+                                                    padding: 15,
+                                                }}
                                                 align={"middle"}
                                                 justify={"center"}
                                             >
@@ -213,7 +277,7 @@ export default function CalendarPage() {
                                 </List.Item>
                             )}
                         />
-                    )}
+                    </ConfigProvider>
                 </Col>
             </Row>
         </div>

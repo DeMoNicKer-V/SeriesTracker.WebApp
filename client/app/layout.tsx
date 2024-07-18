@@ -90,6 +90,9 @@ export default function RootLayout({
         Card: {
             colorBgContainer: "#121212",
             colorBorderSecondary: "transparent",
+
+            boxShadowCard:
+                "0 -2px 2px 0 rgba(222, 30, 178, 0.3), 0 1px 6px -1px rgba(222, 30, 178, 0.5), 0 2px 4px 0 rgba(222, 30, 178, 0.1)",
         },
         Segmented: {
             itemHoverBg: "transparent",
