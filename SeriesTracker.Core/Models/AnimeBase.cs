@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SeriesTracker.Core.Models.Shikimori;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,6 +23,7 @@ namespace SeriesTracker.Core.Models
         [JsonIgnore] public abstract string Rating { get; set; }
         [JsonIgnore] public abstract string Kind { get; set; }
         [JsonIgnore] public abstract string Status { get; set; }
+        [JsonIgnore] public abstract Screenshot[] Screenshots { get; set; }
 
         protected abstract string ConvertRatingToImageName(string ratingName);
         protected abstract string ConvertStatusToDefault(string statusName);

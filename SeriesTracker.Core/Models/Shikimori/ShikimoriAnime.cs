@@ -36,7 +36,7 @@ namespace SeriesTracker.Core.Models.Shikimori
             set { }
         }
 
-        [JsonIgnore] public override string PictureUrl { get { return poster.MainUrl != null? poster.MainUrl: ""; } }
+        [JsonIgnore] public override string PictureUrl { get { return poster.MainUrl != null? poster.MainUrl: poster.OriginalUrl; } }
 
         [JsonIgnore]
         public override string Rating
@@ -61,6 +61,8 @@ namespace SeriesTracker.Core.Models.Shikimori
         [JsonProperty("name")] public override string SubTitle { get; set; }
         [JsonProperty("russian")] public override string Title { get; set; }
         [JsonProperty("description")] private string description { get; set; }
+        [JsonProperty("screenshots")] public override Screenshot[] Screenshots { get; set; }
+
 
         protected override string ConvertRatingToImageName(string ratingName)
         {

@@ -152,6 +152,7 @@ export default function RootLayout({
                     }}
                 >
                     <Layout
+                        style={{ minHeight: "100vh" }}
                         className={currentTheme ? "darkTheme" : "lightTheme"}
                     >
                         <title>Series Tracker</title>
@@ -221,10 +222,10 @@ export default function RootLayout({
                                 collapsible
                                 collapsed={collapsed}
                                 style={{
+                                    top: 80,
+                                    overflow: "auto",
                                     height: "90vh",
-                                    maxHeight: "calc(100% - 80px)",
                                     position: "sticky",
-
                                     transform: "translateX(0%)",
                                     padding: "4px",
                                     boxShadow:

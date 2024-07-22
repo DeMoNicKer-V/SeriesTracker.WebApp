@@ -3,10 +3,11 @@ import {
     Avatar,
     Button,
     Card,
+    Carousel,
     Col,
+    Image,
     ConfigProvider,
     Flex,
-    Image,
     Row,
     Tag,
     Tooltip,
@@ -35,6 +36,7 @@ export default function AnimePage({ params }: { params: { id: string } }) {
     const ref = useRef<HTMLDivElement>(null);
     const [animes, setAnimes] = useState<Anime[] | any>([]);
     const [isSeries, setIsSeries] = useState<boolean>(false);
+    const [flag, setFlag] = useState<boolean>(false);
     const [genres, setGenres] = useState<string[]>([]);
     const getAnimes = async (id: string) => {
         const series = await getAnimeById(id);
@@ -48,6 +50,13 @@ export default function AnimePage({ params }: { params: { id: string } }) {
             getAnimes(params.id);
         }
     }, []);
+    useEffect(() => {
+        if (!flag) {
+            return;
+        }
+        const a = MyObject();
+        setScreen(a);
+    }, [flag]);
     const router = useRouter();
     const AddToMyList = async () => {
         const seriesRequest = {
@@ -66,6 +75,38 @@ export default function AnimePage({ params }: { params: { id: string } }) {
         router.push(`./`);
     };
 
+    const MyObject = () => {
+        let obj = [];
+        let obj2 = [];
+        const a = animes.screenshots;
+
+        for (let index = 0; index < a.length; index++) {
+            obj.push(
+                <Image
+                    preview
+                    style={{ width: 300 }}
+                    src={a[index].originalUrl}
+                ></Image>
+            );
+            if (obj.length === 3) {
+                obj2.push(
+                    <Flex justify={"center"} align={"center"} gap={15}>
+                        {obj}
+                    </Flex>
+                );
+                obj = [];
+            } else if (index === a.length - 1) {
+                obj2.push(
+                    <Flex justify={"center"} align={"center"} gap={15}>
+                        {obj}
+                    </Flex>
+                );
+            }
+        }
+
+        return obj2;
+    };
+    const [screen, setScreen] = useState<JSX.Element[]>([]);
     const cardStyle: React.CSSProperties = {
         padding: "22% 20px 20px 20px",
         height: "100%",
@@ -213,13 +254,31 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                                         {isSeries &&
                                             "Данное аниме уже находится в вашем списке"}
                                     </Button>
+                                    <Button onClick={() => setFlag(true)}>
+                                        Нажми
+                                    </Button>
                                 </Col>
                             </Row>
                         </div>
                     </Flex>
                 }
             >
-                <Meta title="Описание" description={animes.description} />
+                <Meta
+                    style={{ padding: 24 }}
+                    title={<Title level={3}>Описание</Title>}
+                    description={animes.description}
+                />
+
+                {flag && (
+                    <Carousel
+                        style={{ padding: 24 }}
+                        dots={false}
+                        autoplay
+                        arrows
+                    >
+                        {screen.map((animes: JSX.Element) => animes)}
+                    </Carousel>
+                )}
             </Card>
         </div>
     );

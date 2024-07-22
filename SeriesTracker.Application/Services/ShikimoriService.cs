@@ -210,12 +210,12 @@ namespace SeriesTracker.Application.Services
                                     episodesAired
                                     status
                                     score
+   screenshots { id originalUrl}
                                     airedOn {
                                         date
                                     }
                                     poster {
-                                        
-                                        mainUrl
+                                        originalUrl
                                     }
                                 }
                             }",
