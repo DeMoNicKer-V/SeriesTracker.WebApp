@@ -12,6 +12,7 @@ import {
     Tag,
     Tooltip,
     Typography,
+    FloatButton,
 } from "antd";
 import { useEffect, useRef, useState } from "react";
 import Meta from "antd/es/card/Meta";
@@ -152,28 +153,38 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                         }}
                     >
                         <AbsoluteImage src={animes.pictureUrl} zIndex={-1} />
-                        <div
-                            style={{
-                                backgroundImage:
-                                    "linear-gradient(180deg, transparent -50%, #121212)",
-                                width: "100%",
-                            }}
-                        >
-                            <Row style={cardStyle}>
-                                <Col span={6}>
-                                    <Image
-                                        style={{
-                                            height: "380px",
-                                            pointerEvents: "none",
-                                            borderRadius: 5,
-                                        }}
-                                        preview={false}
-                                        src={animes.pictureUrl}
-                                    />
+                        <div className="overlay-background">
+                            <Row
+                                className="anime-detail-row"
+                                align={"middle"}
+                                justify={"center"}
+                                style={cardStyle}
+                            >
+                                <Col xs={24} sm={24} lg={24} xl={6} md={24}>
+                                    <Flex className="flex-detail">
+                                        <Image
+                                            style={{
+                                                height: "380px",
+                                                pointerEvents: "none",
+                                                borderRadius: 5,
+                                            }}
+                                            preview={false}
+                                            src={animes.pictureUrl}
+                                        />
+                                    </Flex>
                                 </Col>
-                                <Col style={subCol} span={18}>
-                                    <Title level={4}>{animes.title}</Title>
-                                    <Flex gap="4px 0">
+                                <Col
+                                    style={subCol}
+                                    xs={24}
+                                    sm={24}
+                                    lg={24}
+                                    md={24}
+                                    xl={18}
+                                >
+                                    <Title className="anime-title" level={4}>
+                                        {animes.title}
+                                    </Title>
+                                    <Flex className="flex-detail" gap="4px 0">
                                         {genres.map((genre: string) => (
                                             <Tag
                                                 className="tag"
@@ -188,7 +199,11 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                                         ))}
                                     </Flex>
                                     <Flex
-                                        style={{ cursor: "default" }}
+                                        className="flex-detail"
+                                        style={{
+                                            display: "ruby",
+                                            cursor: "default",
+                                        }}
                                         gap="10px"
                                     >
                                         <Flex gap={5}>
@@ -196,17 +211,17 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                                             <Text>{animes.kind}</Text>
                                         </Flex>
 
-                                        <Text>•</Text>
+                                        <Text className="dot-divider">•</Text>
                                         <Flex gap={5}>
                                             <TeamOutlined />
                                             <Text>{animes.rating}</Text>
                                         </Flex>
-                                        <Text>•</Text>
+                                        <Text className="dot-divider">•</Text>
                                         <Flex gap={5}>
                                             <FireOutlined />
                                             <Text>{animes.status}</Text>
                                         </Flex>
-                                        <Text>•</Text>
+                                        <Text className="dot-divider">•</Text>
                                         <Tooltip
                                             arrow={false}
                                             title={`Дата выхода: ${new Date(
@@ -226,7 +241,7 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                                                 </Text>
                                             </Flex>
                                         </Tooltip>
-                                        <Text>•</Text>
+                                        <Text className="dot-divider">•</Text>
                                         <Tooltip
                                             arrow={false}
                                             title={`Ср. длительность эпизода:  ${animes.duration} мин.`}
@@ -236,7 +251,7 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                                                 <Text>{`${animes.duration} мин.`}</Text>
                                             </Flex>
                                         </Tooltip>
-                                        <Text>•</Text>
+                                        <Text className="dot-divider">•</Text>
                                         <Tooltip
                                             arrow={false}
                                             title={`Оценка ${animes.score} из 10`}
@@ -297,6 +312,7 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                         </Row>
                     ))}
             </Card>
+            <FloatButton.BackTop style={{ right: 24 }} />
         </div>
     );
 }

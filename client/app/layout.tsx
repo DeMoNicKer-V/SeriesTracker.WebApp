@@ -51,7 +51,7 @@ export default function RootLayout({
 }: Readonly<{
     children: React.ReactNode;
 }>) {
-    const [collapsed, setCollapsed] = useState(false);
+    const [collapsed, setCollapsed] = useState(true);
     const [currentTheme, setCurrentTheme] = useState(false);
     const [currentKey, setCurrentKey] = useState(
         window.location.href.split("/")[3].toString() || "series"
@@ -62,6 +62,11 @@ export default function RootLayout({
         const vv = colorThemeCookie === "false" ? false : true;
         setCurrentTheme(vv);
     }, []);
+    useEffect(() => {
+        document.getElementsByClassName("ant-layout-sider-below").length > 0
+            ? (document.body.style.position = "fixed")
+            : (document.body.style.position = "relative");
+    }, [collapsed]);
 
     const darkTheme = {
         colorPrimary: "#DE1EB2",
@@ -152,7 +157,7 @@ export default function RootLayout({
                     }}
                 >
                     <Layout
-                        style={{ minHeight: "100vh" }}
+                        style={{ minHeight: "100vh", minWidth: "100vw" }}
                         className={currentTheme ? "darkTheme" : "lightTheme"}
                     >
                         <title>Series Tracker</title>
@@ -218,6 +223,7 @@ export default function RootLayout({
                             }}
                         >
                             <Sider
+                                breakpoint="xl"
                                 trigger={null}
                                 collapsible
                                 collapsed={collapsed}
@@ -306,8 +312,6 @@ export default function RootLayout({
                         </Layout>
                     </Layout>
                 </ConfigProvider>
-
-                <FloatButton.BackTop />
             </body>
         </html>
     );

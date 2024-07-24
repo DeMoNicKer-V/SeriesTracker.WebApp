@@ -119,7 +119,7 @@ export const AZList = ({ handleClickAll, handleClickALetter }: Props) => {
     };
     const { Text, Title } = Typography;
     return (
-        <Row gutter={[10, 10]}>
+        <Row className="azList" gutter={[10, 10]}>
             <Col span={24}>
                 <Flex gap={5} justify="start" align="center">
                     <Segmented<Boolean>
