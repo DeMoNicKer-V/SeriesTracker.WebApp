@@ -24,6 +24,7 @@ namespace SeriesTracker.Core.Models
         [JsonIgnore] public abstract string Kind { get; set; }
         [JsonIgnore] public abstract string Status { get; set; }
         [JsonIgnore] public abstract Screenshot[] Screenshots { get; set; }
+        [JsonIgnore] public abstract IEnumerable<Related> Relateds { get; }
 
         protected abstract string ConvertRatingToImageName(string ratingName);
         protected abstract string ConvertStatusToDefault(string statusName);

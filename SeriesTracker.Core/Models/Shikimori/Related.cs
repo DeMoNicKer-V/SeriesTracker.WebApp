@@ -9,8 +9,8 @@ namespace SeriesTracker.Core.Models.Shikimori
 {
     public class Related
     {
-        [JsonProperty("id")] public long Id { get; set; }
+        [JsonProperty("anime")] public RelatedAnime? Anime { get; set; }
 
-        [JsonProperty("anime")] public RelatedAnime [] Anime { get; set; }
+        [JsonProperty("relationText")] public string RelationText { get; set; }
     }
 }

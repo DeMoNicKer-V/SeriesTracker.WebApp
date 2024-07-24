@@ -35,6 +35,7 @@ import { useRouter } from "next/navigation";
 export default function AnimePage({ params }: { params: { id: string } }) {
     const ref = useRef<HTMLDivElement>(null);
     const [animes, setAnimes] = useState<Anime[] | any>([]);
+    const [related, setRelated] = useState<Anime[] | any>([]);
     const [isSeries, setIsSeries] = useState<boolean>(false);
     const [flag, setFlag] = useState<boolean>(false);
     const [genres, setGenres] = useState<string[]>([]);
@@ -42,6 +43,8 @@ export default function AnimePage({ params }: { params: { id: string } }) {
         const series = await getAnimeById(id);
         setAnimes(series.anime);
         setIsSeries(series.isSeries);
+
+        console.log(series);
         const gg = series.anime.genres.split(",");
         setGenres(gg);
     };
@@ -254,7 +257,11 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                                         {isSeries &&
                                             "Данное аниме уже находится в вашем списке"}
                                     </Button>
-                                    <Button onClick={() => setFlag(true)}>
+                                    <Button
+                                        onClick={() => {
+                                            setFlag(true);
+                                        }}
+                                    >
                                         Нажми
                                     </Button>
                                 </Col>
@@ -279,6 +286,16 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                         {screen.map((animes: JSX.Element) => animes)}
                     </Carousel>
                 )}
+
+                {animes.relateds &&
+                    animes.relateds.map((a: Related) => (
+                        <Row>
+                            <Col span={6}>
+                                <Image width={80} src={a.anime.pictureUrl} />
+                            </Col>
+                            <Col span={18}>{a.relationText}</Col>
+                        </Row>
+                    ))}
             </Card>
         </div>
     );

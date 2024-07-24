@@ -62,6 +62,8 @@ namespace SeriesTracker.Core.Models.Shikimori
         [JsonProperty("russian")] public override string Title { get; set; }
         [JsonProperty("description")] private string description { get; set; }
         [JsonProperty("screenshots")] public override Screenshot[] Screenshots { get; set; }
+        [JsonProperty("related")] private IEnumerable<Related> RelatedData { get; set; }
+        [JsonIgnore] public override IEnumerable<Related> Relateds => RelatedData.Where(a => a.Anime != null && !new[] { "MUSIC", "PV", "CM" }.Any(c => a.Anime.Kind.Contains(c)));
 
 
         protected override string ConvertRatingToImageName(string ratingName)

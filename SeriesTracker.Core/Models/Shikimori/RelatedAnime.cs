@@ -9,7 +9,22 @@ namespace SeriesTracker.Core.Models.Shikimori
 {
     public class RelatedAnime
     {
-        [JsonProperty("id")] public long Id { get; set; }
-        [JsonProperty("name")] public string Name { get; set; }
+        [JsonProperty("airedOn")] public AiredDate airedOne = new();
+        [JsonProperty("poster")] public Poster poster = new();
+        [JsonProperty("id")] public string Id { get; set; }
+        [JsonProperty("name")] public string SubTitle { get; set; }
+        [JsonProperty("russian")] public string Title { get; set; }
+        [JsonIgnore] public string Kind { get { return kindInfo != null ? kindInfo.ToUpper() : ""; } set { } }
+        [JsonProperty("kind")] private string? kindInfo { get; set; }    
+        [JsonIgnore] public string PictureUrl { get { return poster.MainUrl != null ? poster.MainUrl : poster.OriginalUrl; } }
+        [JsonIgnore]
+        public  int StartDate
+        {
+            get
+            {
+                return airedOne.Year;
+            }
+            set { }
+        }
     }
 }

@@ -13,9 +13,19 @@ interface Anime {
     status: string;
     pictureUrl: string;
     screenshot: Screenshot[];
+    relateds: Related[];
 }
 
 interface Screenshot {
     id: number;
     originalUrl: string;
+}
+
+interface Related {
+    anime: Anime;
+    relationText: string;
+}
+
+interface RelatedAnime {
+    id: number;
 }

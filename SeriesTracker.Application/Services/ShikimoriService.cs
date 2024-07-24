@@ -9,7 +9,7 @@ using System.Xml.Linq;
 
 namespace SeriesTracker.Application.Services
 {
-    public class ShikimoriService: IShikimoriService
+    public class ShikimoriService : IShikimoriService
     {
         private static readonly string apiUrl = "https://shikimori.one/api/graphql";
         private readonly GraphQLHttpClient graphQLClient;
@@ -109,13 +109,13 @@ namespace SeriesTracker.Application.Services
                                 }
                             }",
                 OperationName = "GetRandom",
-           
-        };
+
+            };
         }
 
 
         private static GraphQLRequest GetRequest(int page, string name)
-        {   
+        {
             return new GraphQLRequest
             {
                 Query = @"query GetByName($name: String, $page: Int) {
@@ -149,7 +149,7 @@ namespace SeriesTracker.Application.Services
             };
         }
 
-        private static GraphQLRequest GetRequest(int page, string name, string season, string status,string kind, string genre, string order, bool censored)
+        private static GraphQLRequest GetRequest(int page, string name, string season, string status, string kind, string genre, string order, bool censored)
         {
 
             return new GraphQLRequest
@@ -183,7 +183,7 @@ namespace SeriesTracker.Application.Services
                     page = page,
                     name = name,
                     season = season,
-                    status = string.IsNullOrEmpty(status) ? "!anons": status,
+                    status = string.IsNullOrEmpty(status) ? "!anons" : status,
                     kind = string.IsNullOrEmpty(kind) ? "!music,!pv,!cm" : kind,
                     genre = genre,
                     order = order,
@@ -211,6 +211,17 @@ namespace SeriesTracker.Application.Services
                                     status
                                     score
    screenshots { id originalUrl}
+    related {
+      anime {
+                           id
+    name
+    russian
+    poster {mainUrl}
+    kind
+airedOn{year}
+      }
+      relationText
+    }
                                     airedOn {
                                         date
                                     }
