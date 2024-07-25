@@ -25,6 +25,7 @@ import {
     TeamOutlined,
     EyeOutlined,
     FireOutlined,
+    ReadOutlined,
     DesktopOutlined,
     CopyrightOutlined,
     InfoCircleOutlined,
@@ -32,6 +33,7 @@ import {
 import { title } from "process";
 import { createSeries } from "@/app/services/series";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function AnimePage({ params }: { params: { id: string } }) {
     const ref = useRef<HTMLDivElement>(null);
@@ -304,12 +306,65 @@ export default function AnimePage({ params }: { params: { id: string } }) {
 
                 {animes.relateds &&
                     animes.relateds.map((a: Related) => (
-                        <Row>
-                            <Col span={6}>
-                                <Image width={80} src={a.anime.pictureUrl} />
-                            </Col>
-                            <Col span={18}>{a.relationText}</Col>
-                        </Row>
+                        <Link href={`/shikimori/${a.anime.id}`}>
+                            <Card
+                                style={{
+                                    padding: 10,
+                                    margin: 14,
+                                }}
+                                hoverable
+                            >
+                                <Row align={"middle"} justify={"start"}>
+                                    <Col>
+                                        <Image
+                                            preview={false}
+                                            height={90}
+                                            src={a.anime.pictureUrl}
+                                        />
+                                    </Col>
+                                    <Col offset={1}>
+                                        <Meta
+                                            style={{
+                                                padding: 0,
+                                                marginBottom: 8,
+                                            }}
+                                            title={a.anime.title}
+                                            description={a.anime.subTitle}
+                                        />
+                                        <Tag
+                                            style={{
+                                                cursor: "default",
+                                            }}
+                                        >
+                                            <Flex gap={4}>
+                                                <InfoCircleOutlined />
+                                                {a.anime.kind}
+                                            </Flex>
+                                        </Tag>
+                                        <Tag
+                                            style={{
+                                                cursor: "default",
+                                            }}
+                                        >
+                                            <Flex gap={4}>
+                                                <CalendarOutlined />
+                                                {a.anime.startDate}
+                                            </Flex>
+                                        </Tag>
+                                        <Tag
+                                            style={{
+                                                cursor: "default",
+                                            }}
+                                        >
+                                            <Flex gap={4}>
+                                                <ReadOutlined />
+                                                {a.relationText}
+                                            </Flex>
+                                        </Tag>
+                                    </Col>
+                                </Row>
+                            </Card>
+                        </Link>
                     ))}
             </Card>
             <FloatButton.BackTop style={{ right: 24 }} />

@@ -63,7 +63,9 @@ export default function RootLayout({
         setCurrentTheme(vv);
     }, []);
     useEffect(() => {
-        document.getElementsByClassName("ant-layout-sider-below").length > 0
+        document.getElementsByClassName(
+            "ant-layout-sider-collapsed ant-layout-sider-below"
+        ).length > 0
             ? (document.body.style.position = "fixed")
             : (document.body.style.position = "relative");
     }, [collapsed]);

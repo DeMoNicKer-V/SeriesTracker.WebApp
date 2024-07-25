@@ -19,9 +19,9 @@ namespace SeriesTracker.Application.Services
             graphQLClient = new GraphQLHttpClient(apiUrl, new NewtonsoftJsonSerializer());
         }
 
-        public async Task<GraphQLResponse<ShikimoriAnimeList>> GetAnimes(int page, string order)
+        public async Task<GraphQLResponse<ShikimoriAnimeBaseList>> GetAnimes(int page, string order)
         {
-            return await graphQLClient.SendQueryAsync<ShikimoriAnimeList>(GetAnimesRequest(page, order));
+            return await graphQLClient.SendQueryAsync<ShikimoriAnimeBaseList>(GetAnimesRequest(page, order));
         }
 
         public async Task<GraphQLResponse<ShikimoriAnimeList>> GetAnimesByName(int page, string name)
@@ -34,9 +34,9 @@ namespace SeriesTracker.Application.Services
             return await graphQLClient.SendQueryAsync<ShikimoriAnimeList>(GetRequest(Id));
         }
 
-        public async Task<GraphQLResponse<ShikimoriAnimeList>> GetAnimesByAllParams(int page, string name, string season, string status, string kind, string genre, string order, bool censored)
+        public async Task<GraphQLResponse<ShikimoriAnimeBaseList>> GetAnimesByAllParams(int page, string name, string season, string status, string kind, string genre, string order, bool censored)
         {
-            return await graphQLClient.SendQueryAsync<ShikimoriAnimeList>(GetRequest(page, name, season, status, kind, genre, order, censored));
+            return await graphQLClient.SendQueryAsync<ShikimoriAnimeBaseList>(GetRequest(page, name, season, status, kind, genre, order, censored));
         }
 
         public async Task<GraphQLResponse<GenreList>> GetGenres()
@@ -216,7 +216,7 @@ namespace SeriesTracker.Application.Services
                            id
     name
     russian
-    poster {mainUrl}
+    poster {miniUrl}
     kind
 airedOn{year}
       }

@@ -19,7 +19,7 @@ namespace SeriesTracker.Core.Models
         [JsonIgnore] public abstract string StartDate { get; set; }
         [JsonIgnore] public abstract string Title { get; set; }
         [JsonIgnore] public abstract string SubTitle { get; set; }
-        [JsonIgnore] public abstract string PictureUrl { get; }
+        [JsonIgnore] public abstract string PictureUrl { get; set; }
         [JsonIgnore] public abstract string Rating { get; set; }
         [JsonIgnore] public abstract string Kind { get; set; }
         [JsonIgnore] public abstract string Status { get; set; }

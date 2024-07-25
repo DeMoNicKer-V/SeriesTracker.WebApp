@@ -12,5 +12,7 @@ namespace SeriesTracker.Core.Models.Shikimori
         [JsonProperty("originalUrl")] public string? OriginalUrl { get; set; }
 
         [JsonProperty("mainUrl")] public string? MainUrl { get; set; }
+
+        [JsonProperty("miniUrl")] public string? MiniUrl { get; set; }
     }
 }

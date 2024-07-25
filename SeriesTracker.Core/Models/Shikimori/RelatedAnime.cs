@@ -16,7 +16,7 @@ namespace SeriesTracker.Core.Models.Shikimori
         [JsonProperty("russian")] public string Title { get; set; }
         [JsonIgnore] public string Kind { get { return kindInfo != null ? kindInfo.ToUpper() : ""; } set { } }
         [JsonProperty("kind")] private string? kindInfo { get; set; }    
-        [JsonIgnore] public string PictureUrl { get { return poster.MainUrl != null ? poster.MainUrl : poster.OriginalUrl; } }
+        [JsonIgnore] public string PictureUrl { get { return poster.MiniUrl != null ? poster.MiniUrl : poster.MiniUrl; } }
         [JsonIgnore]
         public  int StartDate
         {
