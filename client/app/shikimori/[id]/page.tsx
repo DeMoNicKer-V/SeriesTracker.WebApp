@@ -13,6 +13,9 @@ import {
     Tooltip,
     Typography,
     FloatButton,
+    Divider,
+    Collapse,
+    CollapseProps,
 } from "antd";
 import { useEffect, useRef, useState } from "react";
 import Meta from "antd/es/card/Meta";
@@ -20,6 +23,7 @@ import { getAnimeById } from "@/app/services/shikimori";
 import AbsoluteImage from "@/app/components/AbsoluteImage";
 import {
     StarOutlined,
+    LoadingOutlined,
     CalendarOutlined,
     ClockCircleOutlined,
     TeamOutlined,
@@ -40,8 +44,9 @@ export default function AnimePage({ params }: { params: { id: string } }) {
     const [animes, setAnimes] = useState<Anime[] | any>([]);
     const [related, setRelated] = useState<Anime[] | any>([]);
     const [isSeries, setIsSeries] = useState<boolean>(false);
-    const [flag, setFlag] = useState<boolean>(false);
+    const [screenLoading, setScreenLoading] = useState<boolean>(false);
     const [genres, setGenres] = useState<string[]>([]);
+    const [screen, setScreen] = useState<JSX.Element[]>([]);
     const getAnimes = async (id: string) => {
         const series = await getAnimeById(id);
         setAnimes(series.anime);
@@ -56,13 +61,14 @@ export default function AnimePage({ params }: { params: { id: string } }) {
             getAnimes(params.id);
         }
     }, []);
+
     useEffect(() => {
-        if (!flag) {
+        if (screenLoading === false) {
             return;
         }
         const a = MyObject();
         setScreen(a);
-    }, [flag]);
+    }, [screenLoading]);
     const router = useRouter();
     const AddToMyList = async () => {
         const seriesRequest = {
@@ -89,8 +95,13 @@ export default function AnimePage({ params }: { params: { id: string } }) {
         for (let index = 0; index < a.length; index++) {
             obj.push(
                 <Image
+                    placeholder={<LoadingOutlined />}
                     preview
-                    style={{ width: 300 }}
+                    style={{
+                        width: 300,
+                        alignItems: "center",
+                        justifyContent: "center",
+                    }}
                     src={a[index].originalUrl}
                 ></Image>
             );
@@ -109,10 +120,109 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                 );
             }
         }
-
         return obj2;
     };
-    const [screen, setScreen] = useState<JSX.Element[]>([]);
+    const items: CollapseProps["items"] = [
+        {
+            key: "1",
+            label: (
+                <Button
+                    type="link"
+                    size="small"
+                    onClick={() => {
+                        setScreenLoading(true);
+                    }}
+                >
+                    Посмотреть кадры
+                </Button>
+            ),
+            children: screenLoading && (
+                <Carousel style={{ padding: 24 }} dots={false} autoplay arrows>
+                    {screen.map((animes: JSX.Element) => animes)}
+                </Carousel>
+            ),
+        },
+        {
+            key: "2",
+            label: (
+                <Button type="link" size="small">
+                    Связанное с этим аниме
+                </Button>
+            ),
+            children:
+                animes.relateds &&
+                animes.relateds.map((a: Related) => (
+                    <Link href={`/shikimori/${a.anime.id}`}>
+                        <Card
+                            style={{
+                                padding: 8,
+                                margin: 15,
+                            }}
+                            hoverable
+                        >
+                            <Row align={"middle"} justify={"start"}>
+                                <Col>
+                                    <Image
+                                        preview={false}
+                                        height={90}
+                                        src={a.anime.pictureUrl}
+                                    />
+                                </Col>
+                                <Col offset={1}>
+                                    <Meta
+                                        style={{
+                                            padding: 0,
+                                            marginBottom: 8,
+                                        }}
+                                        title={a.anime.title}
+                                        description={a.anime.subTitle}
+                                    />
+                                    <Tag
+                                        style={{
+                                            cursor: "default",
+                                        }}
+                                    >
+                                        <Flex gap={4}>
+                                            <InfoCircleOutlined />
+                                            {a.anime.kind}
+                                        </Flex>
+                                    </Tag>
+                                    <Tag
+                                        style={{
+                                            cursor: "default",
+                                        }}
+                                    >
+                                        <Flex gap={4}>
+                                            <CalendarOutlined />
+                                            {a.anime.startDate}
+                                        </Flex>
+                                    </Tag>
+                                    <Tag
+                                        style={{
+                                            cursor: "default",
+                                        }}
+                                    >
+                                        <Flex gap={4}>
+                                            <ReadOutlined />
+                                            {a.relationText}
+                                        </Flex>
+                                    </Tag>
+                                </Col>
+                            </Row>
+                        </Card>
+                        <Divider
+                            style={{
+                                minWidth: 0,
+                                width: "auto",
+                                margin: "0px 15px",
+                            }}
+                            dashed
+                        />
+                    </Link>
+                )),
+        },
+    ];
+
     const cardStyle: React.CSSProperties = {
         padding: "22% 20px 20px 20px",
         height: "100%",
@@ -274,13 +384,6 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                                         {isSeries &&
                                             "Данное аниме уже находится в вашем списке"}
                                     </Button>
-                                    <Button
-                                        onClick={() => {
-                                            setFlag(true);
-                                        }}
-                                    >
-                                        Нажми
-                                    </Button>
                                 </Col>
                             </Row>
                         </div>
@@ -292,80 +395,11 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                     title={<Title level={3}>Описание</Title>}
                     description={animes.description}
                 />
-
-                {flag && (
-                    <Carousel
-                        style={{ padding: 24 }}
-                        dots={false}
-                        autoplay
-                        arrows
-                    >
-                        {screen.map((animes: JSX.Element) => animes)}
-                    </Carousel>
-                )}
-
-                {animes.relateds &&
-                    animes.relateds.map((a: Related) => (
-                        <Link href={`/shikimori/${a.anime.id}`}>
-                            <Card
-                                style={{
-                                    padding: 10,
-                                    margin: 14,
-                                }}
-                                hoverable
-                            >
-                                <Row align={"middle"} justify={"start"}>
-                                    <Col>
-                                        <Image
-                                            preview={false}
-                                            height={90}
-                                            src={a.anime.pictureUrl}
-                                        />
-                                    </Col>
-                                    <Col offset={1}>
-                                        <Meta
-                                            style={{
-                                                padding: 0,
-                                                marginBottom: 8,
-                                            }}
-                                            title={a.anime.title}
-                                            description={a.anime.subTitle}
-                                        />
-                                        <Tag
-                                            style={{
-                                                cursor: "default",
-                                            }}
-                                        >
-                                            <Flex gap={4}>
-                                                <InfoCircleOutlined />
-                                                {a.anime.kind}
-                                            </Flex>
-                                        </Tag>
-                                        <Tag
-                                            style={{
-                                                cursor: "default",
-                                            }}
-                                        >
-                                            <Flex gap={4}>
-                                                <CalendarOutlined />
-                                                {a.anime.startDate}
-                                            </Flex>
-                                        </Tag>
-                                        <Tag
-                                            style={{
-                                                cursor: "default",
-                                            }}
-                                        >
-                                            <Flex gap={4}>
-                                                <ReadOutlined />
-                                                {a.relationText}
-                                            </Flex>
-                                        </Tag>
-                                    </Col>
-                                </Row>
-                            </Card>
-                        </Link>
-                    ))}
+                <Collapse
+                    items={items}
+                    bordered={false}
+                    style={{ margin: 24 }}
+                ></Collapse>
             </Card>
             <FloatButton.BackTop style={{ right: 24 }} />
         </div>

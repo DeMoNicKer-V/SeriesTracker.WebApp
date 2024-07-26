@@ -20,6 +20,7 @@ import {
     theme,
     Segmented,
     Input,
+    Collapse,
 } from "antd";
 
 import Icon, {
@@ -109,6 +110,10 @@ export default function RootLayout({
         },
         Input: {
             colorPrimaryHover: "#fff",
+        },
+        Collapse: {
+            headerBg: "#141414",
+            border: "none",
         },
     };
     const lightTheme = {};
