@@ -46,13 +46,13 @@ export default function AnimePage({ params }: { params: { id: string } }) {
     const [isSeries, setIsSeries] = useState<boolean>(false);
     const [screenLoading, setScreenLoading] = useState<boolean>(false);
     const [genres, setGenres] = useState<string[]>([]);
+    const [skip, setSkip] = useState<number>(3);
     const [screen, setScreen] = useState<JSX.Element[]>([]);
     const getAnimes = async (id: string) => {
         const series = await getAnimeById(id);
         setAnimes(series.anime);
         setIsSeries(series.isSeries);
 
-        console.log(series);
         const gg = series.anime.genres.split(",");
         setGenres(gg);
     };
@@ -93,18 +93,7 @@ export default function AnimePage({ params }: { params: { id: string } }) {
         const a = animes.screenshots;
 
         for (let index = 0; index < a.length; index++) {
-            obj.push(
-                <Image
-                    placeholder={<LoadingOutlined />}
-                    preview
-                    style={{
-                        width: 300,
-                        alignItems: "center",
-                        justifyContent: "center",
-                    }}
-                    src={a[index].originalUrl}
-                ></Image>
-            );
+            obj.push(<Image preview src={a[index].originalUrl}></Image>);
             if (obj.length === 3) {
                 obj2.push(
                     <Flex justify={"center"} align={"center"} gap={15}>
@@ -137,9 +126,31 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                 </Button>
             ),
             children: screenLoading && (
-                <Carousel style={{ padding: 24 }} dots={false} autoplay arrows>
-                    {screen.map((animes: JSX.Element) => animes)}
-                </Carousel>
+                <Row justify="center" align="middle">
+                    <Col span={24}>
+                        <Flex
+                            className="flex-ant-image"
+                            justify="center"
+                            align="center"
+                            gap={10}
+                        >
+                            {animes.screenshots
+                                .slice(0, skip)
+                                .map((animes: Screenshot) => (
+                                    <Image
+                                        style={{ maxWidth: 300, width: 300 }}
+                                        preview
+                                        src={animes.originalUrl}
+                                    ></Image>
+                                ))}
+                        </Flex>
+                    </Col>
+                    <Col>
+                        <Link href={`${params.id}/screen`}>
+                            Посмотреть больше кадров
+                        </Link>
+                    </Col>
+                </Row>
             ),
         },
         {

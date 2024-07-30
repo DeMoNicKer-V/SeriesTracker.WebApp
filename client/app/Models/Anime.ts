@@ -12,7 +12,7 @@ interface Anime {
     kind: string;
     status: string;
     pictureUrl: string;
-    screenshot: Screenshot[];
+    screenshots: Screenshot[];
     relateds: Related[];
 }
 
