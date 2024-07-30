@@ -1,12 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { Animes } from "../components/Animes";
-import {
-    ShikimoriRequest,
-    getAnimes,
-    getAnimesByParams,
-    getGenres,
-} from "../services/shikimori";
+
 import {
     Button,
     Col,
@@ -53,6 +47,12 @@ import {
     EyeInvisibleOutlined,
 } from "@ant-design/icons";
 import dayjs from "dayjs";
+import { Animes } from "@/app/components/Animes";
+import {
+    getAnimesByParams,
+    getGenres,
+    ShikimoriRequest,
+} from "@/app/services/shikimori";
 export default function ShikimoriPage() {
     type MenuItem = Required<MenuProps>["items"][number];
     const statusOptions: SelectProps["options"] = [
@@ -193,8 +193,8 @@ export default function ShikimoriPage() {
                 <Tooltip
                     title={
                         !safe
-                            ? "Безопасный поиск выключен"
-                            : "Безопасный поиск включен"
+                            ? "Вкл. безопасный поиск"
+                            : "Выкл. безопасный поиск"
                     }
                 >
                     <Button
@@ -536,13 +536,12 @@ export default function ShikimoriPage() {
                 <Col span={12}>
                     <Flex gap={5}>
                         <Typography.Title style={{ margin: 0 }} level={3}>
-                            Аниме
+                            Shikimori.One
                         </Typography.Title>
                         <Button
                             disabled={loading}
                             type="primary"
                             shape="circle"
-                            size="small"
                             ghost={!collapsed}
                             onClick={() => toggleCollapsed()}
                             icon={<SearchOutlined />}

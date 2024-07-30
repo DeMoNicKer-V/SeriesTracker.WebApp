@@ -42,16 +42,19 @@ import Link from "next/link";
 export default function AnimePage({ params }: { params: { id: string } }) {
     const ref = useRef<HTMLDivElement>(null);
     const [animes, setAnimes] = useState<Anime[] | any>([]);
+    const [related, setRelated] = useState<Anime[] | any>([]);
     const [isSeries, setIsSeries] = useState<boolean>(false);
     const [screenLoading, setScreenLoading] = useState<boolean>(false);
     const [genres, setGenres] = useState<string[]>([]);
+    const [skip, setSkip] = useState<number>(3);
+    const [screen, setScreen] = useState<JSX.Element[]>([]);
     const getAnimes = async (id: string) => {
         const series = await getAnimeById(id);
         setAnimes(series.anime);
         setIsSeries(series.isSeries);
+
         const gg = series.anime.genres.split(",");
         setGenres(gg);
-        setScreenLoading(true);
     };
     useEffect(() => {
         if (params.id) {
@@ -59,6 +62,13 @@ export default function AnimePage({ params }: { params: { id: string } }) {
         }
     }, []);
 
+    useEffect(() => {
+        if (screenLoading === false) {
+            return;
+        }
+        const a = MyObject();
+        setScreen(a);
+    }, [screenLoading]);
     const router = useRouter();
     const AddToMyList = async () => {
         const seriesRequest = {
@@ -105,7 +115,13 @@ export default function AnimePage({ params }: { params: { id: string } }) {
         {
             key: "1",
             label: (
-                <Button type="link" size="small">
+                <Button
+                    type="link"
+                    size="small"
+                    onClick={() => {
+                        setScreenLoading(true);
+                    }}
+                >
                     Посмотреть кадры
                 </Button>
             ),
@@ -119,7 +135,7 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                             gap={10}
                         >
                             {animes.screenshots
-                                .slice(0, 3)
+                                .slice(0, skip)
                                 .map((animes: Screenshot) => (
                                     <Image
                                         style={{ maxWidth: 300, width: 300 }}
@@ -129,11 +145,8 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                                 ))}
                         </Flex>
                     </Col>
-                    <Col style={{ padding: 12 }}>
-                        <Link
-                            style={{ fontStyle: "italic" }}
-                            href={`${params.id}/screen`}
-                        >
+                    <Col>
+                        <Link href={`${params.id}/screen`}>
                             Посмотреть больше кадров
                         </Link>
                     </Col>
@@ -238,7 +251,7 @@ export default function AnimePage({ params }: { params: { id: string } }) {
         <div
             className="container detail"
             style={{
-                maxWidth: "85%",
+                maxWidth: 1185,
                 marginLeft: "auto",
                 marginRight: "auto",
             }}
@@ -246,7 +259,7 @@ export default function AnimePage({ params }: { params: { id: string } }) {
             <title>
                 {!animes.title
                     ? "Series Tracker"
-                    : `Series Tracker - ${animes.subTitle}`}
+                    : `Series Tracker - ${animes.title}`}
             </title>
             <Card
                 cover={
@@ -270,14 +283,7 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                                 justify={"center"}
                                 style={cardStyle}
                             >
-                                <Col
-                                    xs={24}
-                                    sm={24}
-                                    lg={24}
-                                    xl={7}
-                                    md={24}
-                                    xxl={5}
-                                >
+                                <Col xs={24} sm={24} lg={24} xl={6} md={24}>
                                     <Flex className="flex-detail">
                                         <Image
                                             style={{
@@ -296,8 +302,7 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                                     sm={24}
                                     lg={24}
                                     md={24}
-                                    xl={17}
-                                    xxl={19}
+                                    xl={18}
                                 >
                                     <Title className="anime-title" level={4}>
                                         {animes.title}
@@ -383,13 +388,8 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                                     <Button
                                         disabled={isSeries}
                                         onClick={AddToMyList}
-                                        style={{
-                                            width: "100%",
-                                            borderRadius: 5,
-                                        }}
-                                        type="primary"
-                                        ghost
-                                        size="large"
+                                        style={{ width: "100%" }}
+                                        type="dashed"
                                     >
                                         {!isSeries && "Добавить в мой список"}
                                         {isSeries &&

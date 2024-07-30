@@ -1,12 +1,23 @@
 "use client";
 import { getAnimeById } from "@/app/services/shikimori";
-import { Breadcrumb, List, Spin, Image, Card, Flex, Button } from "antd";
+import {
+    Breadcrumb,
+    List,
+    Spin,
+    Image,
+    Card,
+    Flex,
+    Button,
+    Row,
+    Col,
+} from "antd";
 import Title from "antd/es/typography/Title";
 import Text from "antd/es/typography/Text";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import { LongLeftArrow } from "@/app/img/LongLeftArrow";
+import { ShikimoriLogo } from "@/app/img/ShikimoriLogo";
 
 export default function ScreenshotPage({ params }: { params: { id: string } }) {
     const [animes, setAnimes] = useState<Anime[] | any>([]);
@@ -30,54 +41,85 @@ export default function ScreenshotPage({ params }: { params: { id: string } }) {
             <title>
                 {!animes.title
                     ? "Series Tracker"
-                    : `Series Tracker - ${animes.title} - Кадры`}
+                    : `Series Tracker / ${animes.subTitle} / Кадры`}
             </title>
             <Spin
                 size="large"
-                spinning={screenLoading}
+                spinning={loading}
                 style={{
                     position: "absolute",
                     top: "50%",
                     left: "50%",
                 }}
             />
-            <Flex align="center">
-                <Link
-                    style={{
-                        display: "flex",
-                        flexDirection: "column",
-                        fontStyle: "italic",
-                        marginLeft: 0,
-                        marginRight: 10,
-                        fontSize: 12,
-                        alignItems: "center",
-                    }}
-                    href={"./"}
-                >
-                    <LongLeftArrow />
-                    Назад
-                </Link>
-                <Title style={{ margin: 0 }} level={2}>
-                    {animes.title}
-                </Title>
-            </Flex>
             {loading && (
-                <Breadcrumb
-                    items={[
-                        {
-                            title: <a href="/shikimori">Shikimori</a>,
-                        },
-
-                        {
-                            title: <Link href={"./"}>{animes.title}</Link>,
-                        },
-                        {
-                            title: "Кадры",
-                        },
-                    ]}
-                />
+                <Row>
+                    <Col span={24}>
+                        <Title italic level={3}>
+                            {animes.title}
+                        </Title>
+                    </Col>
+                    <Col span={24}>
+                        <Breadcrumb
+                            separator=""
+                            items={[
+                                {
+                                    title: (
+                                        <Link
+                                            style={{
+                                                display: "flex",
+                                                alignItems: "center",
+                                                justifyContent: "center",
+                                            }}
+                                            href="/shikimori"
+                                        >
+                                            <ShikimoriLogo />
+                                        </Link>
+                                    ),
+                                },
+                                {
+                                    type: "separator",
+                                    separator: ":",
+                                },
+                                {
+                                    title: (
+                                        <Link
+                                            style={{
+                                                display: "flex",
+                                                flexDirection: "row",
+                                                fontStyle: "italic",
+                                                gap: 5,
+                                                fontSize: 11,
+                                                alignItems: "center",
+                                                justifyContent: "center",
+                                            }}
+                                            href={"./"}
+                                        >
+                                            <LongLeftArrow />
+                                            Назад
+                                        </Link>
+                                    ),
+                                },
+                                {
+                                    type: "separator",
+                                },
+                                {
+                                    title: (
+                                        <Link href={"./"}>{animes.title}</Link>
+                                    ),
+                                },
+                                {
+                                    type: "separator",
+                                },
+                                {
+                                    title: "Кадры",
+                                },
+                            ]}
+                        />
+                    </Col>
+                </Row>
             )}
-            {loading && screen && (
+            {loading && (
                 <Card>
                     <Image.PreviewGroup>
                         <List

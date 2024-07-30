@@ -52,7 +52,7 @@ export default function RootLayout({
 }: Readonly<{
     children: React.ReactNode;
 }>) {
-    const [collapsed, setCollapsed] = useState(true);
+    const [collapsed, setCollapsed] = useState(false);
     const [currentTheme, setCurrentTheme] = useState(false);
     const [currentKey, setCurrentKey] = useState(
         window.location.href.split("/")[3].toString() || "series"
@@ -277,7 +277,7 @@ export default function RootLayout({
                                             icon: <HeartIcon />,
                                             label: (
                                                 <Link href={"/shikimori"}>
-                                                    Shikimori
+                                                    Аниме
                                                 </Link>
                                             ),
                                         },
