@@ -189,6 +189,7 @@ html {
     cursor: default !important;
 }
 .tag {
+    margin: 0;
     -webkit-touch-callout: none; /* iOS Safari */
     -webkit-user-select: none; /* Safari */
     -khtml-user-select: none; /* Konqueror HTML */
@@ -336,6 +337,9 @@ input,
     .anime-detail-row {
         padding: 22% 5px 5px !important;
     }
+    .anime-detail-col > .ant-space {
+        justify-content: center;
+    }
     .ant-layout-sider {
         top: 64px !important;
         border-radius: 0 !important;
@@ -355,9 +359,16 @@ input,
         width: 0 !important;
         min-width: 0 !important;
     }
+    .ant-card-meta.anime-detail-title {
+        text-align: center;
+    }
+
+    /* .related-anime .ant-image-img {
+        height: 70px !important;
+    }*/
 }
 @media (max-width: 992px) {
-    .dot-divider {
+    .dot-separator {
         display: none;
     }
     .azList {
@@ -365,6 +376,25 @@ input,
     }
     .flex-ant-image {
         flex-direction: column;
+    }
+    .related-anime {
+        justify-content: center;
+        text-align: center;
+    }
+    .related-anime .ant-card-meta-title {
+        font-size: 14px;
+    }
+    .related-anime .ant-card-meta-description {
+        font-size: 12px;
+    }
+    .related-anime > .ant-col > .ant-space {
+        justify-content: center;
+    }
+    .anime-detail-col .ant-card-meta-title .ant-typography {
+        font-size: 20px;
+    }
+    .space-buttons .manage-button {
+        font-size: 12px;
     }
 }
 .ant-collapse:hover {
@@ -374,4 +404,22 @@ input,
 
 .ant-image-preview-img {
     padding: 5px;
+}
+
+.ant-card-meta-title {
+    margin-bottom: 0 !important;
+}
+.ant-card-meta-title,
+.ant-card-meta-description {
+    white-space: break-spaces !important;
+}
+.anime-detail-col .ant-card-meta-description {
+    font-style: italic;
+}
+.anime-detail-col .space-buttons .ant-space-item:nth-child(2) {
+    width: 100%;
+}
+
+.ant-menu-overflow-item {
+    margin-left: auto;
 }

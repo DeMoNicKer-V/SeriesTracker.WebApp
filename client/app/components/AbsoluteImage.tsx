@@ -10,7 +10,7 @@ export const AbsoluteImage = ({ src, zIndex }: Props) => {
                 backgroundImage: `url(${src})`,
                 backgroundSize: "cover",
                 backgroundRepeat: "no-repeat",
-                backgroundPosition: "center center",
+                backgroundPosition: "top",
                 top: 0,
                 left: 0,
                 right: 0,

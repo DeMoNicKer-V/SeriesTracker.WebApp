@@ -6,6 +6,7 @@ import {
     Dropdown,
     Empty,
     Flex,
+    List,
     MenuProps,
     Popover,
     Row,
@@ -28,9 +29,20 @@ interface Props {
 export const Animes = ({ animes }: Props) => {
     const { Title } = Typography;
     return (
-        <Row gutter={[25, 25]} justify="center">
-            {animes.map((animes: Anime) => (
-                <Col key={`anime_${animes.id}`}>
+        <List
+            style={{ padding: 10 }}
+            grid={{
+                gutter: 15,
+                xs: 2,
+                sm: 3,
+                md: 4,
+                lg: 5,
+                xl: 6,
+                xxl: 7,
+            }}
+            dataSource={animes}
+            renderItem={(animes: Anime) => (
+                <List.Item>
                     <Link href={`/shikimori/${animes.id}`}>
                         <Popover
                             trigger={"hover"}
@@ -44,8 +56,11 @@ export const Animes = ({ animes }: Props) => {
                         >
                             <Card
                                 style={{
-                                    width: 200,
-                                    height: 300,
+                                    maxHeight: 300,
+                                    maxWidth: 200,
+                                    minHeight: "auto",
+                                    minWidth: "auto",
+                                    aspectRatio: "auto 6/8",
                                     borderRadius: 5,
                                 }}
                                 cover={
@@ -88,8 +103,8 @@ export const Animes = ({ animes }: Props) => {
                         <Tag>{animes.status}</Tag>
                         <Tag>{`${animes.episodes} эп.`}</Tag>
                     </Flex>
-                </Col>
-            ))}
-        </Row>
+                </List.Item>
+            )}
+        />
     );
 };
