@@ -93,6 +93,7 @@ namespace SeriesTracker.Application.Services
                                 genres(entryType: Anime) {
                                     id
                                     russian
+                                    kind
                                 }
                             }",
                 OperationName = "GetGenres",
@@ -128,7 +129,7 @@ namespace SeriesTracker.Application.Services
                                     rating
                                     duration
                                     episodes
-                                    genres{ id name russian }
+                                    genres{ id kind russian }
                                     episodesAired
                                     status
                                     score
@@ -164,7 +165,7 @@ namespace SeriesTracker.Application.Services
                                     rating
                                     duration
                                     episodes
-                                    genres{ id name russian }
+                                    genres{ id kind russian }
                                     episodesAired
                                     status
                                     score
@@ -206,7 +207,7 @@ namespace SeriesTracker.Application.Services
                                     rating
                                     duration
                                     episodes
-                                    genres{ id name russian }
+                                    genres{ id kind russian }
                                     episodesAired
                                     status
                                     score

@@ -43,7 +43,7 @@ import SearchBar from "./components/searchbar";
 import { getCookie, setCookie } from "cookies-next";
 import type { GetProps } from "antd";
 import { getRandomAnime } from "./services/shikimori";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 type CustomIconComponentProps = GetProps<typeof Icon>;
 const { Header, Content, Sider } = Layout;
 
@@ -54,9 +54,7 @@ export default function RootLayout({
 }>) {
     const [collapsed, setCollapsed] = useState(true);
     const [currentTheme, setCurrentTheme] = useState(false);
-    const [currentKey, setCurrentKey] = useState(
-        window.location.href.split("/")[3].toString() || "series"
-    );
+    const [currentKey, setCurrentKey] = useState(usePathname()?.split("/")[1]);
 
     useEffect(() => {
         const colorThemeCookie = getCookie("theme");
@@ -100,7 +98,7 @@ export default function RootLayout({
             colorBorderSecondary: "transparent",
 
             boxShadowCard:
-                "0 -2px 2px 0 rgba(222, 30, 178, 0.3), 0 1px 6px -1px rgba(222, 30, 178, 0.5), 0 2px 4px 0 rgba(222, 30, 178, 0.1)",
+                "0 -2px 2px 0 rgba(222, 30, 178, 0.1), 0 1px 6px -1px rgba(222, 30, 178, 0.2), 0 2px 4px 0 rgba(222, 30, 178, 0.1)",
         },
         Segmented: {
             itemSelectedBg: "#DE1EB2",
@@ -247,7 +245,10 @@ export default function RootLayout({
                                 }}
                             >
                                 <Menu
-                                    onSelect={({ key }) => setCurrentKey(key)}
+                                    onSelect={({ key }) => {
+                                        setCurrentKey(key);
+                                        setCollapsed(true);
+                                    }}
                                     selectedKeys={[currentKey]}
                                     style={{
                                         background: "transparent",

@@ -9,133 +9,118 @@ import {
     Row,
     Tag,
     Tooltip,
+    Image,
     Typography,
+    Space,
+    Slider,
 } from "antd";
 import {
     FileImageOutlined,
     CalendarOutlined,
     EditOutlined,
     YoutubeOutlined,
+    LeftOutlined,
+    RightOutlined,
     DeleteOutlined,
     InfoCircleOutlined,
     StarOutlined,
 } from "@ant-design/icons";
 import { useEffect, useState } from "react";
+import Title from "antd/es/typography/Title";
+import Meta from "antd/es/card/Meta";
 interface Props {
     animes: Anime;
     isOpen: boolean;
 }
 
 export const AnimePopover = ({ animes }: Props) => {
-    const MyObject = () => {
-        let obj = [];
-        let obj2 = [];
-        const a = animes.genres.split(",");
-
-        for (let index = 0; index < a.length; index++) {
-            obj.push(<Tag>{a[index]}</Tag>);
-            if (obj.length === 3) {
-                obj2.push(<Flex>{obj}</Flex>);
-                obj = [];
-            } else if (index === a.length - 1) {
-                obj2.push(<Flex>{obj}</Flex>);
-            }
-        }
-
-        return obj2;
-    };
     const { Text } = Typography;
     const [genres, setGenres] = useState<JSX.Element[]>([]);
-
-    useEffect(() => {
-        const a = MyObject();
-        setGenres(a);
-    }, []);
     return (
-        <Row gutter={[30, 0]} style={{ height: 250, width: 550 }}>
-            <Col span={8} offset={1}>
-                <div
-                    style={{
-                        overflow: "hidden",
-                        backgroundImage: `url(${animes.pictureUrl})`,
-                        backgroundSize: "cover",
-                        backgroundRepeat: "no-repeat",
-                        backgroundPosition: "center center",
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        bottom: 0,
-                        position: "absolute",
-                    }}
-                ></div>
-                {animes.pictureUrl === "" && (
-                    <Empty
-                        style={{
-                            marginTop: 25,
-                        }}
-                        image={<FileImageOutlined />}
-                        imageStyle={{ fontSize: 60 }}
-                        description={
-                            <span
-                                style={{
-                                    fontSize: 18,
-                                    fontStyle: "italic",
-                                }}
-                            >
-                                Изображение отсутствует
-                            </span>
-                        }
-                    ></Empty>
-                )}
+        <Row style={{ maxWidth: 600 }} justify={"start"}>
+            <Col span={7}>
+                <Image preview={false} src={animes.pictureUrl} />
             </Col>
-            <Col span={15}>
-                <Row style={{ marginBottom: 10 }}>
-                    <Col>{animes.title}</Col>
-                </Row>
-                <Row style={{ marginBottom: 5 }}>
-                    <Col>
-                        <Text className="text">
+            <Col span={16} offset={1}>
+                <Row style={{ height: "100%" }}>
+                    <Col span={24}>
+                        <Meta
+                            style={{
+                                marginBottom: 8,
+                                fontSize: 14,
+                            }}
+                            title={
+                                <Title
+                                    style={{
+                                        margin: 0,
+                                    }}
+                                    level={5}
+                                >
+                                    {animes.title}
+                                </Title>
+                            }
+                            description={<Text italic>{animes.subTitle}</Text>}
+                        />
+
+                        <Text style={{ marginBottom: 5 }} className="text">
                             {animes.description === ""
                                 ? "Описание отсутствует"
                                 : animes.description}
                         </Text>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col>
-                        <Tag>
-                            <CalendarOutlined />
-                            {new Date(animes.startDate).toLocaleString(
-                                "ru-Ru",
-                                {
-                                    year: "numeric",
-                                    month: "long",
-                                    day: "numeric",
-                                }
-                            )}
-                        </Tag>
+                        <Space align="center" size={[0, 5]} wrap>
+                            <Tag>
+                                <Flex
+                                    gap={3}
+                                    align={"center"}
+                                    justify={"center"}
+                                >
+                                    <CalendarOutlined />
+                                    {new Date(animes.startDate).toLocaleString(
+                                        "ru-Ru",
+                                        {
+                                            year: "numeric",
+                                        }
+                                    )}
+                                </Flex>
+                            </Tag>
+                            <Tag>
+                                <Flex
+                                    gap={3}
+                                    align={"center"}
+                                    justify={"center"}
+                                >
+                                    <InfoCircleOutlined />
+                                    {`${animes.kind}`}
+                                </Flex>
+                            </Tag>
 
-                        <Tag>
-                            <Flex gap={3} align={"center"} justify={"center"}>
-                                <YoutubeOutlined />
-                                {`${animes.episodes} эп.`}
-                            </Flex>
-                        </Tag>
+                            <Tag>
+                                <Flex
+                                    gap={3}
+                                    align={"center"}
+                                    justify={"center"}
+                                >
+                                    <YoutubeOutlined />
+                                    {`${animes.episodes} эп.`}
+                                </Flex>
+                            </Tag>
 
-                        <Tag>
-                            <Flex gap={3} align={"center"} justify={"center"}>
-                                <StarOutlined />
-                                {`${animes.score} из 10`}
-                            </Flex>
-                        </Tag>
-                        <Carousel arrows>
-                            {genres.map((animes: JSX.Element) => animes)}
-                        </Carousel>
+                            <Tag>
+                                <Flex
+                                    gap={3}
+                                    align={"center"}
+                                    justify={"center"}
+                                >
+                                    <StarOutlined />
+                                    {animes.score}
+                                </Flex>
+                            </Tag>
+                        </Space>
                     </Col>
-                </Row>
-                <Row style={{ position: "absolute", bottom: 0 }}>
-                    <Col>
-                        <Button>Подробнее</Button>
+                    <Col style={{ marginTop: "auto" }} span={24}>
+                        <Button type="primary" style={{ width: "100%" }}>
+                            Посмотреть подробнее
+                        </Button>
                     </Col>
                 </Row>
             </Col>

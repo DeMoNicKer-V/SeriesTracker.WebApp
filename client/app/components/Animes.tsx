@@ -43,17 +43,17 @@ export const Animes = ({ animes }: Props) => {
             dataSource={animes}
             renderItem={(animes: Anime) => (
                 <List.Item>
-                    <Link href={`/shikimori/${animes.id}`}>
-                        <Popover
-                            trigger={"hover"}
-                            mouseEnterDelay={0.5}
-                            mouseLeaveDelay={0.2}
-                            placement="bottomLeft"
-                            arrow={false}
-                            content={
-                                <AnimePopover animes={animes} isOpen={false} />
-                            }
-                        >
+                    <Popover
+                        trigger={"hover"}
+                        mouseEnterDelay={0.5}
+                        mouseLeaveDelay={0.2}
+                        placement="bottomLeft"
+                        arrow={false}
+                        content={
+                            <AnimePopover animes={animes} isOpen={false} />
+                        }
+                    >
+                        <Link href={`/shikimori/${animes.id}`}>
                             <Card
                                 style={{
                                     maxHeight: 300,
@@ -83,9 +83,8 @@ export const Animes = ({ animes }: Props) => {
                                     </Flex>
                                 }
                             ></Card>
-                        </Popover>
-                    </Link>
-
+                        </Link>
+                    </Popover>
                     <Title
                         level={5}
                         className="cardTitle"

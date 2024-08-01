@@ -154,10 +154,11 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                                                 <Flex className="flex-detail">
                                                     <Image
                                                         style={{
-                                                            height: "380px",
+                                                            maxHeight: "380px",
                                                             pointerEvents:
                                                                 "none",
                                                             borderRadius: 5,
+                                                            aspectRatio: "7/10",
                                                         }}
                                                         preview={false}
                                                         src={animes.pictureUrl}

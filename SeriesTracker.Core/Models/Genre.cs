@@ -12,5 +12,8 @@ namespace SeriesTracker.Core.Models
     {
         [JsonProperty("id")] public long Id { get; set; }
         [JsonProperty("russian")] public required string Russian { get; set; }
+        [JsonProperty("kind")] public required string Kind { get; set; }
+
+
     }
 }
