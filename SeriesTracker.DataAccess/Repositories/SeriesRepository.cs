@@ -18,18 +18,7 @@ namespace SeriesTracker.DataAccess.Repositories
         {
             var seriesEntities = await _context.SeriesEntities.AsNoTracking().ToListAsync();
 
-            var seiresList = seriesEntities.Select(s => Series.Create(s.Id, s.AnimeId, s.Title, s.Description, s.WatchedEpisode, s.LastEpisode, s.Duration,
-                s.Rating, s.ImagePath, s.ReleaseDate, s.AddedDate, s.ChangedDate, s.OverDate, s.IsOver, s.IsFavorite).Series).ToList();
-
-            return seiresList;
-        }
-
-        public async Task<List<Series>> GetSearchList(string query)
-        {
-            var seriesEntities = await _context.SeriesEntities.AsNoTracking().ToListAsync();
-
-            var seiresList = seriesEntities.Select(s => Series.Create(s.Id, s.AnimeId, s.Title, s.Description, s.WatchedEpisode, s.LastEpisode, s.Duration,
-                s.Rating, s.ImagePath, s.ReleaseDate, s.AddedDate, s.ChangedDate, s.OverDate, s.IsOver, s.IsFavorite).Series).Where(s => s.Title.ToLowerInvariant().Contains(query)).ToList();
+            var seiresList = seriesEntities.Select(s => Series.Create(s.Id, s.AnimeId, s.WatchedEpisode, s.AddedDate, s.ChangedDate, s.CategoryId, s.IsFavorite).Series).ToList();
 
             return seiresList;
         }
@@ -38,8 +27,7 @@ namespace SeriesTracker.DataAccess.Repositories
         {
             var s = await _context.SeriesEntities.AsNoTracking().Where(s => s.Id == id).FirstAsync();
 
-            var seires = Series.Create(s.Id, s.AnimeId, s.Title, s.Description, s.WatchedEpisode, s.LastEpisode, s.Duration,
-                s.Rating, s.ImagePath, s.ReleaseDate, s.AddedDate, s.ChangedDate, s.OverDate, s.IsOver, s.IsFavorite).Series;
+            var seires = Series.Create(s.Id, s.AnimeId, s.WatchedEpisode, s.AddedDate, s.ChangedDate, s.CategoryId, s.IsFavorite).Series;
 
             return seires;
         }
@@ -50,18 +38,9 @@ namespace SeriesTracker.DataAccess.Repositories
             {
                 Id = series.Id,
                 AnimeId = series.AnimeId,
-                Title = series.Title,
-                Description = series.Description,
                 WatchedEpisode = series.WatchedEpisode,
-                LastEpisode = series.LastEpisode,
-                Duration = series.Duration,
-                Rating = series.Rating,
-                ImagePath = series.ImagePath,
-                ReleaseDate = series.ReleaseDate,
                 AddedDate = series.AddedDate,
                 ChangedDate = series.ChangedDate,
-                OverDate = series.OverDate,
-                IsOver = series.IsOver,
                 IsFavorite = series.IsFavorite,
             };
 
@@ -71,21 +50,12 @@ namespace SeriesTracker.DataAccess.Repositories
             return seriesEntity.Id;
         }
 
-        public async Task<Guid> UpdateSeries(Guid id, string title, string description, int watched, int last, int duration,
-            float rating, string image, string release, string changed, string overDate, bool over, bool favorite)
+        public async Task<Guid> UpdateSeries(Guid id, int watched, string changed, Guid categoryId, bool favorite)
         {
             await _context.SeriesEntities.Where(s => s.Id == id)
-                .ExecuteUpdateAsync(s => s.SetProperty(s => s.Title, s => title)
-                .SetProperty(s => s.Description, s => description)
-                .SetProperty(s => s.WatchedEpisode, s => watched)
-                .SetProperty(s => s.LastEpisode, s => last)
-                .SetProperty(s => s.Duration, s => duration)
-                .SetProperty(s => s.Rating, s => rating)
-                .SetProperty(s => s.ImagePath, s => image)
-                .SetProperty(s => s.ReleaseDate, s => release)
+                .ExecuteUpdateAsync(s => s.SetProperty(s => s.WatchedEpisode, s => watched)
                 .SetProperty(s => s.ChangedDate, s => changed)
-                .SetProperty(s => s.OverDate, s => over == false ? null: overDate)
-                .SetProperty(s => s.IsOver, s => over)
+                .SetProperty(s => s.CategoryId, s => categoryId)
                 .SetProperty(s => s.IsFavorite, s => favorite));
 
             return id;

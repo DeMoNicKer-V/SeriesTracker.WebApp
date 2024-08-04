@@ -17,10 +17,6 @@ namespace SeriesTracker.Application.Services
             return await _seriesRepository.GetSeriesList();
         }
 
-        public async Task<List<Series>> GetSearchList(string query)
-        {
-            return await _seriesRepository.GetSearchList(query);
-        }
 
         public async Task<Series> GetSeriesById(Guid id)
         {
@@ -32,10 +28,9 @@ namespace SeriesTracker.Application.Services
             return await _seriesRepository.CreateSeries(series);
         }
 
-        public async Task<Guid> UpdateSeries(Guid id, int animeId, string title, string description, int watched, int last, int duration,
-            float rating, string image, string release, string changed, string overDate, bool over, bool favorite)
+        public async Task<Guid> UpdateSeries(Guid id, int watched, string changed, Guid categoryId, bool favorite)
         {
-            return await _seriesRepository.UpdateSeries(id, title, description, watched, last, duration, rating, image, release, changed, overDate, over, favorite);
+            return await _seriesRepository.UpdateSeries(id, watched, changed, categoryId, favorite);
         }
 
         public async Task<Guid> DeleteSeries(Guid id)

@@ -2,24 +2,14 @@
 {
     public class Series
     {
-        private Series(Guid id, int animeId, string title, string description, int watched, int last, int duration,
-            float rating, string image, string release, string added, string changed, string overDate, bool over, bool favorite)
+        private Series(Guid id, int animeId, int watched, string added, string changed, Guid categoryId, bool favorite)
         {
             Id = id;
             AnimeId = animeId;
-            Title = title;
-            HiddenTitle = title.ToLower();
-            Description = description;
             WatchedEpisode = watched;
-            LastEpisode = last;
-            Duration = duration;
-            Rating = rating;
-            ImagePath = image;
-            ReleaseDate = release;
             AddedDate = added;
             ChangedDate = changed;
-            OverDate = overDate;
-            IsOver = over;
+            CategoryId = categoryId;
             IsFavorite = favorite;
         }
 
@@ -33,51 +23,10 @@
             get;
         } = 0;
 
-        public string Title
-        {
-            get;
-        } = string.Empty;
-
-        public string HiddenTitle
-        {
-            get;
-        } = string.Empty;
-
-
-        public string? Description
-        {
-            get;
-        } = string.Empty;
-
-        public float Rating
-        {
-            get;
-        } = 0F;
-
         public int WatchedEpisode
         {
             get;
         } = 0;
-
-        public int LastEpisode
-        {
-            get;
-        } = 1;
-
-        public int Duration
-        {
-            get;
-        } = 24;
-
-        public string? ImagePath
-        {
-            get;
-        } = string.Empty;
-
-        public string ReleaseDate
-        {
-            get;
-        } = string.Empty;
 
         public string AddedDate
         {
@@ -89,43 +38,24 @@
             get;
         } = string.Empty;
 
-        public string? OverDate
+        public Guid CategoryId
         {
             get;
-        } = string.Empty;
-
-
-        public bool IsOver
-        {
-            get;
-        } = false;
+        }
 
         public bool IsFavorite
         {
             get;
         } = false;
 
-        public static (Series Series, string Error) Create(Guid id, int animeId, string title, string description, int watched, int last, int duration,
-            float rating, string image, string release, string added, string changed, string overDate, bool over, bool favorite)
+        public static (Series Series, string Error) Create(Guid id, int animeId, int watched, string added, string changed, Guid categoryId, bool favorite)
         {
             string error = string.Empty;
-            if (string.IsNullOrEmpty(title))
-            {
-                error = "Название это обязательное поле.";
-            }
             if (watched < 0)
             {
                 error = "Кол-во просмотренных эпизодов не может быть меньше нуля.";
             }
-            if (last <= 0 || last < watched)
-            {
-                error = "Последний эпизод должен быть больше нуля и больше числа просмотренных эпизодов.";
-            }
-            if (string.IsNullOrEmpty(release))
-            {
-                error = "Некоректная дата выхода сериала.";
-            }
-            Series series = new Series(id, animeId, title, description, watched, last, duration, rating, image, release, added, changed, overDate, over, favorite);
+            Series series = new Series(id, animeId, watched, added, changed, categoryId, favorite);
 
             return (series, error);
         }

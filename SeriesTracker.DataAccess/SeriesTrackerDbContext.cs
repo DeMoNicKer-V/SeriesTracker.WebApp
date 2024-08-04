@@ -12,5 +12,6 @@ namespace SeriesTracker.DataAccess
         }
 
         public DbSet<SeriesEntity> SeriesEntities { get; set; }
+        public DbSet<CategoryEntity> CategoryEntities { get; set; }
     }
 }

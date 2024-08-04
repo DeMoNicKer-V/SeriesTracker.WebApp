@@ -1,6 +1,5 @@
 "use client";
 import Button, { ButtonProps } from "antd/es/button";
-import { Series } from "../components/Series";
 import { useEffect, useState } from "react";
 import {
     SeriesReqruest,
@@ -10,7 +9,7 @@ import {
     getAllSeriesCount,
     updateSeries,
 } from "../services/series";
-import { CreateUpdateSeries, Mode } from "../components/AddUpdateSeries";
+
 import {
     Col,
     ConfigProvider,
@@ -41,51 +40,29 @@ import dayjs from "dayjs";
 import { redirect, useRouter } from "next/navigation";
 import { ShikimoriLogo } from "../img/ShikimoriLogo";
 import SeriesDrawer from "../components/SeriesDrawer";
+import { Animes } from "../components/Animes";
 
 export default function SeriesPage() {
     const router = useRouter();
     const pathname = usePathname();
     const searchParams = useSearchParams();
-    const defaultValues = {
-        title: "",
-        description: "",
-        imagePath: "",
-        watchedEpisode: 0,
-        lastEpisode: 10,
-        rating: 0,
-        releaseDate: dayjs().toDate().toString(),
-        isOver: false,
-        isFavorite: false,
-    } as Series["item1"];
 
     type MenuItem = Required<MenuProps>["items"][number];
-    const [values, setValues] = useState<Series["item1"]>(defaultValues);
     const [query, setQuery] = useState<string | null>(null);
     const [page, setPage] = useState<number>(1);
-    const [seriesCount, setseriesCount] = useState<Series["item2"]>();
-    const [series, setSeries] = useState<Series["item1"][] | any>([]);
-    const [isModalOpen, setIsModalOpen] = useState(false);
-
-    const [mode, setMode] = useState(Mode.Create);
+    const [seriesCount, setseriesCount] = useState<number>();
+    const [series, setSeries] = useState<Series[] | any>([]);
 
     const getSeries = async (query: any) => {
         const series = await getAllSeries(page, query);
-        setseriesCount(series["item2"]);
-        setSeries(series["item1"]);
+        setseriesCount(series["count"]);
+        setSeries(series);
+        console.log(series);
     };
     useEffect(() => {
         getSeries(searchParams.get("query"));
         setQuery(searchParams.get("query"));
     }, [pathname, searchParams]);
-
-    const handleCreateSeries = async (request: SeriesReqruest) => {
-        await createSeries(request);
-        closeModal();
-
-        const series = await getAllSeries(page, query);
-        setseriesCount(series["item2"]);
-        setSeries(series["item1"]);
-    };
 
     const gotoShikimori = () => {
         router.push("/shikimori");
@@ -93,44 +70,8 @@ export default function SeriesPage() {
 
     const updateSeriesList = async (page: number) => {
         const series = await getAllSeries(page, query);
-        setseriesCount(series["item2"]);
-        setSeries(series["item1"]);
-    };
-
-    const handleUpdateSeries = async (id: string, request: SeriesReqruest) => {
-        await updateSeries(id, request);
-        closeModal();
-
-        const series = await getAllSeries(page, query);
-        setSeries(series["item1"]);
-    };
-
-    const deleteThisSeries = async (id: string) => {
-        await deleteSeries(id);
-        closeModal();
-        if (series.length == 1) {
-            await updateSeriesList(page - 1);
-        } else {
-            const series1 = await getAllSeries(page, query);
-            setseriesCount(series.item2);
-            setSeries(series1["item1"]);
-        }
-    };
-
-    const openEditModel = (series: Series["item1"]) => {
-        setMode(Mode.Edit);
-        setValues(series);
-        setIsModalOpen(true);
-    };
-
-    const openModal = () => {
-        setMode(Mode.Create);
-        setIsModalOpen(true);
-    };
-
-    const closeModal = () => {
-        setValues(defaultValues);
-        setIsModalOpen(false);
+        setseriesCount(series["count"]);
+        setSeries(series["userInfo"]);
     };
     const { Text, Title } = Typography;
 
@@ -212,14 +153,6 @@ export default function SeriesPage() {
     };
     return (
         <div className="container">
-            <CreateUpdateSeries
-                mode={mode}
-                values={values}
-                isModalOpen={isModalOpen}
-                handleCreate={handleCreateSeries}
-                handleUpdate={handleUpdateSeries}
-                handleCancel={closeModal}
-            />
             <Row align={"middle"} justify={"center"}>
                 <Col span={10}>
                     <Title style={{ margin: 0 }} level={3}>
@@ -230,31 +163,14 @@ export default function SeriesPage() {
                             style={{ cursor: "default" }}
                         >{`Всего: ${seriesCount}`}</Tag>
 
-                        <Popconfirm
-                            placement="bottomLeft"
-                            title={
-                                <Title level={4}>
-                                    {"Что вы хотите добавить?"}
-                                </Title>
-                            }
-                            icon={
-                                <InfoCircleOutlined style={{ fontSize: 28 }} />
-                            }
-                            okButtonProps={buttonOk}
-                            cancelButtonProps={buttonCancel}
-                            okText="Свой сериал"
-                            cancelText="Аниме Shikimori"
-                            onCancel={gotoShikimori}
-                            onConfirm={openModal}
+                        <Button
+                            onClick={gotoShikimori}
+                            size="small"
+                            type="link"
+                            icon={<PlusOutlined />}
                         >
-                            <Button
-                                size="small"
-                                type="link"
-                                icon={<PlusOutlined />}
-                            >
-                                Добавить
-                            </Button>
-                        </Popconfirm>
+                            Добавить
+                        </Button>
                     </Flex>
                 </Col>
                 <Col span={14}>
@@ -277,7 +193,7 @@ export default function SeriesPage() {
                 </Col>
             </Row>
             <Divider />
-            <Series series={series} />
+            <Animes animes={series["animeInfo"]} />
             <Row style={{ marginTop: 20 }} justify="center">
                 <Col>
                     <Pagination

@@ -1,18 +1,5 @@
 import Card from "antd/es/card/Card";
-import ShortDescription from "./SeriesPopover";
-import {
-    Button,
-    Col,
-    Dropdown,
-    Empty,
-    Flex,
-    List,
-    MenuProps,
-    Popover,
-    Row,
-    Tag,
-    Typography,
-} from "antd";
+import { Flex, List, Popover, Tag, Typography } from "antd";
 import Link from "next/link";
 import {
     FileImageOutlined,
@@ -30,7 +17,7 @@ export const Animes = ({ animes }: Props) => {
     const { Title } = Typography;
     return (
         <List
-            style={{ padding: 10 }}
+            style={{ justifyContent: "center", padding: 10 }}
             grid={{
                 gutter: 15,
                 xs: 2,

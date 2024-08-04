@@ -1,24 +1,26 @@
 interface Series {
-    item1: item1;
-    item2: item2;
+    userInfo: UserInfo;
+    animeInfo: AnimeInfo;
+    count: number;
 }
 
-interface item1 {
+interface UserInfo {
     id: string;
-    title: string;
-    description: string;
-    imagePath: string;
     watchedEpisode: number;
-    lastEpisode: number;
-    duration: number;
-    rating: number;
-    releaseDate: string;
     addedDate: string;
     changedDate: string;
-    overDate: string;
-    isOver: boolean;
+    categoryId: string;
     isFavorite: boolean;
 }
-interface item2 {
-    count: number;
+interface AnimeInfo {
+    id: string;
+    title: string;
+    Description: string;
+    startDate: string;
+    score: number;
+    episodes: number;
+    rating: string;
+    kind: string;
+    status: string;
+    pictureUrl: string;
 }

@@ -9,10 +9,7 @@ namespace SeriesTracker.Core.Abstractions
         Task<int> GetAllSeriesCount();
         Task<List<Series>> GetSeriesList();
         Task<Series> GetSeriesById(Guid id);
-        Task<List<Series>> GetSearchList(string query);
-        Task<Guid> UpdateSeries(Guid id, string title, string description, int watched, int last, int duration,
-            float rating, string image, string release, string changed, string overDate, bool over, bool favorite);
-
+        Task<Guid> UpdateSeries(Guid id, int watched, string changed, Guid categoryId, bool favorite);
         Task<bool> GetSeriesByAnimeId(int id);
     }
 }

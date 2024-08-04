@@ -35,7 +35,6 @@ import Icon, {
 } from "@ant-design/icons";
 import { Footer } from "antd/es/layout/layout";
 import Link from "next/link";
-import { AZList } from "./components/azList";
 
 import { ShikimoriLogo } from "./img/ShikimoriLogo";
 
@@ -302,20 +301,6 @@ export default function RootLayout({
                             </Sider>
                             <Layout>
                                 <Content>{children}</Content>
-                                <Footer
-                                    style={{
-                                        textAlign: "left",
-                                    }}
-                                >
-                                    <AZList
-                                        handleClickAll={() => {
-                                            setCurrentKey("series");
-                                        }}
-                                        handleClickALetter={() => {
-                                            setCurrentKey("search");
-                                        }}
-                                    />
-                                </Footer>
                             </Layout>
                         </Layout>
                     </Layout>

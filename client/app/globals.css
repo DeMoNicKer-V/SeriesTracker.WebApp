@@ -434,3 +434,8 @@ input,
     overflow: hidden;
     width: 100%;
 }
+
+.ant-list .ant-row {
+    align-items: center;
+    justify-content: center;
+}

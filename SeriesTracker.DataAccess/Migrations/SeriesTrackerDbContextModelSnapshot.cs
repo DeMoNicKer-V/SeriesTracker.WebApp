@@ -22,6 +22,21 @@ namespace SeriesTracker.DataAccess.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("SeriesTracker.DataAccess.Entities.CategoryEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("CategoryEntities");
+                });
+
             modelBuilder.Entity("SeriesTracker.DataAccess.Entities.SeriesEntity", b =>
                 {
                     b.Property<Guid>("Id")
@@ -35,45 +50,15 @@ namespace SeriesTracker.DataAccess.Migrations
                     b.Property<int>("AnimeId")
                         .HasColumnType("integer");
 
+                    b.Property<Guid>("CategoryId")
+                        .HasColumnType("uuid");
+
                     b.Property<string>("ChangedDate")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Description")
-                        .HasColumnType("text");
-
-                    b.Property<int>("Duration")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("HiddenTitle")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("ImagePath")
-                        .HasColumnType("text");
-
                     b.Property<bool>("IsFavorite")
                         .HasColumnType("boolean");
-
-                    b.Property<bool>("IsOver")
-                        .HasColumnType("boolean");
-
-                    b.Property<int>("LastEpisode")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("OverDate")
-                        .HasColumnType("text");
-
-                    b.Property<float>("Rating")
-                        .HasColumnType("real");
-
-                    b.Property<string>("ReleaseDate")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("text");
 
                     b.Property<int>("WatchedEpisode")
                         .HasColumnType("integer");

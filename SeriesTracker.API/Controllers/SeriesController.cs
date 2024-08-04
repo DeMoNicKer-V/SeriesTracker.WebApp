@@ -1,7 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using GraphQL;
+using Microsoft.AspNetCore.Mvc;
 using SeriesTracker.API.Contracts;
+using SeriesTracker.Application.Services;
 using SeriesTracker.Core.Abstractions;
 using SeriesTracker.Core.Models;
+using SeriesTracker.Core.Models.Shikimori;
 using System.Text.RegularExpressions;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
@@ -22,7 +25,6 @@ namespace SeriesTracker.API.Controllers
         public async Task<ActionResult<int>> GetAllSeriesCount()
         {
             var seriesCount = await _seriesService.GetAllSeriesCount();
-
             return Ok(seriesCount);
         }
 
@@ -31,55 +33,22 @@ namespace SeriesTracker.API.Controllers
         {
             var s = await _seriesService.GetSeriesById(id);
 
-            var response = new SeriesResponse(s.Id, s.Title, s.Description, s.WatchedEpisode, s.LastEpisode, s.Duration, s.Rating, s.ImagePath,
-               s.ReleaseDate, s.AddedDate, s.ChangedDate, s.OverDate, s.IsOver, s.IsFavorite);
+            var response = new SeriesResponse(s.Id, s.AnimeId, s.WatchedEpisode, s.AddedDate, s.ChangedDate, s.CategoryId, s.IsFavorite);
 
             return Ok(response);
         }
-
-        [HttpGet("{query}")]
-        public async Task<ActionResult<List<SeriesResponse>>> GetSeriesListSearch(string query)
-        {
-            var seriesList = await _seriesService.GetSearchList(query.ToLowerInvariant());
-
-            var response = seriesList.Select(s => new SeriesResponse(s.Id, s.Title, s.Description, s.WatchedEpisode, s.LastEpisode, s.Duration, s.Rating, s.ImagePath,
-                s.ReleaseDate, s.AddedDate, s.ChangedDate, s.OverDate, s.IsOver, s.IsFavorite)).Take(5);
-
-            return Ok(response);
-        }
-
+        private readonly ShikimoriService ShikimoriService = new();
 
         [HttpGet("{page:int}/{query}")]
-        public async Task<ActionResult<List<SeriesResponse>>> GetSeriesList(int page = 1, string? query = null) 
+        public async Task<ActionResult<List<SeriesResponse>>> GetSeriesList(int page = 1) 
         {
             var seriesList = await _seriesService.GetSeriesList();
-
-            var regex = query == "null" ? null : $"(?i)^([{query}])(?-i)";
-            var response = seriesList.Select(s => new SeriesResponse(s.Id, s.Title, s.Description, s.WatchedEpisode, s.LastEpisode, s.Duration, s.Rating, s.ImagePath,
-                s.ReleaseDate, s.AddedDate, s.ChangedDate, s.OverDate, s.IsOver, s.IsFavorite)).Skip(30 * (page - 1)).Where(s => regex == null || Regex.IsMatch(s.Title, regex)).Take(30);
+            var response = seriesList.Select(s => new SeriesResponse(s.Id, s.AnimeId, s.WatchedEpisode, s.AddedDate, s.ChangedDate, s.CategoryId, s.IsFavorite)).Skip(30 * (page - 1)).Take(30);
             var count = await _seriesService.GetAllSeriesCount();
-            if (regex != null)
-            {
-                count = response.Count();
-            }
-
-            return Ok(Tuple.Create(response, count));
-        }
-
-        [HttpGet("{page:int}/search/{query}")]
-        public async Task<ActionResult<List<SeriesResponse>>> GetSeriesListSearch(int page = 1, string? query = null)
-        {
-            var seriesList = await _seriesService.GetSearchList(query.ToLowerInvariant());
-
-            var response = seriesList.Select(s => new SeriesResponse(s.Id, s.Title, s.Description, s.WatchedEpisode, s.LastEpisode, s.Duration, s.Rating, s.ImagePath,
-                s.ReleaseDate, s.AddedDate, s.ChangedDate, s.OverDate, s.IsOver, s.IsFavorite)).Skip(30 * (page - 1)).Take(30);
-            var count = await _seriesService.GetAllSeriesCount();
-            if (query != null)
-            {
-                count = response.Count();
-            }
-
-            return Ok(Tuple.Create(response, count));
+            string idsRequest = string.Join(",", seriesList.Select(s => s.AnimeId));
+            var graphQLResponse = await ShikimoriService.GetAnimeById(idsRequest);
+            var response2 = graphQLResponse.Data.Animes.Select(s => new ShikimoriResponse(s.Id, s.Description, s.Episodes, s.StartDate, s.Score, s.Title, s.SubTitle, s.PictureUrl, s.Rating, s.Kind, s.Status));
+            return Ok(new { UserInfo = response, AnimeInfo = response2, Count = count });
         }
 
         [HttpPost]
@@ -91,8 +60,7 @@ namespace SeriesTracker.API.Controllers
                 return BadRequest("Данный сериал уже есть в вашем списке.");
             }
             var date = DateTime.Now.ToString("s");
-            var (series, error) = Series.Create(Guid.NewGuid(), request.AnimeId, request.Title, request.Description, request.WatchedEpisode, request.LastEpisode,
-                request.Duration, request.Rating, request.ImagePath, request.ReleaseDate, date, date, date, request.IsOver, request.IsFavorite);
+            var (series, error) = Series.Create(Guid.NewGuid(), request.AnimeId, request.WatchedEpisode, date, date, request.CategoryId, request.IsFavorite);
 
             if (!string.IsNullOrEmpty(error)) 
             {
@@ -107,8 +75,8 @@ namespace SeriesTracker.API.Controllers
         public async Task<ActionResult<Guid>> UpdateSeries(Guid id, [FromBody] SeriesRequest request)
         {
             var date = DateTime.Now.ToString("s");
-            var seriesId = await _seriesService.UpdateSeries(id, request.AnimeId, request.Title, request.Description, request.WatchedEpisode, request.LastEpisode,
-                request.Duration, request.Rating, request.ImagePath, request.ReleaseDate, date, date, request.IsOver, request.IsFavorite);
+            var seriesId = await _seriesService.UpdateSeries(id, request.WatchedEpisode,
+               date, request.CategoryId, request.IsFavorite);
             return Ok(seriesId);
         }
 

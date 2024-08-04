@@ -234,7 +234,7 @@ airedOn{year}
                 OperationName = "GetById",
                 Variables = new
                 {
-                    id
+                    id,
                 }
             };
         }
