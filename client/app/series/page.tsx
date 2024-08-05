@@ -41,6 +41,7 @@ import { redirect, useRouter } from "next/navigation";
 import { ShikimoriLogo } from "../img/ShikimoriLogo";
 import SeriesDrawer from "../components/SeriesDrawer";
 import { Animes } from "../components/Animes";
+import { Series } from "../components/Series";
 
 export default function SeriesPage() {
     const router = useRouter();
@@ -55,9 +56,9 @@ export default function SeriesPage() {
 
     const getSeries = async (query: any) => {
         const series = await getAllSeries(page, query);
-        setseriesCount(series["count"]);
-        setSeries(series);
+
         console.log(series);
+        setSeries(series);
     };
     useEffect(() => {
         getSeries(searchParams.get("query"));
@@ -70,8 +71,8 @@ export default function SeriesPage() {
 
     const updateSeriesList = async (page: number) => {
         const series = await getAllSeries(page, query);
-        setseriesCount(series["count"]);
-        setSeries(series["userInfo"]);
+
+        setSeries(series);
     };
     const { Text, Title } = Typography;
 
@@ -193,23 +194,8 @@ export default function SeriesPage() {
                 </Col>
             </Row>
             <Divider />
-            <Animes animes={series["animeInfo"]} />
-            <Row style={{ marginTop: 20 }} justify="center">
-                <Col>
-                    <Pagination
-                        responsive
-                        current={page}
-                        onChange={(current: any) => {
-                            setPage(current);
-                            updateSeriesList(current);
-                        }}
-                        showTitle={false}
-                        pageSize={30}
-                        total={Number(seriesCount)}
-                        showSizeChanger={false}
-                    />
-                </Col>
-            </Row>
+            <Series series={series} />
+
             <SeriesDrawer isOpen={openDrawer} onClose={closeDrawer} />
             <FloatButton
                 onClick={() => showDrawer()}

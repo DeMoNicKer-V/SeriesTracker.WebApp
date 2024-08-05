@@ -15,6 +15,8 @@ namespace SeriesTracker.DataAccess.Configurations
         {
             builder.HasKey(x => x.Id);
             builder.Property(s => s.Title).IsRequired();
+            builder.HasData(new CategoryEntity { Id = 1, Title = "Смотрю" });
+            builder.HasData(new CategoryEntity { Id = 2, Title = "Просмотрено" });
         }
     }
 }

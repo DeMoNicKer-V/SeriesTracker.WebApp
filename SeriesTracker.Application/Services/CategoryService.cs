@@ -1,26 +1,21 @@
 ﻿using SeriesTracker.Core.Abstractions;
 using SeriesTracker.Core.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SeriesTracker.Application.Services
 {
     public class CategoryService : ICategoryService
     {
-        private readonly ICategoryService _categoryRepository;
+        private readonly ICategoryRepository _categoryRepository;
 
-        public CategoryService(ICategoryService categoryRepository)
+        public CategoryService(ICategoryRepository categoryRepository)
         {
             _categoryRepository = categoryRepository;
         }
-        public async Task<Guid> CreateCategory(Category category)
+        public async Task<int> CreateCategory(Category category)
         {
             return await _categoryRepository.CreateCategory(category);
         }
-        public async Task<Guid> DeleteCategory(Guid id)
+        public async Task<int> DeleteCategory(int id)
         {
             return await _categoryRepository.DeleteCategory(id);
         }
@@ -28,11 +23,11 @@ namespace SeriesTracker.Application.Services
         {
             return await _categoryRepository.GetCategoryList();
         }
-        public async Task<Category> GetCategoryById(Guid id)
+        public async Task<Category> GetCategoryById(int id)
         {
             return await _categoryRepository.GetCategoryById(id);
         }
-        public async Task<Guid> UpdateCategory(Guid id, string title)
+        public async Task<int> UpdateCategory(int id, string title)
         {
             return await _categoryRepository.UpdateCategory(id, title);
         }

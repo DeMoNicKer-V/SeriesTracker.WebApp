@@ -1,21 +1,14 @@
 interface Series {
-    userInfo: UserInfo;
-    animeInfo: AnimeInfo;
-    count: number;
-}
-
-interface UserInfo {
     id: string;
+    animeId: string;
     watchedEpisode: number;
     addedDate: string;
     changedDate: string;
     categoryId: string;
     isFavorite: boolean;
-}
-interface AnimeInfo {
-    id: string;
     title: string;
-    Description: string;
+    subTitle: string;
+    description: string;
     startDate: string;
     score: number;
     episodes: number;

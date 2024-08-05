@@ -15,10 +15,12 @@ namespace SeriesTracker.API.Controllers
     public class SeriesController : ControllerBase
     {
         private readonly ISeriesService _seriesService;
+        private readonly ICategoryService _categoryService;
 
-        public SeriesController(ISeriesService seriesService)
+        public SeriesController(ISeriesService seriesService, ICategoryService categoryService)
         {
             _seriesService = seriesService;
+            _categoryService = categoryService;
         }
 
         [HttpGet]
@@ -48,7 +50,16 @@ namespace SeriesTracker.API.Controllers
             string idsRequest = string.Join(",", seriesList.Select(s => s.AnimeId));
             var graphQLResponse = await ShikimoriService.GetAnimeById(idsRequest);
             var response2 = graphQLResponse.Data.Animes.Select(s => new ShikimoriResponse(s.Id, s.Description, s.Episodes, s.StartDate, s.Score, s.Title, s.SubTitle, s.PictureUrl, s.Rating, s.Kind, s.Status));
-            return Ok(new { UserInfo = response, AnimeInfo = response2, Count = count });
+            int index = 0;
+            List<SeriesAnimeResponse> animeResponses = [];
+            foreach (var item in response2)
+            {
+                animeResponses.Add(new SeriesAnimeResponse(response.ElementAt(index).Id, response.ElementAt(index).AnimeId, response.ElementAt(index).WatchedEpisode, response.ElementAt(index).AddedDate, response.ElementAt(index).ChangedDate, response.ElementAt(index).CategoryId, response.ElementAt(index).IsFavorite, item.Description, item.Episodes, item.StartDate, item.Score, item.Title, item.SubTitle, item.PictureUrl, item.Rating, item.Kind, item.Status));
+            index++;
+            }
+
+
+            return Ok(animeResponses);
         }
 
         [HttpPost]

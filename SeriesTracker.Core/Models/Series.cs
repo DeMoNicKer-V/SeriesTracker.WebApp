@@ -2,7 +2,7 @@
 {
     public class Series
     {
-        private Series(Guid id, int animeId, int watched, string added, string changed, Guid categoryId, bool favorite)
+        private Series(Guid id, int animeId, int watched, string added, string changed, int categoryId, bool favorite)
         {
             Id = id;
             AnimeId = animeId;
@@ -38,7 +38,7 @@
             get;
         } = string.Empty;
 
-        public Guid CategoryId
+        public int CategoryId
         {
             get;
         }
@@ -48,7 +48,7 @@
             get;
         } = false;
 
-        public static (Series Series, string Error) Create(Guid id, int animeId, int watched, string added, string changed, Guid categoryId, bool favorite)
+        public static (Series Series, string Error) Create(Guid id, int animeId, int watched, string added, string changed, int categoryId, bool favorite)
         {
             string error = string.Empty;
             if (watched < 0)

@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SeriesTracker.Core\SeriesTracker.Core.csproj" />
+    <ProjectReference Include="..\SeriesTracker.DataAccess\SeriesTracker.DataAccess.csproj" />
   </ItemGroup>
 
 </Project>

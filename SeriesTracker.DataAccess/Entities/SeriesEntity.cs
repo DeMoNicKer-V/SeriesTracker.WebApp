@@ -27,10 +27,10 @@
             get; set;
         } = string.Empty;
 
-        public Guid CategoryId
+        public int CategoryId
         {
             get; set;
-        } = Guid.Empty;
+        } = 0;
 
         public bool IsFavorite
         {

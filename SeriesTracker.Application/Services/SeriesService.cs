@@ -28,7 +28,7 @@ namespace SeriesTracker.Application.Services
             return await _seriesRepository.CreateSeries(series);
         }
 
-        public async Task<Guid> UpdateSeries(Guid id, int watched, string changed, Guid categoryId, bool favorite)
+        public async Task<Guid> UpdateSeries(Guid id, int watched, string changed, int categoryId, bool favorite)
         {
             return await _seriesRepository.UpdateSeries(id, watched, changed, categoryId, favorite);
         }

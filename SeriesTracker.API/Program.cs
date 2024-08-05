@@ -18,6 +18,9 @@ builder.Services.AddDbContext<SeriesTrackerDbContext>(
 builder.Services.AddScoped<ISeriesService, SeriesService>();
 builder.Services.AddScoped<ISeriesRepository, SeriesRepository>();
 
+builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())

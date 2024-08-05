@@ -24,9 +24,11 @@ namespace SeriesTracker.DataAccess.Migrations
 
             modelBuilder.Entity("SeriesTracker.DataAccess.Entities.CategoryEntity", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -35,6 +37,18 @@ namespace SeriesTracker.DataAccess.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("CategoryEntities");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Title = "Смотрю"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Title = "Просмотрено"
+                        });
                 });
 
             modelBuilder.Entity("SeriesTracker.DataAccess.Entities.SeriesEntity", b =>
@@ -50,8 +64,8 @@ namespace SeriesTracker.DataAccess.Migrations
                     b.Property<int>("AnimeId")
                         .HasColumnType("integer");
 
-                    b.Property<Guid>("CategoryId")
-                        .HasColumnType("uuid");
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("integer");
 
                     b.Property<string>("ChangedDate")
                         .IsRequired()

@@ -27,6 +27,7 @@ import Icon, {
     SearchOutlined,
     MenuFoldOutlined,
     CalendarOutlined,
+    SettingOutlined,
     MenuUnfoldOutlined,
     QuestionOutlined,
     HomeOutlined,
@@ -295,6 +296,15 @@ export default function RootLayout({
                                             onClick: getRandomAnimeId,
                                             icon: <QuestionOutlined />,
                                             label: <Text>Случайное аниме</Text>,
+                                        },
+                                        {
+                                            key: "settings",
+                                            icon: <SettingOutlined />,
+                                            label: (
+                                                <Link href={"/settings"}>
+                                                    Настройки
+                                                </Link>
+                                            ),
                                         },
                                     ]}
                                 />

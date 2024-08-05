@@ -50,7 +50,7 @@ namespace SeriesTracker.DataAccess.Repositories
             return seriesEntity.Id;
         }
 
-        public async Task<Guid> UpdateSeries(Guid id, int watched, string changed, Guid categoryId, bool favorite)
+        public async Task<Guid> UpdateSeries(Guid id, int watched, string changed, int categoryId, bool favorite)
         {
             await _context.SeriesEntities.Where(s => s.Id == id)
                 .ExecuteUpdateAsync(s => s.SetProperty(s => s.WatchedEpisode, s => watched)

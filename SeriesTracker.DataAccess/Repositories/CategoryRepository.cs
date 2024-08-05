@@ -21,7 +21,7 @@ namespace SeriesTracker.DataAccess.Repositories
         {
             _context = context;
         }
-        public async Task<Guid> CreateCategory(Category category)
+        public async Task<int> CreateCategory(Category category)
         {
             var categoryEntity = new CategoryEntity
             {
@@ -34,7 +34,7 @@ namespace SeriesTracker.DataAccess.Repositories
 
             return categoryEntity.Id;
         }
-        public async Task<Guid> DeleteCategory(Guid id)
+        public async Task<int> DeleteCategory(int id)
         {
             await _context.CategoryEntities.Where(c => c.Id == id).ExecuteDeleteAsync();
 
@@ -48,7 +48,7 @@ namespace SeriesTracker.DataAccess.Repositories
 
             return categoryList;
         }
-        public async Task<Category> GetCategoryById(Guid id)
+        public async Task<Category> GetCategoryById(int id)
         {
             var categoryEntity = await _context.CategoryEntities.AsNoTracking().Where(c => c.Id == id).FirstAsync();
 
@@ -56,7 +56,7 @@ namespace SeriesTracker.DataAccess.Repositories
 
             return category;
         }
-        public async Task<Guid> UpdateCategory(Guid id, string title)
+        public async Task<int> UpdateCategory(int id, string title)
         {
             await _context.CategoryEntities.Where(c => c.Id == id)
                .ExecuteUpdateAsync(c => c.SetProperty(c => c.Title, c => title));

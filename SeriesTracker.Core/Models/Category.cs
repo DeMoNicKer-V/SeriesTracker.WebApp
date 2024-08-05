@@ -9,12 +9,12 @@ namespace SeriesTracker.Core.Models
 {
     public class Category
     {
-        private Category(Guid id,string title)
+        private Category(int id,string title)
         {
             Id = id;
             Title = title;
         }
-        public Guid Id
+        public int Id
         {
             get;
         }
@@ -24,7 +24,7 @@ namespace SeriesTracker.Core.Models
             get;
         }
 
-        public static (Category Category, string Error) Create(Guid id, string title)
+        public static (Category Category, string Error) Create(int id, string title)
         {
             string error = string.Empty;
             if (string.IsNullOrEmpty(title))

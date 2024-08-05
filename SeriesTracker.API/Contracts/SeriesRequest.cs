@@ -6,7 +6,7 @@
         int WatchedEpisode,
         string? AddedDate,
         string? ChangedDate,
-        Guid CategoryId,
+        int CategoryId,
         bool IsFavorite
     );
 }

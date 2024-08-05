@@ -12,6 +12,7 @@ namespace SeriesTracker.DataAccess.Configurations
             builder.Property(s => s.AnimeId).IsRequired();
             builder.Property(s => s.AddedDate).IsRequired();
             builder.Property(s => s.AnimeId).IsRequired();
+            builder.Property(s => s.CategoryId).IsRequired();
             builder.Property(s => s.WatchedEpisode).IsRequired();
         }
     }

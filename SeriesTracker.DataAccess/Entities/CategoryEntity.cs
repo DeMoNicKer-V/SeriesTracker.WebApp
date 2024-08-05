@@ -8,7 +8,7 @@ namespace SeriesTracker.DataAccess.Entities
 {
     public class CategoryEntity
     {
-        public Guid Id
+        public int Id
         {
             get; set;
         }

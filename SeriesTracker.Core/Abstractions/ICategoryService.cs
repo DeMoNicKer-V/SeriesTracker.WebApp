@@ -9,10 +9,10 @@ namespace SeriesTracker.Core.Abstractions
 {
     public interface ICategoryService
     {
-        Task<Guid> CreateCategory(Category category);
-        Task<Guid> DeleteCategory(Guid id);
+        Task<int> CreateCategory(Category category);
+        Task<int> DeleteCategory(int id);
         Task<List<Category>> GetCategoryList();
-        Task<Category> GetCategoryById(Guid id);
-        Task<Guid> UpdateCategory(Guid id, string title);
+        Task<Category> GetCategoryById(int id);
+        Task<int> UpdateCategory(int id, string title);
     }
 }
