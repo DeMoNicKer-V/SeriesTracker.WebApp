@@ -17,8 +17,8 @@ export interface ShikimoriRequest {
 }
 
 export interface AnimeInfo {
+    series: SeriesInfo;
     anime: Anime;
-    isSeries: boolean;
 }
 
 export interface CalendarItem {
@@ -81,6 +81,7 @@ export const getAnimesByParams = async (request: ShikimoriRequest) => {
 export const getAnimeById = async (id: string) => {
     const response = await fetch(`http://localhost:5125/shikimori/id/${id}`);
     const animes: AnimeInfo = await response.json();
+    console.log(animes);
     return animes;
 };
 

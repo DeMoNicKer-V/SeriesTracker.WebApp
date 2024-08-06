@@ -38,10 +38,17 @@ namespace SeriesTracker.API.Controllers
         [HttpGet("id/{id}")]
         public async Task<ActionResult> GetAnimeById(int id)
         {
-            bool isSeries = await _seriesService.GetSeriesByAnimeId(id);
+            Guid isSeries = await _seriesService.GetSeriesByAnimeId(id);
+
+ 
             GraphQLResponse<ShikimoriAnimeList> graphQLResponse = await ShikimoriService.GetAnimeById(id.ToString());
-            var response = new ShikimoriResponseIdInfo(graphQLResponse.Data.Animes[0], isSeries);
-            return Ok(response);
+            var response = graphQLResponse.Data.Animes[0];
+            if (isSeries != Guid.Empty)
+            {
+                var series = await _seriesService.GetSeriesById(isSeries);
+                return Ok(new { Series = series, Anime = response });
+            }
+            return Ok(new { Series = new { }, Anime = response });
         }
 
         [HttpGet("random")]

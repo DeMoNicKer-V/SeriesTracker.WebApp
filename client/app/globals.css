@@ -399,6 +399,9 @@ input,
     .space-buttons .manage-button {
         font-size: 12px;
     }
+    .space-buttons {
+        justify-content: center;
+    }
     .ant-popover {
         display: none;
     }
@@ -423,7 +426,7 @@ input,
     font-style: italic;
 }
 .anime-detail-col .space-buttons .ant-space-item:nth-child(2) {
-    width: 100%;
+    width: auto;
 }
 
 .ant-menu-overflow-item {

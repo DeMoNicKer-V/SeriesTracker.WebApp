@@ -18,8 +18,15 @@ namespace SeriesTracker.API.Controllers
         [HttpGet]
         public async Task<ActionResult<int>> GetCategoryList()
         {
-            var seriesCount = await _categoryService.GetCategoryList();
-            return Ok(seriesCount);
+            var categoryList = await _categoryService.GetCategoryList();
+            return Ok(categoryList);
+        }
+
+        [HttpGet("{id:int}")]
+        public async Task<ActionResult<int>> GetCategoryById(int id)
+        {
+            var category = await _categoryService.GetCategoryById(id);
+            return Ok(category);
         }
     }
 }

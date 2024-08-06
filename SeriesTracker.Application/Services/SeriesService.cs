@@ -43,7 +43,7 @@ namespace SeriesTracker.Application.Services
             return await _seriesRepository.GetAllSeriesCount();
         }
 
-        public async Task<bool> GetSeriesByAnimeId(int id)
+        public async Task<Guid> GetSeriesByAnimeId(int id)
         {
             return await _seriesRepository.GetSeriesByAnimeId(id);
         }

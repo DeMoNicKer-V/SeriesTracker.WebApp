@@ -21,22 +21,22 @@
         public int AnimeId
         {
             get;
-        } = 0;
+        }
 
         public int WatchedEpisode
         {
             get;
-        } = 0;
+        }
 
         public string AddedDate
         {
             get;
-        } = string.Empty;
+        }
 
         public string ChangedDate
         {
             get;
-        } = string.Empty;
+        }
 
         public int CategoryId
         {
@@ -46,7 +46,7 @@
         public bool IsFavorite
         {
             get;
-        } = false;
+        }
 
         public static (Series Series, string Error) Create(Guid id, int animeId, int watched, string added, string changed, int categoryId, bool favorite)
         {

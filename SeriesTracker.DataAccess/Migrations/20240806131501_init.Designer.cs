@@ -12,7 +12,7 @@ using SeriesTracker.DataAccess;
 namespace SeriesTracker.DataAccess.Migrations
 {
     [DbContext(typeof(SeriesTrackerDbContext))]
-    [Migration("20240805170419_init")]
+    [Migration("20240806131501_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -45,11 +45,16 @@ namespace SeriesTracker.DataAccess.Migrations
                         new
                         {
                             Id = 1,
-                            Title = "Смотрю"
+                            Title = "Запланировано"
                         },
                         new
                         {
                             Id = 2,
+                            Title = "Смотрю"
+                        },
+                        new
+                        {
+                            Id = 3,
                             Title = "Просмотрено"
                         });
                 });

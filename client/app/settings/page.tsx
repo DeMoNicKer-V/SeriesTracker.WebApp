@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Space, Table, Tag } from "antd";
+import { Button, Space, Table, Tag } from "antd";
 import type { TableProps } from "antd";
 import { getCategoryList } from "../services/category";
 
@@ -14,7 +14,6 @@ export default function SettingsPage() {
     const getCategories = async () => {
         const category = await getCategoryList();
         setCategories(category);
-        console.log(category);
     };
     useEffect(() => {
         getCategories();
@@ -37,6 +36,7 @@ export default function SettingsPage() {
         <div className="container">
             <title>Series Tracker - Настройки</title>
             <Table columns={columns} dataSource={categories} />
+            <Button>Добавить</Button>
         </div>
     );
 }

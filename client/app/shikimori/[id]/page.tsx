@@ -18,40 +18,77 @@ import {
     CollapseProps,
     Spin,
     Space,
+    MenuProps,
+    Dropdown,
 } from "antd";
 import { useEffect, useRef, useState } from "react";
 import Meta from "antd/es/card/Meta";
-import { getAnimeById } from "@/app/services/shikimori";
+import { AnimeInfo, getAnimeById } from "@/app/services/shikimori";
 import AbsoluteImage from "@/app/components/AbsoluteImage";
 import {
     StarOutlined,
     LoadingOutlined,
     CalendarOutlined,
+    DownOutlined,
     ClockCircleOutlined,
+    BookOutlined,
     TeamOutlined,
     EyeOutlined,
     FireOutlined,
     ReadOutlined,
+    PlusOutlined,
     DesktopOutlined,
     CopyrightOutlined,
     InfoCircleOutlined,
 } from "@ant-design/icons";
 import { title } from "process";
-import { createSeries } from "@/app/services/series";
+import {
+    createSeries,
+    deleteSeries,
+    deleteSeriesByAnimeId,
+} from "@/app/services/series";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { LongLeftArrow } from "@/app/img/LongLeftArrow";
+import { getCategoryById, getCategoryList } from "@/app/services/category";
+import { skip } from "node:test";
 
 export default function AnimePage({ params }: { params: { id: string } }) {
-    const ref = useRef<HTMLDivElement>(null);
     const [animes, setAnimes] = useState<Anime[] | any>([]);
-    const [isSeries, setIsSeries] = useState<boolean>(false);
+    const [series, setSeries] = useState<SeriesInfo | any>();
     const [loading, setLoading] = useState<boolean>(true);
     const [genres, setGenres] = useState<string[]>([]);
+    const [categories, setCategories] = useState<MenuProps["items"]>([]);
+    const [category, setCategory] = useState<Category | any>();
+    const getCategories = async (id: number) => {
+        const categories2 = await getCategoryList();
+        const array: MenuProps["items"] = [];
+        categories2.forEach((element: { id: number; title: string }) => {
+            if (element.id === id) {
+                array.push({
+                    key: -1,
+                    label: "Удалить из списка",
+                    danger: true,
+                });
+            } else {
+                array.unshift({
+                    key: element.id,
+                    label: element.title,
+                });
+            }
+        });
+
+        setCategories(array);
+    };
     const getAnimes = async (id: string) => {
         const series = await getAnimeById(id);
         setAnimes(series.anime);
-        setIsSeries(series.isSeries);
+        if (series.series.id) {
+            setSeries(series.series);
+            const category = await getCategoryById(series.series.categoryId);
+            setCategory(category);
+        }
+        getCategories(series.series.categoryId);
         const gg = series.anime.genres.split(",");
         setGenres(gg);
         setLoading(false);
@@ -64,20 +101,17 @@ export default function AnimePage({ params }: { params: { id: string } }) {
 
     const router = useRouter();
     const AddToMyList = async () => {
+        if (series) {
+            await deleteSeriesByAnimeId(animes.id);
+            return;
+        }
         const seriesRequest = {
             animeId: animes.id,
-            title: animes.title,
-            description: animes.description,
-            imagePath: animes.pictureUrl,
-            lastEpisode: animes.episodes,
             watchedEpisode: 0,
-            rating: animes.score,
-            releaseDate: animes.startDate.toString(),
-            isOver: false,
+            categoryId: 1,
             isFavorite: false,
         };
         await createSeries(seriesRequest);
-        router.push(`./`);
     };
 
     const cardStyle: React.CSSProperties = {
@@ -93,6 +127,10 @@ export default function AnimePage({ params }: { params: { id: string } }) {
         padding: "10px",
     };
     const { Title, Text } = Typography;
+    const items: MenuProps["items"] = categories;
+    const menuProps = {
+        items,
+    };
     return (
         <div
             className="container detail"
@@ -324,9 +362,10 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                                                             назад
                                                         </Link>
                                                     </Button>
-                                                    <Button
+                                                    <Dropdown.Button
+                                                        menu={menuProps}
+                                                        icon={<DownOutlined />}
                                                         className="manage-button"
-                                                        disabled={isSeries}
                                                         onClick={AddToMyList}
                                                         style={{
                                                             width: "100%",
@@ -335,15 +374,13 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                                                             height: "auto",
                                                             borderRadius: 5,
                                                         }}
-                                                        type="primary"
-                                                        ghost
-                                                        size="large"
                                                     >
-                                                        {!isSeries &&
+                                                        <PlusOutlined />
+                                                        {!series &&
                                                             "Добавить в мой список"}
-                                                        {isSeries &&
-                                                            "Данное аниме уже находится в вашем списке"}
-                                                    </Button>
+                                                        {series &&
+                                                            category.title}
+                                                    </Dropdown.Button>
                                                 </Space>
                                             </Col>
                                         </Row>

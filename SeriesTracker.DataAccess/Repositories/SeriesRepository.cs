@@ -41,6 +41,7 @@ namespace SeriesTracker.DataAccess.Repositories
                 WatchedEpisode = series.WatchedEpisode,
                 AddedDate = series.AddedDate,
                 ChangedDate = series.ChangedDate,
+                CategoryId = series.CategoryId,
                 IsFavorite = series.IsFavorite,
             };
 
@@ -73,9 +74,10 @@ namespace SeriesTracker.DataAccess.Repositories
             return await _context.SeriesEntities.CountAsync();
         }
 
-        public async Task<bool> GetSeriesByAnimeId(int id)
-        {
-            return await _context.SeriesEntities.FirstOrDefaultAsync(s => s.AnimeId == id) != null;
-        }
+
+        public async Task<Guid> GetSeriesByAnimeId(int id) => await _context.SeriesEntities
+        .Where(s => s.AnimeId == id)
+        .Select(s => s.Id)
+        .FirstOrDefaultAsync();
     }
 }

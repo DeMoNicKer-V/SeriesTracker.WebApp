@@ -30,6 +30,7 @@ namespace SeriesTracker.API.Controllers
             return Ok(seriesCount);
         }
 
+
         [HttpGet("id/{id}")]
         public async Task<ActionResult<int>> GetSeriesById(Guid id)
         {
@@ -65,7 +66,7 @@ namespace SeriesTracker.API.Controllers
         [HttpPost]
         public async Task<ActionResult<Guid>> CreateSeries([FromBody] SeriesRequest request) 
         {
-            bool isAnime = await _seriesService.GetSeriesByAnimeId(request.AnimeId);
+            bool isAnime = await _seriesService.GetSeriesByAnimeId(request.AnimeId) != Guid.Empty;
             if (isAnime)
             {
                 return BadRequest("Данный сериал уже есть в вашем списке.");
@@ -95,6 +96,13 @@ namespace SeriesTracker.API.Controllers
         public async Task<ActionResult<Guid>> DeleteSeries(Guid id)
         {
             return Ok(await _seriesService.DeleteSeries(id));
+        }
+
+        [HttpDelete("{animeId:int}")]
+        public async Task<ActionResult<Guid>> DeleteSeriesByAnimeId(int animeId)
+        {
+            Guid seriesId = await _seriesService.GetSeriesByAnimeId(animeId);
+            return Ok(await _seriesService.DeleteSeries(seriesId));
         }
     }
 }

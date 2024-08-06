@@ -49,8 +49,9 @@ namespace SeriesTracker.DataAccess.Migrations
                 columns: new[] { "Id", "Title" },
                 values: new object[,]
                 {
-                    { 1, "Смотрю" },
-                    { 2, "Просмотрено" }
+                    { 1, "Запланировано" },
+                    { 2, "Смотрю" },
+                    { 3, "Просмотрено" }
                 });
         }
 

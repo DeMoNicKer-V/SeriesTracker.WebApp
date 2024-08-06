@@ -42,11 +42,16 @@ namespace SeriesTracker.DataAccess.Migrations
                         new
                         {
                             Id = 1,
-                            Title = "Смотрю"
+                            Title = "Запланировано"
                         },
                         new
                         {
                             Id = 2,
+                            Title = "Смотрю"
+                        },
+                        new
+                        {
+                            Id = 3,
                             Title = "Просмотрено"
                         });
                 });

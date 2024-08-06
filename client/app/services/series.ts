@@ -2,14 +2,8 @@ import { headers } from "next/headers";
 
 export interface SeriesReqruest {
     animeId: number;
-    title: string;
-    description: string;
-    imagePath: string;
-    lastEpisode: number;
     watchedEpisode: number;
-    rating: number;
-    releaseDate: string;
-    isOver: boolean;
+    categoryId: number;
     isFavorite: boolean;
 }
 
@@ -94,6 +88,12 @@ export const updateSeries = async (
 };
 
 export const deleteSeries = async (id: string) => {
+    await fetch(`http://localhost:5125/controller/${id}`, {
+        method: "DELETE",
+    });
+};
+
+export const deleteSeriesByAnimeId = async (id: string) => {
     await fetch(`http://localhost:5125/controller/${id}`, {
         method: "DELETE",
     });

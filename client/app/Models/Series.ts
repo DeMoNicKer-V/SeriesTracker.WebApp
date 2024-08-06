@@ -17,3 +17,12 @@ interface Series {
     status: string;
     pictureUrl: string;
 }
+interface SeriesInfo {
+    id: string;
+    animeId: string;
+    watchedEpisode: number;
+    addedDate: string;
+    changedDate: string;
+    categoryId: number;
+    isFavorite: boolean;
+}
