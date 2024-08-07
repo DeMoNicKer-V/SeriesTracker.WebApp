@@ -19,7 +19,7 @@ interface Series {
 }
 interface SeriesInfo {
     id: string;
-    animeId: string;
+    animeId: number;
     watchedEpisode: number;
     addedDate: string;
     changedDate: string;

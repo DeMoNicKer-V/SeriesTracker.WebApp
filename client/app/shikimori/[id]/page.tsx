@@ -20,6 +20,8 @@ import {
     Space,
     MenuProps,
     Dropdown,
+    InputNumber,
+    Input,
 } from "antd";
 import { useEffect, useRef, useState } from "react";
 import Meta from "antd/es/card/Meta";
@@ -35,11 +37,13 @@ import {
     TeamOutlined,
     EyeOutlined,
     FireOutlined,
+    YoutubeOutlined,
     ReadOutlined,
     PlusOutlined,
     DesktopOutlined,
     CopyrightOutlined,
     InfoCircleOutlined,
+    MinusOutlined,
 } from "@ant-design/icons";
 import { title } from "process";
 import {
@@ -60,15 +64,16 @@ export default function AnimePage({ params }: { params: { id: string } }) {
     const [genres, setGenres] = useState<string[]>([]);
     const [categories, setCategories] = useState<MenuProps["items"]>([]);
     const [category, setCategory] = useState<Category | any>();
-    const getCategories = async (id: number) => {
+    const getCategories = async (series: SeriesInfo) => {
         const categories2 = await getCategoryList();
         const array: MenuProps["items"] = [];
         categories2.forEach((element: { id: number; title: string }) => {
-            if (element.id === id) {
+            if (element.id === series.categoryId) {
                 array.push({
                     key: -1,
                     label: "Удалить из списка",
                     danger: true,
+                    onClick: async () => deleteFromMylist(series.animeId),
                 });
             } else {
                 array.unshift({
@@ -88,7 +93,7 @@ export default function AnimePage({ params }: { params: { id: string } }) {
             const category = await getCategoryById(series.series.categoryId);
             setCategory(category);
         }
-        getCategories(series.series.categoryId);
+        getCategories(series.series);
         const gg = series.anime.genres.split(",");
         setGenres(gg);
         setLoading(false);
@@ -99,12 +104,10 @@ export default function AnimePage({ params }: { params: { id: string } }) {
         }
     }, []);
 
-    const router = useRouter();
+    const deleteFromMylist = async (id: number) => {
+        await deleteSeriesByAnimeId(id);
+    };
     const AddToMyList = async () => {
-        if (series) {
-            await deleteSeriesByAnimeId(animes.id);
-            return;
-        }
         const seriesRequest = {
             animeId: animes.id,
             watchedEpisode: 0,
@@ -314,6 +317,16 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                                                     <Text className="dot-separator">
                                                         •
                                                     </Text>
+                                                    <Flex gap={5}>
+                                                        <YoutubeOutlined />
+                                                        <Text>
+                                                            {`${animes.episodes} эп.`}
+                                                        </Text>
+                                                    </Flex>
+
+                                                    <Text className="dot-separator">
+                                                        •
+                                                    </Text>
                                                     <Tooltip
                                                         arrow={false}
                                                         title={`Ср. длительность эпизода:  ${animes.duration} мин.`}
@@ -338,7 +351,13 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                                                         </Flex>
                                                     </Tooltip>
                                                 </Space>
-                                                <Space className="space-buttons">
+                                                <Space
+                                                    wrap
+                                                    className="space-buttons"
+                                                    style={{
+                                                        cursor: "default",
+                                                    }}
+                                                >
                                                     <Button
                                                         type="link"
                                                         size="large"
@@ -363,6 +382,7 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                                                         </Link>
                                                     </Button>
                                                     <Dropdown.Button
+                                                        size="small"
                                                         menu={menuProps}
                                                         icon={<DownOutlined />}
                                                         className="manage-button"
@@ -381,6 +401,51 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                                                         {series &&
                                                             category.title}
                                                     </Dropdown.Button>
+                                                    {category && (
+                                                        <InputNumber
+                                                            size="small"
+                                                            maxLength={4}
+                                                            addonBefore={
+                                                                <Button
+                                                                    type="link"
+                                                                    size="small"
+                                                                    icon={
+                                                                        <MinusOutlined />
+                                                                    }
+                                                                ></Button>
+                                                            }
+                                                            addonAfter={
+                                                                <Button
+                                                                    type="link"
+                                                                    size="small"
+                                                                    icon={
+                                                                        <PlusOutlined />
+                                                                    }
+                                                                ></Button>
+                                                            }
+                                                            style={{
+                                                                width: "auto",
+                                                            }}
+                                                            max={
+                                                                animes.episodes
+                                                            }
+                                                            prefix={
+                                                                <Text>
+                                                                    {"Эпизоды:"}
+                                                                </Text>
+                                                            }
+                                                            suffix={
+                                                                <Text>{`из ${animes.episodes} эп.`}</Text>
+                                                            }
+                                                            min={0}
+                                                            defaultValue={
+                                                                series.watchedEpisode
+                                                            }
+                                                            variant="filled"
+                                                            step={1}
+                                                            controls={false}
+                                                        />
+                                                    )}
                                                 </Space>
                                             </Col>
                                         </Row>

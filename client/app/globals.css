@@ -82,7 +82,6 @@ html {
 }
 
 .cardTitle {
-    -webkit-line-clamp: 1;
     -webkit-box-orient: vertical;
     display: -webkit-box;
     margin-top: 8px;
@@ -441,4 +440,14 @@ input,
 .ant-list .ant-row {
     align-items: center;
     justify-content: center;
+}
+.ant-input-number-input {
+    text-align: end !important;
+    width: 40px !important;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
 }

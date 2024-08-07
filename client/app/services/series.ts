@@ -93,8 +93,8 @@ export const deleteSeries = async (id: string) => {
     });
 };
 
-export const deleteSeriesByAnimeId = async (id: string) => {
-    await fetch(`http://localhost:5125/controller/${id}`, {
+export const deleteSeriesByAnimeId = async (id: number) => {
+    await fetch(`http://localhost:5125/controller/animeId/${id}`, {
         method: "DELETE",
     });
 };

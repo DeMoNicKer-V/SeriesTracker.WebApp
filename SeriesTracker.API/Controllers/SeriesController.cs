@@ -98,7 +98,7 @@ namespace SeriesTracker.API.Controllers
             return Ok(await _seriesService.DeleteSeries(id));
         }
 
-        [HttpDelete("{animeId:int}")]
+        [HttpDelete("animeId/{animeId:int}")]
         public async Task<ActionResult<Guid>> DeleteSeriesByAnimeId(int animeId)
         {
             Guid seriesId = await _seriesService.GetSeriesByAnimeId(animeId);
