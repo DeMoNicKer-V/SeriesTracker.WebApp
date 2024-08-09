@@ -11,7 +11,7 @@ import AnimePopover from "./AnimePopover";
 import AbsoluteImage from "./AbsoluteImage";
 
 interface Props {
-    animes: Anime[];
+    animes: SeriesAnime[];
 }
 export const Animes = ({ animes }: Props) => {
     const { Title } = Typography;
@@ -28,7 +28,7 @@ export const Animes = ({ animes }: Props) => {
                 xxl: 7,
             }}
             dataSource={animes}
-            renderItem={(animes: Anime) => (
+            renderItem={(animes: SeriesAnime) => (
                 <List.Item>
                     <Popover
                         trigger={"hover"}
@@ -42,23 +42,24 @@ export const Animes = ({ animes }: Props) => {
                     >
                         <Link href={`/shikimori/${animes.id}`}>
                             <Card
+                                bordered={false}
                                 style={{
-                                    maxHeight: 300,
-                                    maxWidth: 200,
+                                    maxHeight: 310,
+                                    maxWidth: 210,
                                     minHeight: "auto",
                                     minWidth: "auto",
                                     aspectRatio: "auto 6/8",
                                     borderRadius: 5,
                                 }}
                                 cover={
-                                    <Flex justify={"end"}>
-                                        <AbsoluteImage
-                                            src={animes.pictureUrl}
-                                            zIndex={0}
-                                        />
+                                    <AbsoluteImage
+                                        src={animes.pictureUrl}
+                                        zIndex={0}
+                                    >
                                         <Tag
                                             color="#DE1EB2"
                                             style={{
+                                                width: "fit-content",
                                                 display: "inline-block",
                                                 margin: 5,
                                             }}
@@ -67,7 +68,21 @@ export const Animes = ({ animes }: Props) => {
                                                 animes.startDate
                                             ).getFullYear()}
                                         </Tag>
-                                    </Flex>
+                                        {animes.categoryId && (
+                                            <Tag
+                                                color="#DE1EB2"
+                                                style={{
+                                                    textAlign: "center",
+                                                    width: "100%",
+                                                    padding: 0,
+                                                    margin: 0,
+                                                    borderRadius: 0,
+                                                }}
+                                            >
+                                                {animes.categoryName}
+                                            </Tag>
+                                        )}
+                                    </AbsoluteImage>
                                 }
                             ></Card>
                         </Link>

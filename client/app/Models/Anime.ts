@@ -29,3 +29,20 @@ interface Related {
 interface RelatedAnime {
     id: number;
 }
+
+interface SeriesAnime {
+    id: number;
+    categoryId: number;
+    categoryName: string;
+    isFavorite: boolean;
+    title: string;
+    subTitle: string;
+    description: string;
+    startDate: string;
+    score: number;
+    episodes: number;
+    rating: string;
+    kind: string;
+    status: string;
+    pictureUrl: string;
+}

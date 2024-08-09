@@ -1,16 +1,20 @@
 interface Props {
     src: string;
     zIndex: number;
+    children?: React.ReactNode;
 }
-export const AbsoluteImage = ({ src, zIndex }: Props) => {
+export const AbsoluteImage = ({ src, zIndex, children }: Props) => {
     return (
         <div
             style={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "space-between",
                 overflow: "hidden",
                 backgroundImage: `url(${src})`,
                 backgroundSize: "cover",
                 backgroundRepeat: "no-repeat",
-                backgroundPosition: "top",
+                backgroundPosition: "center center",
                 top: 0,
                 left: 0,
                 right: 0,
@@ -18,8 +22,11 @@ export const AbsoluteImage = ({ src, zIndex }: Props) => {
                 position: "absolute",
                 borderRadius: 5,
                 zIndex: zIndex,
+                alignItems: "flex-end",
             }}
-        ></div>
+        >
+            {children}
+        </div>
     );
 };
 

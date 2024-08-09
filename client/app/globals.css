@@ -82,6 +82,7 @@ html {
 }
 
 .cardTitle {
+    -webkit-line-clamp: 1;
     -webkit-box-orient: vertical;
     display: -webkit-box;
     margin-top: 8px;

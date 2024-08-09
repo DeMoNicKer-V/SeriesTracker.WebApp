@@ -63,7 +63,7 @@ export default function ShikimoriPage() {
     const { Text, Title } = Typography;
     const [inputFocus, setInputFocus] = useState(false);
     const [loading, setLoading] = useState(false);
-    const [animes, setAnimes] = useState<Anime[] | any>([]);
+    const [animes, setAnimes] = useState<SeriesAnime[] | any>([]);
     const [genres, setGenres] = useState<Genre[] | any>([]);
 
     const [query, setQuery] = useState<string>("");

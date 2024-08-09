@@ -29,7 +29,7 @@ import { useEffect, useState } from "react";
 import Title from "antd/es/typography/Title";
 import Meta from "antd/es/card/Meta";
 interface Props {
-    animes: Anime;
+    animes: SeriesAnime;
     isOpen: boolean;
 }
 

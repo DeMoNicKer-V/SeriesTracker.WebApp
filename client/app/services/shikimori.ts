@@ -62,7 +62,7 @@ export const getAnimes = async (page: number, order: string) => {
     const response = await fetch(
         `http://localhost:5125/shikimori/page/${page}/order/${order}`
     );
-    const animes: Anime = await response.json();
+    const animes: SeriesAnime = await response.json();
     return animes;
 };
 
@@ -74,7 +74,7 @@ export const getAnimesByParams = async (request: ShikimoriRequest) => {
         },
         body: JSON.stringify(request),
     });
-    const animes: Anime = await response.json();
+    const animes: SeriesAnime = await response.json();
     return animes;
 };
 
