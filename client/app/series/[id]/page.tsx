@@ -19,12 +19,11 @@ import {
 import { useEffect, useRef, useState } from "react";
 import { BookOutlined, EditOutlined } from "@ant-design/icons";
 import { useRouter } from "next/navigation";
-import { CreateUpdateSeries, Mode } from "@/app/components/AddUpdateSeries";
 import Meta from "antd/es/card/Meta";
 
 export default function Doggo({ params }: { params: { id: string } }) {
     const ref = useRef<HTMLDivElement>(null);
-    const [series, setSeries] = useState<Series["item1"][] | any>([]);
+    const [series, setSeries] = useState<Series[] | any>([]);
     const getSeries = async (id: string) => {
         const series = await getSeriesById(id);
         setSeries(series);
@@ -51,8 +50,6 @@ export default function Doggo({ params }: { params: { id: string } }) {
         height: "100%",
         alignItems: "flex-end",
     };
-
-    const mode = Mode.Edit;
 
     const titleStyle: React.CSSProperties = {
         padding: "0px",
@@ -109,16 +106,6 @@ export default function Doggo({ params }: { params: { id: string } }) {
             className="container"
             style={{ maxWidth: 1185, marginLeft: "auto", marginRight: "auto" }}
         >
-            <CreateUpdateSeries
-                mode={mode}
-                values={series}
-                isModalOpen={isModalOpen}
-                handleUpdate={handleUpdateSeries}
-                handleCancel={closeModal}
-                handleCreate={function (request: SeriesReqruest): void {
-                    throw new Error("Function not implemented.");
-                }}
-            />
             <Flex
                 style={{
                     flex: "1 0 auto",

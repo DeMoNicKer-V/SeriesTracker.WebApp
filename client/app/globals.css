@@ -338,7 +338,7 @@ input,
         text-align: center;
     }
     .anime-detail-row {
-        padding: 22% 5px 5px !important;
+        padding: 20% 5px 5px !important;
     }
     .anime-detail-col > .ant-space {
         justify-content: center;

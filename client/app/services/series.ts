@@ -65,6 +65,7 @@ export const getAllSeriesSearch = async (query: any) => {
 };
 
 export const createSeries = async (seriesReqruest: SeriesReqruest) => {
+    console.log(seriesReqruest);
     await fetch("http://localhost:5125/controller", {
         method: "POST",
         headers: {

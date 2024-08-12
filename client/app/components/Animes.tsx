@@ -1,11 +1,12 @@
 import Card from "antd/es/card/Card";
-import { Flex, List, Popover, Tag, Typography } from "antd";
+import { Flex, List, Popover, Tag, Tooltip, Typography } from "antd";
 import Link from "next/link";
 import {
     FileImageOutlined,
     EllipsisOutlined,
     EditOutlined,
     DeleteOutlined,
+    BookOutlined,
 } from "@ant-design/icons";
 import AnimePopover from "./AnimePopover";
 import AbsoluteImage from "./AbsoluteImage";
@@ -68,7 +69,7 @@ export const Animes = ({ animes }: Props) => {
                                                 animes.startDate
                                             ).getFullYear()}
                                         </Tag>
-                                        {animes.categoryId && (
+                                        {animes.categoryId > 0 && (
                                             <Tag
                                                 color="#DE1EB2"
                                                 style={{
@@ -103,6 +104,14 @@ export const Animes = ({ animes }: Props) => {
                         <Tag>{animes.kind}</Tag>
                         <Tag>{animes.status}</Tag>
                         <Tag>{`${animes.episodes} эп.`}</Tag>
+
+                        {animes.isFavorite && (
+                            <Tooltip title={"В избранном"} trigger={"hover"}>
+                                <Tag color="gold">
+                                    <BookOutlined />
+                                </Tag>
+                            </Tooltip>
+                        )}
                     </Flex>
                 </List.Item>
             )}

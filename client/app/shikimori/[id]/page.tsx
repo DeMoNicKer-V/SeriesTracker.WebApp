@@ -38,6 +38,7 @@ import {
     EyeOutlined,
     FireOutlined,
     YoutubeOutlined,
+    LogoutOutlined,
     ReadOutlined,
     PlusOutlined,
     DesktopOutlined,
@@ -50,21 +51,32 @@ import {
     createSeries,
     deleteSeries,
     deleteSeriesByAnimeId,
+    updateSeries,
 } from "@/app/services/series";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { LongLeftArrow } from "@/app/img/LongLeftArrow";
 import { getCategoryById, getCategoryList } from "@/app/services/category";
 import { skip } from "node:test";
+import CheckableTag from "antd/es/tag/CheckableTag";
 
 export default function AnimePage({ params }: { params: { id: string } }) {
+    const defaultValues = {
+        animeId: 0,
+        watchedEpisode: 0,
+        categoryId: 0,
+        isFavorite: false,
+    } as SeriesInfo;
     const [animes, setAnimes] = useState<Anime[] | any>([]);
-    const [series, setSeries] = useState<SeriesInfo | any>();
+    const [series, setSeries] = useState<SeriesInfo | any>(defaultValues);
     const [loading, setLoading] = useState<boolean>(true);
     const [genres, setGenres] = useState<string[]>([]);
     const [categories, setCategories] = useState<MenuProps["items"]>([]);
     const [category, setCategory] = useState<Category | any>();
-    const getCategories = async (series: SeriesInfo) => {
+    const [isSeries, setIsSeries] = useState<boolean>(false);
+    const [isFavorite, setisFavorite] = useState<boolean>(false);
+    const [watchedEpisode, setWatchedEpisode] = useState<number>(0);
+    const getCategories = async (series: SeriesInfo, animes: Anime) => {
         const categories2 = await getCategoryList();
         const array: MenuProps["items"] = [];
         categories2.forEach((element: { id: number; title: string }) => {
@@ -79,6 +91,13 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                 array.unshift({
                     key: element.id,
                     label: element.title,
+                    onClick: async () => {
+                        const newCategory = {
+                            id: element.id,
+                            title: element.title,
+                        } as Category;
+                        await updateCategorySeries(series, animes, newCategory);
+                    },
                 });
             }
         });
@@ -86,15 +105,22 @@ export default function AnimePage({ params }: { params: { id: string } }) {
         setCategories(array);
     };
     const getAnimes = async (id: string) => {
-        const series = await getAnimeById(id);
-        setAnimes(series.anime);
-        if (series.series.id) {
-            setSeries(series.series);
-            const category = await getCategoryById(series.series.categoryId);
+        const response = await getAnimeById(id);
+        setAnimes(response.anime);
+
+        if (response.series.id) {
+            setSeries(response.series);
+            const category = await getCategoryById(response.series.categoryId);
             setCategory(category);
+            setIsSeries(true);
+            setisFavorite(response.series.isFavorite);
+            setWatchedEpisode(response.series.watchedEpisode);
+            getCategories(response.series, response.anime);
+        } else {
+            series.animeId = response.anime.id;
+            getCategories(series, response.anime);
         }
-        getCategories(series.series);
-        const gg = series.anime.genres.split(",");
+        const gg = response.anime.genres.split(",");
         setGenres(gg);
         setLoading(false);
     };
@@ -103,8 +129,68 @@ export default function AnimePage({ params }: { params: { id: string } }) {
             getAnimes(params.id);
         }
     }, []);
+    const updateFavoriteSeries = async (checked: boolean) => {
+        if (isSeries === false) {
+            const seriesRequest = {
+                animeId: animes.id,
+                watchedEpisode: 0,
+                categoryId: 1,
+                isFavorite: true,
+            };
+            await createSeries(seriesRequest);
+            return;
+        }
+        setisFavorite(checked);
+        series.isFavorite = checked;
+        await updateSeries(series.id, series);
+    };
+    const updateEpisodeSeries = async (value: number) => {
+        if (value < 0 || value === null) {
+            return;
+        }
+        setWatchedEpisode(value);
+        series.watchedEpisode = value;
+        await updateSeries(series.id, series);
+    };
+
+    const decEpisodeSeries = () => {
+        if (watchedEpisode === 0) {
+            return;
+        }
+        const newValue = watchedEpisode - 1;
+        setWatchedEpisode(newValue);
+    };
+
+    const incEpisodeSeries = () => {
+        if (watchedEpisode === animes.episodes) {
+            return;
+        }
+        const newValue = watchedEpisode + 1;
+        setWatchedEpisode(newValue);
+    };
+
+    const updateCategorySeries = async (
+        series: SeriesInfo,
+        animes: Anime,
+        category: Category
+    ) => {
+        setCategory(category);
+        if (category.id === 3) {
+            series.watchedEpisode = animes.episodes;
+            setWatchedEpisode(animes.episodes);
+        }
+        series.categoryId = category.id;
+        if (series.id) {
+            await updateSeries(series.id, series);
+        } else {
+            await createSeries(series);
+        }
+
+        await getAnimes(params.id);
+    };
 
     const deleteFromMylist = async (id: number) => {
+        setSeries(defaultValues);
         await deleteSeriesByAnimeId(id);
     };
     const AddToMyList = async () => {
@@ -118,7 +204,7 @@ export default function AnimePage({ params }: { params: { id: string } }) {
     };
 
     const cardStyle: React.CSSProperties = {
-        padding: "22% 20px 20px 20px",
+        padding: "20% 20px 20px 20px",
         height: "100%",
         alignItems: "flex-end",
     };
@@ -129,6 +215,7 @@ export default function AnimePage({ params }: { params: { id: string } }) {
         gap: "3px",
         padding: "10px",
     };
+
     const { Title, Text } = Typography;
     const items: MenuProps["items"] = categories;
     const menuProps = {
@@ -177,6 +264,18 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                                         src={animes.pictureUrl}
                                         zIndex={-1}
                                     />
+                                    <Button
+                                        style={{
+                                            margin: 20,
+                                            padding: 10,
+                                            position: "absolute",
+                                        }}
+                                        size="large"
+                                    >
+                                        <Link href={"./"}>
+                                            <LongLeftArrow />
+                                        </Link>
+                                    </Button>
                                     <div className="overlay-background">
                                         <Row
                                             className="anime-detail-row"
@@ -358,29 +457,34 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                                                         cursor: "default",
                                                     }}
                                                 >
-                                                    <Button
-                                                        type="link"
-                                                        size="large"
-                                                        ghost
+                                                    <Tooltip
+                                                        title={
+                                                            isFavorite
+                                                                ? "Удалить из избранного"
+                                                                : "Добавить в избранное"
+                                                        }
                                                     >
-                                                        <Link
-                                                            className="manage-button"
+                                                        <CheckableTag
                                                             style={{
-                                                                display: "flex",
-                                                                flexDirection:
-                                                                    "row",
-                                                                justifyContent:
-                                                                    "center",
-                                                                alignItems:
-                                                                    "center",
-                                                                gap: "5px",
+                                                                padding:
+                                                                    "2px 5px",
                                                             }}
-                                                            href={"./"}
+                                                            checked={isFavorite}
+                                                            onChange={(
+                                                                checked
+                                                            ) =>
+                                                                updateFavoriteSeries(
+                                                                    checked
+                                                                )
+                                                            }
                                                         >
-                                                            <LongLeftArrow />
-                                                            назад
-                                                        </Link>
-                                                    </Button>
+                                                            <BookOutlined
+                                                                style={{
+                                                                    fontSize: 16,
+                                                                }}
+                                                            />
+                                                        </CheckableTag>
+                                                    </Tooltip>
                                                     <Dropdown.Button
                                                         size="small"
                                                         menu={menuProps}
@@ -396,30 +500,60 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                                                         }}
                                                     >
                                                         <PlusOutlined />
-                                                        {!series &&
+                                                        {series.categoryId ===
+                                                            0 &&
                                                             "Добавить в мой список"}
-                                                        {series &&
-                                                            category.title}
+                                                        {series.categoryId >
+                                                            0 && category.title}
                                                     </Dropdown.Button>
-                                                    {category && (
+
+                                                    {series.categoryId > 1 && (
                                                         <InputNumber
+                                                            readOnly={
+                                                                series.categoryId ===
+                                                                3
+                                                            }
+                                                            value={
+                                                                watchedEpisode
+                                                            }
+                                                            onChange={(
+                                                                value
+                                                            ) => {
+                                                                updateEpisodeSeries(
+                                                                    value
+                                                                );
+                                                            }}
                                                             size="small"
                                                             maxLength={4}
                                                             addonBefore={
                                                                 <Button
+                                                                    disabled={
+                                                                        series.categoryId ===
+                                                                        3
+                                                                    }
                                                                     type="link"
                                                                     size="small"
                                                                     icon={
                                                                         <MinusOutlined />
                                                                     }
+                                                                    onClick={
+                                                                        decEpisodeSeries
+                                                                    }
                                                                 ></Button>
                                                             }
                                                             addonAfter={
                                                                 <Button
+                                                                    disabled={
+                                                                        series.categoryId ===
+                                                                        3
+                                                                    }
                                                                     type="link"
                                                                     size="small"
                                                                     icon={
                                                                         <PlusOutlined />
+                                                                    }
+                                                                    onClick={
+                                                                        incEpisodeSeries
                                                                     }
                                                                 ></Button>
                                                             }

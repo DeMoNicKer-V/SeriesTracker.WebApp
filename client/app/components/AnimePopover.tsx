@@ -118,7 +118,11 @@ export const AnimePopover = ({ animes }: Props) => {
                         </Space>
                     </Col>
                     <Col style={{ marginTop: "auto" }} span={24}>
-                        <Button type="primary" style={{ width: "100%" }}>
+                        <Button
+                            href={`/shikimori/${animes.id}`}
+                            type="primary"
+                            style={{ width: "100%" }}
+                        >
                             Посмотреть подробнее
                         </Button>
                     </Col>
