@@ -22,6 +22,7 @@ import {
     Dropdown,
     InputNumber,
     Input,
+    Rate,
 } from "antd";
 import { useEffect, useRef, useState } from "react";
 import Meta from "antd/es/card/Meta";
@@ -30,11 +31,13 @@ import AbsoluteImage from "@/app/components/AbsoluteImage";
 import {
     StarOutlined,
     LoadingOutlined,
+    HeartFilled,
     CalendarOutlined,
     DownOutlined,
     ClockCircleOutlined,
     BookOutlined,
     TeamOutlined,
+    StarTwoTone,
     EyeOutlined,
     FireOutlined,
     YoutubeOutlined,
@@ -129,7 +132,7 @@ export default function AnimePage({ params }: { params: { id: string } }) {
             getAnimes(params.id);
         }
     }, []);
-    const updateFavoriteSeries = async (checked: boolean) => {
+    const updateFavoriteSeries = async () => {
         if (isSeries === false) {
             const seriesRequest = {
                 animeId: animes.id,
@@ -138,10 +141,12 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                 isFavorite: true,
             };
             await createSeries(seriesRequest);
+
+            await getAnimes(params.id);
             return;
         }
-        setisFavorite(checked);
-        series.isFavorite = checked;
+        series.isFavorite = !isFavorite;
+        setisFavorite(!isFavorite);
         await updateSeries(series.id, series);
     };
     const updateEpisodeSeries = async (value: number) => {
@@ -153,20 +158,24 @@ export default function AnimePage({ params }: { params: { id: string } }) {
         await updateSeries(series.id, series);
     };
 
-    const decEpisodeSeries = () => {
+    const decEpisodeSeries = async () => {
         if (watchedEpisode === 0) {
             return;
         }
         const newValue = watchedEpisode - 1;
         setWatchedEpisode(newValue);
+        series.watchedEpisode = newValue;
+        await updateSeries(series.id, series);
     };
 
-    const incEpisodeSeries = () => {
+    const incEpisodeSeries = async () => {
         if (watchedEpisode === animes.episodes) {
             return;
         }
         const newValue = watchedEpisode + 1;
         setWatchedEpisode(newValue);
+        series.watchedEpisode = newValue;
+        await updateSeries(series.id, series);
     };
 
     const updateCategorySeries = async (
@@ -194,6 +203,9 @@ export default function AnimePage({ params }: { params: { id: string } }) {
         await deleteSeriesByAnimeId(id);
     };
     const AddToMyList = async () => {
+        if (series.id) {
+            return;
+        }
         const seriesRequest = {
             animeId: animes.id,
             watchedEpisode: 0,
@@ -201,6 +213,7 @@ export default function AnimePage({ params }: { params: { id: string } }) {
             isFavorite: false,
         };
         await createSeries(seriesRequest);
+        await getAnimes(params.id);
     };
 
     const cardStyle: React.CSSProperties = {
@@ -464,26 +477,23 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                                                                 : "Добавить в избранное"
                                                         }
                                                     >
-                                                        <CheckableTag
-                                                            style={{
-                                                                padding:
-                                                                    "2px 5px",
-                                                            }}
-                                                            checked={isFavorite}
-                                                            onChange={(
-                                                                checked
-                                                            ) =>
-                                                                updateFavoriteSeries(
-                                                                    checked
-                                                                )
+                                                        <Rate
+                                                            character={
+                                                                <HeartFilled />
                                                             }
-                                                        >
-                                                            <BookOutlined
-                                                                style={{
-                                                                    fontSize: 16,
-                                                                }}
-                                                            />
-                                                        </CheckableTag>
+                                                            style={{
+                                                                color: "#ff69b4",
+                                                            }}
+                                                            onChange={
+                                                                updateFavoriteSeries
+                                                            }
+                                                            defaultValue={
+                                                                isFavorite
+                                                                    ? 1
+                                                                    : 0
+                                                            }
+                                                            count={1}
+                                                        />
                                                     </Tooltip>
                                                     <Dropdown.Button
                                                         size="small"
@@ -499,12 +509,16 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                                                             borderRadius: 5,
                                                         }}
                                                     >
-                                                        <PlusOutlined />
+                                                        {isSeries ? (
+                                                            <BookOutlined />
+                                                        ) : (
+                                                            <PlusOutlined />
+                                                        )}
                                                         {series.categoryId ===
                                                             0 &&
                                                             "Добавить в мой список"}
-                                                        {series.categoryId >
-                                                            0 && category.title}
+                                                        {category &&
+                                                            category.title}
                                                     </Dropdown.Button>
 
                                                     {series.categoryId > 1 && (

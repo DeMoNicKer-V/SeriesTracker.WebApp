@@ -7,6 +7,7 @@ import {
     EditOutlined,
     DeleteOutlined,
     BookOutlined,
+    HeartFilled,
 } from "@ant-design/icons";
 import AnimePopover from "./AnimePopover";
 import AbsoluteImage from "./AbsoluteImage";
@@ -107,8 +108,8 @@ export const Animes = ({ animes }: Props) => {
 
                         {animes.isFavorite && (
                             <Tooltip title={"В избранном"} trigger={"hover"}>
-                                <Tag color="gold">
-                                    <BookOutlined />
+                                <Tag color="pink">
+                                    <HeartFilled />
                                 </Tag>
                             </Tooltip>
                         )}
