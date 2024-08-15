@@ -7,18 +7,22 @@ import {
     Card,
     Col,
     ConfigProvider,
+    Divider,
     Empty,
     Flex,
     Form,
     List,
+    Image,
     Row,
     Skeleton,
+    Space,
     Spin,
     Tag,
     Tooltip,
     Typography,
 } from "antd";
 import Input, { SearchProps } from "antd/es/input";
+import notFound from "../img/notFound.webp";
 import Search from "antd/es/transfer/search";
 import { useEffect, useRef, useState } from "react";
 import { getAllSeries, getAllSeriesSearch } from "../services/series";
@@ -27,9 +31,13 @@ import {
     MenuFoldOutlined,
     MenuUnfoldOutlined,
     SearchOutlined,
+    FrownOutlined,
     InfoCircleOutlined,
     InfoCircleFilled,
     LoadingOutlined,
+    FireOutlined,
+    YoutubeOutlined,
+    CalendarOutlined,
     FileImageOutlined,
 } from "@ant-design/icons";
 import Link from "next/link";
@@ -37,6 +45,9 @@ import "./searchbar.css";
 import { redirect, useRouter } from "next/navigation";
 import { useForm } from "antd/es/form/Form";
 import Title from "antd/es/skeleton/Title";
+import { AnimeInfo, getAnimesByName } from "../services/shikimori";
+import Meta from "antd/es/card/Meta";
+import noFoundImage from "../img/empty.png";
 
 export const SearchBar = ({ listBG }: Props) => {
     const ref = useRef<HTMLDivElement>(null);
@@ -72,10 +83,10 @@ export const SearchBar = ({ listBG }: Props) => {
     const [isShown, setIsShown] = useState(false);
     const [loading, setLoading] = useState(false);
     const [nullString, setNullString] = useState("Введите для поиска");
-    const [series1, setSeries] = useState<Series["item1"][] | any>([]);
+    const [animes, setAnimes] = useState<SeriesAnime[] | any>([]);
     const fakeApi = async () => {
-        const series = await getAllSeriesSearch(query);
-        setSeries(series);
+        const series: SeriesAnime[] | any = await getAnimesByName(query);
+        setAnimes(series);
         setLoading(false);
 
         if (!series.length) {
@@ -141,7 +152,7 @@ export const SearchBar = ({ listBG }: Props) => {
                     </Form.Item>
                 </Form>
 
-                {isShown && (
+                {isShown && !loading && (
                     <List
                         style={{ background: listBG }}
                         className="search_result"
@@ -170,115 +181,103 @@ export const SearchBar = ({ listBG }: Props) => {
                                 </Button>
                             </Flex>
                         }
-                        grid={{ gutter: [0, 10], column: 1 }}
-                        itemLayout="horizontal"
-                        dataSource={series1}
-                        renderItem={(item: Series["item1"]) => (
-                            <Link target="_self" href={`/series/${item.id}`}>
+                        dataSource={animes}
+                        renderItem={(item: SeriesAnime) => (
+                            <Link href={`/shikimori/${item.id}`}>
                                 <Card
-                                    bordered={false}
-                                    hoverable
                                     style={{
-                                        padding: 10,
-                                        background: "transparent",
-                                        width: "100%",
+                                        padding: 12,
+                                        marginBottom: 8,
+                                        backgroundColor: "transparent",
                                     }}
+                                    hoverable
                                 >
-                                    <Card.Grid
-                                        hoverable={false}
-                                        style={{
-                                            boxShadow: "none",
-                                            width: "18%",
-                                            margin: 0,
-                                            padding: 0,
-                                            display: "flex",
-                                            alignItems: "center",
-                                            justifyContent: "start",
-                                        }}
+                                    <Row
+                                        style={{ flexFlow: "row" }}
+                                        align={"middle"}
+                                        justify={"start"}
                                     >
-                                        {item.imagePath === "" && (
-                                            <div
-                                                className="image_content"
+                                        <Col>
+                                            <Image
+                                                preview={false}
+                                                height={90}
+                                                width={60}
+                                                src={item.pictureUrl}
+                                                fallback={noFoundImage.src}
+                                            />
+                                        </Col>
+                                        <Col offset={1}>
+                                            <Meta
                                                 style={{
-                                                    overflow: "hidden",
-                                                    backgroundSize: "cover",
-                                                    backgroundRepeat:
-                                                        "no-repeat",
-                                                    backgroundPosition:
-                                                        "center center",
+                                                    padding: 0,
+                                                    marginBottom: 8,
+                                                    whiteSpace: "break-spaces",
                                                 }}
-                                            >
-                                                <FileImageOutlined />
-                                            </div>
-                                        )}
-                                        {item.imagePath !== "" && (
-                                            <div
-                                                className="image_content"
-                                                style={{
-                                                    overflow: "hidden",
-                                                    backgroundImage: `url(${item.imagePath})`,
-                                                    backgroundSize: "cover",
-                                                    backgroundRepeat:
-                                                        "no-repeat",
-                                                    backgroundPosition:
-                                                        "center center",
-                                                }}
-                                            ></div>
-                                        )}
-                                    </Card.Grid>
-                                    <Card.Grid
-                                        hoverable={false}
-                                        style={{
-                                            boxShadow: "none",
-                                            width: "60%",
-                                            margin: 0,
-                                            padding: 0,
-                                            display: "flex",
-                                            alignItems: "center",
-                                            justifyContent: "start",
-                                        }}
-                                    >
-                                        <div>
-                                            <Text
-                                                strong
-                                                style={{ fontSize: 12 }}
-                                            >
-                                                {item.title}
-                                            </Text>
-
-                                            <Flex>
+                                                title={item.title}
+                                                description={item.subTitle}
+                                            />
+                                            <Space wrap size={[5, 5]}>
                                                 <Tag
-                                                    style={{ fontSize: 10 }}
-                                                >{`Просмотрено ${item.watchedEpisode} из ${item.lastEpisode}`}</Tag>
+                                                    style={{
+                                                        cursor: "default",
+                                                    }}
+                                                >
+                                                    <Flex gap={4}>
+                                                        <InfoCircleOutlined />
+                                                        {item.kind}
+                                                    </Flex>
+                                                </Tag>
                                                 <Tag
-                                                    style={{ fontSize: 10 }}
-                                                >{`Рейтинг ${item.rating} из 10`}</Tag>
-                                            </Flex>
-                                        </div>
-                                    </Card.Grid>
-                                    <Card.Grid
-                                        hoverable={false}
-                                        style={{
-                                            boxShadow: "none",
-                                            width: "22%",
-                                            margin: 0,
-                                            padding: 0,
-                                            display: "flex",
-                                            alignItems: "center",
-                                            justifyContent: "end",
-                                        }}
-                                    >
-                                        <div style={{ fontSize: 12 }}>
-                                            {new Date(
-                                                item.addedDate
-                                            ).toLocaleString("ru-Ru", {
-                                                year: "numeric",
-                                                month: "short",
-                                                day: "numeric",
-                                            })}
-                                        </div>
-                                    </Card.Grid>
+                                                    style={{
+                                                        cursor: "default",
+                                                    }}
+                                                >
+                                                    <Flex gap={4}>
+                                                        <CalendarOutlined />
+                                                        {new Date(
+                                                            item.startDate
+                                                        ).toLocaleString(
+                                                            "ru-Ru",
+                                                            {
+                                                                year: "numeric",
+                                                            }
+                                                        )}
+                                                    </Flex>
+                                                </Tag>
+                                                <Tag
+                                                    style={{
+                                                        cursor: "default",
+                                                    }}
+                                                >
+                                                    <Flex gap={4}>
+                                                        <FireOutlined />
+                                                        {item.status}
+                                                    </Flex>
+                                                </Tag>
+                                                <Tag
+                                                    style={{
+                                                        cursor: "default",
+                                                    }}
+                                                >
+                                                    <Flex gap={4}>
+                                                        <YoutubeOutlined />
+                                                        {item.status === "Вышло"
+                                                            ? `${item.episodes} эп.`
+                                                            : `${item.episodesAired} из ${item.episodes} эп.`}
+                                                    </Flex>
+                                                </Tag>
+                                            </Space>
+                                        </Col>
+                                    </Row>
                                 </Card>
+                                <Divider
+                                    style={{
+                                        minWidth: 0,
+                                        width: "auto",
+                                        margin: "10px",
+                                    }}
+                                    dashed
+                                />
                             </Link>
                         )}
                     />

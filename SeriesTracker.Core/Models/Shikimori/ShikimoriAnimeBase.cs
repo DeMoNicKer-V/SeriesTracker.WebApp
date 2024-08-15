@@ -5,8 +5,13 @@ namespace SeriesTracker.Core.Models.Shikimori
 {
     public class ShikimoriAnimeBase 
     {
-        [JsonProperty("airedOn")] public AiredDate airedOne = new();
-        [JsonProperty("poster")] public Poster poster = new();
+        public ShikimoriAnimeBase()
+        {
+            airedOne = new AiredDate();
+            poster = new Poster();
+        }
+        [JsonProperty("airedOn")] public AiredDate airedOne { get; set; }
+        [JsonProperty("poster")] public Poster poster { get; set; }
         [JsonProperty("genres")] public Genre[]? Genre { get; set; }
 
         [JsonIgnore]
@@ -21,6 +26,7 @@ namespace SeriesTracker.Core.Models.Shikimori
         [JsonIgnore] public string Description { get { return string.IsNullOrEmpty(description) ? description : Regex.Replace(description, @" ?\[.*?\]", " "); } set { } }
         [JsonProperty("duration")] public double Duration { get; set; }
         [JsonProperty("episodes")] public int EpisodesInfo { get; set; }
+        [JsonProperty("episodesAired")] public int EpisodesAired { get; set; }
         [JsonIgnore] public int Episodes { get { return EpisodesInfo > 0 ? EpisodesInfo : 1; } set { } }
 
         [JsonIgnore] public string Kind { get { return kindInfo != null ? kindInfo.ToUpper() : ""; } set { } }
@@ -35,7 +41,7 @@ namespace SeriesTracker.Core.Models.Shikimori
             set { }
         }
 
-        [JsonIgnore] public string PictureUrl { get { return poster.MainUrl != null ? poster.MainUrl : poster.OriginalUrl; } set { } }
+        [JsonIgnore] public string? PictureUrl { get { return poster != null ? poster.Url : null; } }
 
         [JsonIgnore]
         public string Rating

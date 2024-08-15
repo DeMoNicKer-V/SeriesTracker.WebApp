@@ -334,6 +334,19 @@ input,
     }
 }
 @media (max-width: 1200px) {
+    .related-anime {
+        justify-content: center;
+        text-align: center;
+    }
+    .related-anime .ant-card-meta-title {
+        font-size: 14px;
+    }
+    .related-anime .ant-card-meta-description {
+        font-size: 12px;
+    }
+    .related-anime > .ant-col > .ant-space {
+        justify-content: center;
+    }
     .anime-title {
         text-align: center;
     }
@@ -380,19 +393,7 @@ input,
     .flex-ant-image {
         flex-direction: column;
     }
-    .related-anime {
-        justify-content: center;
-        text-align: center;
-    }
-    .related-anime .ant-card-meta-title {
-        font-size: 14px;
-    }
-    .related-anime .ant-card-meta-description {
-        font-size: 12px;
-    }
-    .related-anime > .ant-col > .ant-space {
-        justify-content: center;
-    }
+
     .anime-detail-col .ant-card-meta-title .ant-typography {
         font-size: 20px;
     }
@@ -437,11 +438,6 @@ input,
     overflow: hidden;
     width: 100%;
 }
-
-.ant-list .ant-row {
-    align-items: center;
-    justify-content: center;
-}
 .ant-input-number-input {
     text-align: end !important;
     width: 40px !important;
@@ -451,4 +447,13 @@ input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
     -webkit-appearance: none;
     margin: 0;
+}
+
+.search_result .ant-card-meta-description,
+.ant-card-meta-title {
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    display: -webkit-box;
+    overflow: hidden;
+    word-break: break-all;
 }

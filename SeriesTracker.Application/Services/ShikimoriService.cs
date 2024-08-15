@@ -24,9 +24,9 @@ namespace SeriesTracker.Application.Services
             return await graphQLClient.SendQueryAsync<ShikimoriAnimeBaseList>(GetAnimesRequest(page, order));
         }
 
-        public async Task<GraphQLResponse<ShikimoriAnimeList>> GetAnimesByName(int page, string name)
+        public async Task<GraphQLResponse<ShikimoriAnimeList>> GetAnimesByName(string name)
         {
-            return await graphQLClient.SendQueryAsync<ShikimoriAnimeList>(GetRequest(page, name));
+            return await graphQLClient.SendQueryAsync<ShikimoriAnimeList>(GetByNameRequest(name));
         }
 
         public async Task<GraphQLResponse<ShikimoriAnimeList>> GetAnimeById(string Id)
@@ -115,22 +115,20 @@ namespace SeriesTracker.Application.Services
         }
 
 
-        private static GraphQLRequest GetRequest(int page, string name)
+        private static GraphQLRequest GetByNameRequest(string name)
         {
             return new GraphQLRequest
             {
-                Query = @"query GetByName($name: String, $page: Int) {
-                                animes(search: $name, kind: ""!music,!pv,!cm"", status: ""!anons"", page: $page, limit: 28) {
+                Query = @"query GetByName($name: String) {
+                                animes(search: $name, kind: ""!music,!pv,!cm"", status: ""!anons"", limit: 5) {
                                     id
                                     russian
                                     name
-                                    description
                                     kind
                                     rating
-                                    duration
                                     episodes
-                                    genres{ id kind russian }
                                     episodesAired
+                                    genres{ id kind russian }
                                     status
                                     score
                                     airedOn {
@@ -145,7 +143,6 @@ namespace SeriesTracker.Application.Services
                 Variables = new
                 {
                     name,
-                    page
                 }
             };
         }

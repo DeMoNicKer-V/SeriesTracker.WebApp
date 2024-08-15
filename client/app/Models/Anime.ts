@@ -41,6 +41,7 @@ interface SeriesAnime {
     startDate: string;
     score: number;
     episodes: number;
+    episodesAired: number;
     rating: string;
     kind: string;
     status: string;

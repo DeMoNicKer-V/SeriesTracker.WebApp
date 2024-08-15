@@ -62,6 +62,7 @@ import { LongLeftArrow } from "@/app/img/LongLeftArrow";
 import { getCategoryById, getCategoryList } from "@/app/services/category";
 import { skip } from "node:test";
 import CheckableTag from "antd/es/tag/CheckableTag";
+import noFoundImage from ".//..//../img/empty.png";
 
 export default function AnimePage({ params }: { params: { id: string } }) {
     const defaultValues = {
@@ -201,6 +202,8 @@ export default function AnimePage({ params }: { params: { id: string } }) {
     const deleteFromMylist = async (id: number) => {
         setSeries(defaultValues);
         await deleteSeriesByAnimeId(id);
+        setIsSeries(false);
+        setCategory({});
     };
     const AddToMyList = async () => {
         if (series.id) {
@@ -315,6 +318,9 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                                                         }}
                                                         preview={false}
                                                         src={animes.pictureUrl}
+                                                        fallback={
+                                                            noFoundImage.src
+                                                        }
                                                     />
                                                 </Flex>
                                             </Col>

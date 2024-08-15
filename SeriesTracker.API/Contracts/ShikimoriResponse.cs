@@ -11,4 +11,8 @@ namespace SeriesTracker.API.Contracts
 (
         int Id, int categoryId, string categoryName, bool isFavorite, string Description, int Episodes, string StartDate, double Score, string Title, string SubTitle, string PictureUrl, string Rating, string Kind, string Status
 );
+    public record AnimeSeriesResponseSearch
+(
+    int Id, int categoryId, string categoryName, bool isFavorite, string Description, int Episodes, int EpisodesAired, string StartDate, double Score, string Title, string SubTitle, string PictureUrl, string Rating, string Kind, string Status
+);
 }

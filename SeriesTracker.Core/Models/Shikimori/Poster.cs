@@ -9,10 +9,26 @@ namespace SeriesTracker.Core.Models.Shikimori
 {
     public class Poster
     {
-        [JsonProperty("originalUrl")] public string? OriginalUrl { get; set; }
+        [JsonIgnore]
+        public string? Url
+        {
+            get
+            {
+                if (MainUrl != null)
+                {
+                    return MainUrl;
+                }
+                if (OriginalUrl != null)
+                {
+                    return OriginalUrl;
+                }
+                else if (MiniUrl != null) { return MiniUrl; }
+                return null;
+            }
+        }
 
-        [JsonProperty("mainUrl")] public string? MainUrl { get; set; }
-
-        [JsonProperty("miniUrl")] public string? MiniUrl { get; set; }
+        [JsonProperty("mainUrl")] private string? MainUrl { get; set; }
+        [JsonProperty("miniUrl")] private string? MiniUrl { get; set; }
+        [JsonProperty("originalUrl")] private string? OriginalUrl { get; set; }
     }
 }
