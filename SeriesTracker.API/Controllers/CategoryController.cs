@@ -1,5 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SeriesTracker.API.Contracts;
+using SeriesTracker.Application.Services;
 using SeriesTracker.Core.Abstractions;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace SeriesTracker.API.Controllers
 {
@@ -27,6 +30,13 @@ namespace SeriesTracker.API.Controllers
         {
             var category = await _categoryService.GetCategoryById(id);
             return Ok(category);
+        }
+
+        [HttpPut("{id:int}")]
+        public async Task<ActionResult<Guid>> UpdateSeries(int id, [FromBody] CategoryRequest request)
+        {
+            var seriesId = await _categoryService.UpdateCategory(id, request.Title, request.Color);
+            return Ok(seriesId);
         }
     }
 }

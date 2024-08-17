@@ -1,3 +1,5 @@
+import { Flex } from "antd";
+
 interface Props {
     src: string;
     zIndex: number;
@@ -5,9 +7,8 @@ interface Props {
 }
 export const AbsoluteImage = ({ src, zIndex, children }: Props) => {
     return (
-        <div
+        <Flex
             style={{
-                display: "flex",
                 flexDirection: "column",
                 justifyContent: "space-between",
                 overflow: "hidden",
@@ -20,13 +21,13 @@ export const AbsoluteImage = ({ src, zIndex, children }: Props) => {
                 right: 0,
                 bottom: 0,
                 position: "absolute",
-                borderRadius: 5,
+                borderRadius: 7,
                 zIndex: zIndex,
                 alignItems: "flex-end",
             }}
         >
             {children}
-        </div>
+        </Flex>
     );
 };
 

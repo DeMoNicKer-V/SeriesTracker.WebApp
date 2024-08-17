@@ -17,5 +17,10 @@ namespace SeriesTracker.DataAccess.Entities
         {
             get; set;
         }
+
+        public required string Color
+        {
+            get; set;
+        }
     }
 }

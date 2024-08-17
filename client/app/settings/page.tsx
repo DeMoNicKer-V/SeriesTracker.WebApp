@@ -1,34 +1,64 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Button, Space, Table, Tag } from "antd";
+import { Button, ColorPicker, Space, Table, Tag, Tooltip } from "antd";
 import type { TableProps } from "antd";
-import { getCategoryList } from "../services/category";
+import { getCategoryList, updateCategoryById } from "../services/category";
 
 export default function SettingsPage() {
-    interface DataType {
-        key: string;
-        id: number;
-        title: string;
-    }
     const [categories, setCategories] = useState<Category[]>([]);
     const getCategories = async () => {
         const category = await getCategoryList();
         setCategories(category);
     };
+
+    const updateCategory = async (record: Category, color: string) => {
+        if (!color) {
+            return;
+        }
+        record.color = color;
+        await updateCategoryById(record.id, record);
+        await getCategories();
+    };
+
     useEffect(() => {
         getCategories();
     }, []);
 
     const columns: TableProps<Category>["columns"] = [
         {
-            title: "Id",
+            title: "ID",
             dataIndex: "id",
             key: "id",
         },
         {
-            title: "Title",
+            title: "Название",
             dataIndex: "title",
             key: "title",
+        },
+        {
+            title: "Цвет",
+            dataIndex: "color",
+            key: "color",
+            render: (_, record) => (
+                <ColorPicker
+                    defaultValue={record.color}
+                    onChangeComplete={async (color) => {
+                        await updateCategory(record, color.toHexString());
+                    }}
+                >
+                    <Tooltip title={"нажмите, чтобы изменить"}>
+                        <Tag
+                            style={{ cursor: "pointer" }}
+                            /* onClick={() =>
+                                navigator.clipboard.writeText(record.color)
+                            }*/
+                            color={record.color}
+                        >
+                            {record.color.toUpperCase()}
+                        </Tag>
+                    </Tooltip>
+                </ColorPicker>
+            ),
         },
     ];
 

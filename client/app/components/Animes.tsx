@@ -50,8 +50,8 @@ export const Animes = ({ animes }: Props) => {
                                     maxWidth: 210,
                                     minHeight: "auto",
                                     minWidth: "auto",
-                                    aspectRatio: "auto 6/8",
-                                    borderRadius: 5,
+                                    aspectRatio: "auto 8/11",
+                                    borderRadius: 7,
                                 }}
                                 cover={
                                     <AbsoluteImage
@@ -72,13 +72,16 @@ export const Animes = ({ animes }: Props) => {
                                         </Tag>
                                         {animes.categoryId > 0 && (
                                             <Tag
-                                                color="#DE1EB2"
+                                                bordered={false}
+                                                className="tag"
                                                 style={{
+                                                    fontSize: 14,
+                                                    fontStyle: "italic",
                                                     textAlign: "center",
                                                     width: "100%",
                                                     padding: 0,
                                                     margin: 0,
-                                                    borderRadius: 0,
+                                                    borderRadius: "0",
                                                 }}
                                             >
                                                 {animes.categoryName}

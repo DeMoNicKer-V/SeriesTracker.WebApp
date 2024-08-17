@@ -12,7 +12,6 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace SeriesTracker.DataAccess.Repositories
 {
-
     public class CategoryRepository : ICategoryRepository
     {
         private readonly SeriesTrackerDbContext _context;
@@ -21,12 +20,14 @@ namespace SeriesTracker.DataAccess.Repositories
         {
             _context = context;
         }
+
         public async Task<int> CreateCategory(Category category)
         {
             var categoryEntity = new CategoryEntity
             {
                 Id = category.Id,
                 Title = category.Title,
+                Color = category.Color,
             };
 
             await _context.CategoryEntities.AddAsync(categoryEntity);
@@ -34,32 +35,35 @@ namespace SeriesTracker.DataAccess.Repositories
 
             return categoryEntity.Id;
         }
+
         public async Task<int> DeleteCategory(int id)
         {
             await _context.CategoryEntities.Where(c => c.Id == id).ExecuteDeleteAsync();
 
             return id;
         }
-        public async Task<List<Category>> GetCategoryList()
-        {
-            var categoryEntities = await _context.CategoryEntities.AsNoTracking().ToListAsync();
 
-            var categoryList = categoryEntities.Select(c => Category.Create(c.Id, c.Title).Category).ToList();
-
-            return categoryList;
-        }
         public async Task<Category> GetCategoryById(int id)
         {
             var categoryEntity = await _context.CategoryEntities.AsNoTracking().Where(c => c.Id == id).FirstAsync();
 
-            var category = Category.Create(categoryEntity.Id, categoryEntity.Title).Category;
+            var category = Category.Create(categoryEntity.Id, categoryEntity.Title, categoryEntity.Color).Category;
 
             return category;
         }
-        public async Task<int> UpdateCategory(int id, string title)
+
+        public async Task<List<Category>> GetCategoryList()
+        {
+            var categoryEntities = await _context.CategoryEntities.AsNoTracking().ToListAsync();
+
+            var categoryList = categoryEntities.Select(c => Category.Create(c.Id, c.Title, c.Color).Category).OrderBy(c => c.Id).ToList();
+
+            return categoryList;
+        }
+        public async Task<int> UpdateCategory(int id, string title, string color)
         {
             await _context.CategoryEntities.Where(c => c.Id == id)
-               .ExecuteUpdateAsync(c => c.SetProperty(c => c.Title, c => title));
+               .ExecuteUpdateAsync(c => c.SetProperty(c => c.Title, c => title).SetProperty(c => c.Color, c => color));
             return id;
         }
     }

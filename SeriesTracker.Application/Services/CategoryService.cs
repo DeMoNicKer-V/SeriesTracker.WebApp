@@ -27,9 +27,9 @@ namespace SeriesTracker.Application.Services
         {
             return await _categoryRepository.GetCategoryById(id);
         }
-        public async Task<int> UpdateCategory(int id, string title)
+        public async Task<int> UpdateCategory(int id, string title, string color)
         {
-            return await _categoryRepository.UpdateCategory(id, title);
+            return await _categoryRepository.UpdateCategory(id, title, color);
         }
     }
 }
