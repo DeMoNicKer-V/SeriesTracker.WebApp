@@ -2,13 +2,17 @@
 import React, { useEffect, useState } from "react";
 import {
     Button,
+    Col,
     ColorPicker,
     Flex,
+    notification,
     Popconfirm,
+    Row,
     Space,
     Table,
     Tag,
     Tooltip,
+    Typography,
 } from "antd";
 import type { TableProps } from "antd";
 import { getCategoryList, updateCategoryById } from "../services/category";
@@ -16,6 +20,7 @@ import { LongLeftArrow } from "../img/LongLeftArrow";
 import { QuestionCircleOutlined } from "@ant-design/icons";
 
 export default function SettingsPage() {
+    const [api, contextHolder] = notification.useNotification();
     const [categories, setCategories] = useState<Category[]>([]);
     const getCategories = async () => {
         const category = await getCategoryList();
@@ -26,9 +31,7 @@ export default function SettingsPage() {
         if (!color) {
             return;
         }
-        record.color = color;
-        await updateCategoryById(record.id, record);
-        await getCategories();
+        await openNotification(record, color);
     };
 
     const returnColor = async (record: Category, prevColor: string) => {
@@ -41,10 +44,50 @@ export default function SettingsPage() {
         await updateCategoryById(record.id, record);
         await getCategories();
     };
-
     useEffect(() => {
         getCategories();
     }, []);
+
+    const openNotification = async (record: Category, color: string) => {
+        const key = `open-confirm-notify`;
+        const btn = (
+            <Space>
+                <Button type="link" size="small" onClick={() => api.destroy()}>
+                    Нет
+                </Button>
+                <Button
+                    type="primary"
+                    size="small"
+                    onClick={async () => {
+                        record.color = color;
+                        await updateCategoryById(record.id, record);
+                        await getCategories();
+                        api.destroy(key);
+                    }}
+                >
+                    Подтвердить
+                </Button>
+            </Space>
+        );
+        api.open({
+            message: `Цвет категории '${record.title}' будет изменен`,
+            description: (
+                <Flex gap={10} justify="center" align="center">
+                    <Tag style={{ cursor: "default", margin: 0 }} color={color}>
+                        {color.toUpperCase()}
+                    </Tag>
+                    <LongLeftArrow />
+                    <Tag style={{ cursor: "default" }} color={record.color}>
+                        {record.color.toUpperCase()}
+                    </Tag>
+                </Flex>
+            ),
+            btn,
+            key,
+            showProgress: true,
+            pauseOnHover: true,
+        });
+    };
 
     const columns: TableProps<Category>["columns"] = [
         {
@@ -68,6 +111,7 @@ export default function SettingsPage() {
                         justifyContent: "space-between",
                     }}
                 >
+                    {contextHolder}
                     <ColorPicker
                         defaultValue={record.color}
                         onChangeComplete={async (color) => {
@@ -95,7 +139,7 @@ export default function SettingsPage() {
                             cancelText="Нет"
                         >
                             <Button
-                                /*disabled={!record.prevColor}*/
+                                disabled={!record.prevColor}
                                 style={{ height: 22 }}
                                 type="text"
                                 size="small"
