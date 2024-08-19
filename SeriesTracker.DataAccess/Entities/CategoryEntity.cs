@@ -22,5 +22,14 @@ namespace SeriesTracker.DataAccess.Entities
         {
             get; set;
         }
+        public string? PrevColor
+        {
+            get; set;
+        }
+
+        public required string Date
+        {
+            get; set;
+        }
     }
 }

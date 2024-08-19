@@ -35,7 +35,8 @@ namespace SeriesTracker.API.Controllers
         [HttpPut("{id:int}")]
         public async Task<ActionResult<Guid>> UpdateSeries(int id, [FromBody] CategoryRequest request)
         {
-            var seriesId = await _categoryService.UpdateCategory(id, request.Title, request.Color);
+            var date = DateTime.Now.ToString("s");
+            var seriesId = await _categoryService.UpdateCategory(id, request.Title, request.Color, date);
             return Ok(seriesId);
         }
     }
