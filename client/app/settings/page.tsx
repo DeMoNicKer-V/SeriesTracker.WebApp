@@ -8,6 +8,7 @@ import {
     notification,
     Popconfirm,
     Row,
+    Segmented,
     Space,
     Table,
     Tag,
@@ -167,6 +168,9 @@ export default function SettingsPage() {
             title: "Дата изменения",
             dataIndex: "date",
             key: "date",
+            showSorterTooltip: false,
+            sorter: (a, b) =>
+                new Date(a.date).getTime() - new Date(b.date).getTime(),
             render: (_, record) =>
                 new Date(record.date).toLocaleString("ru-Ru", {
                     year: "numeric",
@@ -181,8 +185,26 @@ export default function SettingsPage() {
     return (
         <div className="container">
             <title>Series Tracker - Настройки</title>
-            <Table columns={columns} dataSource={categories} />
-            <Button>Добавить</Button>
+            <Row gutter={[20, 20]} align={"middle"} justify={"center"}>
+                <Col span={18}>
+                    <Segmented<string>
+                        defaultValue={"Список категорий"}
+                        options={[
+                            "Список категорий",
+                            "Роли пользователей",
+                            "Список пользователей",
+                        ]}
+                        block
+                    />
+                </Col>
+                <Col span={21}>
+                    <Table
+                        pagination={false}
+                        columns={columns}
+                        dataSource={categories}
+                    />
+                </Col>
+            </Row>
         </div>
     );
 }
