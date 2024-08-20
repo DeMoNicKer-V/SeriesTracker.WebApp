@@ -34,6 +34,7 @@ interface SeriesAnime {
     id: number;
     categoryId: number;
     categoryName: string;
+    categoryColor: string;
     isFavorite: boolean;
     title: string;
     subTitle: string;

@@ -280,18 +280,17 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                                         src={animes.pictureUrl}
                                         zIndex={-1}
                                     />
-                                    <Button
-                                        style={{
-                                            margin: 20,
-                                            padding: 10,
-                                            position: "absolute",
-                                        }}
-                                        size="large"
-                                    >
-                                        <Link href={"./"}>
-                                            <LongLeftArrow />
-                                        </Link>
-                                    </Button>
+                                    <Link href={"./"}>
+                                        <Button
+                                            icon={<LongLeftArrow />}
+                                            style={{
+                                                margin: 20,
+                                                padding: 10,
+                                                position: "absolute",
+                                            }}
+                                            size="large"
+                                        ></Button>
+                                    </Link>
                                     <div className="overlay-background">
                                         <Row
                                             className="anime-detail-row"

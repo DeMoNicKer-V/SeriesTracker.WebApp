@@ -72,8 +72,8 @@ export const Animes = ({ animes }: Props) => {
                                         </Tag>
                                         {animes.categoryId > 0 && (
                                             <Tag
+                                                color={animes.categoryColor}
                                                 bordered={false}
-                                                className="tag"
                                                 style={{
                                                     fontSize: 14,
                                                     fontStyle: "italic",
