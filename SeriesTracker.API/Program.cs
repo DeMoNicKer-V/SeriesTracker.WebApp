@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using SeriesTracker.Application.Services;
 using SeriesTracker.Core.Abstractions;
+using SeriesTracker.Core.Abstractions.UserAbastractions;
 using SeriesTracker.DataAccess;
 using SeriesTracker.DataAccess.Repositories;
 
@@ -20,6 +21,9 @@ builder.Services.AddScoped<ISeriesRepository, SeriesRepository>();
 
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 var app = builder.Build();
 
