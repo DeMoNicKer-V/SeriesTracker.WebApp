@@ -18,6 +18,8 @@ namespace SeriesTracker.DataAccess
             new SeriesConfiguration().Configure(modelBuilder.Entity<SeriesEntity>());
             new CategoryConfiguration().Configure(modelBuilder.Entity<CategoryEntity>());
             new UserConfiguration().Configure(modelBuilder.Entity<UserEntity>());
+            new UserRoleConfiguration().Configure(modelBuilder.Entity<UserRoleEntity>());
+            new AccessLevelConfiguration().Configure(modelBuilder.Entity<AccessLevelEntity>());
         }
 
         public DbSet<SeriesEntity> SeriesEntities { get; set; }
