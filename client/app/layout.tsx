@@ -197,7 +197,7 @@ export default function RootLayout({
                                         }}
                                     />
                                 </Col>
-                                <Col span={6}>
+                                <Col span={5}>
                                     <div className="spacer" />{" "}
                                 </Col>
                                 <Col span={8}>
@@ -207,7 +207,7 @@ export default function RootLayout({
                                         }
                                     />
                                 </Col>
-                                <Col span={6}>
+                                <Col span={5}>
                                     <div className="spacer" />{" "}
                                 </Col>
                                 <Col span={1}>
@@ -219,6 +219,11 @@ export default function RootLayout({
                                             setColorThemeCookie(checked);
                                         }}
                                     />
+                                </Col>
+                                <Col span={1}>
+                                    <Button type="dashed" size="small">
+                                        Логин
+                                    </Button>
                                 </Col>
                             </Row>
                         </Header>
