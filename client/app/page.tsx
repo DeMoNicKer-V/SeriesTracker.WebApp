@@ -2,6 +2,11 @@
 import React, { useState } from "react";
 import type { CascaderProps } from "antd";
 import {
+    UserOutlined,
+    PlusOutlined,
+    MinusCircleOutlined,
+} from "@ant-design/icons";
+import {
     AutoComplete,
     Button,
     Cascader,
@@ -14,6 +19,9 @@ import {
     Row,
     Image,
     Select,
+    Avatar,
+    Flex,
+    Alert,
 } from "antd";
 import { Upload } from "antd";
 import type { GetProp, UploadFile, UploadProps } from "antd";
@@ -65,24 +73,18 @@ const residences: CascaderProps<DataNodeType>["options"] = [
 const formItemLayout = {
     labelCol: {
         xs: { span: 24 },
-        sm: { span: 8 },
+        sm: { span: 4 },
     },
     wrapperCol: {
         xs: { span: 24 },
-        sm: { span: 16 },
+        sm: { span: 20 },
     },
 };
 
-const tailFormItemLayout = {
+const formItemLayoutWithOutLabel = {
     wrapperCol: {
-        xs: {
-            span: 24,
-            offset: 0,
-        },
-        sm: {
-            span: 16,
-            offset: 8,
-        },
+        xs: { span: 24, offset: 0 },
+        sm: { span: 20, offset: 4 },
     },
 };
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
@@ -92,7 +94,7 @@ const App: React.FC = () => {
             {
                 type: "object" as const,
                 required: true,
-                message: "Please select time!",
+                message: "",
             },
         ],
     };
@@ -147,130 +149,117 @@ const App: React.FC = () => {
         setPreviewOpen(true);
     };
     return (
-        <Form
-            {...formItemLayout}
-            form={form}
-            name="register"
-            onFinish={onFinish}
-            initialValues={{
-                residence: ["zhejiang", "hangzhou", "xihu"],
-                prefix: "86",
+        <Flex
+            style={{
+                flexDirection: "column",
+                flex: "auto",
             }}
-            style={{ maxWidth: 600 }}
-            scrollToFirstError
         >
-            <ImgCrop
-                maxZoom={2}
-                showReset
-                resetText="Сбросить"
-                modalOk="Выбрать"
-                modalCancel="Отмена"
-                fillColor={"transparent"}
-                modalTitle="Выбор изображения профиля"
+            <Flex
+                style={{
+                    flex: "auto",
+                    paddingTop: "128px",
+                    backgroundColor: "#0c162d",
+                    justifyContent: "center",
+                    border: "solid 1px #202637",
+                }}
             >
-                <Upload
-                    listType="picture-card"
-                    maxCount={1}
-                    fileList={fileList}
-                    onChange={onChange}
-                    onPreview={handlePreview}
+                <Form
+                    style={{ maxWidth: 660, width: "100%" }}
+                    layout="vertical"
+                    form={form}
+                    onFinish={onFinish}
                 >
-                    {fileList.length < 1 && "+ Загрузить"}
-                </Upload>
-            </ImgCrop>
-            {previewImage && (
-                <Image
-                    wrapperStyle={{ display: "none" }}
-                    preview={{
-                        visible: previewOpen,
-                        onVisibleChange: (visible) => setPreviewOpen(visible),
-                        afterOpenChange: (visible) =>
-                            !visible && setPreviewImage(""),
-                    }}
-                    src={previewImage}
-                />
-            )}
-            <Form.Item
-                name="email"
-                label="Эл. почта"
-                rules={[
-                    {
-                        type: "email",
-                        message: "The input is not valid E-mail!",
-                    },
-                    {
-                        required: true,
-                        message: "Please input your E-mail!",
-                    },
-                ]}
-            >
-                <Input />
-            </Form.Item>
-
-            <Form.Item
-                name="password"
-                label="Пароль"
-                rules={[
-                    {
-                        required: true,
-                        message: "Please input your password!",
-                    },
-                ]}
-                hasFeedback
-            >
-                <Input.Password />
-            </Form.Item>
-
-            <Form.Item
-                name="confirm"
-                label="Подтвердите пароль"
-                dependencies={["password"]}
-                hasFeedback
-                rules={[
-                    {
-                        required: true,
-                        message: "Please confirm your password!",
-                    },
-                    ({ getFieldValue }) => ({
-                        validator(_, value) {
-                            if (!value || getFieldValue("password") === value) {
-                                return Promise.resolve();
-                            }
-                            return Promise.reject(
-                                new Error(
-                                    "The new password that you entered do not match!"
-                                )
-                            );
-                        },
-                    }),
-                ]}
-            >
-                <Input.Password />
-            </Form.Item>
-
-            <Form.Item
-                name="nickname"
-                label="Логин (никнейм)"
-                tooltip="Чувствителен к регистру"
-                rules={[
-                    {
-                        required: true,
-                        message: "Please input your nickname!",
-                        whitespace: true,
-                    },
-                ]}
-            >
-                <Input />
-            </Form.Item>
-            <Form.Item name="date-picker" label="DatePicker" {...config}>
-                <DatePicker />
-            </Form.Item>
-            <Form.Item {...tailFormItemLayout}>
-                <Button type="primary" htmlType="submit">
-                    Register
-                </Button>
-            </Form.Item>
-        </Form>
+                    <Form.List
+                        name="names"
+                        rules={[
+                            {
+                                validator: async (_, names) => {
+                                    if (!names || names.length < 2) {
+                                        return Promise.reject(
+                                            new Error("At least 2 passengers")
+                                        );
+                                    }
+                                },
+                            },
+                        ]}
+                    >
+                        {(fields, { add, remove }, { errors }) => (
+                            <>
+                                <Form.Item label="Name">
+                                    <Input />
+                                </Form.Item>
+                                {fields.map((field, index) => (
+                                    <Form.Item
+                                        {...(index === 0
+                                            ? formItemLayout
+                                            : formItemLayoutWithOutLabel)}
+                                        label={index === 0 ? "Passengers" : ""}
+                                        required={false}
+                                        key={field.key}
+                                    >
+                                        <Form.Item
+                                            {...field}
+                                            validateTrigger={[
+                                                "onChange",
+                                                "onBlur",
+                                            ]}
+                                            rules={[
+                                                {
+                                                    required: true,
+                                                    whitespace: true,
+                                                    message:
+                                                        "Please input passenger's name or delete this field.",
+                                                },
+                                            ]}
+                                            noStyle
+                                        >
+                                            <Input
+                                                placeholder="passenger name"
+                                                style={{ width: "60%" }}
+                                            />
+                                        </Form.Item>
+                                        {fields.length > 1 ? (
+                                            <MinusCircleOutlined
+                                                className="dynamic-delete-button"
+                                                onClick={() =>
+                                                    remove(field.name)
+                                                }
+                                            />
+                                        ) : null}
+                                    </Form.Item>
+                                ))}
+                                <Form.Item>
+                                    <Button
+                                        type="dashed"
+                                        onClick={() => add()}
+                                        style={{ width: "60%" }}
+                                        icon={<PlusOutlined />}
+                                    >
+                                        Add field
+                                    </Button>
+                                    <Button
+                                        type="dashed"
+                                        onClick={() => {
+                                            add("The head item", 0);
+                                        }}
+                                        style={{
+                                            width: "60%",
+                                            marginTop: "20px",
+                                        }}
+                                        icon={<PlusOutlined />}
+                                    >
+                                        Add field at head
+                                    </Button>
+                                    <Form.ErrorList errors={errors} />
+                                </Form.Item>
+                            </>
+                        )}
+                    </Form.List>
+                </Form>
+            </Flex>
+            <Flex>Text</Flex>
+        </Flex>
     );
 };
 
