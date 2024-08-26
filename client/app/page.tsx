@@ -1,10 +1,11 @@
 "use client";
-import React, { useState } from "react";
-import type { CascaderProps } from "antd";
+import React, { useRef, useState } from "react";
+import type { CascaderProps, FormListFieldData, InputRef } from "antd";
 import {
     UserOutlined,
     PlusOutlined,
     MinusCircleOutlined,
+    CheckCircleOutlined,
 } from "@ant-design/icons";
 import {
     AutoComplete,
@@ -22,6 +23,7 @@ import {
     Avatar,
     Flex,
     Alert,
+    Tag,
 } from "antd";
 import { Upload } from "antd";
 import type { GetProp, UploadFile, UploadProps } from "antd";
@@ -148,6 +150,43 @@ const App: React.FC = () => {
         setPreviewImage(file.url || (file.preview as string));
         setPreviewOpen(true);
     };
+
+    const [isActive, setIsActive] = useState({});
+
+    const handleFocus = (name: any) => {
+        setIsActive({ [name]: true });
+    };
+
+    const handleBlur = (name: any) => {
+        setIsActive({ [name]: false });
+    };
+    const MyObject = (field: FormListFieldData) => {
+        return (
+            <Flex gap={7} align="end">
+                <Form.Item
+                    style={{ width: "100%" }}
+                    name="password"
+                    label="Пароль"
+                    rules={[
+                        {
+                            required: true,
+                            message: "",
+                        },
+                    ]}
+                    hasFeedback
+                >
+                    <Input.Password
+                        onFocus={() => handleFocus(`input${field.key}`)}
+                    />
+                </Form.Item>
+                {isActive[`input${field.key}`] ? (
+                    <Button className="dynamic-delete-button">
+                        Продолжить
+                    </Button>
+                ) : null}
+            </Flex>
+        );
+    };
     return (
         <Flex
             style={{
@@ -184,75 +223,81 @@ const App: React.FC = () => {
                             },
                         ]}
                     >
-                        {(fields, { add, remove }, { errors }) => (
+                        {(fields, { add, remove, move }, { errors }) => (
                             <>
-                                <Form.Item label="Name">
-                                    <Input />
-                                </Form.Item>
-                                {fields.map((field, index) => (
+                                <Flex gap={7} align="end">
                                     <Form.Item
-                                        {...(index === 0
-                                            ? formItemLayout
-                                            : formItemLayoutWithOutLabel)}
-                                        label={index === 0 ? "Passengers" : ""}
-                                        required={false}
-                                        key={field.key}
+                                        style={{ width: "100%" }}
+                                        name="email"
+                                        label="Эл. почта"
+                                        rules={[
+                                            {
+                                                type: "email",
+                                                message: "",
+                                            },
+                                            {
+                                                required: true,
+                                                message: "",
+                                            },
+                                        ]}
                                     >
+                                        <Input
+                                            onFocus={() =>
+                                                handleFocus("inputEmail")
+                                            }
+                                        />
+                                    </Form.Item>
+                                    {isActive.inputEmail ? (
+                                        <Button
+                                            className="dynamic-delete-button"
+                                            onClick={() =>
+                                                fields.length === 0
+                                                    ? add()
+                                                    : null
+                                            }
+                                        >
+                                            Продолжить
+                                        </Button>
+                                    ) : null}
+                                </Flex>
+                                {fields.map((field, index) => (
+                                    <Flex gap={7} align="end">
                                         <Form.Item
-                                            {...field}
-                                            validateTrigger={[
-                                                "onChange",
-                                                "onBlur",
-                                            ]}
+                                            style={{ width: "100%" }}
+                                            name="password"
+                                            label="Пароль"
                                             rules={[
                                                 {
                                                     required: true,
-                                                    whitespace: true,
-                                                    message:
-                                                        "Please input passenger's name or delete this field.",
+                                                    message: "",
                                                 },
                                             ]}
-                                            noStyle
+                                            hasFeedback
                                         >
-                                            <Input
-                                                placeholder="passenger name"
-                                                style={{ width: "60%" }}
-                                            />
-                                        </Form.Item>
-                                        {fields.length > 1 ? (
-                                            <MinusCircleOutlined
-                                                className="dynamic-delete-button"
-                                                onClick={() =>
-                                                    remove(field.name)
+                                            <Input.Password
+                                                onFocus={() =>
+                                                    handleFocus(
+                                                        `input${field.key}`
+                                                    )
                                                 }
                                             />
+                                        </Form.Item>
+                                        {isActive[`input${field.key}`] ? (
+                                            <Button
+                                                onClick={() =>
+                                                    fields.length ===
+                                                        field.key + 1 &&
+                                                    fields.length < 3
+                                                        ? add()
+                                                        : null
+                                                }
+                                                className="dynamic-delete-button"
+                                            >
+                                                Продолжить
+                                            </Button>
                                         ) : null}
-                                    </Form.Item>
+                                    </Flex>
                                 ))}
-                                <Form.Item>
-                                    <Button
-                                        type="dashed"
-                                        onClick={() => add()}
-                                        style={{ width: "60%" }}
-                                        icon={<PlusOutlined />}
-                                    >
-                                        Add field
-                                    </Button>
-                                    <Button
-                                        type="dashed"
-                                        onClick={() => {
-                                            add("The head item", 0);
-                                        }}
-                                        style={{
-                                            width: "60%",
-                                            marginTop: "20px",
-                                        }}
-                                        icon={<PlusOutlined />}
-                                    >
-                                        Add field at head
-                                    </Button>
-                                    <Form.ErrorList errors={errors} />
-                                </Form.Item>
                             </>
                         )}
                     </Form.List>

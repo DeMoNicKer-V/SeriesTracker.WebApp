@@ -20,7 +20,6 @@ namespace SeriesTracker.DataAccess.Configurations
             builder.Property(s => s.UserName).IsRequired();
             builder.Property(s => s.Email).IsRequired();
             builder.Property(s => s.PasswordHash).IsRequired();
-            builder.Property(s => s.DateOfBirth).IsRequired();
             builder.Property(s => s.RegistrationDate).IsRequired();
         }
     }

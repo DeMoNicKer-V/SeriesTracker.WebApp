@@ -13,7 +13,7 @@ namespace SeriesTracker.DataAccess.Entities
             get; set;
         }
 
-        public required string DateOfBirth
+        public string? DateOfBirth
         {
             get; set;
         }
