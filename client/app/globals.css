@@ -457,3 +457,6 @@ input::-webkit-inner-spin-button {
     overflow: hidden;
     word-break: break-all;
 }
+.hidden {
+    display: none;
+}

@@ -1,156 +1,20 @@
 "use client";
-import React, { useRef, useState } from "react";
-import type { CascaderProps, FormListFieldData, InputRef } from "antd";
+import React, { useEffect, useState } from "react";
+import { CloseOutlined } from "@ant-design/icons";
 import {
-    UserOutlined,
-    PlusOutlined,
-    MinusCircleOutlined,
-    CheckCircleOutlined,
-} from "@ant-design/icons";
-import {
-    AutoComplete,
     Button,
-    Cascader,
-    Checkbox,
+    Card,
     Col,
-    DatePicker,
+    Flex,
     Form,
     Input,
-    InputNumber,
     Row,
-    Image,
-    Select,
-    Avatar,
-    Flex,
-    Alert,
-    Tag,
+    Space,
+    Typography,
 } from "antd";
-import { Upload } from "antd";
-import type { GetProp, UploadFile, UploadProps } from "antd";
-import ImgCrop from "antd-img-crop";
 
-const { Option } = Select;
-
-interface DataNodeType {
-    value: string;
-    label: string;
-    children?: DataNodeType[];
-}
-
-const residences: CascaderProps<DataNodeType>["options"] = [
-    {
-        value: "zhejiang",
-        label: "Zhejiang",
-        children: [
-            {
-                value: "hangzhou",
-                label: "Hangzhou",
-                children: [
-                    {
-                        value: "xihu",
-                        label: "West Lake",
-                    },
-                ],
-            },
-        ],
-    },
-    {
-        value: "jiangsu",
-        label: "Jiangsu",
-        children: [
-            {
-                value: "nanjing",
-                label: "Nanjing",
-                children: [
-                    {
-                        value: "zhonghuamen",
-                        label: "Zhong Hua Men",
-                    },
-                ],
-            },
-        ],
-    },
-];
-
-const formItemLayout = {
-    labelCol: {
-        xs: { span: 24 },
-        sm: { span: 4 },
-    },
-    wrapperCol: {
-        xs: { span: 24 },
-        sm: { span: 20 },
-    },
-};
-
-const formItemLayoutWithOutLabel = {
-    wrapperCol: {
-        xs: { span: 24, offset: 0 },
-        sm: { span: 20, offset: 4 },
-    },
-};
-type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 const App: React.FC = () => {
-    const config = {
-        rules: [
-            {
-                type: "object" as const,
-                required: true,
-                message: "",
-            },
-        ],
-    };
     const [form] = Form.useForm();
-
-    const onFinish = (values: any) => {
-        console.log("Received values of form: ", values);
-    };
-
-    const prefixSelector = (
-        <Form.Item name="prefix" noStyle>
-            <Select style={{ width: 70 }}>
-                <Option value="86">+86</Option>
-                <Option value="87">+87</Option>
-            </Select>
-        </Form.Item>
-    );
-
-    const suffixSelector = (
-        <Form.Item name="suffix" noStyle>
-            <Select style={{ width: 70 }}>
-                <Option value="USD">$</Option>
-                <Option value="CNY">¥</Option>
-            </Select>
-        </Form.Item>
-    );
-
-    const [autoCompleteResult, setAutoCompleteResult] = useState<string[]>([]);
-
-    const [fileList, setFileList] = useState<UploadFile[]>([]);
-
-    const onChange: UploadProps["onChange"] = ({ fileList: newFileList }) => {
-        setFileList(newFileList);
-        console.log(newFileList);
-    };
-
-    const getBase64 = (file: FileType): Promise<string> =>
-        new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = () => resolve(reader.result as string);
-            reader.onerror = (error) => reject(error);
-        });
-    const [previewOpen, setPreviewOpen] = useState(false);
-    const [previewImage, setPreviewImage] = useState("");
-    const handlePreview = async (file: UploadFile) => {
-        if (!file.url && !file.preview) {
-            file.preview = await getBase64(file.originFileObj as FileType);
-        }
-
-        setPreviewImage(file.url || (file.preview as string));
-        setPreviewOpen(true);
-    };
-
     const [isActive, setIsActive] = useState({});
 
     const handleFocus = (name: any) => {
@@ -160,33 +24,14 @@ const App: React.FC = () => {
     const handleBlur = (name: any) => {
         setIsActive({ [name]: false });
     };
-    const MyObject = (field: FormListFieldData) => {
-        return (
-            <Flex gap={7} align="end">
-                <Form.Item
-                    style={{ width: "100%" }}
-                    name="password"
-                    label="Пароль"
-                    rules={[
-                        {
-                            required: true,
-                            message: "",
-                        },
-                    ]}
-                    hasFeedback
-                >
-                    <Input.Password
-                        onFocus={() => handleFocus(`input${field.key}`)}
-                    />
-                </Form.Item>
-                {isActive[`input${field.key}`] ? (
-                    <Button className="dynamic-delete-button">
-                        Продолжить
-                    </Button>
-                ) : null}
-            </Flex>
-        );
-    };
+    const { getFieldError, isFieldTouched } = form;
+
+    /*   const [email, setEmail] = useState<string>();
+    var usernameError = getFieldError(["items", 0, "email"]).length > 0;
+    useEffect(() => {
+        usernameError = getFieldError(["items", 0, "email"]).length > 0;
+        console.log(form.getFieldsError(["email"]));
+    }, [email]);*/
     return (
         <Flex
             style={{
@@ -204,106 +49,199 @@ const App: React.FC = () => {
                 }}
             >
                 <Form
-                    style={{ maxWidth: 660, width: "100%" }}
                     layout="vertical"
                     form={form}
-                    onFinish={onFinish}
+                    name="dynamic_form_complex"
+                    style={{ maxWidth: 660, width: "100%" }}
+                    autoComplete="off"
+                    initialValues={{ items: [{}] }}
                 >
-                    <Form.List
-                        name="names"
-                        rules={[
-                            {
-                                validator: async (_, names) => {
-                                    if (!names || names.length < 2) {
-                                        return Promise.reject(
-                                            new Error("At least 2 passengers")
-                                        );
-                                    }
-                                },
-                            },
-                        ]}
-                    >
-                        {(fields, { add, remove, move }, { errors }) => (
-                            <>
-                                <Flex gap={7} align="end">
-                                    <Form.Item
-                                        style={{ width: "100%" }}
-                                        name="email"
-                                        label="Эл. почта"
-                                        rules={[
-                                            {
-                                                type: "email",
-                                                message: "",
-                                            },
-                                            {
-                                                required: true,
-                                                message: "",
-                                            },
-                                        ]}
-                                    >
-                                        <Input
-                                            onFocus={() =>
-                                                handleFocus("inputEmail")
-                                            }
-                                        />
-                                    </Form.Item>
-                                    {isActive.inputEmail ? (
-                                        <Button
-                                            className="dynamic-delete-button"
-                                            onClick={() =>
-                                                fields.length === 0
-                                                    ? add()
-                                                    : null
-                                            }
+                    <Form.List name="items">
+                        {(fields, { add, remove }) => (
+                            <div
+                                style={{
+                                    display: "flex",
+                                    rowGap: 16,
+                                    flexDirection: "column",
+                                }}
+                            >
+                                {fields.map((field) => [
+                                    field.key === 0 && (
+                                        <Row
+                                            gutter={[10, 10]}
+                                            align={"bottom"}
+                                            justify={"center"}
                                         >
-                                            Продолжить
-                                        </Button>
-                                    ) : null}
-                                </Flex>
-                                {fields.map((field, index) => (
-                                    <Flex gap={7} align="end">
-                                        <Form.Item
-                                            style={{ width: "100%" }}
-                                            name="password"
-                                            label="Пароль"
-                                            rules={[
-                                                {
-                                                    required: true,
-                                                    message: "",
-                                                },
-                                            ]}
-                                            hasFeedback
+                                            <Col span={18}>
+                                                <Form.Item
+                                                    name={[field.name, "email"]}
+                                                    label="Эл. почта"
+                                                    rules={[
+                                                        {
+                                                            required: true,
+                                                            message: "",
+                                                        },
+                                                        {
+                                                            type: "email",
+                                                            message: "",
+                                                        },
+                                                    ]}
+                                                >
+                                                    <Input
+                                                        spellCheck={false}
+                                                        onFocus={() =>
+                                                            handleFocus("email")
+                                                        }
+                                                    />
+                                                </Form.Item>
+                                            </Col>
+                                            <Col span={6}>
+                                                {isActive.email ? (
+                                                    <Form.Item shouldUpdate>
+                                                        {() => (
+                                                            <Button
+                                                                disabled={
+                                                                    getFieldError(
+                                                                        [
+                                                                            "items",
+                                                                            field.name,
+                                                                            "email",
+                                                                        ]
+                                                                    ).length > 0
+                                                                }
+                                                                onClick={() =>
+                                                                    fields.length ===
+                                                                        field.key +
+                                                                            1 &&
+                                                                    fields.length <
+                                                                        3
+                                                                        ? add()
+                                                                        : null
+                                                                }
+                                                            >
+                                                                Продолжить
+                                                            </Button>
+                                                        )}
+                                                    </Form.Item>
+                                                ) : null}
+                                            </Col>
+                                        </Row>
+                                    ),
+                                    field.key === 1 && (
+                                        <Row
+                                            gutter={[10, 10]}
+                                            align={"bottom"}
+                                            justify={"center"}
                                         >
-                                            <Input.Password
-                                                onFocus={() =>
-                                                    handleFocus(
-                                                        `input${field.key}`
-                                                    )
-                                                }
-                                            />
-                                        </Form.Item>
-                                        {isActive[`input${field.key}`] ? (
-                                            <Button
-                                                onClick={() =>
-                                                    fields.length ===
-                                                        field.key + 1 &&
-                                                    fields.length < 3
-                                                        ? add()
-                                                        : null
-                                                }
-                                                className="dynamic-delete-button"
-                                            >
-                                                Продолжить
-                                            </Button>
-                                        ) : null}
-                                    </Flex>
-                                ))}
-                            </>
+                                            <Col span={18}>
+                                                <Form.Item
+                                                    name={[
+                                                        field.name,
+                                                        "password",
+                                                    ]}
+                                                    label="Пароль"
+                                                    rules={[
+                                                        {
+                                                            required: true,
+                                                            message: "",
+                                                        },
+                                                    ]}
+                                                    hasFeedback
+                                                >
+                                                    <Input.Password
+                                                        onFocus={() =>
+                                                            handleFocus(
+                                                                "password"
+                                                            )
+                                                        }
+                                                    />
+                                                </Form.Item>
+                                            </Col>
+                                            <Col span={6}>
+                                                {isActive.password ? (
+                                                    <Button
+                                                        onClick={() =>
+                                                            fields.length ===
+                                                                field.key + 1 &&
+                                                            fields.length < 3
+                                                                ? add()
+                                                                : null
+                                                        }
+                                                    >
+                                                        Продолжить
+                                                    </Button>
+                                                ) : null}
+                                            </Col>
+                                        </Row>
+                                    ),
+                                    field.key === 2 && (
+                                        <Row
+                                            gutter={[10, 10]}
+                                            align={"bottom"}
+                                            justify={"center"}
+                                        >
+                                            <Col span={18}>
+                                                <Form.Item
+                                                    name={[
+                                                        field.name,
+                                                        "nickname",
+                                                    ]}
+                                                    label="Логин (никнейм)"
+                                                    tooltip="Чувствителен к регистру"
+                                                    rules={[
+                                                        {
+                                                            required: true,
+                                                            whitespace: true,
+                                                            message: "",
+                                                        },
+                                                    ]}
+                                                >
+                                                    <Input
+                                                        onFocus={() =>
+                                                            handleFocus(
+                                                                "nickname"
+                                                            )
+                                                        }
+                                                    />
+                                                </Form.Item>
+                                            </Col>
+                                            <Col span={6}>
+                                                {isActive.nickname ? (
+                                                    <Button
+                                                        onClick={() =>
+                                                            fields.length ===
+                                                                field.key + 1 &&
+                                                            fields.length < 3
+                                                                ? add()
+                                                                : null
+                                                        }
+                                                    >
+                                                        Продолжить
+                                                    </Button>
+                                                ) : null}
+                                            </Col>
+                                        </Row>
+                                    ),
+                                ])}
+                            </div>
                         )}
                     </Form.List>
+
+                    <Form.Item noStyle shouldUpdate>
+                        {() => (
+                            <Typography>
+                                <pre>
+                                    {JSON.stringify(
+                                        form.getFieldsValue(),
+                                        null,
+                                        2
+                                    )}
+                                </pre>
+                            </Typography>
+                        )}
+                    </Form.Item>
                 </Form>
             </Flex>
-            <Flex>Text</Flex>
         </Flex>
     );
 };
