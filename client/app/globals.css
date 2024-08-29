@@ -460,3 +460,14 @@ input::-webkit-inner-spin-button {
 .hidden {
     display: none;
 }
+
+div.ant-upload-list,
+div.ant-upload-select,
+div.ant-upload,
+div.ant-upload-list-item {
+    width: 60px !important;
+    height: 60px !important;
+}
+.login-space .ant-space-item {
+    flex: auto;
+}
