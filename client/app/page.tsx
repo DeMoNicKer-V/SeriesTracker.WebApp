@@ -1,6 +1,12 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { CloseOutlined } from "@ant-design/icons";
+import {
+    CloseOutlined,
+    UserOutlined,
+    SolutionOutlined,
+    LoadingOutlined,
+    SmileOutlined,
+} from "@ant-design/icons";
 import {
     Button,
     Card,
@@ -10,8 +16,10 @@ import {
     Input,
     Row,
     Space,
+    Steps,
     Typography,
 } from "antd";
+import { title } from "process";
 
 const App: React.FC = () => {
     const [form] = Form.useForm();
@@ -32,6 +40,14 @@ const App: React.FC = () => {
         usernameError = getFieldError(["items", 0, "email"]).length > 0;
         console.log(form.getFieldsError(["email"]));
     }, [email]);*/
+
+    const [current, setCurrent] = useState(0);
+
+    const onChangeCurrent = (value: number) => {
+        console.log("onChange:", value);
+        setCurrent(value);
+    };
+    const description = "This is a description.";
     return (
         <Flex
             style={{
@@ -46,8 +62,28 @@ const App: React.FC = () => {
                     backgroundColor: "#0c162d",
                     justifyContent: "center",
                     border: "solid 1px #202637",
+                    flexDirection: "column",
+                    alignItems: "center",
                 }}
             >
+                <Steps
+                    current={current}
+                    onChange={onChangeCurrent}
+                    items={[
+                        {
+                            title: "Step 1",
+                            description,
+                        },
+                        {
+                            title: "Step 2",
+                            description,
+                        },
+                        {
+                            title: "Step 3",
+                            description,
+                        },
+                    ]}
+                />
                 <Form
                     layout="vertical"
                     form={form}
@@ -101,6 +137,9 @@ const App: React.FC = () => {
                                                         {() => (
                                                             <Button
                                                                 disabled={
+                                                                    !form.isFieldsTouched(
+                                                                        true
+                                                                    ) ||
                                                                     getFieldError(
                                                                         [
                                                                             "items",
@@ -137,7 +176,7 @@ const App: React.FC = () => {
                                                 <Form.Item
                                                     name={[
                                                         field.name,
-                                                        "password",
+                                                        "passHash",
                                                     ]}
                                                     label="Пароль"
                                                     rules={[
@@ -145,31 +184,53 @@ const App: React.FC = () => {
                                                             required: true,
                                                             message: "",
                                                         },
+                                                        {
+                                                            min: 3,
+                                                            message: "",
+                                                        },
                                                     ]}
-                                                    hasFeedback
                                                 >
                                                     <Input.Password
+                                                        spellCheck={false}
                                                         onFocus={() =>
                                                             handleFocus(
-                                                                "password"
+                                                                "passHash"
                                                             )
                                                         }
                                                     />
                                                 </Form.Item>
                                             </Col>
                                             <Col span={6}>
-                                                {isActive.password ? (
-                                                    <Button
-                                                        onClick={() =>
-                                                            fields.length ===
-                                                                field.key + 1 &&
-                                                            fields.length < 3
-                                                                ? add()
-                                                                : null
-                                                        }
-                                                    >
-                                                        Продолжить
-                                                    </Button>
+                                                {isActive.passHash ? (
+                                                    <Form.Item shouldUpdate>
+                                                        {() => (
+                                                            <Button
+                                                                disabled={
+                                                                    !form.isFieldsTouched(
+                                                                        true
+                                                                    ) ||
+                                                                    getFieldError(
+                                                                        [
+                                                                            "items",
+                                                                            field.name,
+                                                                            "passHash",
+                                                                        ]
+                                                                    ).length > 0
+                                                                }
+                                                                onClick={() =>
+                                                                    fields.length ===
+                                                                        field.key +
+                                                                            1 &&
+                                                                    fields.length <
+                                                                        3
+                                                                        ? add()
+                                                                        : null
+                                                                }
+                                                            >
+                                                                Продолжить
+                                                            </Button>
+                                                        )}
+                                                    </Form.Item>
                                                 ) : null}
                                             </Col>
                                         </Row>
@@ -191,12 +252,16 @@ const App: React.FC = () => {
                                                     rules={[
                                                         {
                                                             required: true,
-                                                            whitespace: true,
+                                                            message: "",
+                                                        },
+                                                        {
+                                                            min: 5,
                                                             message: "",
                                                         },
                                                     ]}
                                                 >
                                                     <Input
+                                                        spellCheck={false}
                                                         onFocus={() =>
                                                             handleFocus(
                                                                 "nickname"
@@ -207,17 +272,35 @@ const App: React.FC = () => {
                                             </Col>
                                             <Col span={6}>
                                                 {isActive.nickname ? (
-                                                    <Button
-                                                        onClick={() =>
-                                                            fields.length ===
-                                                                field.key + 1 &&
-                                                            fields.length < 3
-                                                                ? add()
-                                                                : null
-                                                        }
-                                                    >
-                                                        Продолжить
-                                                    </Button>
+                                                    <Form.Item shouldUpdate>
+                                                        {() => (
+                                                            <Button
+                                                                disabled={
+                                                                    !form.isFieldsTouched(
+                                                                        true
+                                                                    ) ||
+                                                                    getFieldError(
+                                                                        [
+                                                                            "items",
+                                                                            field.name,
+                                                                            "nickname",
+                                                                        ]
+                                                                    ).length > 0
+                                                                }
+                                                                onClick={() =>
+                                                                    fields.length ===
+                                                                        field.key +
+                                                                            1 &&
+                                                                    fields.length <
+                                                                        3
+                                                                        ? add()
+                                                                        : null
+                                                                }
+                                                            >
+                                                                Продолжить
+                                                            </Button>
+                                                        )}
+                                                    </Form.Item>
                                                 ) : null}
                                             </Col>
                                         </Row>
