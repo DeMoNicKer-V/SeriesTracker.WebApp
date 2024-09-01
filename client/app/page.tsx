@@ -28,8 +28,8 @@ import {
     UploadProps,
     message,
     Divider,
+    Result,
 } from "antd";
-import { title } from "process";
 import ImgCrop from "antd-img-crop";
 import Meta from "antd/es/card/Meta";
 
@@ -42,16 +42,17 @@ const App: React.FC = () => {
                 newFileList[0].type === "image/jpeg" ||
                 newFileList[0].type === "image/png";
             if (!isJpgOrPng) {
-                message.error("You can only upload JPG/PNG file!");
+                message.error("Только JPG/PNG фаайлы!");
             }
             const isLt2M = newFileList[0].size / 1024 / 1024 < 0.5;
             if (!isLt2M) {
-                message.error("Image must smaller than 2MB!");
+                message.error("Размер файла не должнен превышать 512КБ!");
                 return;
             }
         }
         setFileList(newFileList);
     };
+    const [user, setUser] = useState<User>();
 
     const getBase64 = (file: FileType): Promise<string> =>
         new Promise((resolve, reject) => {
@@ -134,11 +135,11 @@ const App: React.FC = () => {
                 />
                 {current === 0 && (
                     <Form
+                        onFinish={() => setCurrent(1)}
                         layout="vertical"
                         form={form}
                         name="requiredForm"
                         style={{ maxWidth: 660, width: "100%" }}
-                        autoComplete="off"
                         initialValues={{ items: [{}] }}
                     >
                         <Form.List name="items">
@@ -191,8 +192,12 @@ const App: React.FC = () => {
                                                             {() => (
                                                                 <Button
                                                                     disabled={
-                                                                        !form.isFieldsTouched(
-                                                                            true
+                                                                        !form.getFieldValue(
+                                                                            [
+                                                                                "items",
+                                                                                field.name,
+                                                                                "email",
+                                                                            ]
                                                                         ) ||
                                                                         getFieldError(
                                                                             [
@@ -230,9 +235,10 @@ const App: React.FC = () => {
                                             >
                                                 <Col span={18}>
                                                     <Form.Item
+                                                        shouldUpdate
                                                         name={[
                                                             field.name,
-                                                            "passHash",
+                                                            "password",
                                                         ]}
                                                         label="Пароль"
                                                         rules={[
@@ -250,26 +256,30 @@ const App: React.FC = () => {
                                                             spellCheck={false}
                                                             onFocus={() =>
                                                                 handleFocus(
-                                                                    "passHash"
+                                                                    "password"
                                                                 )
                                                             }
                                                         />
                                                     </Form.Item>
                                                 </Col>
                                                 <Col span={6}>
-                                                    {isActive.passHash ? (
+                                                    {isActive.password ? (
                                                         <Form.Item shouldUpdate>
                                                             {() => (
                                                                 <Button
                                                                     disabled={
-                                                                        !form.isFieldsTouched(
-                                                                            true
+                                                                        !form.getFieldValue(
+                                                                            [
+                                                                                "items",
+                                                                                field.name,
+                                                                                "password",
+                                                                            ]
                                                                         ) ||
                                                                         getFieldError(
                                                                             [
                                                                                 "items",
                                                                                 field.name,
-                                                                                "passHash",
+                                                                                "password",
                                                                             ]
                                                                         )
                                                                             .length >
@@ -333,9 +343,14 @@ const App: React.FC = () => {
                                                         <Form.Item shouldUpdate>
                                                             {() => (
                                                                 <Button
+                                                                    htmlType="submit"
                                                                     disabled={
-                                                                        !form.isFieldsTouched(
-                                                                            true
+                                                                        !form.getFieldValue(
+                                                                            [
+                                                                                "items",
+                                                                                field.name,
+                                                                                "nickname",
+                                                                            ]
                                                                         ) ||
                                                                         getFieldError(
                                                                             [
@@ -346,15 +361,6 @@ const App: React.FC = () => {
                                                                         )
                                                                             .length >
                                                                             0
-                                                                    }
-                                                                    onClick={() =>
-                                                                        fields.length ===
-                                                                            field.key +
-                                                                                1 &&
-                                                                        fields.length <
-                                                                            3
-                                                                            ? add()
-                                                                            : null
                                                                     }
                                                                 >
                                                                     Продолжить
@@ -369,7 +375,6 @@ const App: React.FC = () => {
                                 </div>
                             )}
                         </Form.List>
-
                         <Form.Item noStyle shouldUpdate>
                             {() => (
                                 <Typography>
@@ -398,7 +403,7 @@ const App: React.FC = () => {
                             wrap
                             size={[10, 10]}
                         >
-                            <Form.Item>
+                            <Form.Item name={"avatar"}>
                                 <ImgCrop
                                     maxZoom={2}
                                     showReset
@@ -493,10 +498,10 @@ const App: React.FC = () => {
                                 wrap
                                 size={[10, 10]}
                             >
-                                <Form.Item>
+                                <Form.Item name={"name"}>
                                     <Input placeholder="Имя"></Input>
                                 </Form.Item>
-                                <Form.Item>
+                                <Form.Item name={"surName"}>
                                     <Input placeholder="Фамилия "></Input>
                                 </Form.Item>
                             </Space>
@@ -532,7 +537,10 @@ const App: React.FC = () => {
                                 justify="center"
                                 align="center"
                             >
-                                <Form.Item style={{ width: "50%" }}>
+                                <Form.Item
+                                    name={"dateBirth"}
+                                    style={{ width: "50%" }}
+                                >
                                     <DatePicker
                                         style={{ width: "100%" }}
                                         placeholder=""
@@ -542,6 +550,8 @@ const App: React.FC = () => {
                         </Card>
                         <Flex justify="center" align="center">
                             <Button
+                                htmlType="submit"
+                                onClick={() => setCurrent(2)}
                                 type="primary"
                                 ghost
                                 size="large"
@@ -555,6 +565,17 @@ const App: React.FC = () => {
                             </Button>
                         </Flex>
                     </Form>
+                )}
+                {current === 2 && (
+                    <Result
+                        title="Мы почти закончили!"
+                        subTitle="Пожалуйста, проверьте введеные данные и подтвердите регистрацию!"
+                        extra={
+                            <Button type="primary" key="console">
+                                Зарегестрироваться
+                            </Button>
+                        }
+                    />
                 )}
             </Flex>
         </Flex>
