@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
     CloseOutlined,
     UserOutlined,
@@ -7,6 +7,9 @@ import {
     RightOutlined,
     LoadingOutlined,
     SmileOutlined,
+    LoginOutlined,
+    ProfileOutlined,
+    CheckSquareOutlined,
 } from "@ant-design/icons";
 import {
     Avatar,
@@ -29,9 +32,12 @@ import {
     message,
     Divider,
     Result,
+    ConfigProvider,
+    InputRef,
 } from "antd";
 import ImgCrop from "antd-img-crop";
 import Meta from "antd/es/card/Meta";
+import locale from "antd/locale/ru_RU";
 
 const App: React.FC = () => {
     const [fileList, setFileList] = useState<UploadFile[]>([]);
@@ -82,7 +88,8 @@ const App: React.FC = () => {
         setIsActive({ [name]: false });
     };
     const { getFieldError, isFieldTouched } = form;
-
+    const inputRef = useRef<InputRef>(null);
+    const inputRef2 = useRef<InputRef>(null);
     /*   const [email, setEmail] = useState<string>();
     var usernameError = getFieldError(["items", 0, "email"]).length > 0;
     useEffect(() => {
@@ -96,487 +103,526 @@ const App: React.FC = () => {
         console.log("onChange:", value);
         setCurrent(value);
     };
+
     const description = "This is a description.";
     return (
         <Flex
             style={{
                 flexDirection: "column",
                 flex: "auto",
+                alignItems: "center",
             }}
         >
             <Flex
                 style={{
                     flex: "auto",
                     paddingTop: "128px",
-                    backgroundColor: "#0c162d",
                     justifyContent: "center",
-                    border: "solid 1px #202637",
-                    flexDirection: "column",
-                    alignItems: "center",
                 }}
             >
-                <Steps
-                    current={current}
-                    onChange={onChangeCurrent}
-                    items={[
-                        {
-                            title: "Step 1",
-                            description,
-                        },
-                        {
-                            title: "Step 2",
-                            description,
-                        },
-                        {
-                            title: "Step 3",
-                            description,
-                        },
-                    ]}
-                />
-                {current === 0 && (
-                    <Form
-                        onFinish={() => setCurrent(1)}
-                        layout="vertical"
-                        form={form}
-                        name="requiredForm"
-                        style={{ maxWidth: 660, width: "100%" }}
-                        initialValues={{ items: [{}] }}
-                    >
-                        <Form.List name="items">
-                            {(fields, { add, remove }) => (
-                                <div
-                                    style={{
-                                        display: "flex",
-                                        rowGap: 16,
-                                        flexDirection: "column",
-                                    }}
-                                >
-                                    {fields.map((field) => [
-                                        field.key === 0 && (
-                                            <Row
-                                                gutter={[10, 10]}
-                                                align={"bottom"}
-                                                justify={"center"}
-                                            >
-                                                <Col span={18}>
-                                                    <Form.Item
-                                                        name={[
-                                                            field.name,
-                                                            "email",
-                                                        ]}
-                                                        label="Эл. почта"
-                                                        rules={[
-                                                            {
-                                                                required: true,
-                                                                message: "",
-                                                            },
-                                                            {
-                                                                type: "email",
-                                                                message: "",
-                                                            },
-                                                        ]}
-                                                    >
-                                                        <Input
-                                                            spellCheck={false}
-                                                            onFocus={() =>
-                                                                handleFocus(
-                                                                    "email"
-                                                                )
-                                                            }
-                                                        />
-                                                    </Form.Item>
-                                                </Col>
-                                                <Col span={6}>
-                                                    {isActive.email ? (
-                                                        <Form.Item shouldUpdate>
-                                                            {() => (
-                                                                <Button
-                                                                    disabled={
-                                                                        !form.getFieldValue(
-                                                                            [
-                                                                                "items",
-                                                                                field.name,
-                                                                                "email",
-                                                                            ]
-                                                                        ) ||
-                                                                        getFieldError(
-                                                                            [
-                                                                                "items",
-                                                                                field.name,
-                                                                                "email",
-                                                                            ]
-                                                                        )
-                                                                            .length >
-                                                                            0
-                                                                    }
-                                                                    onClick={() =>
-                                                                        fields.length ===
-                                                                            field.key +
-                                                                                1 &&
-                                                                        fields.length <
-                                                                            3
-                                                                            ? add()
-                                                                            : null
-                                                                    }
-                                                                >
-                                                                    Продолжить
-                                                                </Button>
-                                                            )}
-                                                        </Form.Item>
-                                                    ) : null}
-                                                </Col>
-                                            </Row>
-                                        ),
-                                        field.key === 1 && (
-                                            <Row
-                                                gutter={[10, 10]}
-                                                align={"bottom"}
-                                                justify={"center"}
-                                            >
-                                                <Col span={18}>
-                                                    <Form.Item
-                                                        shouldUpdate
-                                                        name={[
-                                                            field.name,
-                                                            "password",
-                                                        ]}
-                                                        label="Пароль"
-                                                        rules={[
-                                                            {
-                                                                required: true,
-                                                                message: "",
-                                                            },
-                                                            {
-                                                                min: 3,
-                                                                message: "",
-                                                            },
-                                                        ]}
-                                                    >
-                                                        <Input.Password
-                                                            spellCheck={false}
-                                                            onFocus={() =>
-                                                                handleFocus(
-                                                                    "password"
-                                                                )
-                                                            }
-                                                        />
-                                                    </Form.Item>
-                                                </Col>
-                                                <Col span={6}>
-                                                    {isActive.password ? (
-                                                        <Form.Item shouldUpdate>
-                                                            {() => (
-                                                                <Button
-                                                                    disabled={
-                                                                        !form.getFieldValue(
-                                                                            [
-                                                                                "items",
-                                                                                field.name,
-                                                                                "password",
-                                                                            ]
-                                                                        ) ||
-                                                                        getFieldError(
-                                                                            [
-                                                                                "items",
-                                                                                field.name,
-                                                                                "password",
-                                                                            ]
-                                                                        )
-                                                                            .length >
-                                                                            0
-                                                                    }
-                                                                    onClick={() =>
-                                                                        fields.length ===
-                                                                            field.key +
-                                                                                1 &&
-                                                                        fields.length <
-                                                                            3
-                                                                            ? add()
-                                                                            : null
-                                                                    }
-                                                                >
-                                                                    Продолжить
-                                                                </Button>
-                                                            )}
-                                                        </Form.Item>
-                                                    ) : null}
-                                                </Col>
-                                            </Row>
-                                        ),
-                                        field.key === 2 && (
-                                            <Row
-                                                gutter={[10, 10]}
-                                                align={"bottom"}
-                                                justify={"center"}
-                                            >
-                                                <Col span={18}>
-                                                    <Form.Item
-                                                        name={[
-                                                            field.name,
-                                                            "nickname",
-                                                        ]}
-                                                        label="Логин (никнейм)"
-                                                        tooltip="Чувствителен к регистру"
-                                                        rules={[
-                                                            {
-                                                                required: true,
-                                                                message: "",
-                                                            },
-                                                            {
-                                                                min: 5,
-                                                                message: "",
-                                                            },
-                                                        ]}
-                                                    >
-                                                        <Input
-                                                            spellCheck={false}
-                                                            onFocus={() =>
-                                                                handleFocus(
-                                                                    "nickname"
-                                                                )
-                                                            }
-                                                        />
-                                                    </Form.Item>
-                                                </Col>
-                                                <Col span={6}>
-                                                    {isActive.nickname ? (
-                                                        <Form.Item shouldUpdate>
-                                                            {() => (
-                                                                <Button
-                                                                    htmlType="submit"
-                                                                    disabled={
-                                                                        !form.getFieldValue(
-                                                                            [
-                                                                                "items",
-                                                                                field.name,
-                                                                                "nickname",
-                                                                            ]
-                                                                        ) ||
-                                                                        getFieldError(
-                                                                            [
-                                                                                "items",
-                                                                                field.name,
-                                                                                "nickname",
-                                                                            ]
-                                                                        )
-                                                                            .length >
-                                                                            0
-                                                                    }
-                                                                >
-                                                                    Продолжить
-                                                                </Button>
-                                                            )}
-                                                        </Form.Item>
-                                                    ) : null}
-                                                </Col>
-                                            </Row>
-                                        ),
-                                    ])}
-                                </div>
-                            )}
-                        </Form.List>
-                        <Form.Item noStyle shouldUpdate>
-                            {() => (
-                                <Typography>
-                                    <pre>
-                                        {JSON.stringify(
-                                            form.getFieldsValue(),
-                                            null,
-                                            2
-                                        )}
-                                    </pre>
-                                </Typography>
-                            )}
-                        </Form.Item>
-                    </Form>
-                )}
-                {current === 1 && (
-                    <Form
-                        layout="vertical"
-                        form={form}
-                        name="nonRequiredForm"
-                        style={{ maxWidth: 660, width: "100%" }}
-                        autoComplete="off"
-                    >
-                        <Space
-                            style={{ justifyContent: "center" }}
-                            wrap
-                            size={[10, 10]}
+                <div
+                    style={{
+                        width: "660px",
+                        maxWidth: "660px",
+                        padding: 20,
+
+                        borderRadius: 10,
+                    }}
+                >
+                    <Steps
+                        current={current}
+                        onChange={onChangeCurrent}
+                        items={[
+                            {
+                                icon: <LoginOutlined />,
+                            },
+                            {
+                                icon: <ProfileOutlined />,
+                            },
+                            {
+                                icon: <CheckSquareOutlined />,
+                            },
+                        ]}
+                    />
+                    {current === 0 && (
+                        <Form
+                            onFinish={() => setCurrent(1)}
+                            layout="vertical"
+                            form={form}
+                            name="requiredForm"
+                            initialValues={{ items: [{}] }}
                         >
-                            <Form.Item name={"avatar"}>
-                                <ImgCrop
-                                    maxZoom={2}
-                                    showReset
-                                    resetText="Сбросить"
-                                    modalOk="Выбрать"
-                                    modalCancel="Отмена"
-                                    fillColor={"transparent"}
-                                    modalTitle="Выбор изображения профиля"
-                                >
-                                    <Upload
-                                        listType="picture-card"
-                                        maxCount={1}
-                                        fileList={fileList}
-                                        onChange={onChange}
-                                        onPreview={handlePreview}
-                                    >
-                                        {fileList.length < 1 && (
-                                            <Flex
-                                                style={{
-                                                    flexDirection: "column",
-                                                    justifyContent: "center",
-                                                }}
-                                            >
-                                                <UserOutlined
-                                                    style={{
-                                                        fontSize: 30,
-                                                    }}
-                                                />
-                                            </Flex>
-                                        )}
-                                    </Upload>
-                                </ImgCrop>
-                                {previewImage && (
-                                    <Image
-                                        wrapperStyle={{ display: "none" }}
-                                        preview={{
-                                            visible: previewOpen,
-                                            onVisibleChange: (visible) =>
-                                                setPreviewOpen(visible),
-                                            afterOpenChange: (visible) =>
-                                                !visible && setPreviewImage(""),
+                            <Form.List name="items">
+                                {(fields, { add, remove }) => (
+                                    <div
+                                        style={{
+                                            display: "flex",
+                                            rowGap: 16,
+                                            flexDirection: "column",
                                         }}
-                                        src={previewImage}
-                                    />
-                                )}
-                            </Form.Item>
-                            <Meta
-                                title={
-                                    <Typography.Title level={5}>
-                                        {"Выберите ваш аватар"}
-                                    </Typography.Title>
-                                }
-                                description={
-                                    <Typography.Text
-                                        italic
-                                        style={{ fontSize: 12 }}
                                     >
-                                        {
-                                            "допускаются только файлы формата JPG/PNG, размером не превышающие 512 КБ"
-                                        }
-                                    </Typography.Text>
-                                }
-                            ></Meta>
-                        </Space>
-                        <Card
-                            style={{
-                                cursor: "default",
-                                width: "100%",
-                                padding: 5,
-                                backgroundColor: "transparent",
-                            }}
+                                        {fields.map((field) => [
+                                            field.key === 0 && (
+                                                <Row
+                                                    gutter={[10, 10]}
+                                                    align={"bottom"}
+                                                    justify={"center"}
+                                                >
+                                                    <Col span={18}>
+                                                        <Form.Item
+                                                            name={[
+                                                                field.name,
+                                                                "email",
+                                                            ]}
+                                                            label="Эл. почта"
+                                                            rules={[
+                                                                {
+                                                                    required:
+                                                                        true,
+                                                                    message: "",
+                                                                },
+                                                                {
+                                                                    type: "email",
+                                                                    message: "",
+                                                                },
+                                                            ]}
+                                                        >
+                                                            <Input
+                                                                spellCheck={
+                                                                    false
+                                                                }
+                                                                onFocus={() =>
+                                                                    handleFocus(
+                                                                        "email"
+                                                                    )
+                                                                }
+                                                            />
+                                                        </Form.Item>
+                                                    </Col>
+                                                    <Col span={6}>
+                                                        {isActive.email ? (
+                                                            <Form.Item
+                                                                shouldUpdate
+                                                            >
+                                                                {() => (
+                                                                    <Button
+                                                                        disabled={
+                                                                            !form.getFieldValue(
+                                                                                [
+                                                                                    "items",
+                                                                                    field.name,
+                                                                                    "email",
+                                                                                ]
+                                                                            ) ||
+                                                                            getFieldError(
+                                                                                [
+                                                                                    "items",
+                                                                                    field.name,
+                                                                                    "email",
+                                                                                ]
+                                                                            )
+                                                                                .length >
+                                                                                0
+                                                                        }
+                                                                        onClick={() => {
+                                                                            if (
+                                                                                fields.length ===
+                                                                                    field.key +
+                                                                                        1 &&
+                                                                                fields.length <
+                                                                                    3
+                                                                            ) {
+                                                                                add();
+                                                                            }
+
+                                                                            if (
+                                                                                inputRef.current
+                                                                            ) {
+                                                                                inputRef.current!.focus(
+                                                                                    {
+                                                                                        cursor: "start",
+                                                                                    }
+                                                                                );
+                                                                            }
+                                                                        }}
+                                                                    >
+                                                                        Продолжить
+                                                                    </Button>
+                                                                )}
+                                                            </Form.Item>
+                                                        ) : null}
+                                                    </Col>
+                                                </Row>
+                                            ),
+                                            field.key === 1 && (
+                                                <Row
+                                                    gutter={[10, 10]}
+                                                    align={"bottom"}
+                                                    justify={"center"}
+                                                >
+                                                    <Col span={18}>
+                                                        <Form.Item
+                                                            shouldUpdate
+                                                            name={[
+                                                                field.name,
+                                                                "password",
+                                                            ]}
+                                                            label="Пароль"
+                                                            rules={[
+                                                                {
+                                                                    required:
+                                                                        true,
+                                                                    message: "",
+                                                                },
+                                                                {
+                                                                    min: 3,
+                                                                    message: "",
+                                                                },
+                                                            ]}
+                                                        >
+                                                            <Input.Password
+                                                                autoFocus
+                                                                ref={inputRef}
+                                                                spellCheck={
+                                                                    false
+                                                                }
+                                                                onFocus={() =>
+                                                                    handleFocus(
+                                                                        "password"
+                                                                    )
+                                                                }
+                                                            />
+                                                        </Form.Item>
+                                                    </Col>
+                                                    <Col span={6}>
+                                                        {isActive.password ? (
+                                                            <Form.Item
+                                                                shouldUpdate
+                                                            >
+                                                                {() => (
+                                                                    <Button
+                                                                        disabled={
+                                                                            !form.getFieldValue(
+                                                                                [
+                                                                                    "items",
+                                                                                    field.name,
+                                                                                    "password",
+                                                                                ]
+                                                                            ) ||
+                                                                            getFieldError(
+                                                                                [
+                                                                                    "items",
+                                                                                    field.name,
+                                                                                    "password",
+                                                                                ]
+                                                                            )
+                                                                                .length >
+                                                                                0
+                                                                        }
+                                                                        onClick={() => {
+                                                                            if (
+                                                                                fields.length ===
+                                                                                    field.key +
+                                                                                        1 &&
+                                                                                fields.length <
+                                                                                    3
+                                                                            ) {
+                                                                                add();
+                                                                            }
+
+                                                                            if (
+                                                                                inputRef2.current
+                                                                            ) {
+                                                                                inputRef2.current!.focus(
+                                                                                    {
+                                                                                        cursor: "start",
+                                                                                    }
+                                                                                );
+                                                                            }
+                                                                        }}
+                                                                    >
+                                                                        Продолжить
+                                                                    </Button>
+                                                                )}
+                                                            </Form.Item>
+                                                        ) : null}
+                                                    </Col>
+                                                </Row>
+                                            ),
+                                            field.key === 2 && (
+                                                <Row
+                                                    gutter={[10, 10]}
+                                                    align={"bottom"}
+                                                    justify={"center"}
+                                                >
+                                                    <Col span={18}>
+                                                        <Form.Item
+                                                            name={[
+                                                                field.name,
+                                                                "nickname",
+                                                            ]}
+                                                            label="Логин (никнейм)"
+                                                            tooltip="Чувствителен к регистру"
+                                                            rules={[
+                                                                {
+                                                                    required:
+                                                                        true,
+                                                                    message: "",
+                                                                },
+                                                                {
+                                                                    min: 5,
+                                                                    message: "",
+                                                                },
+                                                            ]}
+                                                        >
+                                                            <Input
+                                                                autoFocus
+                                                                ref={inputRef2}
+                                                                spellCheck={
+                                                                    false
+                                                                }
+                                                                onFocus={() =>
+                                                                    handleFocus(
+                                                                        "nickname"
+                                                                    )
+                                                                }
+                                                            />
+                                                        </Form.Item>
+                                                    </Col>
+                                                    <Col span={6}>
+                                                        {isActive.nickname ? (
+                                                            <Form.Item
+                                                                shouldUpdate
+                                                            >
+                                                                {() => (
+                                                                    <Button
+                                                                        htmlType="submit"
+                                                                        disabled={
+                                                                            !form.getFieldValue(
+                                                                                [
+                                                                                    "items",
+                                                                                    field.name,
+                                                                                    "nickname",
+                                                                                ]
+                                                                            ) ||
+                                                                            getFieldError(
+                                                                                [
+                                                                                    "items",
+                                                                                    field.name,
+                                                                                    "nickname",
+                                                                                ]
+                                                                            )
+                                                                                .length >
+                                                                                0
+                                                                        }
+                                                                    >
+                                                                        Продолжить
+                                                                    </Button>
+                                                                )}
+                                                            </Form.Item>
+                                                        ) : null}
+                                                    </Col>
+                                                </Row>
+                                            ),
+                                        ])}
+                                    </div>
+                                )}
+                            </Form.List>
+                        </Form>
+                    )}
+                    {current === 1 && (
+                        <Form
+                            layout="vertical"
+                            form={form}
+                            name="nonRequiredForm"
+                            autoComplete="off"
                         >
-                            <Flex
-                                align="center"
-                                justify="center"
-                                style={{ flexDirection: "column" }}
-                            >
-                                <Typography.Text italic>
-                                    Как вас зовут?
-                                </Typography.Text>
-                                <Divider
-                                    style={{
-                                        margin: 10,
-                                    }}
-                                    dashed
-                                    type="horizontal"
-                                ></Divider>
-                            </Flex>
                             <Space
-                                className="login-space"
-                                style={{ width: "100%" }}
+                                style={{ justifyContent: "center" }}
                                 wrap
                                 size={[10, 10]}
                             >
-                                <Form.Item name={"name"}>
-                                    <Input placeholder="Имя"></Input>
+                                <Form.Item name={"avatar"}>
+                                    <ImgCrop
+                                        maxZoom={2}
+                                        showReset
+                                        resetText="Сбросить"
+                                        modalOk="Выбрать"
+                                        modalCancel="Отмена"
+                                        fillColor={"transparent"}
+                                        modalTitle="Выбор изображения профиля"
+                                    >
+                                        <Upload
+                                            listType="picture-card"
+                                            maxCount={1}
+                                            fileList={fileList}
+                                            onChange={onChange}
+                                            onPreview={handlePreview}
+                                        >
+                                            {fileList.length < 1 && (
+                                                <Flex
+                                                    style={{
+                                                        flexDirection: "column",
+                                                        justifyContent:
+                                                            "center",
+                                                    }}
+                                                >
+                                                    <UserOutlined
+                                                        style={{
+                                                            fontSize: 30,
+                                                        }}
+                                                    />
+                                                </Flex>
+                                            )}
+                                        </Upload>
+                                    </ImgCrop>
+                                    {previewImage && (
+                                        <Image
+                                            wrapperStyle={{
+                                                display: "none",
+                                            }}
+                                            preview={{
+                                                visible: previewOpen,
+                                                onVisibleChange: (visible) =>
+                                                    setPreviewOpen(visible),
+                                                afterOpenChange: (visible) =>
+                                                    !visible &&
+                                                    setPreviewImage(""),
+                                            }}
+                                            src={previewImage}
+                                        />
+                                    )}
                                 </Form.Item>
-                                <Form.Item name={"surName"}>
-                                    <Input placeholder="Фамилия "></Input>
-                                </Form.Item>
+                                <Meta
+                                    title={
+                                        <Typography.Title level={5}>
+                                            {"Выберите ваш аватар"}
+                                        </Typography.Title>
+                                    }
+                                    description={
+                                        <Typography.Text
+                                            italic
+                                            style={{ fontSize: 12 }}
+                                        >
+                                            {
+                                                "допускаются только файлы формата JPG/PNG, размером не превышающие 512 КБ"
+                                            }
+                                        </Typography.Text>
+                                    }
+                                ></Meta>
                             </Space>
-                        </Card>
-                        <Card
-                            style={{
-                                cursor: "default",
-                                width: "100%",
-                                padding: 5,
-                                backgroundColor: "transparent",
-                            }}
-                        >
-                            <Flex
-                                align="center"
-                                justify="center"
-                                style={{ flexDirection: "column" }}
-                            >
-                                <Typography.Text italic>
-                                    Ваша дата рождения?
-                                </Typography.Text>
-                                <Divider
-                                    style={{
-                                        width: "50%",
-                                        minWidth: 0,
-                                        margin: 10,
-                                    }}
-                                    dashed
-                                    type="horizontal"
-                                ></Divider>
-                            </Flex>
-                            <Flex
-                                style={{ width: "100%" }}
-                                justify="center"
-                                align="center"
-                            >
-                                <Form.Item
-                                    name={"dateBirth"}
-                                    style={{ width: "50%" }}
-                                >
-                                    <DatePicker
-                                        style={{ width: "100%" }}
-                                        placeholder=""
-                                    ></DatePicker>
-                                </Form.Item>
-                            </Flex>
-                        </Card>
-                        <Flex justify="center" align="center">
-                            <Button
-                                htmlType="submit"
-                                onClick={() => setCurrent(2)}
-                                type="primary"
-                                ghost
-                                size="large"
+                            <Card
                                 style={{
-                                    margin: 15,
-                                    width: "60%",
-                                    borderRadius: 5,
+                                    cursor: "default",
+                                    width: "100%",
+                                    padding: 5,
+                                    backgroundColor: "transparent",
                                 }}
                             >
-                                Перейти к завершению <RightOutlined />
-                            </Button>
-                        </Flex>
-                    </Form>
-                )}
-                {current === 2 && (
-                    <Result
-                        title="Мы почти закончили!"
-                        subTitle="Пожалуйста, проверьте введеные данные и подтвердите регистрацию!"
-                        extra={
-                            <Button type="primary" key="console">
-                                Зарегестрироваться
-                            </Button>
-                        }
-                    />
-                )}
+                                <Flex
+                                    align="center"
+                                    justify="center"
+                                    style={{ flexDirection: "column" }}
+                                >
+                                    <Typography.Text italic>
+                                        Как вас зовут?
+                                    </Typography.Text>
+                                    <Divider
+                                        style={{
+                                            margin: 10,
+                                        }}
+                                        dashed
+                                        type="horizontal"
+                                    ></Divider>
+                                </Flex>
+                                <Space
+                                    className="login-space"
+                                    style={{ width: "100%" }}
+                                    wrap
+                                    size={[10, 10]}
+                                >
+                                    <Form.Item name={"name"}>
+                                        <Input placeholder="Имя"></Input>
+                                    </Form.Item>
+                                    <Form.Item name={"surName"}>
+                                        <Input placeholder="Фамилия "></Input>
+                                    </Form.Item>
+                                </Space>
+                            </Card>
+                            <Card
+                                style={{
+                                    cursor: "default",
+                                    width: "100%",
+                                    padding: 5,
+                                    backgroundColor: "transparent",
+                                }}
+                            >
+                                <Flex
+                                    align="center"
+                                    justify="center"
+                                    style={{ flexDirection: "column" }}
+                                >
+                                    <Typography.Text italic>
+                                        Ваша дата рождения?
+                                    </Typography.Text>
+                                    <Divider
+                                        style={{
+                                            width: "50%",
+                                            minWidth: 0,
+                                            margin: 10,
+                                        }}
+                                        dashed
+                                        type="horizontal"
+                                    ></Divider>
+                                </Flex>
+                                <Flex
+                                    style={{ width: "100%" }}
+                                    justify="center"
+                                    align="center"
+                                >
+                                    <Form.Item
+                                        name={"dateBirth"}
+                                        style={{ width: "50%" }}
+                                    >
+                                        <ConfigProvider locale={locale}>
+                                            <DatePicker
+                                                style={{ width: "100%" }}
+                                                placeholder="Укажите вашу дату рождения"
+                                            ></DatePicker>
+                                        </ConfigProvider>
+                                    </Form.Item>
+                                </Flex>
+                            </Card>
+                            <Flex justify="center" align="center">
+                                <Button
+                                    htmlType="submit"
+                                    onClick={() => setCurrent(2)}
+                                    type="primary"
+                                    ghost
+                                    size="large"
+                                    style={{
+                                        margin: 15,
+                                        width: "60%",
+                                        borderRadius: 5,
+                                    }}
+                                >
+                                    Перейти к завершению <RightOutlined />
+                                </Button>
+                            </Flex>
+                        </Form>
+                    )}
+                    {current === 2 && (
+                        <Result
+                            title="Мы почти закончили!"
+                            subTitle="Пожалуйста, проверьте введеные данные и подтвердите регистрацию!"
+                            extra={
+                                <Button type="primary" key="console">
+                                    Зарегестрироваться
+                                </Button>
+                            }
+                        />
+                    )}
+                </div>
             </Flex>
         </Flex>
     );
