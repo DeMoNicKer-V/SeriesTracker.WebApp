@@ -9,6 +9,8 @@ namespace SeriesTracker.Core.Abstractions.UserAbastractions
 {
     public interface IUserService
     {
+        Task Register(string email, string password, string nickname, string avatar, string name, string surname, string dateBirth);
+        Task<string> Login(string email, string password);
         Task<Guid> CreateUser(User user);
         Task<Guid> DeleteUser(Guid id);
         Task<List<User>> GetUserList();

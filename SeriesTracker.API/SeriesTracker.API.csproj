@@ -25,6 +25,7 @@
   <ItemGroup>
     <ProjectReference Include="..\SeriesTracker.Application\SeriesTracker.Application.csproj" />
     <ProjectReference Include="..\SeriesTracker.DataAccess\SeriesTracker.DataAccess.csproj" />
+    <ProjectReference Include="..\SeriesTracker.Infrastructure\SeriesTracker.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

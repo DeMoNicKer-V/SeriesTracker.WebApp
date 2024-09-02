@@ -471,3 +471,6 @@ div.ant-upload-list-item {
 .login-space .ant-space-item {
     flex: auto;
 }
+.ant-form-item-explain-error {
+    display: none;
+}

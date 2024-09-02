@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SeriesTracker.API.Contracts;
 using SeriesTracker.Application.Services;
 using SeriesTracker.Core.Abstractions;
@@ -19,6 +20,7 @@ namespace SeriesTracker.API.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<ActionResult<int>> GetCategoryList()
         {
             var categoryList = await _categoryService.GetCategoryList();

@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SeriesTracker.DataAccess", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SeriesTracker.Application", "SeriesTracker.Application\SeriesTracker.Application.csproj", "{A45361B8-6C47-450D-A4BD-CEB3577F9094}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SeriesTracker.Infrastructure", "SeriesTracker.Infrastructure\SeriesTracker.Infrastructure.csproj", "{70D1AC74-17B2-4E9A-B952-0BC15C2EAE43}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{A45361B8-6C47-450D-A4BD-CEB3577F9094}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A45361B8-6C47-450D-A4BD-CEB3577F9094}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A45361B8-6C47-450D-A4BD-CEB3577F9094}.Release|Any CPU.Build.0 = Release|Any CPU
+		{70D1AC74-17B2-4E9A-B952-0BC15C2EAE43}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{70D1AC74-17B2-4E9A-B952-0BC15C2EAE43}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{70D1AC74-17B2-4E9A-B952-0BC15C2EAE43}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{70D1AC74-17B2-4E9A-B952-0BC15C2EAE43}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -78,7 +78,7 @@ const App: React.FC = () => {
         setPreviewOpen(true);
     };
     const [form] = Form.useForm();
-    const [isActive, setIsActive] = useState({});
+    const [isActive, setIsActive] = useState({ ["email"]: true });
 
     const handleFocus = (name: any) => {
         setIsActive({ [name]: true });
@@ -90,12 +90,13 @@ const App: React.FC = () => {
     const { getFieldError, isFieldTouched } = form;
     const inputRef = useRef<InputRef>(null);
     const inputRef2 = useRef<InputRef>(null);
-    /*   const [email, setEmail] = useState<string>();
-    var usernameError = getFieldError(["items", 0, "email"]).length > 0;
-    useEffect(() => {
-        usernameError = getFieldError(["items", 0, "email"]).length > 0;
-        console.log(form.getFieldsError(["email"]));
-    }, [email]);*/
+    const [email, setEmail] = useState<string>();
+    const [password, setPassword] = useState<string>();
+    const [nickname, setNickname] = useState<string>();
+    const [avatar, setAvatar] = useState<string>();
+    const [name, setName] = useState<string>();
+    const [surName, setSurname] = useState<string>();
+    const [dateBirth, setDateBirth] = useState<string>();
 
     const [current, setCurrent] = useState(0);
 
@@ -108,9 +109,10 @@ const App: React.FC = () => {
     return (
         <Flex
             style={{
-                flexDirection: "column",
                 flex: "auto",
                 alignItems: "center",
+
+                justifyContent: "center",
             }}
         >
             <Flex
@@ -118,16 +120,29 @@ const App: React.FC = () => {
                     flex: "auto",
                     paddingTop: "128px",
                     justifyContent: "center",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    width: "660px",
+                    maxWidth: "660px",
+                    gap: 30,
                 }}
             >
-                <div
-                    style={{
-                        width: "660px",
-                        maxWidth: "660px",
-                        padding: 20,
-
-                        borderRadius: 10,
-                    }}
+                <Meta
+                    style={{ textAlign: "center" }}
+                    title={
+                        <Typography.Title level={3}>
+                            Добро пожаловать на Series Tracker Web
+                        </Typography.Title>
+                    }
+                    description={
+                        <Typography.Text>
+                            Давайте пройдем быструю регистрацию
+                        </Typography.Text>
+                    }
+                />
+                <Card
+                    hoverable
+                    style={{ width: "100%", padding: 24, cursor: "default" }}
                 >
                     <Steps
                         current={current}
@@ -144,12 +159,17 @@ const App: React.FC = () => {
                             },
                         ]}
                     />
+
                     {current === 0 && (
                         <Form
-                            onFinish={() => setCurrent(1)}
+                            onFinish={(values) => {
+                                setCurrent(1);
+                                console.log(values);
+                            }}
                             layout="vertical"
                             form={form}
                             name="requiredForm"
+                            style={{ width: "100%" }}
                             initialValues={{ items: [{}] }}
                         >
                             <Form.List name="items">
@@ -168,8 +188,9 @@ const App: React.FC = () => {
                                                     align={"bottom"}
                                                     justify={"center"}
                                                 >
-                                                    <Col span={18}>
+                                                    <Col span={19}>
                                                         <Form.Item
+                                                            hasFeedback
                                                             name={[
                                                                 field.name,
                                                                 "email",
@@ -179,15 +200,18 @@ const App: React.FC = () => {
                                                                 {
                                                                     required:
                                                                         true,
-                                                                    message: "",
+                                                                    message:
+                                                                        "Эл. почта обязательна для регистрации",
                                                                 },
                                                                 {
                                                                     type: "email",
-                                                                    message: "",
+                                                                    message:
+                                                                        "Эл. почта неккоректна или уже занята",
                                                                 },
                                                             ]}
                                                         >
                                                             <Input
+                                                                autoFocus
                                                                 spellCheck={
                                                                     false
                                                                 }
@@ -199,7 +223,7 @@ const App: React.FC = () => {
                                                             />
                                                         </Form.Item>
                                                     </Col>
-                                                    <Col span={6}>
+                                                    <Col span={5}>
                                                         {isActive.email ? (
                                                             <Form.Item
                                                                 shouldUpdate
@@ -260,8 +284,9 @@ const App: React.FC = () => {
                                                     align={"bottom"}
                                                     justify={"center"}
                                                 >
-                                                    <Col span={18}>
+                                                    <Col span={19}>
                                                         <Form.Item
+                                                            hasFeedback
                                                             shouldUpdate
                                                             name={[
                                                                 field.name,
@@ -272,11 +297,16 @@ const App: React.FC = () => {
                                                                 {
                                                                     required:
                                                                         true,
-                                                                    message: "",
+                                                                    message:
+                                                                        "Пароль обязателен для регистрации",
                                                                 },
                                                                 {
-                                                                    min: 3,
-                                                                    message: "",
+                                                                    pattern:
+                                                                        new RegExp(
+                                                                            "^(?=.*[A-Z]|[А-Я])(?=.*d).{8,}$|.{15,}$"
+                                                                        ),
+                                                                    message:
+                                                                        "Убедитесь, что пароль содержит не менее 15 символов или не менее 8 символов, включая цифру и строчную букву.",
                                                                 },
                                                             ]}
                                                         >
@@ -294,7 +324,7 @@ const App: React.FC = () => {
                                                             />
                                                         </Form.Item>
                                                     </Col>
-                                                    <Col span={6}>
+                                                    <Col span={5}>
                                                         {isActive.password ? (
                                                             <Form.Item
                                                                 shouldUpdate
@@ -355,8 +385,10 @@ const App: React.FC = () => {
                                                     align={"bottom"}
                                                     justify={"center"}
                                                 >
-                                                    <Col span={18}>
+                                                    <Col span={19}>
                                                         <Form.Item
+                                                            validateFirst
+                                                            hasFeedback
                                                             name={[
                                                                 field.name,
                                                                 "nickname",
@@ -367,11 +399,8 @@ const App: React.FC = () => {
                                                                 {
                                                                     required:
                                                                         true,
-                                                                    message: "",
-                                                                },
-                                                                {
-                                                                    min: 5,
-                                                                    message: "",
+                                                                    message:
+                                                                        "Логин обязателен для регистрации",
                                                                 },
                                                             ]}
                                                         >
@@ -389,7 +418,7 @@ const App: React.FC = () => {
                                                             />
                                                         </Form.Item>
                                                     </Col>
-                                                    <Col span={6}>
+                                                    <Col span={5}>
                                                         {isActive.nickname ? (
                                                             <Form.Item
                                                                 shouldUpdate
@@ -428,6 +457,36 @@ const App: React.FC = () => {
                                     </div>
                                 )}
                             </Form.List>
+                            <Form.Item style={{ marginTop: 10 }} shouldUpdate>
+                                {() => (
+                                    <Typography.Text
+                                        strong
+                                        style={{
+                                            fontSize: 16,
+                                            opacity: 0.8,
+                                        }}
+                                    >
+                                        {isActive.email &&
+                                            form.getFieldError([
+                                                "items",
+                                                0,
+                                                "email",
+                                            ])}
+                                        {isActive.password &&
+                                            form.getFieldError([
+                                                "items",
+                                                1,
+                                                "password",
+                                            ])}
+                                        {isActive.nickname &&
+                                            form.getFieldError([
+                                                "items",
+                                                2,
+                                                "nickname",
+                                            ])}
+                                    </Typography.Text>
+                                )}
+                            </Form.Item>
                         </Form>
                     )}
                     {current === 1 && (
@@ -598,11 +657,9 @@ const App: React.FC = () => {
                                     htmlType="submit"
                                     onClick={() => setCurrent(2)}
                                     type="primary"
-                                    ghost
-                                    size="large"
                                     style={{
                                         margin: 15,
-                                        width: "60%",
+
                                         borderRadius: 5,
                                     }}
                                 >
@@ -622,7 +679,7 @@ const App: React.FC = () => {
                             }
                         />
                     )}
-                </div>
+                </Card>
             </Flex>
         </Flex>
     );
