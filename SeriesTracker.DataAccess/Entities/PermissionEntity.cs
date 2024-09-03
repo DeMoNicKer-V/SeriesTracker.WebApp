@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace SeriesTracker.DataAccess.Entities
 {
-    public class AccessLevelEntity
+    public class PermissionEntity
     {
-        public required string Description { get; set; }
-
         public int Id { get; set; }
 
-        public required string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
+
+        public ICollection<RoleEntity> Roles { get; set; } = [];
     }
 }

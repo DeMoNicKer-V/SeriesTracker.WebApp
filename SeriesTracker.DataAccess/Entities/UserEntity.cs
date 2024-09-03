@@ -8,6 +8,7 @@ namespace SeriesTracker.DataAccess.Entities
 {
     public class UserEntity
     {
+
         public string? Avatar
         {
             get; set;
@@ -27,7 +28,6 @@ namespace SeriesTracker.DataAccess.Entities
         {
             get; set;
         }
-
         public string? Name
         {
             get; set;
@@ -43,17 +43,14 @@ namespace SeriesTracker.DataAccess.Entities
             get; set;
         }
 
+        public ICollection<RoleEntity> Roles { get; set; } = [];
+
         public string? Surname
         {
             get; set;
         }
 
         public required string UserName
-        {
-            get; set;
-        }
-
-        public int UserRoleId
         {
             get; set;
         }

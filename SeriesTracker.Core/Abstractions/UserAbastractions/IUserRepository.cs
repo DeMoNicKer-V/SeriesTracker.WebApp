@@ -1,4 +1,5 @@
-﻿using SeriesTracker.Core.Models;
+﻿using SeriesTracker.Core.Enums;
+using SeriesTracker.Core.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,9 +12,8 @@ namespace SeriesTracker.Core.Abstractions.UserAbastractions
     {
         Task<Guid> CreateUser(User user);
         Task<Guid> DeleteUser(Guid id);
-        Task<List<User>> GetUserList();
+        Task<HashSet<Permission>> GetUserPermissions(Guid userId);
         Task<User> GetUserById(Guid id);
         Task<User> GetUserByEmail(string email);
-        Task<Guid> UpdateUser(Guid id, int userRoleId, string userName, string name, string surName, string email, string password, string avatar, string dateBirth, string regDate);
     }
 }

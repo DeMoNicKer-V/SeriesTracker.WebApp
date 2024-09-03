@@ -6,12 +6,17 @@ using SeriesTracker.Application.Interfaces.Auth;
 using SeriesTracker.Application.Services;
 using SeriesTracker.Core.Abstractions;
 using SeriesTracker.Core.Abstractions.UserAbastractions;
+using SeriesTracker.Core.Enums;
+using SeriesTracker.Core.Models;
 using SeriesTracker.DataAccess;
 using SeriesTracker.DataAccess.Repositories;
 using SeriesTracker.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddApiAuthentication(builder.Configuration);
 builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection(nameof(JwtOptions)));
+builder.Services.Configure<AuthorizationOptions>(builder.Configuration.GetSection(nameof(AuthorizationOptions)));
+builder.Services.AddInfrastructure();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -43,8 +48,6 @@ if (app.Environment.IsDevelopment())
 
 }
 
-
-
 app.UseHttpsRedirection();
 
 app.UseCookiePolicy(new CookiePolicyOptions
@@ -54,9 +57,20 @@ app.UseCookiePolicy(new CookiePolicyOptions
     Secure = CookieSecurePolicy.Always
 });
 
+
 app.UseAuthentication();
 
 app.UseAuthorization();
+
+app.MapGet("get", () =>
+{
+    return Results.Ok("ok");
+}).RequirePermissions(Permission.Read);
+
+app.MapPost("post", () =>
+{
+    return Results.Ok("ok");
+}).RequirePermissions(Permission.Create);
 
 app.MapControllers();
 

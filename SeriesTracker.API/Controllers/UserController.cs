@@ -28,7 +28,7 @@ namespace SeriesTracker.API.Controllers
         public async Task<IResult> Login([FromBody] LoginUserRequest request)
         {
             var token = await _userService.Login(request.Email, request.Password);
-            Response.Cookies.Append("current-theme-cookie", token);
+            Response.Cookies.Append("secretCookie", token);
             return Results.Ok(token);
         }
     }

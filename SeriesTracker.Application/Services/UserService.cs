@@ -26,7 +26,7 @@ namespace SeriesTracker.Application.Services
         public async Task Register(string email, string password, string nickname, string avatar, string name, string surname, string dateBirth)
         {
             var hashedPassword = _passwordHasher.Generate(password);
-            var user = User.Create(Guid.NewGuid(), 3, nickname, name, surname, email, hashedPassword, avatar, dateBirth, DateTime.Now.ToString("s"));
+            var user = User.Create(Guid.NewGuid(), nickname, name, surname, email, hashedPassword, avatar, dateBirth, DateTime.Now.ToString("s"));
             await _userRepository.CreateUser(user.User);
         }
 
@@ -57,15 +57,6 @@ namespace SeriesTracker.Application.Services
         public async Task<User> GetUserById(Guid id)
         {
             return await _userRepository.GetUserById(id);
-        }
-
-        public async Task<List<User>> GetUserList()
-        {
-            return await _userRepository.GetUserList();
-        }
-        public async Task<Guid> UpdateUser(Guid id, int userRoleId, string userName, string name, string surName, string email, string password, string avatar, string dateBirth, string regDate)
-        {
-            return await _userRepository.UpdateUser(id, userRoleId, userName, name, surName, email, password, avatar, dateBirth, regDate);
         }
     }
 }

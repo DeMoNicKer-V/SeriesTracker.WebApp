@@ -1,6 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using SeriesTracker.Application.Services;
+using SeriesTracker.Core.Abstractions;
+using SeriesTracker.Core.Enums;
 using SeriesTracker.Infrastructure;
 using System.Text;
 
@@ -8,8 +12,9 @@ namespace SeriesTracker.API.Extensions
 {
     public static class ApiExtensions
     {
-        public static void AddApiauthentication(IServiceCollection services, IConfiguration configuration, IOptions<JwtOptions> jwtOptions) 
+        public static void AddApiAuthentication(this IServiceCollection services, IConfiguration configuration) 
         {
+            var jwtOptions = configuration.GetSection(nameof(JwtOptions)).Get<JwtOptions>();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
                 {
@@ -19,20 +24,32 @@ namespace SeriesTracker.API.Extensions
                         ValidateAudience = false,
                         ValidateLifetime = true,
                         ValidateIssuerSigningKey = true,
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.Value.SecretKey))
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions!.SecretKey))
                     };
                     options.Events = new JwtBearerEvents
                     {
                         OnMessageReceived = context =>
                         {
-                            context.Token = context.Request.Cookies["current-theme-token"];
+                            context.Token = context.Request.Cookies["secretCookie"];
 
                             return Task.CompletedTask;
                         }
                     };
                 });
 
+            services.AddScoped<IPermissionSevice, PermissionService>();
+            services.AddSingleton<IAuthorizationHandler, PermissionAuthorizationHandler>();
+
             services.AddAuthorization();
+        }
+
+        public static IEndpointConventionBuilder RequirePermissions<TBuilder>(
+        this TBuilder builder, params Permission[] permissions)
+            where TBuilder : IEndpointConventionBuilder
+        {
+            return builder
+                .RequireAuthorization(pb =>
+                    pb.AddRequirements(new PermissionRequirement(permissions)));
         }
     }
 }

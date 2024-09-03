@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace SeriesTracker.DataAccess.Entities
 {
-    public class UserRoleEntity
+    public class RolePermissionEntity
     {
-        public Guid UserId { get; set; }
-
         public int RoleId { get; set; }
+
+        public int PermissionId { get; set; }
     }
 }
