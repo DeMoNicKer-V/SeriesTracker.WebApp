@@ -83,7 +83,7 @@ export default function AnimePage({ params }: { params: { id: string } }) {
     const getCategories = async (series: SeriesInfo, animes: Anime) => {
         const categories2 = await getCategoryList();
         const array: MenuProps["items"] = [];
-        categories2.forEach((element: { id: number; title: string }) => {
+        categories2.forEach((element: { id: number; name: string }) => {
             if (element.id === series.categoryId) {
                 array.push({
                     key: -1,
@@ -94,11 +94,11 @@ export default function AnimePage({ params }: { params: { id: string } }) {
             } else {
                 array.unshift({
                     key: element.id,
-                    label: element.title,
+                    label: element.name,
                     onClick: async () => {
                         const newCategory = {
                             id: element.id,
-                            title: element.title,
+                            name: element.name,
                         } as Category;
                         await updateCategorySeries(series, animes, newCategory);
                     },
@@ -523,7 +523,7 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                                                             0 &&
                                                             "Добавить в мой список"}
                                                         {category &&
-                                                            category.title}
+                                                            category.name}
                                                     </Dropdown.Button>
 
                                                     {series.categoryId > 1 && (

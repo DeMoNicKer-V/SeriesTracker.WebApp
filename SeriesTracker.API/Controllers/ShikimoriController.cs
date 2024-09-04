@@ -72,7 +72,7 @@ namespace SeriesTracker.API.Controllers
                     string category = string.Empty;
                     if (that.CategoryId != 0)
                     {
-                        category = categoryList.FirstOrDefault(s => s.Id == that.CategoryId).Title;
+                        category = categoryList.FirstOrDefault(s => s.Id == that.CategoryId).Name;
                     }
                     animeResponses.Add(new AnimeSeriesResponseSearch(item.Id, that.CategoryId, category, that.IsFavorite, item.Description, item.Episodes, item.EpisodesAired, item.StartDate, item.Score, item.Title, item.SubTitle, item.PictureUrl, item.Rating, item.Kind, item.Status));
 
@@ -106,7 +106,7 @@ namespace SeriesTracker.API.Controllers
                     {
                         
                        var category = categoryList.FirstOrDefault(s => s.Id == that.CategoryId); ;
-                        animeResponses.Add(new AnimeSeriesResponse(item.Id, that.CategoryId, category.Title, category.Color, that.IsFavorite, item.Description, item.Episodes, item.StartDate, item.Score, item.Title, item.SubTitle, item.PictureUrl, item.Rating, item.Kind, item.Status));
+                        animeResponses.Add(new AnimeSeriesResponse(item.Id, that.CategoryId, category.Name, category.Color, that.IsFavorite, item.Description, item.Episodes, item.StartDate, item.Score, item.Title, item.SubTitle, item.PictureUrl, item.Rating, item.Kind, item.Status));
                     }
 
                 }

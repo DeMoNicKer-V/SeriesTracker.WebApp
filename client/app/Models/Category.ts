@@ -1,6 +1,6 @@
 interface Category {
     id: number;
-    title: string;
+    name: string;
     color: string;
     prevColor: string;
     date: string;

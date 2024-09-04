@@ -20,7 +20,6 @@ namespace SeriesTracker.API.Controllers
         }
 
         [HttpGet]
-        [Authorize]
         public async Task<ActionResult<int>> GetCategoryList()
         {
             var categoryList = await _categoryService.GetCategoryList();

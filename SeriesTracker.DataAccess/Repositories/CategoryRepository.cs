@@ -26,7 +26,7 @@ namespace SeriesTracker.DataAccess.Repositories
             var categoryEntity = new CategoryEntity
             {
                 Id = category.Id,
-                Title = category.Title,
+                Name = category.Name,
                 Color = category.Color,
                 PrevColor = category.PrevColor,
                 Date = category.Date
@@ -49,7 +49,7 @@ namespace SeriesTracker.DataAccess.Repositories
         {
             var categoryEntity = await _context.CategoryEntities.AsNoTracking().Where(c => c.Id == id).FirstAsync();
 
-            var category = Category.Create(categoryEntity.Id, categoryEntity.Title, categoryEntity.Color, categoryEntity.PrevColor, categoryEntity.Date).Category;
+            var category = Category.Create(categoryEntity.Id, categoryEntity.Name, categoryEntity.Color, categoryEntity.PrevColor, categoryEntity.Date).Category;
 
             return category;
         }
@@ -58,14 +58,14 @@ namespace SeriesTracker.DataAccess.Repositories
         {
             var categoryEntities = await _context.CategoryEntities.AsNoTracking().ToListAsync();
 
-            var categoryList = categoryEntities.Select(c => Category.Create(c.Id, c.Title, c.Color, c.PrevColor, c.Date).Category).OrderBy(c => c.Id).ToList();
+            var categoryList = categoryEntities.Select(c => Category.Create(c.Id, c.Name, c.Color, c.PrevColor, c.Date).Category).OrderBy(c => c.Id).ToList();
 
             return categoryList;
         }
         public async Task<int> UpdateCategory(int id, string title, string color, string date)
         {
             await _context.CategoryEntities.Where(c => c.Id == id)
-               .ExecuteUpdateAsync(c => c.SetProperty(c => c.Title, c => title).SetProperty(c => c.Color, c => color).SetProperty(c => c.PrevColor, c => c.Color).SetProperty(c => c.Date, c=> date));
+               .ExecuteUpdateAsync(c => c.SetProperty(c => c.Name, c => title).SetProperty(c => c.Color, c => color).SetProperty(c => c.PrevColor, c => c.Color).SetProperty(c => c.Date, c=> date));
             return id;
         }
     }

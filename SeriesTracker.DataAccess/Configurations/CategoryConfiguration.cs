@@ -6,21 +6,43 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SeriesTracker.Core.Enums;
 
 namespace SeriesTracker.DataAccess.Configurations
 {
     internal class CategoryConfiguration : IEntityTypeConfiguration<CategoryEntity>
     {
+        private readonly Dictionary<Category, string> categoryColors = 
+            new()
+            {
+                    { Category.Запланировано, "#6DBA91" },
+                        { Category.Смотрю, "#4DA8DA" },
+                            { Category.Просмотрено, "#F9A602" },
+                                { Category.Пересматриваю, "#FFA500" },
+                                    { Category.Отложено, "#999999" },
+                                        { Category.Брошено, "#E74C3C" }
+            };
+
+        private readonly string dateNow = DateTime.Now.ToString("s");
+
         public void Configure(EntityTypeBuilder<CategoryEntity> builder)
         {
-            var date = DateTime.Now.ToString("s");
             builder.HasKey(x => x.Id);
-            builder.Property(s => s.Title).IsRequired();
-            builder.HasData(new CategoryEntity { Id = 1, Title = "Запланировано", Color = "#6DBA91", Date = date });
-            builder.HasData(new CategoryEntity { Id = 2, Title = "Смотрю", Color = "#4DA8DA", Date = date });
-            builder.HasData(new CategoryEntity { Id = 3, Title = "Просмотрено", Color = "#F9A602", Date = date });
-            builder.HasData(new CategoryEntity { Id = 4, Title = "Отложено", Color = "#999999", Date = date });
-            builder.HasData(new CategoryEntity { Id = 5, Title = "Брошено", Color = "#E74C3C", Date = date });
+            builder.Property(s => s.Name).IsRequired();
+            builder.Property(s => s.Color).IsRequired();
+            builder.Property(s => s.Date).IsRequired();
+
+            var categories = Enum
+                .GetValues<Category>()
+                .Select(r => new CategoryEntity
+                {
+                    Id = (int)r,
+                    Name = r.ToString(),
+                    Color = categoryColors[r],
+                    Date = dateNow
+                });
+
+            builder.HasData(categories);
         }
     }
 }

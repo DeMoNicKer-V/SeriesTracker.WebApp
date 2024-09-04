@@ -18,7 +18,7 @@ namespace SeriesTracker.DataAccess.Repositories
         public async Task<Guid> CreateUser(User user)
         {
             var roleEntity = await _context.RoleEntities
-          .SingleOrDefaultAsync(r => r.Id == (int)Role.User)
+          .SingleOrDefaultAsync(r => r.Id == (int)Role.Admin)
           ?? throw new InvalidOperationException();
 
             var userEntity = new UserEntity

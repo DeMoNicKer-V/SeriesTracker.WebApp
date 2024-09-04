@@ -9,10 +9,10 @@ namespace SeriesTracker.Core.Models
 {
     public class Category
     {
-        private Category(int id, string title, string color, string prevColor, string date)
+        private Category(int id, string name, string color, string prevColor, string date)
         {
             Id = id;
-            Title = title;
+            Name = name;
             Color = color;
             PrevColor = prevColor;
             Date = date;
@@ -22,7 +22,7 @@ namespace SeriesTracker.Core.Models
             get;
         }
 
-        public string Title
+        public string Name
         {
             get;
         }
@@ -42,10 +42,10 @@ namespace SeriesTracker.Core.Models
             get;
         }
 
-        public static (Category Category, string Error) Create(int id, string title, string color, string prevColor, string date)
+        public static (Category Category, string Error) Create(int id, string name, string color, string prevColor, string date)
         {
             string error = string.Empty;
-            if (string.IsNullOrEmpty(title))
+            if (string.IsNullOrEmpty(name))
             {
                 error = "Название это обязательное поле";
             }
@@ -53,7 +53,7 @@ namespace SeriesTracker.Core.Models
             {
                 error = "Цвет это обязательное поле";
             }
-            Category category = new Category(id, title, color, prevColor, date);
+            Category category = new Category(id, name, color, prevColor, date);
 
             return (category, error);
         }

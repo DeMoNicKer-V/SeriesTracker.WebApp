@@ -27,10 +27,9 @@
             get; set;
         } = string.Empty;
 
-        public int CategoryId
-        {
-            get; set;
-        } = 0;
+        public int CategoryId { get; set; }
+
+        public CategoryEntity? Category { get; set; }
 
         public bool IsFavorite
         {

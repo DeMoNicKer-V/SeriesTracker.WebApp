@@ -13,7 +13,7 @@ namespace SeriesTracker.DataAccess.Entities
             get; set;
         }
 
-        public required string Title
+        public required string Name
         {
             get; set;
         }
@@ -26,6 +26,8 @@ namespace SeriesTracker.DataAccess.Entities
         {
             get; set;
         }
+
+        public ICollection<SeriesEntity> Series { get; set; } = [];
 
         public required string Date
         {

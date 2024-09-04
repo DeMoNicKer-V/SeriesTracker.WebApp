@@ -6,7 +6,8 @@ using System.Reflection.Metadata;
 
 namespace SeriesTracker.DataAccess
 {
-    public class SeriesTrackerDbContext(DbContextOptions<SeriesTrackerDbContext> options,
+    public class SeriesTrackerDbContext(
+    DbContextOptions<SeriesTrackerDbContext> options,
     IOptions<AuthorizationOptions> authOptions) : DbContext(options)
     {
         protected override void OnModelCreating(ModelBuilder modelBuilder)
