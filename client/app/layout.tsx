@@ -207,7 +207,7 @@ export default function RootLayout({
                                         }
                                     />
                                 </Col>
-                                <Col span={4}>
+                                <Col span={5}>
                                     <div className="spacer" />{" "}
                                 </Col>
                                 <Col span={1}>
@@ -222,11 +222,8 @@ export default function RootLayout({
                                 </Col>
                                 <Col span={1}>
                                     <Button type="dashed" size="small">
-                                        <Link href={"/"}>Войти</Link>
+                                        Логин
                                     </Button>
-                                </Col>
-                                <Col span={1}>
-                                    <Link href={"/"}>Войти</Link>
                                 </Col>
                             </Row>
                         </Header>

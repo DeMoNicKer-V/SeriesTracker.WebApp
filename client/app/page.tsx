@@ -45,7 +45,7 @@ import {
     UserReqruest,
 } from "./services/user";
 
-const App: React.FC = () => {
+const LoginPage = () => {
     const [fileList, setFileList] = useState<UploadFile[]>([]);
     var dayjs = require("dayjs");
     const onChange: UploadProps["onChange"] = ({ fileList: newFileList }) => {
@@ -784,4 +784,4 @@ const App: React.FC = () => {
     );
 };
 
-export default App;
+export default LoginPage;

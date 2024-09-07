@@ -1,3 +1,6 @@
+import cookie from "cookie";
+import axios, { parseCookies } from "nookies";
+import { getCookie } from "cookies-next";
 export interface UserReqruest {
     email: string;
     password: string;
@@ -30,5 +33,7 @@ export const loginUser = async (request: LoginRequest) => {
             "content-type": "application/json",
         },
         body: JSON.stringify(request),
+        credentials: "include",
     });
+    await response.json();
 };
