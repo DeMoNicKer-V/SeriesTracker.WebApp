@@ -38,28 +38,42 @@ import {
 import ImgCrop from "antd-img-crop";
 import Meta from "antd/es/card/Meta";
 import locale from "antd/locale/ru_RU";
+import {
+    LoginRequest,
+    loginUser,
+    registerUser,
+    UserReqruest,
+} from "./services/user";
 
 const App: React.FC = () => {
     const [fileList, setFileList] = useState<UploadFile[]>([]);
-    type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
+    var dayjs = require("dayjs");
     const onChange: UploadProps["onChange"] = ({ fileList: newFileList }) => {
         if (newFileList.length) {
             const isJpgOrPng =
                 newFileList[0].type === "image/jpeg" ||
                 newFileList[0].type === "image/png";
             if (!isJpgOrPng) {
-                message.error("Только JPG/PNG фаайлы!");
+                message.error("Только JPG/PNG файлы!");
+                return;
             }
             const isLt2M = newFileList[0].size / 1024 / 1024 < 0.5;
             if (!isLt2M) {
-                message.error("Размер файла не должнен превышать 512КБ!");
+                message.error("Размер файла не должен превышать 512КБ!");
                 return;
             }
+            // Дождитесь завершения загрузки изображения перед обращением к thumbUrl
         }
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            setAvatar(reader.result?.toString());
+        };
+        reader.readAsDataURL(newFileList[0].originFileObj);
         setFileList(newFileList);
     };
     const [user, setUser] = useState<User>();
 
+    type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
     const getBase64 = (file: FileType): Promise<string> =>
         new Promise((resolve, reject) => {
             const reader = new FileReader();
@@ -84,6 +98,9 @@ const App: React.FC = () => {
         setIsActive({ [name]: true });
     };
 
+    const onChange2 = (date, dateString) => {
+        console.log(date.format("YYYY-MM-DD HH:mm:ss"), dateString);
+    };
     const handleBlur = (name: any) => {
         setIsActive({ [name]: false });
     };
@@ -105,6 +122,18 @@ const App: React.FC = () => {
         setCurrent(value);
     };
 
+    const createNewAccount = async () => {
+        const userRequest: UserReqruest = {
+            email,
+            password,
+            nickname,
+            name,
+            surName,
+            avatar,
+            dateBirth,
+        };
+        await registerUser(userRequest);
+    };
     const description = "This is a description.";
     return (
         <Flex
@@ -160,18 +189,18 @@ const App: React.FC = () => {
                         ]}
                     />
 
-                    {current === 0 && (
-                        <Form
-                            onFinish={(values) => {
-                                setCurrent(1);
-                                console.log(values);
-                            }}
-                            layout="vertical"
-                            form={form}
-                            name="requiredForm"
-                            style={{ width: "100%" }}
-                            initialValues={{ items: [{}] }}
-                        >
+                    <Form
+                        onFinish={(values) => {
+                            setCurrent(1);
+                            console.log(values);
+                        }}
+                        layout="vertical"
+                        form={form}
+                        name="requiredForm"
+                        style={{ width: "100%" }}
+                        initialValues={{ items: [{}] }}
+                    >
+                        {current === 0 && (
                             <Form.List name="items">
                                 {(fields, { add, remove }) => (
                                     <div
@@ -211,6 +240,16 @@ const App: React.FC = () => {
                                                             ]}
                                                         >
                                                             <Input
+                                                                onChange={(e: {
+                                                                    target: {
+                                                                        value: any;
+                                                                    };
+                                                                }) => {
+                                                                    setEmail(
+                                                                        e.target
+                                                                            .value
+                                                                    );
+                                                                }}
                                                                 autoFocus
                                                                 spellCheck={
                                                                     false
@@ -311,6 +350,16 @@ const App: React.FC = () => {
                                                             ]}
                                                         >
                                                             <Input.Password
+                                                                onChange={(e: {
+                                                                    target: {
+                                                                        value: any;
+                                                                    };
+                                                                }) => {
+                                                                    setPassword(
+                                                                        e.target
+                                                                            .value
+                                                                    );
+                                                                }}
                                                                 autoFocus
                                                                 ref={inputRef}
                                                                 spellCheck={
@@ -405,6 +454,16 @@ const App: React.FC = () => {
                                                             ]}
                                                         >
                                                             <Input
+                                                                onChange={(e: {
+                                                                    target: {
+                                                                        value: any;
+                                                                    };
+                                                                }) => {
+                                                                    setNickname(
+                                                                        e.target
+                                                                            .value
+                                                                    );
+                                                                }}
                                                                 autoFocus
                                                                 ref={inputRef2}
                                                                 spellCheck={
@@ -457,227 +516,267 @@ const App: React.FC = () => {
                                     </div>
                                 )}
                             </Form.List>
-                            <Form.Item style={{ marginTop: 10 }} shouldUpdate>
-                                {() => (
-                                    <Typography.Text
-                                        strong
-                                        style={{
-                                            fontSize: 16,
-                                            opacity: 0.8,
-                                        }}
-                                    >
-                                        {isActive.email &&
-                                            form.getFieldError([
-                                                "items",
-                                                0,
-                                                "email",
-                                            ])}
-                                        {isActive.password &&
-                                            form.getFieldError([
-                                                "items",
-                                                1,
-                                                "password",
-                                            ])}
-                                        {isActive.nickname &&
-                                            form.getFieldError([
-                                                "items",
-                                                2,
-                                                "nickname",
-                                            ])}
-                                    </Typography.Text>
-                                )}
-                            </Form.Item>
-                        </Form>
-                    )}
-                    {current === 1 && (
-                        <Form
-                            layout="vertical"
-                            form={form}
-                            name="nonRequiredForm"
-                            autoComplete="off"
-                        >
-                            <Space
-                                style={{ justifyContent: "center" }}
-                                wrap
-                                size={[10, 10]}
-                            >
-                                <Form.Item name={"avatar"}>
-                                    <ImgCrop
-                                        maxZoom={2}
-                                        showReset
-                                        resetText="Сбросить"
-                                        modalOk="Выбрать"
-                                        modalCancel="Отмена"
-                                        fillColor={"transparent"}
-                                        modalTitle="Выбор изображения профиля"
-                                    >
-                                        <Upload
-                                            listType="picture-card"
-                                            maxCount={1}
-                                            fileList={fileList}
-                                            onChange={onChange}
-                                            onPreview={handlePreview}
-                                        >
-                                            {fileList.length < 1 && (
-                                                <Flex
-                                                    style={{
-                                                        flexDirection: "column",
-                                                        justifyContent:
-                                                            "center",
-                                                    }}
-                                                >
-                                                    <UserOutlined
-                                                        style={{
-                                                            fontSize: 30,
-                                                        }}
-                                                    />
-                                                </Flex>
-                                            )}
-                                        </Upload>
-                                    </ImgCrop>
-                                    {previewImage && (
-                                        <Image
-                                            wrapperStyle={{
-                                                display: "none",
-                                            }}
-                                            preview={{
-                                                visible: previewOpen,
-                                                onVisibleChange: (visible) =>
-                                                    setPreviewOpen(visible),
-                                                afterOpenChange: (visible) =>
-                                                    !visible &&
-                                                    setPreviewImage(""),
-                                            }}
-                                            src={previewImage}
-                                        />
-                                    )}
-                                </Form.Item>
-                                <Meta
-                                    title={
-                                        <Typography.Title level={5}>
-                                            {"Выберите ваш аватар"}
-                                        </Typography.Title>
-                                    }
-                                    description={
-                                        <Typography.Text
-                                            italic
-                                            style={{ fontSize: 12 }}
-                                        >
-                                            {
-                                                "допускаются только файлы формата JPG/PNG, размером не превышающие 512 КБ"
-                                            }
-                                        </Typography.Text>
-                                    }
-                                ></Meta>
-                            </Space>
-                            <Card
-                                style={{
-                                    cursor: "default",
-                                    width: "100%",
-                                    padding: 5,
-                                    backgroundColor: "transparent",
-                                }}
-                            >
-                                <Flex
-                                    align="center"
-                                    justify="center"
-                                    style={{ flexDirection: "column" }}
+                        )}
+                        <Form.Item style={{ marginTop: 10 }} shouldUpdate>
+                            {() => (
+                                <Typography.Text
+                                    strong
+                                    style={{
+                                        fontSize: 16,
+                                        opacity: 0.8,
+                                    }}
                                 >
-                                    <Typography.Text italic>
-                                        Как вас зовут?
-                                    </Typography.Text>
-                                    <Divider
-                                        style={{
-                                            margin: 10,
-                                        }}
-                                        dashed
-                                        type="horizontal"
-                                    ></Divider>
-                                </Flex>
+                                    {isActive.email &&
+                                        form.getFieldError([
+                                            "items",
+                                            0,
+                                            "email",
+                                        ])}
+                                    {isActive.password &&
+                                        form.getFieldError([
+                                            "items",
+                                            1,
+                                            "password",
+                                        ])}
+                                    {isActive.nickname &&
+                                        form.getFieldError([
+                                            "items",
+                                            2,
+                                            "nickname",
+                                        ])}
+                                </Typography.Text>
+                            )}
+                        </Form.Item>
+
+                        {current === 1 && (
+                            <Flex style={{ flexDirection: "column" }}>
                                 <Space
-                                    className="login-space"
-                                    style={{ width: "100%" }}
+                                    style={{ justifyContent: "center" }}
                                     wrap
                                     size={[10, 10]}
                                 >
-                                    <Form.Item name={"name"}>
-                                        <Input placeholder="Имя"></Input>
+                                    <Form.Item name={"avatar"}>
+                                        <ImgCrop
+                                            maxZoom={2}
+                                            showReset
+                                            resetText="Сбросить"
+                                            modalOk="Выбрать"
+                                            modalCancel="Отмена"
+                                            fillColor={"transparent"}
+                                            modalTitle="Выбор изображения профиля"
+                                        >
+                                            <Upload
+                                                listType="picture-card"
+                                                maxCount={1}
+                                                fileList={fileList}
+                                                onChange={onChange}
+                                                onPreview={handlePreview}
+                                            >
+                                                {fileList.length < 1 && (
+                                                    <Flex
+                                                        style={{
+                                                            flexDirection:
+                                                                "column",
+                                                            justifyContent:
+                                                                "center",
+                                                        }}
+                                                    >
+                                                        <UserOutlined
+                                                            style={{
+                                                                fontSize: 30,
+                                                            }}
+                                                        />
+                                                    </Flex>
+                                                )}
+                                            </Upload>
+                                        </ImgCrop>
+                                        {previewImage && (
+                                            <Image
+                                                wrapperStyle={{
+                                                    display: "none",
+                                                }}
+                                                preview={{
+                                                    visible: previewOpen,
+                                                    onVisibleChange: (
+                                                        visible
+                                                    ) =>
+                                                        setPreviewOpen(visible),
+                                                    afterOpenChange: (
+                                                        visible
+                                                    ) =>
+                                                        !visible &&
+                                                        setPreviewImage(""),
+                                                }}
+                                                src={previewImage}
+                                            />
+                                        )}
                                     </Form.Item>
-                                    <Form.Item name={"surName"}>
-                                        <Input placeholder="Фамилия "></Input>
-                                    </Form.Item>
+                                    <Meta
+                                        title={
+                                            <Typography.Title level={5}>
+                                                {"Выберите ваш аватар"}
+                                            </Typography.Title>
+                                        }
+                                        description={
+                                            <Typography.Text
+                                                italic
+                                                style={{ fontSize: 12 }}
+                                            >
+                                                {
+                                                    "допускаются только файлы формата JPG/PNG, размером не превышающие 512 КБ"
+                                                }
+                                            </Typography.Text>
+                                        }
+                                    ></Meta>
                                 </Space>
-                            </Card>
-                            <Card
-                                style={{
-                                    cursor: "default",
-                                    width: "100%",
-                                    padding: 5,
-                                    backgroundColor: "transparent",
-                                }}
-                            >
-                                <Flex
-                                    align="center"
-                                    justify="center"
-                                    style={{ flexDirection: "column" }}
-                                >
-                                    <Typography.Text italic>
-                                        Ваша дата рождения?
-                                    </Typography.Text>
-                                    <Divider
-                                        style={{
-                                            width: "50%",
-                                            minWidth: 0,
-                                            margin: 10,
-                                        }}
-                                        dashed
-                                        type="horizontal"
-                                    ></Divider>
-                                </Flex>
-                                <Flex
-                                    style={{ width: "100%" }}
-                                    justify="center"
-                                    align="center"
-                                >
-                                    <Form.Item
-                                        name={"dateBirth"}
-                                        style={{ width: "50%" }}
-                                    >
-                                        <ConfigProvider locale={locale}>
-                                            <DatePicker
-                                                style={{ width: "100%" }}
-                                                placeholder="Укажите вашу дату рождения"
-                                            ></DatePicker>
-                                        </ConfigProvider>
-                                    </Form.Item>
-                                </Flex>
-                            </Card>
-                            <Flex justify="center" align="center">
-                                <Button
-                                    htmlType="submit"
-                                    onClick={() => setCurrent(2)}
-                                    type="primary"
+                                <Card
                                     style={{
-                                        margin: 15,
-
-                                        borderRadius: 5,
+                                        cursor: "default",
+                                        width: "100%",
+                                        padding: 5,
+                                        backgroundColor: "transparent",
                                     }}
                                 >
-                                    Перейти к завершению <RightOutlined />
-                                </Button>
+                                    <Flex
+                                        align="center"
+                                        justify="center"
+                                        style={{ flexDirection: "column" }}
+                                    >
+                                        <Typography.Text italic>
+                                            Как вас зовут?
+                                        </Typography.Text>
+                                        <Divider
+                                            style={{
+                                                margin: 10,
+                                            }}
+                                            dashed
+                                            type="horizontal"
+                                        ></Divider>
+                                    </Flex>
+                                    <Space
+                                        className="login-space"
+                                        style={{ width: "100%" }}
+                                        wrap
+                                        size={[10, 10]}
+                                    >
+                                        <Form.Item name={"name"}>
+                                            <Input
+                                                placeholder="Имя"
+                                                onChange={(e: {
+                                                    target: {
+                                                        value: any;
+                                                    };
+                                                }) => {
+                                                    setName(e.target.value);
+                                                }}
+                                            ></Input>
+                                        </Form.Item>
+                                        <Form.Item name={"surName"}>
+                                            <Input
+                                                placeholder="Фамилия "
+                                                onChange={(e: {
+                                                    target: {
+                                                        value: any;
+                                                    };
+                                                }) => {
+                                                    setSurname(e.target.value);
+                                                }}
+                                            ></Input>
+                                        </Form.Item>
+                                    </Space>
+                                </Card>
+                                <Card
+                                    style={{
+                                        cursor: "default",
+                                        width: "100%",
+                                        padding: 5,
+                                        backgroundColor: "transparent",
+                                    }}
+                                >
+                                    <Flex
+                                        align="center"
+                                        justify="center"
+                                        style={{ flexDirection: "column" }}
+                                    >
+                                        <Typography.Text italic>
+                                            Ваша дата рождения?
+                                        </Typography.Text>
+                                        <Divider
+                                            style={{
+                                                width: "50%",
+                                                minWidth: 0,
+                                                margin: 10,
+                                            }}
+                                            dashed
+                                            type="horizontal"
+                                        ></Divider>
+                                    </Flex>
+                                    <Flex
+                                        style={{ width: "100%" }}
+                                        justify="center"
+                                        align="center"
+                                    >
+                                        <Form.Item
+                                            name={"dateBirth"}
+                                            style={{ width: "50%" }}
+                                        >
+                                            <ConfigProvider locale={locale}>
+                                                <DatePicker
+                                                    onChange={(date) => {
+                                                        setDateBirth(
+                                                            date
+                                                                .toDate()
+                                                                .toString()
+                                                        );
+                                                    }}
+                                                    value={
+                                                        dateBirth === ""
+                                                            ? dayjs()
+                                                            : dayjs(dateBirth)
+                                                    }
+                                                    style={{ width: "100%" }}
+                                                    placeholder="Укажите вашу дату рождения"
+                                                ></DatePicker>
+                                            </ConfigProvider>
+                                        </Form.Item>
+                                    </Flex>
+                                </Card>
+                                <Flex justify="center" align="center">
+                                    <Button
+                                        htmlType="submit"
+                                        onClick={() => setCurrent(2)}
+                                        type="primary"
+                                        style={{
+                                            margin: 15,
+
+                                            borderRadius: 5,
+                                        }}
+                                    >
+                                        Перейти к завершению <RightOutlined />
+                                    </Button>
+                                </Flex>
                             </Flex>
-                        </Form>
-                    )}
+                        )}
+                    </Form>
+
                     {current === 2 && (
-                        <Result
-                            title="Мы почти закончили!"
-                            subTitle="Пожалуйста, проверьте введеные данные и подтвердите регистрацию!"
-                            extra={
-                                <Button type="primary" key="console">
-                                    Зарегестрироваться
-                                </Button>
-                            }
-                        />
+                        <Form
+                            onFinish={async (value) => {
+                                let user: LoginRequest = {
+                                    email: value.email2,
+                                    password: value.password2,
+                                };
+                                await loginUser(user);
+                            }}
+                        >
+                            <Form.Item name={"email2"} label="Email">
+                                <Input></Input>
+                            </Form.Item>
+                            <Form.Item name={"password2"} label="Пароль">
+                                <Input></Input>
+                            </Form.Item>
+                            <Button htmlType="submit">Войти</Button>
+                        </Form>
                     )}
                 </Card>
             </Flex>
