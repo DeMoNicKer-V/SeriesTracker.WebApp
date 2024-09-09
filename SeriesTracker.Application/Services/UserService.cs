@@ -1,6 +1,7 @@
 ﻿using SeriesTracker.Application.Interfaces.Auth;
 using SeriesTracker.Core.Abstractions;
 using SeriesTracker.Core.Abstractions.UserAbastractions;
+using SeriesTracker.Core.Enums;
 using SeriesTracker.Core.Models;
 using System;
 using System.Collections.Generic;
@@ -42,6 +43,11 @@ namespace SeriesTracker.Application.Services
 
             var token = _jwtProvider.GenerateToken(user);
             return token;
+        }
+
+        public async Task<ICollection<Permission>> GetUserPermissions(Guid id)
+        {
+            return await _userRepository.GetUserPermissions(id);
         }
 
         public async Task<Guid> CreateUser(User user)

@@ -21,12 +21,17 @@ import {
     Segmented,
     Input,
     Collapse,
+    Space,
+    Avatar,
+    Dropdown,
 } from "antd";
 
 import Icon, {
     SearchOutlined,
+    MailOutlined,
     MenuFoldOutlined,
     CalendarOutlined,
+    UserOutlined,
     SettingOutlined,
     MenuUnfoldOutlined,
     QuestionOutlined,
@@ -41,9 +46,11 @@ import { ShikimoriLogo } from "./img/ShikimoriLogo";
 
 import SearchBar from "./components/searchbar";
 import { getCookie, setCookie } from "cookies-next";
-import type { GetProps } from "antd";
+import type { GetProps, MenuProps } from "antd";
 import { getRandomAnime } from "./services/shikimori";
 import { usePathname, useRouter } from "next/navigation";
+import GetCoockie from "./api/coockie";
+import { getUserById, UserResponse } from "./services/user";
 type CustomIconComponentProps = GetProps<typeof Icon>;
 const { Header, Content, Sider } = Layout;
 
@@ -52,11 +59,60 @@ export default function RootLayout({
 }: Readonly<{
     children: React.ReactNode;
 }>) {
+    const pathName = usePathname();
     const [collapsed, setCollapsed] = useState(true);
     const [currentTheme, setCurrentTheme] = useState(false);
-    const [currentKey, setCurrentKey] = useState(usePathname()?.split("/")[1]);
+    const [isUser, setIsUser] = useState<boolean>(false);
+    const [user, setUser] = useState<UserResponse>();
+    const [currentKey, setCurrentKey] = useState<string>("shikimori");
+
+    const items: MenuProps["items"] = [
+        {
+            label: user?.email,
+            key: "0",
+            style: { cursor: "default" },
+            icon: <MailOutlined />,
+            disabled: true,
+        },
+        {
+            label: <Divider style={{ margin: 0, padding: 0 }} />,
+            style: { cursor: "default" },
+            key: "divider",
+            disabled: true,
+        },
+        {
+            label: "Мои аниме",
+            key: "1",
+            icon: <UserOutlined />,
+        },
+        {
+            label: "Профиль",
+            key: "2",
+            icon: <UserOutlined />,
+        },
+        {
+            label: "Выйти",
+            key: "3",
+            icon: <UserOutlined />,
+        },
+    ];
+
+    const menuProps = {
+        items,
+    };
+    const GetUser = async () => {
+        var code = await GetCoockie();
+        if (code) {
+            setIsUser(true);
+            setUser(await getUserById(code));
+        }
+    };
+    useEffect(() => {
+        setCurrentKey(pathName?.split("/")[1]);
+    }, [pathName]);
 
     useEffect(() => {
+        GetUser();
         const colorThemeCookie = getCookie("theme");
         const vv = colorThemeCookie === "false" ? false : true;
         setCurrentTheme(vv);
@@ -173,6 +229,7 @@ export default function RootLayout({
                                 zIndex: 99,
                                 width: "100%",
                                 alignItems: "center",
+                                padding: "0 10px",
                                 boxShadow:
                                     "0 2px 4px -1px rgba(0,0,0,.3), 0 4px 5px 0 rgba(0,0,0,.24), 0 1px 10px 0 rgba(0,0,0,.22)",
                             }}
@@ -180,7 +237,7 @@ export default function RootLayout({
                             <Row align="middle">
                                 <Col span={1}>
                                     <Button
-                                        type="text"
+                                        type="link"
                                         icon={
                                             collapsed ? (
                                                 <MenuUnfoldOutlined />
@@ -189,42 +246,59 @@ export default function RootLayout({
                                             )
                                         }
                                         onClick={() => setCollapsed(!collapsed)}
-                                        style={{
-                                            marginLeft: "-50px",
-                                            height: 64,
-                                            width: 64,
-                                            color: "#fff",
-                                        }}
                                     />
                                 </Col>
-                                <Col span={5}>
+                                <Col span={4}>
                                     <div className="spacer" />{" "}
                                 </Col>
-                                <Col span={8}>
+                                <Col span={12}>
                                     <SearchBar
                                         listBG={
                                             currentTheme ? "#1e1e1e" : "#ffffff"
                                         }
                                     />
                                 </Col>
-                                <Col span={5}>
+                                <Col span={2}>
                                     <div className="spacer" />{" "}
                                 </Col>
-                                <Col span={1}>
-                                    <Switch
-                                        checked={currentTheme}
-                                        checkedChildren={<MoonOutlined />}
-                                        unCheckedChildren={<SunOutlined />}
-                                        onChange={(checked: any) => {
-                                            setColorThemeCookie(checked);
-                                        }}
-                                    />
-                                </Col>
-                                <Col span={1}>
-                                    <Button type="dashed" size="small">
-                                        Логин
-                                    </Button>
-                                </Col>
+
+                                {isUser && (
+                                    <Col span={4}>
+                                        <Dropdown menu={menuProps}>
+                                            <Button
+                                                style={{ padding: "16px 32px" }}
+                                            >
+                                                <Space>
+                                                    <Avatar
+                                                        src={user?.avatar}
+                                                    ></Avatar>
+                                                    <Typography.Text>
+                                                        {user?.userName}
+                                                    </Typography.Text>
+                                                </Space>
+                                            </Button>
+                                        </Dropdown>
+                                    </Col>
+                                )}
+                                {!isUser && (
+                                    <Col span={4}>
+                                        <Space size={[10, 10]}>
+                                            <Button type="link" size="small">
+                                                <Link href={"/login"}>
+                                                    Войти
+                                                </Link>
+                                            </Button>
+                                            <Button
+                                                href={"/signup"}
+                                                type="primary"
+                                                ghost
+                                                size="small"
+                                            >
+                                                Регистрация
+                                            </Button>
+                                        </Space>
+                                    </Col>
+                                )}
                             </Row>
                         </Header>
                         <Layout
@@ -261,29 +335,11 @@ export default function RootLayout({
                                     mode="inline"
                                     items={[
                                         {
-                                            key: "series",
-                                            icon: <HomeOutlined />,
-                                            label: (
-                                                <Link href={"/series"}>
-                                                    Ваши сериалы
-                                                </Link>
-                                            ),
-                                        },
-                                        {
-                                            key: "search",
-                                            icon: <SearchOutlined />,
-                                            label: (
-                                                <Link href={"/search"}>
-                                                    Поиск
-                                                </Link>
-                                            ),
-                                        },
-                                        {
                                             key: "shikimori",
                                             icon: <HeartIcon />,
                                             label: (
                                                 <Link href={"/shikimori"}>
-                                                    Аниме
+                                                    Главная
                                                 </Link>
                                             ),
                                         },

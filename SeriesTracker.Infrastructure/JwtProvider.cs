@@ -18,7 +18,7 @@ namespace SeriesTracker.Infrastructure
 
         public string GenerateToken(User user)
         {
-            Claim[] claims = [new("userId", user.Id.ToString())];
+            Claim[] claims = [new("userId", user.Id.ToString()), new("email", user.Email.ToString())];
 
             var signingCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtOptions.SecretKey)),
                 SecurityAlgorithms.HmacSha256);

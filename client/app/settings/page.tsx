@@ -71,7 +71,7 @@ export default function SettingsPage() {
             </Space>
         );
         api.open({
-            message: `Цвет категории '${record.title}' будет изменен`,
+            message: `Цвет категории '${record.name}' будет изменен`,
             description: (
                 <Flex gap={10} justify="center" align="center">
                     <Tag style={{ cursor: "default", margin: 0 }} color={color}>
@@ -98,8 +98,8 @@ export default function SettingsPage() {
         },
         {
             title: "Название",
-            dataIndex: "title",
-            key: "title",
+            dataIndex: "name",
+            key: "name",
         },
         {
             title: "Цвет",
@@ -131,7 +131,7 @@ export default function SettingsPage() {
                     <Tooltip title={"Вернуть пред. цвет"}>
                         <Popconfirm
                             icon={<QuestionCircleOutlined />}
-                            title={`Категория: ${record.title}`}
+                            title={`Категория: ${record.name}`}
                             description="Вы уверены, что хотите вернуть предыдущий цвет?"
                             onConfirm={() => {
                                 returnColor(record, record.prevColor);

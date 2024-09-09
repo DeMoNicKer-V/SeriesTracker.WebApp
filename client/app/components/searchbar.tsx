@@ -132,6 +132,7 @@ export const SearchBar = ({ listBG }: Props) => {
                         }}
                     >
                         <Input
+                            size="small"
                             style={{ background: "none" }}
                             className={loading === true ? "loading" : ""}
                             spellCheck={"false"}

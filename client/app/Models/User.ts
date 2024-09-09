@@ -1,7 +1,7 @@
 interface User {
     id: string;
     userRoleId: number;
-    nickname: string;
+    userName: string;
     name: string;
     surName: string;
     email: string;

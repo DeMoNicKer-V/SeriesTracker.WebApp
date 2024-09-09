@@ -11,6 +11,17 @@ export interface UserReqruest {
     dateBirth: string;
 }
 
+export interface UserResponse {
+    email: string;
+    password: string;
+    userName: string;
+    avatar: string;
+    name: string;
+    surName: string;
+    dateBirth: string;
+    permissions: [];
+}
+
 export interface LoginRequest {
     email: string;
     password: string;
@@ -36,4 +47,11 @@ export const loginUser = async (request: LoginRequest) => {
         credentials: "include",
     });
     await response.json();
+};
+
+export const getUserById = async (id: string) => {
+    const response = await fetch(`http://localhost:5125/user/${id}`);
+    const user: UserResponse = await response.json();
+
+    return user;
 };

@@ -9,7 +9,7 @@ export const getCategoryById = async (id: number) => {
 };
 
 export interface CategoryRequest {
-    title: string;
+    name: string;
     color: string;
 }
 export const updateCategoryById = async (

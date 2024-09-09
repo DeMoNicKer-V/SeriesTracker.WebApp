@@ -17,6 +17,16 @@ namespace SeriesTracker.API.Controllers
             _userService = userService;
         }
 
+        [HttpGet("{id}")]
+        public async Task<IResult> GetUserById(Guid id)
+        {
+            var permissions = await _userService.GetUserPermissions(id);
+            var user = await _userService.GetUserById(id);
+            var userResponse = new UserResponse(user.Email, user.PasswordHash,
+                user.UserName, user.Avatar, user.Name, user.Surname, user.DateOfBirth, permissions);
+            return Results.Ok(userResponse);
+        }
+
         [HttpPost("register")]
         public async Task<IResult> Register([FromBody] UserRequest userRequest)
         {
