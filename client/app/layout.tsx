@@ -84,7 +84,7 @@ export default function RootLayout({
         }
     };
     type MenuItem = GetProp<MenuProps, "items">[number];
-    const updateMenu = (user: UserResponse) => {
+    const updateMenu = (user?: UserResponse) => {
         const items2: MenuItem[] = [
             {
                 key: "shikimori",
@@ -163,6 +163,8 @@ export default function RootLayout({
             const currentUser = await getUserById(code);
             updateMenu(currentUser);
             setUser(currentUser);
+        } else {
+            updateMenu(undefined);
         }
     };
     useEffect(() => {
