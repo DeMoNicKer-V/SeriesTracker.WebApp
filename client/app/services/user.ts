@@ -1,13 +1,13 @@
 import cookie from "cookie";
 import axios, { parseCookies } from "nookies";
 import { getCookie } from "cookies-next";
-export interface UserReqruest {
+export interface UserRequest {
     email: string;
     password: string;
-    nickname: string;
+    userName: string;
+    avatar: string;
     name: string;
     surName: string;
-    avatar: string;
     dateBirth: string;
 }
 
@@ -19,7 +19,7 @@ export interface UserResponse {
     name: string;
     surName: string;
     dateBirth: string;
-    permissions: [];
+    permissions: number[];
 }
 
 export interface LoginRequest {
@@ -27,7 +27,7 @@ export interface LoginRequest {
     password: string;
 }
 
-export const registerUser = async (request: UserReqruest) => {
+export const registerUser = async (request: UserRequest) => {
     const response = await fetch(`http://localhost:5125/user/register`, {
         method: "POST",
         headers: {
@@ -37,7 +37,7 @@ export const registerUser = async (request: UserReqruest) => {
     });
 };
 
-export const loginUser = async (request: LoginRequest) => {
+export const login = async (request: LoginRequest) => {
     const response = await fetch(`http://localhost:5125/user/login`, {
         method: "POST",
         headers: {
@@ -46,6 +46,9 @@ export const loginUser = async (request: LoginRequest) => {
         body: JSON.stringify(request),
         credentials: "include",
     });
+    if (response.status !== 200) {
+        return await response.json();
+    }
     await response.json();
 };
 

@@ -11,7 +11,7 @@ namespace SeriesTracker.API.Contracts
           string Name,
           string SurName,
           string DateBirth,
-          ICollection<Permission> Roles
+          ICollection<Permission> Permissions
         );
     
 }

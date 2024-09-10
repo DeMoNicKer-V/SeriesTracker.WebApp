@@ -24,6 +24,7 @@ import {
     Space,
     Avatar,
     Dropdown,
+    message,
 } from "antd";
 
 import Icon, {
@@ -46,10 +47,10 @@ import { ShikimoriLogo } from "./img/ShikimoriLogo";
 
 import SearchBar from "./components/searchbar";
 import { getCookie, setCookie } from "cookies-next";
-import type { GetProps, MenuProps } from "antd";
+import type { GetProp, GetProps, MenuProps } from "antd";
 import { getRandomAnime } from "./services/shikimori";
 import { usePathname, useRouter } from "next/navigation";
-import GetCoockie from "./api/coockie";
+import { GetCoockie, LogOut } from "./api/coockie";
 import { getUserById, UserResponse } from "./services/user";
 type CustomIconComponentProps = GetProps<typeof Icon>;
 const { Header, Content, Sider } = Layout;
@@ -65,7 +66,54 @@ export default function RootLayout({
     const [isUser, setIsUser] = useState<boolean>(false);
     const [user, setUser] = useState<UserResponse>();
     const [currentKey, setCurrentKey] = useState<string>("shikimori");
+    const [menuItems, setMenuItems] = useState<MenuProps["items"]>([]);
 
+    const { Text, Title } = Typography;
+
+    const HeartIcon = (props: Partial<CustomIconComponentProps>) => (
+        <Icon component={ShikimoriLogo} {...props} />
+    );
+
+    const router = useRouter();
+
+    const getRandomAnimeId = async () => {
+        const id = await getRandomAnime();
+        setCurrentKey("shikimori");
+        if (id) {
+            router.push(`/shikimori/${id}`);
+        }
+    };
+    type MenuItem = GetProp<MenuProps, "items">[number];
+    const updateMenu = (user: UserResponse) => {
+        const items2: MenuItem[] = [
+            {
+                key: "shikimori",
+                icon: <HeartIcon />,
+                label: <Link href={"/shikimori"}>Главная</Link>,
+            },
+            {
+                key: "calendar",
+                icon: <CalendarOutlined />,
+                label: <Link href={"/calendar"}>Календарь выхода</Link>,
+            },
+
+            {
+                key: "random",
+                onClick: () => getRandomAnimeId,
+                icon: <QuestionOutlined />,
+                label: <Text>Случайное аниме</Text>,
+            },
+        ];
+        if (user?.permissions.includes(1)) {
+            items2.push({
+                key: "settings",
+                icon: <SettingOutlined />,
+                label: <Link href={"/settings"}>Настройки</Link>,
+            });
+        }
+
+        setMenuItems(items2);
+    };
     const items: MenuProps["items"] = [
         {
             label: user?.email,
@@ -91,8 +139,16 @@ export default function RootLayout({
             icon: <UserOutlined />,
         },
         {
-            label: "Выйти",
+            label: (
+                <Link href={"/login"} target="_top">
+                    Выйти
+                </Link>
+            ),
             key: "3",
+            onClick: async () => {
+                await LogOut();
+                router;
+            },
             icon: <UserOutlined />,
         },
     ];
@@ -104,7 +160,9 @@ export default function RootLayout({
         var code = await GetCoockie();
         if (code) {
             setIsUser(true);
-            setUser(await getUserById(code));
+            const currentUser = await getUserById(code);
+            updateMenu(currentUser);
+            setUser(currentUser);
         }
     };
     useEffect(() => {
@@ -169,6 +227,9 @@ export default function RootLayout({
             headerBg: "#141414",
             border: "none",
         },
+        Form: {
+            verticalLabelPadding: "8px 0",
+        },
     };
     const lightTheme = {};
 
@@ -186,20 +247,6 @@ export default function RootLayout({
         Card: {
             colorBorderSecondary: "transparent",
         },
-    };
-
-    const HeartIcon = (props: Partial<CustomIconComponentProps>) => (
-        <Icon component={ShikimoriLogo} {...props} />
-    );
-    const { Text, Title } = Typography;
-    const router = useRouter();
-
-    const getRandomAnimeId = async () => {
-        const id = await getRandomAnime();
-        setCurrentKey("shikimori");
-        if (id) {
-            router.push(`/shikimori/${id}`);
-        }
     };
 
     return (
@@ -283,12 +330,16 @@ export default function RootLayout({
                                 {!isUser && (
                                     <Col span={4}>
                                         <Space size={[10, 10]}>
-                                            <Button type="link" size="small">
-                                                <Link href={"/login"}>
-                                                    Войти
-                                                </Link>
+                                            <Button
+                                                href={"/login"}
+                                                target="_top"
+                                                type="link"
+                                                size="small"
+                                            >
+                                                Войти
                                             </Button>
                                             <Button
+                                                target="_top"
                                                 href={"/signup"}
                                                 type="primary"
                                                 ghost
@@ -333,41 +384,7 @@ export default function RootLayout({
                                         background: "transparent",
                                     }}
                                     mode="inline"
-                                    items={[
-                                        {
-                                            key: "shikimori",
-                                            icon: <HeartIcon />,
-                                            label: (
-                                                <Link href={"/shikimori"}>
-                                                    Главная
-                                                </Link>
-                                            ),
-                                        },
-                                        {
-                                            key: "calendar",
-                                            icon: <CalendarOutlined />,
-                                            label: (
-                                                <Link href={"/calendar"}>
-                                                    Календарь выхода
-                                                </Link>
-                                            ),
-                                        },
-                                        {
-                                            key: "random",
-                                            onClick: getRandomAnimeId,
-                                            icon: <QuestionOutlined />,
-                                            label: <Text>Случайное аниме</Text>,
-                                        },
-                                        {
-                                            key: "settings",
-                                            icon: <SettingOutlined />,
-                                            label: (
-                                                <Link href={"/settings"}>
-                                                    Настройки
-                                                </Link>
-                                            ),
-                                        },
-                                    ]}
+                                    items={menuItems}
                                 />
                             </Sider>
                             <Layout>

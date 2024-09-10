@@ -4,7 +4,7 @@
       (
           string Email,
           string Password,
-          string NickName,
+          string UserName,
           string Avatar,
           string Name,
           string SurName,

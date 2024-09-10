@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using GraphQLParser;
+using Microsoft.AspNetCore.Mvc;
 using SeriesTracker.API.Contracts;
 using SeriesTracker.Application.Services;
 using SeriesTracker.Core.Abstractions;
@@ -30,14 +31,22 @@ namespace SeriesTracker.API.Controllers
         [HttpPost("register")]
         public async Task<IResult> Register([FromBody] UserRequest userRequest)
         {
-            await _userService.Register(userRequest.Email, userRequest.Password, userRequest.NickName, userRequest.Avatar, userRequest.Name, userRequest.SurName, userRequest.DateBirth);
+            await _userService.Register(userRequest.Email, userRequest.Password, userRequest.UserName, userRequest.Avatar, userRequest.Name, userRequest.SurName, userRequest.DateBirth);
             return Results.Ok();
         }
 
         [HttpPost("login")]
         public async Task<IResult> Login([FromBody] LoginUserRequest request)
         {
-            var token = await _userService.Login(request.Email, request.Password);
+            string token = string.Empty;
+            try
+            {
+                token = await _userService.Login(request.Email, request.Password);
+            }
+            catch (Exception)
+            {
+                return Results.BadRequest("Неправильный адрес почты или пароль");
+            }
             Response.Cookies.Append("secretCookie", token);
             return Results.Ok(token);
         }

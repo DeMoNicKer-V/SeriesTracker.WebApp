@@ -1,12 +1,8 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
 import {
-    CloseOutlined,
     UserOutlined,
-    SolutionOutlined,
     RightOutlined,
-    LoadingOutlined,
-    SmileOutlined,
     LoginOutlined,
     ProfileOutlined,
     CheckSquareOutlined,
@@ -38,15 +34,10 @@ import {
 import ImgCrop from "antd-img-crop";
 import Meta from "antd/es/card/Meta";
 import locale from "antd/locale/ru_RU";
-import {
-    LoginRequest,
-    loginUser,
-    registerUser,
-    UserReqruest,
-} from "../services/user";
+import { registerUser, UserRequest } from "../services/user";
 import Link from "next/link";
 
-const LoginPage = () => {
+const SignupPage = () => {
     const [fileList, setFileList] = useState<UploadFile[]>([]);
     var dayjs = require("dayjs");
     const onChange: UploadProps["onChange"] = ({ fileList: newFileList }) => {
@@ -63,7 +54,6 @@ const LoginPage = () => {
                 message.error("Размер файла не должен превышать 512КБ!");
                 return;
             }
-            // Дождитесь завершения загрузки изображения перед обращением к thumbUrl
         }
         const reader = new FileReader();
         reader.onloadend = () => {
@@ -72,7 +62,6 @@ const LoginPage = () => {
         reader.readAsDataURL(newFileList[0].originFileObj);
         setFileList(newFileList);
     };
-    const [user, setUser] = useState<User>();
 
     type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
     const getBase64 = (file: FileType): Promise<string> =>
@@ -92,29 +81,27 @@ const LoginPage = () => {
         setPreviewImage(file.url || (file.preview as string));
         setPreviewOpen(true);
     };
+
     const [form] = Form.useForm();
-    const [isActive, setIsActive] = useState({ ["email"]: true });
+    const [isActive, setIsActive] = useState<Record<string, boolean>>({
+        email: false,
+        password: false,
+        userName: false,
+    });
 
-    const handleFocus = (name: any) => {
+    const handleFocus = (name: string) => {
         setIsActive({ [name]: true });
-    };
-
-    const onChange2 = (date, dateString) => {
-        console.log(date.format("YYYY-MM-DD HH:mm:ss"), dateString);
-    };
-    const handleBlur = (name: any) => {
-        setIsActive({ [name]: false });
     };
     const { getFieldError, isFieldTouched } = form;
     const inputRef = useRef<InputRef>(null);
     const inputRef2 = useRef<InputRef>(null);
-    const [email, setEmail] = useState<string>();
-    const [password, setPassword] = useState<string>();
-    const [userName, setUserName] = useState<string>();
-    const [avatar, setAvatar] = useState<string>();
-    const [name, setName] = useState<string>();
-    const [surName, setSurname] = useState<string>();
-    const [dateBirth, setDateBirth] = useState<string>();
+    const [email, setEmail] = useState<string>("");
+    const [password, setPassword] = useState<string>("");
+    const [userName, setUserName] = useState<string>("");
+    const [avatar, setAvatar] = useState<string>("");
+    const [name, setName] = useState<string>("");
+    const [surName, setSurname] = useState<string>("");
+    const [dateBirth, setDateBirth] = useState<string>("");
 
     const [current, setCurrent] = useState(0);
 
@@ -124,18 +111,18 @@ const LoginPage = () => {
     };
 
     const createNewAccount = async () => {
-        const userRequest: UserReqruest = {
+        const userRequest: UserRequest = {
             email,
             password,
             userName,
+            avatar,
             name,
             surName,
-            avatar,
             dateBirth,
         };
         await registerUser(userRequest);
     };
-    const description = "This is a description.";
+
     return (
         <Flex
             style={{
@@ -193,7 +180,6 @@ const LoginPage = () => {
                     <Form
                         onFinish={(values) => {
                             setCurrent(1);
-                            console.log(values);
                         }}
                         layout="vertical"
                         form={form}
@@ -766,23 +752,19 @@ const LoginPage = () => {
                         )}
                     </Form>
                     {current === 2 && (
-                        <Form
-                            onFinish={async (value) => {
-                                let user: LoginRequest = {
-                                    email: value.email2,
-                                    password: value.password2,
-                                };
-                                await loginUser(user);
-                            }}
-                        >
-                            <Form.Item name={"email2"} label="Email">
-                                <Input></Input>
-                            </Form.Item>
-                            <Form.Item name={"password2"} label="Пароль">
-                                <Input></Input>
-                            </Form.Item>
-                            <Button htmlType="submit">Войти</Button>
-                        </Form>
+                        <Result
+                            title="Мы почти закончили!"
+                            subTitle="Пожалуйста, проверьте введеные данные и подтвердите регистрацию!"
+                            extra={
+                                <Button
+                                    onClick={createNewAccount}
+                                    type="primary"
+                                    htmlType="submit"
+                                >
+                                    Зарегестрироваться
+                                </Button>
+                            }
+                        />
                     )}
                 </Card>
                 <Space wrap size={[5, 5]}>
@@ -801,4 +783,4 @@ const LoginPage = () => {
     );
 };
 
-export default LoginPage;
+export default SignupPage;
