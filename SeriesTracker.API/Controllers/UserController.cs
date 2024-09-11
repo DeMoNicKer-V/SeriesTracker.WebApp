@@ -18,7 +18,7 @@ namespace SeriesTracker.API.Controllers
             _userService = userService;
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("id/{id}")]
         public async Task<IResult> GetUserById(Guid id)
         {
             var permissions = await _userService.GetUserPermissions(id);
@@ -32,6 +32,28 @@ namespace SeriesTracker.API.Controllers
         public async Task<IResult> Register([FromBody] UserRequest userRequest)
         {
             await _userService.Register(userRequest.Email, userRequest.Password, userRequest.UserName, userRequest.Avatar, userRequest.Name, userRequest.SurName, userRequest.DateBirth);
+            return Results.Ok();
+        }
+
+        [HttpGet("email")]
+        public async Task<IResult> CheckEmail(string email)
+        {
+            var user = await _userService.CheckUsersEmail(email);
+            if (user == true)
+            {
+                return Results.BadRequest("Адрес эл. почты уже занят");
+            }
+            return Results.Ok();
+        }
+
+        [HttpGet("username")]
+        public async Task<IResult> CheckUserName(string userName)
+        {
+            var user = await _userService.CheckUsersUserName(userName);
+            if (user == true)
+            {
+                return Results.BadRequest("Данный никнейм уже занят");
+            }
             return Results.Ok();
         }
 

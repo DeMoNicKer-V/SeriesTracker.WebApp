@@ -15,5 +15,7 @@ namespace SeriesTracker.Core.Abstractions.UserAbastractions
         Task<HashSet<Permission>> GetUserPermissions(Guid userId);
         Task<User> GetUserById(Guid id);
         Task<User> GetUserByEmail(string email);
+        Task<bool> CheckUsersEmail(string email);
+        Task<bool> CheckUsersUserName(string userName);
     }
 }

@@ -33,13 +33,19 @@ import {
 } from "antd";
 import ImgCrop from "antd-img-crop";
 import Meta from "antd/es/card/Meta";
-import locale from "antd/locale/ru_RU";
-import { registerUser, UserRequest } from "../services/user";
+import {
+    checkExistEmail,
+    checkExistUserName,
+    registerUser,
+    UserRequest,
+} from "../services/user";
 import Link from "next/link";
-
+import locale from "antd/es/date-picker/locale/ru_RU";
+import dayjs from "dayjs";
+import "dayjs/locale/ru";
+dayjs.locale("ru");
 const SignupPage = () => {
     const [fileList, setFileList] = useState<UploadFile[]>([]);
-    var dayjs = require("dayjs");
     const onChange: UploadProps["onChange"] = ({ fileList: newFileList }) => {
         if (newFileList.length) {
             const isJpgOrPng =
@@ -84,7 +90,7 @@ const SignupPage = () => {
 
     const [form] = Form.useForm();
     const [isActive, setIsActive] = useState<Record<string, boolean>>({
-        email: false,
+        email: true,
         password: false,
         userName: false,
     });
@@ -206,6 +212,9 @@ const SignupPage = () => {
                                                 >
                                                     <Col span={19}>
                                                         <Form.Item
+                                                            validateDebounce={
+                                                                1500
+                                                            }
                                                             hasFeedback
                                                             name={[
                                                                 field.name,
@@ -222,7 +231,31 @@ const SignupPage = () => {
                                                                 {
                                                                     type: "email",
                                                                     message:
-                                                                        "Эл. почта неккоректна или уже занята",
+                                                                        "Эл. почта имеет некорректную сигнатуру",
+                                                                },
+                                                                {
+                                                                    validator:
+                                                                        async (
+                                                                            _,
+                                                                            value
+                                                                        ) => {
+                                                                            // Проверка на стороне сервера
+                                                                            const exists =
+                                                                                await checkExistEmail(
+                                                                                    value
+                                                                                );
+                                                                            if (
+                                                                                exists
+                                                                            ) {
+                                                                                return Promise.reject(
+                                                                                    new Error(
+                                                                                        "Этот email уже используется."
+                                                                                    )
+                                                                                );
+                                                                            }
+                                                                            // Разрешить регистрацию, если email уникален
+                                                                            return Promise.resolve();
+                                                                        },
                                                                 },
                                                             ]}
                                                         >
@@ -312,6 +345,9 @@ const SignupPage = () => {
                                                 >
                                                     <Col span={19}>
                                                         <Form.Item
+                                                            validateDebounce={
+                                                                1500
+                                                            }
                                                             hasFeedback
                                                             shouldUpdate
                                                             name={[
@@ -329,7 +365,7 @@ const SignupPage = () => {
                                                                 {
                                                                     pattern:
                                                                         new RegExp(
-                                                                            "^(?=.*[A-Z]|[А-Я])(?=.*d).{8,}$|.{15,}$"
+                                                                            "^(?=.*[A-Z]|[А-Я])(?=.*).{8,}$|.{15,}$"
                                                                         ),
                                                                     message:
                                                                         "Убедитесь, что пароль содержит не менее 15 символов или не менее 8 символов, включая цифру и строчную букву.",
@@ -423,7 +459,9 @@ const SignupPage = () => {
                                                 >
                                                     <Col span={19}>
                                                         <Form.Item
-                                                            validateFirst
+                                                            validateDebounce={
+                                                                1500
+                                                            }
                                                             hasFeedback
                                                             name={[
                                                                 field.name,
@@ -437,6 +475,30 @@ const SignupPage = () => {
                                                                         true,
                                                                     message:
                                                                         "Логин обязателен для регистрации",
+                                                                },
+                                                                {
+                                                                    validator:
+                                                                        async (
+                                                                            _,
+                                                                            value
+                                                                        ) => {
+                                                                            // Проверка на стороне сервера
+                                                                            const exists =
+                                                                                await checkExistUserName(
+                                                                                    value
+                                                                                );
+                                                                            if (
+                                                                                exists
+                                                                            ) {
+                                                                                return Promise.reject(
+                                                                                    new Error(
+                                                                                        "Этот логин уже используется."
+                                                                                    )
+                                                                                );
+                                                                            }
+                                                                            // Разрешить регистрацию, если email уникален
+                                                                            return Promise.resolve();
+                                                                        },
                                                                 },
                                                             ]}
                                                         >
@@ -488,7 +550,8 @@ const SignupPage = () => {
                                                                                 ]
                                                                             )
                                                                                 .length >
-                                                                                0
+                                                                                0 ||
+                                                                            form.isFieldsValidating()
                                                                         }
                                                                     >
                                                                         Продолжить
@@ -707,30 +770,28 @@ const SignupPage = () => {
                                             name={"dateBirth"}
                                             style={{ width: "50%" }}
                                         >
-                                            <ConfigProvider locale={locale}>
-                                                <DatePicker
-                                                    maxDate={dayjs(
-                                                        new Date().setFullYear(
-                                                            new Date().getFullYear() -
-                                                                12
-                                                        )
-                                                    )}
-                                                    onChange={(date) => {
-                                                        setDateBirth(
-                                                            date
-                                                                .toDate()
-                                                                .toString()
-                                                        );
-                                                    }}
-                                                    value={
-                                                        !dateBirth
-                                                            ? null
-                                                            : dayjs(dateBirth)
-                                                    }
-                                                    style={{ width: "100%" }}
-                                                    placeholder="Укажите вашу дату рождения"
-                                                ></DatePicker>
-                                            </ConfigProvider>
+                                            <DatePicker
+                                                locale={locale}
+                                                format={"D MMMM, YYYY"}
+                                                maxDate={dayjs(
+                                                    new Date().setFullYear(
+                                                        new Date().getFullYear() -
+                                                            12
+                                                    )
+                                                )}
+                                                onChange={(date) => {
+                                                    setDateBirth(
+                                                        date.toDate().toString()
+                                                    );
+                                                }}
+                                                value={
+                                                    !dateBirth
+                                                        ? null
+                                                        : dayjs(dateBirth)
+                                                }
+                                                style={{ width: "100%" }}
+                                                placeholder="Укажите вашу дату рождения"
+                                            ></DatePicker>
                                         </Form.Item>
                                     </Flex>
                                 </Card>

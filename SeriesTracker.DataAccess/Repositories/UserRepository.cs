@@ -58,6 +58,17 @@ namespace SeriesTracker.DataAccess.Repositories
 
             return user;
         }
+
+        public async Task<bool> CheckUsersUserName(string userName)
+        {
+            return await _context.UserEntities.AsNoTracking().Where(c => c.UserName == userName).FirstOrDefaultAsync() != null;
+        }
+
+        public async Task<bool> CheckUsersEmail(string email)
+        {
+            return await _context.UserEntities.AsNoTracking().Where(c => c.Email == email).FirstOrDefaultAsync() != null;
+        }
+
         public async Task<Guid> DeleteUser(Guid id)
         {
             await _context.UserEntities.Where(c => c.Id == id).ExecuteDeleteAsync();
