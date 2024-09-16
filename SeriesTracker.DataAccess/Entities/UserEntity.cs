@@ -8,7 +8,6 @@ namespace SeriesTracker.DataAccess.Entities
 {
     public class UserEntity
     {
-
         public string? Avatar
         {
             get; set;
@@ -44,6 +43,7 @@ namespace SeriesTracker.DataAccess.Entities
         }
 
         public ICollection<RoleEntity> Roles { get; set; } = [];
+        public ICollection<UserSeriesEntity> UserSeries { get; set; } = new List<UserSeriesEntity>();
 
         public string? Surname
         {

@@ -21,6 +21,7 @@ namespace SeriesTracker.DataAccess
         public DbSet<CategoryEntity> CategoryEntities { get; set; }
         public DbSet<UserEntity> UserEntities { get; set; }
         public DbSet<RoleEntity> RoleEntities { get; set; }
+        public DbSet<UserSeriesEntity> UserSeriesEntities { get; set; }
 
     }
 }

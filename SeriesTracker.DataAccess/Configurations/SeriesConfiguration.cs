@@ -14,8 +14,8 @@ namespace SeriesTracker.DataAccess.Configurations
             builder.Property(s => s.AnimeId).IsRequired();
             builder.Property(s => s.WatchedEpisode).IsRequired();
 
-            builder.HasOne(s => s.Category).
-                WithMany(c => c.Series).HasForeignKey(c => c.CategoryId);
+           /* builder.HasOne(s => s.Category).
+                WithMany(c => c.Series).HasForeignKey(c => c.CategoryId);*/
         }
     }
 }

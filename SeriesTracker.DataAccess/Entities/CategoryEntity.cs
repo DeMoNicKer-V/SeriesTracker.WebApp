@@ -27,7 +27,7 @@ namespace SeriesTracker.DataAccess.Entities
             get; set;
         }
 
-        public ICollection<SeriesEntity> Series { get; set; } = [];
+        public ICollection<UserSeriesEntity> Series { get; set; } = new List<UserSeriesEntity>();
 
         public required string Date
         {
