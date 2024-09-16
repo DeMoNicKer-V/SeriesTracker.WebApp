@@ -216,7 +216,7 @@ namespace SeriesTracker.Application.Services
     russian
     poster {miniUrl}
     kind
-airedOn{year}
+    airedOn{year}
       }
       relationText
     }
