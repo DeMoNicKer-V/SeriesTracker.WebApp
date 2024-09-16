@@ -65,6 +65,11 @@ namespace SeriesTracker.Application.Services
             return await _userRepository.GetUserById(id);
         }
 
+        public async Task<User> GetUserByUserName(string username)
+        {
+            return await _userRepository.GetUserByUserName(username);
+        }
+
         public async Task<bool> CheckUsersEmail(string email)
         {
             return await _userRepository.CheckUsersEmail(email);

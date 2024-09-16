@@ -28,6 +28,15 @@ namespace SeriesTracker.API.Controllers
             return Results.Ok(userResponse);
         }
 
+        [HttpGet("username/{username}")]
+        public async Task<IResult> GetUserByUserName(string username)
+        {
+            var user = await _userService.GetUserByUserName(username);
+            var userResponse = new DefaultUserResponse(user.Email, user.PasswordHash,
+                user.UserName, user.Avatar, user.Name, user.Surname, user.DateOfBirth, user.RegistrationDate, (int)(DateTime.Now - DateTime.Parse(user.DateOfBirth)).TotalDays /365);
+            return Results.Ok(userResponse);
+        }
+
         [HttpPost("register")]
         public async Task<IResult> Register([FromBody] UserRequest userRequest)
         {

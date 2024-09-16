@@ -22,6 +22,18 @@ export interface UserResponse {
     permissions: number[];
 }
 
+export interface DefaultUser {
+    email: string;
+    password: string;
+    userName: string;
+    avatar: string;
+    name: string;
+    surName: string;
+    dateBirth: string;
+    regDate: string;
+    yearsOld: number;
+}
+
 export interface LoginRequest {
     email: string;
     password: string;
@@ -77,4 +89,13 @@ export const checkExistUserName = async (username: string) => {
         return true;
     }
     return false;
+};
+
+export const getUserByUserName = async (username: string) => {
+    const response = await fetch(
+        `http://localhost:5125/user/username/${username}`
+    );
+    const user: DefaultUser = await response.json();
+
+    return user;
 };

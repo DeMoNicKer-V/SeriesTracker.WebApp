@@ -17,5 +17,6 @@ namespace SeriesTracker.Core.Abstractions.UserAbastractions
         Task<User> GetUserByEmail(string email);
         Task<bool> CheckUsersEmail(string email);
         Task<bool> CheckUsersUserName(string userName);
+        Task<User> GetUserByUserName(string username);
     }
 }

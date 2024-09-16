@@ -780,8 +780,8 @@ const SignupPage = () => {
                                                     )
                                                 )}
                                                 onChange={(date) => {
-                                                    setDateBirth(
-                                                        date.toDate().toString()
+                                                    console.log(
+                                                        date.toString()
                                                     );
                                                 }}
                                                 value={

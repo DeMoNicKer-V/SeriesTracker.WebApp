@@ -18,5 +18,6 @@ namespace SeriesTracker.Core.Abstractions.UserAbastractions
         Task<bool> CheckUsersEmail(string email);
         Task<bool> CheckUsersUserName(string userName);
         Task<ICollection<Permission>> GetUserPermissions(Guid id);
+        Task<User> GetUserByUserName(string username);
     }
 }
