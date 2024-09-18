@@ -36,7 +36,7 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 builder.Services.AddScoped<IUserSeriesService, UserSeriesService>();
-builder.Services.AddScoped<IUserSeriesRepository, IUserSeriesRepository>();
+builder.Services.AddScoped<IUserSeriesRepository, UserSeriesRepository>();
 
 builder.Services.AddScoped<IJwtProvider, JwtProvider>();
 builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();

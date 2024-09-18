@@ -1,12 +1,12 @@
-﻿using GraphQL;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SeriesTracker.API.Contracts;
+using SeriesTracker.Application.Interfaces.Auth;
 using SeriesTracker.Application.Services;
 using SeriesTracker.Core.Abstractions;
 using SeriesTracker.Core.Models;
-using SeriesTracker.Core.Models.Shikimori;
-using System.Text.RegularExpressions;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using System.Security.Claims;
+
 
 namespace SeriesTracker.API.Controllers
 {
@@ -15,12 +15,19 @@ namespace SeriesTracker.API.Controllers
     public class SeriesController : ControllerBase
     {
         private readonly ISeriesService _seriesService;
+        private readonly IUserSeriesService _userSeriesService;
         private readonly ICategoryService _categoryService;
+        private readonly IJwtProvider _jwtProvider;
 
-        public SeriesController(ISeriesService seriesService, ICategoryService categoryService)
+        public SeriesController(ISeriesService seriesService, 
+            ICategoryService categoryService, 
+            IUserSeriesService userSeriesService,
+            IJwtProvider jwtProvider)
         {
             _seriesService = seriesService;
             _categoryService = categoryService;
+            _userSeriesService = userSeriesService;
+            _jwtProvider = jwtProvider;
         }
 
         [HttpGet]
@@ -63,23 +70,28 @@ namespace SeriesTracker.API.Controllers
             return Ok(animeResponses);
         }
 
+        [Authorize]
         [HttpPost]
-        public async Task<ActionResult<Guid>> CreateSeries([FromBody] SeriesRequest request) 
+        public async Task<ActionResult<Guid>> CreateSeries([FromBody] CreateSeriesRequest request) 
         {
-            bool isAnime = await _seriesService.GetSeriesByAnimeId(request.AnimeId) != Guid.Empty;
-            if (isAnime)
+            var token = Request.Cookies["secretCookie"];
+
+            // Проверка наличия токена
+            if (string.IsNullOrEmpty(token))
             {
-                return BadRequest("Данный сериал уже есть в вашем списке.");
+                return Unauthorized();
             }
+            var principal = _jwtProvider.ValidateToken(token);
+            var userId = principal.FindFirstValue("userId");
             var date = DateTime.Now.ToString("s");
-            var (series, error) = Series.Create(Guid.NewGuid(), request.AnimeId, request.WatchedEpisode, date, date, request.CategoryId, request.IsFavorite);
+            var (series, error) = UserSeries.Create(Guid.NewGuid(), request.AnimeId,  Guid.Parse(userId), request.CategoryId, request.WatchedEpisode, date, date, request.IsFavorite);
 
             if (!string.IsNullOrEmpty(error)) 
             {
                 return BadRequest(error);
             }
 
-            var seriesId = await _seriesService.CreateSeries(series);
+            var seriesId = await _userSeriesService.CreateAsync(series);
             return Ok(seriesId);
         }
 

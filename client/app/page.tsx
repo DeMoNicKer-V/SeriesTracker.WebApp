@@ -1,4 +1,4 @@
-// pages/index.js (Next.js 12 и ниже)
+"use client";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 

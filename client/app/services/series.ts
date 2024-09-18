@@ -1,6 +1,6 @@
 import { headers } from "next/headers";
 
-export interface SeriesReqruest {
+export interface SeriesRequest {
     animeId: number;
     watchedEpisode: number;
     categoryId: number;
@@ -64,20 +64,20 @@ export const getAllSeriesSearch = async (query: any) => {
     return series;
 };
 
-export const createSeries = async (seriesReqruest: SeriesReqruest) => {
-    console.log(seriesReqruest);
+export const createSeries = async (seriesReqruest: SeriesRequest) => {
     await fetch("http://localhost:5125/controller", {
         method: "POST",
         headers: {
             "content-type": "application/json",
         },
         body: JSON.stringify(seriesReqruest),
+        credentials: "include",
     });
 };
 
 export const updateSeries = async (
     id: string,
-    seriesReqruest: SeriesReqruest
+    seriesReqruest: SeriesRequest
 ) => {
     await fetch(`http://localhost:5125/controller/${id}`, {
         method: "PUT",

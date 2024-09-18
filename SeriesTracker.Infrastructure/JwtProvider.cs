@@ -32,5 +32,34 @@ namespace SeriesTracker.Infrastructure
 
             return tokenValue;
         }
+
+        public ClaimsPrincipal ValidateToken(string token)
+        {
+            // Проверка токена
+            if (string.IsNullOrEmpty(token))
+            {
+                throw new ArgumentException("Token is required");
+            }
+
+            // Настройка ключа проверки подписи
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtOptions.SecretKey));
+
+            // Создание параметров проверки
+            var validationParameters = new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = key,
+                ValidateIssuer = false,
+                ValidateAudience = false,
+                ValidateLifetime = true,
+                ClockSkew = TimeSpan.Zero // Время для проверки токена 
+            };
+
+            // Декодирование и проверка токена
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var principal = tokenHandler.ValidateToken(token, validationParameters, out SecurityToken validatedToken);
+
+            return principal;
+        }
     }
 }

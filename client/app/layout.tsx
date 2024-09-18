@@ -159,6 +159,7 @@ export default function RootLayout({
     const GetUser = async () => {
         var code = await GetCoockie();
         if (code) {
+            localStorage.setItem("userId", code);
             setIsUser(true);
             const currentUser = await getUserById(code);
             updateMenu(currentUser);
@@ -283,8 +284,8 @@ export default function RootLayout({
                                     "0 2px 4px -1px rgba(0,0,0,.3), 0 4px 5px 0 rgba(0,0,0,.24), 0 1px 10px 0 rgba(0,0,0,.22)",
                             }}
                         >
-                            <Row align="middle">
-                                <Col span={1}>
+                            <Row align="middle" justify={"start"}>
+                                <Col span={7}>
                                     <Button
                                         type="link"
                                         icon={
@@ -297,40 +298,43 @@ export default function RootLayout({
                                         onClick={() => setCollapsed(!collapsed)}
                                     />
                                 </Col>
-                                <Col span={4}>
-                                    <div className="spacer" />{" "}
-                                </Col>
-                                <Col span={12}>
+
+                                <Col span={10}>
                                     <SearchBar
                                         listBG={
                                             currentTheme ? "#1e1e1e" : "#ffffff"
                                         }
                                     />
                                 </Col>
-                                <Col span={2}>
-                                    <div className="spacer" />{" "}
-                                </Col>
 
                                 {isUser && (
-                                    <Col span={4}>
+                                    <Col span={3} offset={4}>
                                         <Dropdown menu={menuProps}>
                                             <Button
-                                                style={{ padding: "16px 32px" }}
+                                                type="text"
+                                                style={{
+                                                    width: "100%",
+                                                    height: "100%",
+                                                    margin: 0,
+                                                    padding: 0,
+                                                }}
                                             >
-                                                <Space>
+                                                <Space size={[20, 20]}>
                                                     <Avatar
+                                                        size={40}
+                                                        shape="square"
                                                         src={user?.avatar}
                                                     ></Avatar>
-                                                    <Typography.Text>
+                                                    <Typography.Title level={5}>
                                                         {user?.userName}
-                                                    </Typography.Text>
+                                                    </Typography.Title>
                                                 </Space>
                                             </Button>
                                         </Dropdown>
                                     </Col>
                                 )}
                                 {!isUser && (
-                                    <Col span={4}>
+                                    <Col span={3} offset={4}>
                                         <Space size={[10, 10]}>
                                             <Button
                                                 href={"/login"}

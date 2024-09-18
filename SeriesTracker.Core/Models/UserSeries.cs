@@ -1,33 +1,69 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SeriesTracker.Core.Models
+﻿namespace SeriesTracker.Core.Models
 {
     public class UserSeries
     {
-        public Guid Id { get; set; }
+        private UserSeries(Guid id, int animeId, Guid userId, int categoryId, int watched, string addedDate, string changedDate, bool favorite)
+        {
+            Id = id;
+            AnimeId = animeId;
+            UserId = userId;
+            WatchedEpisode = watched;
+            AddedDate = addedDate;
+            ChangedDate = changedDate;
+            CategoryId = categoryId;
+            IsFavorite = favorite;
+        }
 
-        public int AnimeId { get; set; }
+        public Guid Id
+        {
+            get;
+        }
 
-        public Guid UserId { get; set; } // ID пользователя
+        public int AnimeId
+        {
+            get;
+        }
 
-        public int CategoryId { get; set; } // ID категории
+        public Guid UserId
+        {
+            get;
+        }
+
+        public int CategoryId
+        {
+            get;
+        }
+
+        public int WatchedEpisode
+        {
+            get;
+        }
 
         public string AddedDate
         {
-            get; set;
-        } = string.Empty;
+            get;
+        }
 
         public string ChangedDate
         {
-            get; set;
-        } = string.Empty;
+            get;
+        }
 
-        public int WatchedEpisode { get; set; } = 0;
+        public bool IsFavorite
+        {
+            get;
+        }
 
-        public bool IsFavorite { get; set; } = false;
+        public static (UserSeries UserSeries, string Error) Create(Guid id, int animeId, Guid userId, int categoryId, int watched, string addedDate, string changedDate, bool favorite)
+        {
+            string error = string.Empty;
+            if (watched < 0)
+            {
+                error = "Кол-во просмотренных эпизодов не может быть меньше нуля.";
+            }
+            UserSeries userSeries = new(id, animeId, userId, categoryId, watched, addedDate, changedDate, favorite);
+
+            return (userSeries, error);
+        }
     }
 }

@@ -1,3 +1,5 @@
+const userId = localStorage.getItem("userId");
+
 export interface AnimeReqruest {
     title: string;
     description: string;
@@ -73,6 +75,7 @@ export const getAnimesByParams = async (request: ShikimoriRequest) => {
             "content-type": "application/json",
         },
         body: JSON.stringify(request),
+        credentials: "include",
     });
     const animes: SeriesAnime = await response.json();
     return animes;
@@ -81,6 +84,7 @@ export const getAnimesByParams = async (request: ShikimoriRequest) => {
 export const getAnimeById = async (id: string) => {
     const response = await fetch(`http://localhost:5125/shikimori/id/${id}`);
     const animes: AnimeInfo = await response.json();
+    console.log(animes);
     return animes;
 };
 

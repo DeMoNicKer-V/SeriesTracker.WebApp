@@ -112,7 +112,7 @@ export default function AnimePage({ params }: { params: { id: string } }) {
         const response = await getAnimeById(id);
         setAnimes(response.anime);
 
-        if (response.series.id) {
+        if (response.series) {
             setSeries(response.series);
             const category = await getCategoryById(response.series.categoryId);
             setCategory(category);
