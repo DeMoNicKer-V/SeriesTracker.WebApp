@@ -9,13 +9,18 @@ import {
 } from "../services/shikimori";
 import {
     Button,
+    Card,
+    Checkbox,
     Col,
+    Collapse,
     ConfigProvider,
     DatePicker,
     Divider,
+    Drawer,
     Flex,
     FloatButton,
     Form,
+    GetProp,
     Input,
     List,
     Menu,
@@ -53,23 +58,27 @@ import {
     EyeInvisibleOutlined,
 } from "@ant-design/icons";
 import dayjs from "dayjs";
+import FilterItem from "../components/FilterItem";
 export default function ShikimoriPage() {
     type MenuItem = Required<MenuProps>["items"][number];
-    const statusOptions: SelectProps["options"] = [
-        { label: "Онгоинг", value: "ongoing" },
-        { label: "Вышло", value: "released" },
+    const statusOptions = [
+        { russian: "Онгоинг", id: "ongoing" },
+        { russian: "Вышло", id: "released" },
     ];
 
     const { Text, Title } = Typography;
     const [inputFocus, setInputFocus] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [isOpen, setIsOpen] = useState(false);
     const [animes, setAnimes] = useState<SeriesAnime[] | any>([]);
     const [genres, setGenres] = useState<Genre[] | any>([]);
 
     const [query, setQuery] = useState<string>("");
-    const [status, setStatus] = useState<string>("");
-    const [kind, setKind] = useState<string>("");
-    const [genre, setGenre] = useState<string>("");
+    const [status, setStatus] = useState<any[]>([]);
+    const [kind, setKind] = useState<any[]>([]);
+    const [genre, setGenre] = useState<any[]>([]);
+    const [audience, setAudience] = useState<any[]>([]);
+    const [theme, setTheme] = useState<any[]>([]);
     const [season, setSeason] = useState<string>("");
     const [order, setOrder] = useState<string>("ranked");
     const [page, setPage] = useState<number>(1);
@@ -116,9 +125,9 @@ export default function ShikimoriPage() {
             page: page,
             name: query,
             season: season,
-            status: status,
-            kind: kind,
-            genre: genre,
+            status: status.toString(),
+            kind: kind.toString(),
+            genre: genre.toString().concat(status.toString(), theme.toString()),
             order: order,
             censored: safe,
         };
@@ -134,31 +143,19 @@ export default function ShikimoriPage() {
         resetAllFields();
     }, [safe]);
 
-    const kindOptions: SelectProps["options"] = [
-        { label: "TV-Сериал", value: "tv" },
-        { label: "П/ф", value: "movie" },
-        { label: "ONA", value: "ona" },
-        { label: "OVA", value: "ova" },
-        { label: "Спешл", value: "special" },
-        { label: "TV-Спешл", value: "tv_special" },
+    const kindOptions = [
+        { russian: "TV-Сериал", id: "tv" },
+        { russian: "П/ф", id: "movie" },
+        { russian: "ONA", id: "ona" },
+        { russian: "OVA", id: "ova" },
+        { russian: "Спешл", id: "special" },
+        { russian: "TV-Спешл", id: "tv_special" },
     ];
 
-    const genreOptions: SelectProps["options"] = [];
-    for (let index = 0; index < genres.length; index++) {
-        genreOptions?.push({
-            label: genres[index].russian,
-            value: genres[index].id,
-            key: genres[index].id,
-        });
-    }
-    const safeGenreOptions = genreOptions.filter(
-        (obj) => obj.key !== 34 && obj.key !== 12 && obj.key !== 33
-    );
     const date = dayjs();
     const [selectedItems, setSelectedItems] = useState<string[]>([]);
     const valueChange = (value: any, key: string) => {
         const index = selectedItems.indexOf(key);
-        console.log(index);
         if (!value) {
             selectedItems.splice(index, 1);
         } else {
@@ -175,9 +172,9 @@ export default function ShikimoriPage() {
         setPage(1);
         setOrder("ranked");
         setQuery("");
-        setStatus("");
-        setKind("");
-        setGenre("");
+        setStatus([]);
+        setKind([]);
+        setGenre([]);
         setSeason("");
     };
 
@@ -187,35 +184,6 @@ export default function ShikimoriPage() {
     };
     const [form] = Form.useForm();
     const items: MenuItem[] = [
-        {
-            key: "safe",
-            label: (
-                <Tooltip
-                    title={
-                        !safe
-                            ? "Безопасный поиск выключен"
-                            : "Безопасный поиск включен"
-                    }
-                >
-                    <Button
-                        danger={!safe}
-                        onClick={() => setSafe(!safe)}
-                        shape="circle"
-                        size="large"
-                        type="dashed"
-                        icon={
-                            safe ? (
-                                <EyeInvisibleOutlined
-                                    style={{ fontSize: 20 }}
-                                />
-                            ) : (
-                                <EyeOutlined style={{ fontSize: 20 }} />
-                            )
-                        }
-                    />
-                </Tooltip>
-            ),
-        },
         {
             key: "0",
             style: { minWidth: 200, maxWidth: 500, flex: "1 1 auto" },
@@ -255,152 +223,7 @@ export default function ShikimoriPage() {
                 </div>
             ),
         },
-        {
-            key: "1",
-            label: "Год выхода",
-            children: [
-                {
-                    key: "11",
-                    disabled: true,
-                    style: { cursor: "default", margin: 10 },
-                    label: (
-                        <Form.Item name={"season"}>
-                            <DatePicker
-                                onChange={(date) => {
-                                    if (date) {
-                                        setSeason(
-                                            date.format("YYYY").toString()
-                                        );
-                                    } else setSeason("");
-                                    valueChange(date, "1");
-                                }}
-                                variant="borderless"
-                                inputReadOnly
-                                minDate={dayjs(1967)}
-                                maxDate={date}
-                                placeholder="Год выхода"
-                                style={{ width: "100%" }}
-                                picker="year"
-                            />
-                        </Form.Item>
-                    ),
-                },
-            ],
-        },
-        {
-            key: "divider1",
-            style: { cursor: "default", margin: 0, padding: 0 },
-            disabled: true,
-            label: <Text>•</Text>,
-        },
-        {
-            key: "2",
-            label: "Статус",
-            children: [
-                {
-                    key: "21",
-                    disabled: true,
-                    style: { cursor: "default", margin: 10 },
-                    label: (
-                        <Form.Item name={"status"}>
-                            <Select
-                                allowClear
-                                onChange={(value) => {
-                                    if (value) {
-                                        setStatus(value.toString());
-                                    } else setStatus("");
-                                    valueChange(value, "2");
-                                }}
-                                variant="borderless"
-                                placeholder="Статус"
-                                maxTagCount={"responsive"}
-                                style={{ width: "100%" }}
-                                options={statusOptions}
-                            />
-                        </Form.Item>
-                    ),
-                },
-            ],
-        },
-        {
-            key: "divider2",
-            disabled: true,
-            style: { cursor: "default", margin: 0, padding: 0 },
-            label: <Text>•</Text>,
-        },
-        {
-            key: "3",
-            label: "Тип",
-            children: [
-                {
-                    key: "31",
-                    disabled: true,
-                    style: { cursor: "default", margin: 10 },
-                    label: (
-                        <Form.Item name={"kind"}>
-                            <Select
-                                allowClear
-                                onChange={(value) => {
-                                    if (value) {
-                                        setKind(value.toString());
-                                    } else setKind("");
-                                    valueChange(value, "3");
-                                }}
-                                variant="borderless"
-                                placeholder="Тип"
-                                maxTagCount={"responsive"}
-                                style={{ width: "100%" }}
-                                options={kindOptions}
-                            />
-                        </Form.Item>
-                    ),
-                },
-            ],
-        },
-        {
-            key: "divider3",
-            disabled: true,
-            style: { cursor: "default", margin: 0, padding: 0 },
-            label: <Text>•</Text>,
-        },
-        {
-            key: "4",
-            label: "Жанр",
-            children: [
-                {
-                    style: { width: 400, cursor: "default", margin: 10 },
-                    disabled: true,
-                    key: "41",
-                    label: (
-                        <Form.Item name={"genre"}>
-                            <Select
-                                onClear={() => {
-                                    onClear("4");
-                                }}
-                                allowClear
-                                onChange={(value) => {
-                                    if (value) {
-                                        setGenre(value.toString());
-                                    } else setGenre("");
-                                    valueChange(value.toString(), "4");
-                                }}
-                                variant="borderless"
-                                placeholder="Выберите жанры (макс. 5)"
-                                maxTagCount={"responsive"}
-                                maxCount={5}
-                                mode="multiple"
-                                style={{
-                                    width: "100%",
-                                }}
-                                options={
-                                    !safe ? genreOptions : safeGenreOptions
-                                }
-                            />
-                        </Form.Item>
-                    ),
-                },
-            ],
-        },
+
         {
             key: "5",
             style: { cursor: "default" },
@@ -425,11 +248,40 @@ export default function ShikimoriPage() {
             ),
         },
     ];
+    const handleCheckboxChangeStatus: GetProp<
+        typeof Checkbox.Group,
+        "onChange"
+    > = (checkedValues) => {
+        setStatus(checkedValues);
+    };
+    const handleCheckboxChangeKind: GetProp<
+        typeof Checkbox.Group,
+        "onChange"
+    > = (checkedValues) => {
+        setKind(checkedValues);
+    };
+    const handleCheckboxChangeGenre: GetProp<
+        typeof Checkbox.Group,
+        "onChange"
+    > = (checkedValues) => {
+        setGenre(checkedValues);
+    };
+    const handleCheckboxChangeAudience: GetProp<
+        typeof Checkbox.Group,
+        "onChange"
+    > = (checkedValues) => {
+        setAudience(checkedValues);
+    };
+    const handleCheckboxChangeTheme: GetProp<
+        typeof Checkbox.Group,
+        "onChange"
+    > = (checkedValues) => {
+        setTheme(checkedValues);
+    };
 
     const [collapsed, setCollapsed] = useState(false);
-
-    const toggleCollapsed = () => {
-        setCollapsed(!collapsed);
+    const toggleOpen = () => {
+        setIsOpen(!isOpen);
     };
 
     const items2: MenuItem[] = [
@@ -454,35 +306,6 @@ export default function ShikimoriPage() {
             key: "aired_on",
             icon: <CalendarOutlined />,
         },
-        {
-            style: {
-                cursor: "default",
-                padding: 0,
-            },
-            key: "prev_next",
-            disabled: true,
-            label: (
-                <Space split={<Divider type="vertical" />}>
-                    <Button
-                        onClick={prePage}
-                        disabled={page <= 1 || loading}
-                        size="small"
-                        icon={<LeftOutlined />}
-                    >
-                        Назад
-                    </Button>
-                    <Button
-                        disabled={loading}
-                        size="small"
-                        iconPosition="end"
-                        icon={<RightOutlined />}
-                        onClick={nextPage}
-                    >
-                        Вперед
-                    </Button>
-                </Space>
-            ),
-        },
     ];
 
     return (
@@ -497,62 +320,42 @@ export default function ShikimoriPage() {
                     left: "50%",
                 }}
             />
-            <Row justify={"center"} align={"middle"}>
-                <Col span={18}>
-                    <Form form={form}>
-                        <Menu
-                            disabled={loading}
-                            selectedKeys={selectedItems}
-                            triggerSubMenuAction={"click"}
-                            style={{
-                                display: "flex",
-                                alignItems: "center",
-                                justifyContent: "center",
-                                opacity: !collapsed ? "0" : "1",
-                                transition: "all .2s",
-                                visibility: !collapsed ? "hidden" : "visible",
-                                padding: 15,
-                                borderRadius: 10,
-                            }}
-                            selectable={false}
-                            multiple
-                            mode="horizontal"
-                            items={items}
-                        ></Menu>
-                    </Form>
-                </Col>
-            </Row>
 
-            <Row
-                align={"middle"}
-                justify={"center"}
-                style={{
-                    alignItems: "center",
-                    justifyContent: "center",
-                    marginTop: !collapsed ? -60 : 30,
-                    transition: "all .2s",
-                }}
-            >
-                <Col span={12}>
+            <Row align={"middle"} justify={"center"}>
+                <Col span={2}>
                     <Flex gap={5}>
                         <Typography.Title style={{ margin: 0 }} level={3}>
                             Аниме
                         </Typography.Title>
-                        <Button
-                            disabled={loading}
-                            type="primary"
-                            shape="circle"
-                            size="small"
-                            ghost={!collapsed}
-                            onClick={() => toggleCollapsed()}
-                            icon={<SearchOutlined />}
-                        ></Button>
+                        <Tooltip
+                            title={
+                                safe
+                                    ? "Безопасный поиск выключен"
+                                    : "Безопасный поиск включен"
+                            }
+                        >
+                            <Button
+                                danger={!safe}
+                                onClick={() => setSafe(!safe)}
+                                shape="circle"
+                                size="small"
+                                type="dashed"
+                                icon={
+                                    safe ? (
+                                        <EyeOutlined />
+                                    ) : (
+                                        <EyeInvisibleOutlined />
+                                    )
+                                }
+                            />
+                        </Tooltip>
                     </Flex>
 
                     <Flex justify="start">
-                        {page > 1 && (
+                        {page > 2 && (
                             <Tooltip title={"В начало"}>
                                 <Button
+                                    disabled={loading}
                                     size="small"
                                     type="link"
                                     onClick={firstPage}
@@ -560,34 +363,56 @@ export default function ShikimoriPage() {
                                 />
                             </Tooltip>
                         )}
+                        {page > 1 && (
+                            <Tooltip title={"Назад"}>
+                                <Button
+                                    disabled={loading}
+                                    size="small"
+                                    type="link"
+                                    onClick={prePage}
+                                    icon={<LeftOutlined />}
+                                />
+                            </Tooltip>
+                        )}
                         <Tag
                             style={{
+                                fontStyle: "italic",
                                 cursor: "default",
                                 marginLeft: page <= 1 ? 0 : 5,
                                 transition: "all .2s",
                             }}
                         >{`Страница: ${page}`}</Tag>
+                        {animes.length == 28 && (
+                            <Tooltip title={"Дальше"}>
+                                <Button
+                                    disabled={loading}
+                                    size="small"
+                                    type="link"
+                                    onClick={nextPage}
+                                    icon={<RightOutlined />}
+                                />
+                            </Tooltip>
+                        )}
                     </Flex>
                 </Col>
-                <Col span={12}>
-                    <ConfigProvider
-                        theme={{
-                            components: {
-                                Menu: {
-                                    itemBg: "transparent",
-                                    darkItemBg: "transparent",
-                                },
-                            },
+                <Col span={22}>
+                    <Menu
+                        disabled={loading}
+                        selectedKeys={selectedItems}
+                        triggerSubMenuAction={"click"}
+                        style={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+
+                            padding: 15,
+                            borderRadius: 10,
                         }}
-                    >
-                        <Menu
-                            disabled={loading}
-                            onSelect={onClick}
-                            selectedKeys={[order]}
-                            items={items2}
-                            mode="horizontal"
-                        />
-                    </ConfigProvider>
+                        selectable={false}
+                        multiple
+                        mode="horizontal"
+                        items={items}
+                    ></Menu>
                 </Col>
             </Row>
             <Divider />
@@ -609,6 +434,127 @@ export default function ShikimoriPage() {
                 </Row>
             )}
             {!loading && <Animes animes={animes} />}
+            <Drawer size="large" onClose={() => setIsOpen(false)} open={isOpen}>
+                <Form form={form}>
+                    <Collapse
+                        defaultActiveKey={["sort", "date", "kind", "status"]}
+                        bordered={false}
+                        items={[
+                            {
+                                key: "sort",
+                                label: <Title level={5}>Сортировка</Title>,
+                                children: (
+                                    <ConfigProvider
+                                        theme={{
+                                            components: {
+                                                Menu: {
+                                                    itemBg: "transparent",
+                                                    darkItemBg: "transparent",
+                                                },
+                                            },
+                                        }}
+                                    >
+                                        <Menu
+                                            disabled={loading}
+                                            onSelect={onClick}
+                                            selectedKeys={[order]}
+                                            items={items2}
+                                            mode="vertical"
+                                        />
+                                    </ConfigProvider>
+                                ),
+                            },
+                            {
+                                key: "date",
+                                label: <Title level={5}>Год выхода</Title>,
+                                children: (
+                                    <DatePicker
+                                        onChange={(date) => {
+                                            if (date) {
+                                                setSeason(
+                                                    date
+                                                        .format("YYYY")
+                                                        .toString()
+                                                );
+                                            } else setSeason("");
+                                            valueChange(date, "1");
+                                        }}
+                                        variant="borderless"
+                                        inputReadOnly
+                                        minDate={dayjs(1967)}
+                                        maxDate={date}
+                                        placeholder="Год выхода"
+                                        style={{ width: "100%" }}
+                                        picker="year"
+                                    />
+                                ),
+                            },
+                            {
+                                key: "status",
+                                label: <Title level={5}>Статус</Title>,
+                                children: (
+                                    <FilterItem
+                                        onChange={handleCheckboxChangeStatus}
+                                        dataSource={statusOptions}
+                                        key="status"
+                                    />
+                                ),
+                            },
+                            {
+                                key: "kind",
+                                label: <Title level={5}>Тип</Title>,
+                                children: (
+                                    <FilterItem
+                                        onChange={handleCheckboxChangeKind}
+                                        dataSource={kindOptions}
+                                        key="kind"
+                                    />
+                                ),
+                            },
+                            {
+                                key: "demographic",
+                                label: <Title level={5}>Аудитория</Title>,
+                                children: (
+                                    <FilterItem
+                                        onChange={handleCheckboxChangeAudience}
+                                        dataSource={genres.demographic}
+                                        key="demographic"
+                                    />
+                                ),
+                            },
+                            {
+                                key: "genre",
+                                label: <Title level={5}>Жанры</Title>,
+                                children: (
+                                    <FilterItem
+                                        onChange={handleCheckboxChangeGenre}
+                                        dataSource={genres.genre}
+                                        key="genre"
+                                    />
+                                ),
+                            },
+                            {
+                                key: "theme",
+                                label: <Title level={5}>Темы</Title>,
+                                children: (
+                                    <FilterItem
+                                        onChange={handleCheckboxChangeTheme}
+                                        dataSource={genres.theme}
+                                        key="theme"
+                                    />
+                                ),
+                            },
+                        ]}
+                    ></Collapse>
+                </Form>
+            </Drawer>
+
+            <FloatButton
+                style={{ right: 32, bottom: 32 }}
+                type="primary"
+                icon={<FilterOutlined />}
+                onClick={toggleOpen}
+            />
         </div>
     );
 }

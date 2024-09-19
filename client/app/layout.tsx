@@ -268,7 +268,6 @@ export default function RootLayout({
                     }}
                 >
                     <Layout
-                        style={{ minHeight: "100vh", minWidth: "100vw" }}
                         className={currentTheme ? "darkTheme" : "lightTheme"}
                     >
                         <title>Series Tracker</title>
@@ -308,7 +307,7 @@ export default function RootLayout({
                                 </Col>
 
                                 {isUser && (
-                                    <Col span={3} offset={4}>
+                                    <Col span={4} offset={3}>
                                         <Dropdown menu={menuProps}>
                                             <Button
                                                 type="text"
@@ -334,7 +333,7 @@ export default function RootLayout({
                                     </Col>
                                 )}
                                 {!isUser && (
-                                    <Col span={3} offset={4}>
+                                    <Col span={4} offset={3}>
                                         <Space size={[10, 10]}>
                                             <Button
                                                 href={"/login"}

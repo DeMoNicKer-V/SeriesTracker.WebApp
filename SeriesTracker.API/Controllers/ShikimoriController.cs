@@ -7,6 +7,7 @@ using SeriesTracker.Core.Abstractions;
 using SeriesTracker.Core.Models;
 using SeriesTracker.Core.Models.Shikimori;
 using System.Linq;
+using System.Text.Json;
 
 namespace SeriesTracker.API.Controllers
 {
@@ -14,24 +15,15 @@ namespace SeriesTracker.API.Controllers
     [Route("shikimori")]
     public class ShikimoriController : ControllerBase
     {
-        private readonly ShikimoriService ShikimoriService = new();
-
+        private readonly ICategoryService _categoryService;
         private readonly ISeriesService _seriesService;
         private readonly IUserSeriesService _userSeriesService;
-        private readonly ICategoryService _categoryService;
-
+        private readonly ShikimoriService ShikimoriService = new();
         public ShikimoriController(ISeriesService seriesService, ICategoryService categoryService, IUserSeriesService userSeriesService)
         {
             _seriesService = seriesService;
             _categoryService = categoryService;
             _userSeriesService = userSeriesService;
-        }
-
-        [HttpGet]
-        public async Task<ActionResult> GetGenres()
-        {
-            GraphQLResponse<GenreList> graphQLResponse = await ShikimoriService.GetGenres();
-            return Ok(graphQLResponse.Data.Genres);
         }
 
         [HttpGet("id/{id}")]
@@ -44,11 +36,40 @@ namespace SeriesTracker.API.Controllers
             return new OkObjectResult(response);
         }
 
-        [HttpGet("random")]
-        public async Task<ActionResult> GetRandomAnime()
+        [HttpPost("animes")]
+        public async Task<ActionResult> GetAnimesByAllParams([FromBody] ShikimoriParamsRequest request)
         {
-            GraphQLResponse<ShikimoriAnimeList> graphQLResponse = await ShikimoriService.GetRandomAnime();
-            return Ok(graphQLResponse.Data.Animes[0].Id);
+            var userId = HttpContext.User.FindFirst("userId")?.Value;
+
+            var seriesDictionary = (await _userSeriesService.GetSeriesList(userId))
+                .ToDictionary(s => s.AnimeId, s => s);
+            var categoryDictionary = (await _categoryService.GetCategoryList())
+                .ToDictionary(c => c.Id, c => c);
+
+            GraphQLResponse<ShikimoriAnimeBaseList> graphQLResponse =
+                await ShikimoriService.GetAnimesByAllParams(request.Page, request.Name, request.Season, request.Status,
+                                                           request.Kind, request.Genre, request.Order, request.Censored);
+
+            var animeResponses = graphQLResponse.Data.Animes
+                .Select(item =>
+                {
+                    if (seriesDictionary.ContainsKey(item.Id))
+                    {
+                        var series = seriesDictionary[item.Id];
+
+                        var category = categoryDictionary[series.CategoryId];
+                        return new AnimeSeriesResponse(item.Id, series.CategoryId, category.Name, category.Color, series.IsFavorite,
+                                                     item.Description, item.Episodes, item.StartDate, item.Score, item.Title, item.SubTitle,
+                                                     item.PictureUrl, item.Rating, item.Kind, item.Status);
+                    }
+
+                    return new AnimeSeriesResponse(item.Id, 0, string.Empty, string.Empty, false,
+                                                 item.Description, item.Episodes, item.StartDate, item.Score, item.Title, item.SubTitle,
+                                                 item.PictureUrl, item.Rating, item.Kind, item.Status);
+                })
+                .ToList();
+
+            return Ok(animeResponses);
         }
 
         [HttpGet("{query}")]
@@ -71,7 +92,6 @@ namespace SeriesTracker.API.Controllers
                         category = categoryList.FirstOrDefault(s => s.Id == that.CategoryId).Name;
                     }
                     animeResponses.Add(new AnimeSeriesResponseSearch(item.Id, that.CategoryId, category, that.IsFavorite, item.Description, item.Episodes, item.EpisodesAired, item.StartDate, item.Score, item.Title, item.SubTitle, item.PictureUrl, item.Rating, item.Kind, item.Status));
-
                 }
                 else
                 {
@@ -79,46 +99,41 @@ namespace SeriesTracker.API.Controllers
                 }
             }
 
-
             return Ok(animeResponses);
         }
 
-        [HttpPost("animes")]
-        public async Task<ActionResult> GetAnimesByAllParams([FromBody] ShikimoriParamsRequest request)
+        [HttpGet]
+        public async Task<ActionResult> GetGenres()
         {
-            var userId = HttpContext.User.FindFirst("userId")?.Value;
+            GraphQLResponse<GenreList> graphQLResponse = await ShikimoriService.GetGenres();
+            return Ok(graphQLResponse.Data.Genres);
+        }
 
-            var seriesDictionary = (await _userSeriesService.GetSeriesList(userId))
-                .ToDictionary(s => s.AnimeId, s => s);
-            var categoryDictionary = (await _categoryService.GetCategoryList())
-                .ToDictionary(c => c.Id, c => c);
+        [HttpGet("groupGenres")]
+        public async Task<ActionResult> GetGroupGenres()
+        {
+            GraphQLResponse<GenreList> graphQLResponse = await ShikimoriService.GetGenres();
 
+            var groupedRecords = graphQLResponse.Data.Genres
+        .GroupBy(r => r.Kind)
+        .ToDictionary(g => g.Key, g => g.ToList());
 
-            GraphQLResponse<ShikimoriAnimeBaseList> graphQLResponse =
-                await ShikimoriService.GetAnimesByAllParams(request.Page, request.Name, request.Season, request.Status,
-                                                           request.Kind, request.Genre, request.Order, request.Censored);
+            // Создание объекта для хранения результатов
+            var result = new
+            {
+                theme = groupedRecords.ContainsKey("theme") ? groupedRecords["theme"] : new List<Genre>(),
+                genre = groupedRecords.ContainsKey("genre") ? groupedRecords["genre"] : new List<Genre>(),
+                demographic = groupedRecords.ContainsKey("demographic") ? groupedRecords["demographic"] : new List<Genre>()
+            };
+         
+            return Ok(result);
+        }
 
-            var animeResponses = graphQLResponse.Data.Animes
-                .Select(item =>
-                {
-                    if (seriesDictionary.ContainsKey(item.Id))
-                    {
-                        var series = seriesDictionary[item.Id];
-                     
-                            var category = categoryDictionary[series.CategoryId];
-                            return new AnimeSeriesResponse(item.Id, series.CategoryId, category.Name, category.Color, series.IsFavorite,
-                                                         item.Description, item.Episodes, item.StartDate, item.Score, item.Title, item.SubTitle,
-                                                         item.PictureUrl, item.Rating, item.Kind, item.Status);
-                        
-                    }
-
-                    return new AnimeSeriesResponse(item.Id, 0, string.Empty, string.Empty, false,
-                                                 item.Description, item.Episodes, item.StartDate, item.Score, item.Title, item.SubTitle,
-                                                 item.PictureUrl, item.Rating, item.Kind, item.Status);
-                })
-                .ToList();
-
-            return Ok(animeResponses);
+        [HttpGet("random")]
+        public async Task<ActionResult> GetRandomAnime()
+        {
+            GraphQLResponse<ShikimoriAnimeList> graphQLResponse = await ShikimoriService.GetRandomAnime();
+            return Ok(graphQLResponse.Data.Animes[0].Id);
         }
     }
 }

@@ -49,7 +49,7 @@ export interface CalendarAnime {
     released_on: string;
 }
 export const getGenres = async () => {
-    const response = await fetch(`http://localhost:5125/shikimori/`);
+    const response = await fetch(`http://localhost:5125/shikimori/groupGenres`);
     const genres: Genre = await response.json();
     return genres;
 };

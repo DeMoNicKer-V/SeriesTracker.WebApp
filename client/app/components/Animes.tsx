@@ -19,11 +19,10 @@ export const Animes = ({ animes }: Props) => {
     const { Title } = Typography;
     return (
         <List
-            style={{ justifyContent: "center", padding: 10 }}
             grid={{
                 gutter: 15,
-                xs: 2,
-                sm: 3,
+                xs: 1,
+                sm: 2,
                 md: 4,
                 lg: 5,
                 xl: 6,
@@ -31,7 +30,7 @@ export const Animes = ({ animes }: Props) => {
             }}
             dataSource={animes}
             renderItem={(animes: SeriesAnime) => (
-                <List.Item>
+                <List.Item colStyle={{ maxWidth: 210, marginInline: "auto" }}>
                     <Popover
                         trigger={"hover"}
                         mouseEnterDelay={0.5}
