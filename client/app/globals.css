@@ -243,30 +243,11 @@ input,
 .lightTheme .searchpage-input .input-label.focus {
     color: red !important;
 }
-
-.darkTheme .searchpage-input .input-label {
+.searchpage-input .input-label {
     color: hsla(0, 0%, 100%, 0.7) !important;
     background-color: #0f0f0f !important;
 }
-
-.darkTheme .searchpage-input .input-label.focus {
-    color: #de1eb2 !important;
-}
-
-.lightTheme .shikimoripage-input .input-label {
-    background-color: #ffffff !important;
-}
-
-.lightTheme .shikimoripage-input .input-label.focus {
-    color: red !important;
-}
-
-.darkTheme .shikimoripage-input .input-label {
-    color: hsla(0, 0%, 100%, 0.7) !important;
-    background-color: #141414 !important;
-}
-
-.darkTheme .shikimoripage-input .input-label.focus {
+.searchpage-input .input-label.focus {
     color: #de1eb2 !important;
 }
 
@@ -437,4 +418,8 @@ div.ant-upload-list-item {
 }
 .login-space .ant-space-item {
     flex: auto;
+}
+
+.ant-tooltip {
+    max-width: max-content;
 }

@@ -3,18 +3,18 @@ import { useEffect, useState } from "react";
 import { Animes } from "../components/Animes";
 import {
     ShikimoriRequest,
-    getAnimes,
     getAnimesByParams,
     getGenres,
 } from "../services/shikimori";
 import {
     Button,
-    Card,
     Checkbox,
     Col,
     Collapse,
     ConfigProvider,
     DatePicker,
+    Descriptions,
+    DescriptionsProps,
     Divider,
     Drawer,
     Flex,
@@ -22,16 +22,10 @@ import {
     Form,
     GetProp,
     Input,
-    List,
     Menu,
     MenuProps,
-    Radio,
     Row,
-    Select,
-    SelectProps,
-    Space,
     Spin,
-    Switch,
     Tag,
     Tooltip,
     Typography,
@@ -39,20 +33,13 @@ import {
 import {
     RightOutlined,
     LeftOutlined,
-    CloseOutlined,
     SearchOutlined,
-    AppstoreOutlined,
-    FilterFilled,
-    FilterOutlined,
     InfoCircleOutlined,
     DoubleLeftOutlined,
-    MailOutlined,
-    SettingOutlined,
-    LikeOutlined,
+    QuestionCircleOutlined,
     StarOutlined,
     FontColorsOutlined,
     TeamOutlined,
-    EllipsisOutlined,
     CalendarOutlined,
     EyeOutlined,
     EyeInvisibleOutlined,
@@ -67,7 +54,6 @@ export default function ShikimoriPage() {
     ];
 
     const { Text, Title } = Typography;
-    const [inputFocus, setInputFocus] = useState(false);
     const [loading, setLoading] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
     const [animes, setAnimes] = useState<SeriesAnime[] | any>([]);
@@ -89,6 +75,26 @@ export default function ShikimoriPage() {
         setPage(1);
         setOrder(e.key);
     };
+    const items: DescriptionsProps["items"] = [
+        {
+            label: "Состояние",
+            children: (
+                <Flex gap={5}>
+                    {safe ? "Выключен" : "Включен"}
+                    <Tooltip
+                        trigger={"hover"}
+                        title={
+                            safe
+                                ? "Рекомендуется в большинстве случаев"
+                                : "Если вы ищете что-то определенное"
+                        }
+                    >
+                        <QuestionCircleOutlined style={{ cursor: "help" }} />
+                    </Tooltip>
+                </Flex>
+            ),
+        },
+    ];
 
     const getGenresList = async () => {
         const list = await getGenres();
@@ -127,7 +133,9 @@ export default function ShikimoriPage() {
             season: season,
             status: status.toString(),
             kind: kind.toString(),
-            genre: genre.toString().concat(status.toString(), theme.toString()),
+            genre: genre
+                .toString()
+                .concat(audience.toString(), theme.toString()),
             order: order,
             censored: safe,
         };
@@ -183,71 +191,6 @@ export default function ShikimoriPage() {
         selectedItems.splice(index, 1);
     };
     const [form] = Form.useForm();
-    const items: MenuItem[] = [
-        {
-            key: "0",
-            style: { minWidth: 200, maxWidth: 500, flex: "1 1 auto" },
-            label: (
-                <div className="shikimoripage-input" style={{ width: "100%" }}>
-                    <Typography.Title
-                        level={5}
-                        className={
-                            inputFocus ? "input-label focus" : "input-label"
-                        }
-                        style={{
-                            position: "absolute",
-                            zIndex: 1,
-                            left: 20,
-                            top: -15,
-                            padding: 3,
-                            fontSize: 18,
-                            transform: "scale(.75)",
-                        }}
-                    >
-                        Поиск
-                    </Typography.Title>
-                    <Input
-                        onChange={(e: { target: { value: any } }) => {
-                            setQuery(String(e.target.value));
-                        }}
-                        value={query}
-                        suffix={<SearchOutlined />}
-                        style={{
-                            fontSize: 18,
-                            background: "none",
-                        }}
-                        spellCheck={false}
-                        onFocus={() => setInputFocus(true)}
-                        onBlur={() => setInputFocus(false)}
-                    />
-                </div>
-            ),
-        },
-
-        {
-            key: "5",
-            style: { cursor: "default" },
-            disabled: true,
-
-            label: <Divider type="vertical" />,
-        },
-        {
-            key: "6",
-
-            style: { cursor: "default" },
-
-            label: (
-                <Button
-                    disabled={loading}
-                    onClick={resetAllFields}
-                    icon={<CloseOutlined />}
-                    type="link"
-                >
-                    Сбросить
-                </Button>
-            ),
-        },
-    ];
     const handleCheckboxChangeStatus: GetProp<
         typeof Checkbox.Group,
         "onChange"
@@ -282,6 +225,9 @@ export default function ShikimoriPage() {
     const [collapsed, setCollapsed] = useState(false);
     const toggleOpen = () => {
         setIsOpen(!isOpen);
+    };
+    const toggleCollapsed = () => {
+        setIsOpen(!collapsed);
     };
 
     const items2: MenuItem[] = [
@@ -321,100 +267,53 @@ export default function ShikimoriPage() {
                 }}
             />
 
-            <Row align={"middle"} justify={"center"}>
-                <Col span={2}>
-                    <Flex gap={5}>
-                        <Typography.Title style={{ margin: 0 }} level={3}>
-                            Аниме
-                        </Typography.Title>
-                        <Tooltip
-                            title={
-                                safe
-                                    ? "Безопасный поиск выключен"
-                                    : "Безопасный поиск включен"
-                            }
-                        >
-                            <Button
-                                danger={!safe}
-                                onClick={() => setSafe(!safe)}
-                                shape="circle"
-                                size="small"
-                                type="dashed"
-                                icon={
-                                    safe ? (
-                                        <EyeOutlined />
-                                    ) : (
-                                        <EyeInvisibleOutlined />
-                                    )
-                                }
-                            />
-                        </Tooltip>
-                    </Flex>
+            <Typography.Title style={{ margin: 0 }} level={3}>
+                Аниме
+            </Typography.Title>
 
-                    <Flex justify="start">
-                        {page > 2 && (
-                            <Tooltip title={"В начало"}>
-                                <Button
-                                    disabled={loading}
-                                    size="small"
-                                    type="link"
-                                    onClick={firstPage}
-                                    icon={<DoubleLeftOutlined />}
-                                />
-                            </Tooltip>
-                        )}
-                        {page > 1 && (
-                            <Tooltip title={"Назад"}>
-                                <Button
-                                    disabled={loading}
-                                    size="small"
-                                    type="link"
-                                    onClick={prePage}
-                                    icon={<LeftOutlined />}
-                                />
-                            </Tooltip>
-                        )}
-                        <Tag
-                            style={{
-                                fontStyle: "italic",
-                                cursor: "default",
-                                marginLeft: page <= 1 ? 0 : 5,
-                                transition: "all .2s",
-                            }}
-                        >{`Страница: ${page}`}</Tag>
-                        {animes.length == 28 && (
-                            <Tooltip title={"Дальше"}>
-                                <Button
-                                    disabled={loading}
-                                    size="small"
-                                    type="link"
-                                    onClick={nextPage}
-                                    icon={<RightOutlined />}
-                                />
-                            </Tooltip>
-                        )}
-                    </Flex>
-                </Col>
-                <Col span={22}>
-                    <Menu
-                        disabled={loading}
-                        selectedKeys={selectedItems}
-                        triggerSubMenuAction={"click"}
-                        style={{
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-
-                            padding: 15,
-                            borderRadius: 10,
-                        }}
-                        selectable={false}
-                        multiple
-                        mode="horizontal"
-                        items={items}
-                    ></Menu>
-                </Col>
-            </Row>
+            <Flex justify="start">
+                {page > 2 && (
+                    <Tooltip title={"В начало"}>
+                        <Button
+                            disabled={loading}
+                            size="small"
+                            type="link"
+                            onClick={firstPage}
+                            icon={<DoubleLeftOutlined />}
+                        />
+                    </Tooltip>
+                )}
+                {page > 1 && (
+                    <Tooltip title={"Назад"}>
+                        <Button
+                            disabled={loading}
+                            size="small"
+                            type="link"
+                            onClick={prePage}
+                            icon={<LeftOutlined />}
+                        />
+                    </Tooltip>
+                )}
+                <Tag
+                    style={{
+                        fontStyle: "italic",
+                        cursor: "default",
+                        marginLeft: page <= 1 ? 0 : 5,
+                        transition: "all .2s",
+                    }}
+                >{`Страница: ${page}`}</Tag>
+                {animes.length == 28 && (
+                    <Tooltip title={"Дальше"}>
+                        <Button
+                            disabled={loading}
+                            size="small"
+                            type="link"
+                            onClick={nextPage}
+                            icon={<RightOutlined />}
+                        />
+                    </Tooltip>
+                )}
+            </Flex>
             <Divider />
             {Number(animes.length) <= 0 && loading === false && (
                 <Row>
@@ -434,8 +333,56 @@ export default function ShikimoriPage() {
                 </Row>
             )}
             {!loading && <Animes animes={animes} />}
-            <Drawer size="large" onClose={() => setIsOpen(false)} open={isOpen}>
-                <Form form={form}>
+            <Drawer
+                title="Укажите критерии поиска"
+                size="large"
+                onClose={() => setIsOpen(false)}
+                open={isOpen}
+            >
+                <Form layout="vertical" form={form}>
+                    <Form.Item
+                        name={"safe"}
+                        label={<Title level={5}>Безопасный поиск</Title>}
+                    >
+                        <Flex>
+                            <Descriptions items={items}></Descriptions>{" "}
+                            <Tooltip title={safe ? "Включить" : "Выключить"}>
+                                <Button
+                                    danger={!safe}
+                                    onClick={() => setSafe(!safe)}
+                                    shape="circle"
+                                    size="small"
+                                    type="dashed"
+                                    icon={
+                                        safe ? (
+                                            <EyeOutlined />
+                                        ) : (
+                                            <EyeInvisibleOutlined />
+                                        )
+                                    }
+                                />
+                            </Tooltip>
+                        </Flex>
+                    </Form.Item>
+                    <Form.Item
+                        name={"query"}
+                        label={<Title level={5}>Найти аниме</Title>}
+                        style={{ marginBottom: 10 }}
+                    >
+                        <Input
+                            allowClear
+                            onChange={(e: { target: { value: any } }) => {
+                                setQuery(String(e.target.value));
+                            }}
+                            value={query}
+                            suffix={<SearchOutlined />}
+                            style={{
+                                fontSize: 16,
+                                background: "none",
+                            }}
+                            spellCheck={false}
+                        />
+                    </Form.Item>
                     <Collapse
                         defaultActiveKey={["sort", "date", "kind", "status"]}
                         bordered={false}
@@ -548,13 +495,14 @@ export default function ShikimoriPage() {
                     ></Collapse>
                 </Form>
             </Drawer>
-
-            <FloatButton
-                style={{ right: 32, bottom: 32 }}
-                type="primary"
-                icon={<FilterOutlined />}
-                onClick={toggleOpen}
-            />
+            <FloatButton.Group style={{ right: 0, margin: 10, bottom: 32 }}>
+                <FloatButton
+                    type="primary"
+                    icon={<SearchOutlined />}
+                    onClick={toggleOpen}
+                />
+                <FloatButton.BackTop />
+            </FloatButton.Group>
         </div>
     );
 }
