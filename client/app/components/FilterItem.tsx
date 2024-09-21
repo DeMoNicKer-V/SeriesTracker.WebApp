@@ -1,4 +1,5 @@
-import { Checkbox, CheckboxProps, Col, Form, GetProp, List, Row } from "antd";
+import { Checkbox, Col, Form, GetProp, Row } from "antd";
+import { Dispatch, SetStateAction } from "react";
 interface DataType {
     id: any;
     russian: string;
@@ -7,14 +8,19 @@ interface DataType {
 interface Props {
     dataSource: DataType[];
     key: string;
-
-    onChange: GetProp<typeof Checkbox.Group, "onChange">;
+    value: [];
+    targetValue: Dispatch<SetStateAction<[] | any>>;
 }
 
-function FilterItem({ dataSource, key, onChange }: Props) {
+function FilterItem({ dataSource, key, value, targetValue }: Props) {
     return (
         <Form.Item name={key}>
-            <Checkbox.Group onChange={onChange}>
+            <Checkbox.Group
+                value={value}
+                onChange={(checkedValues) =>
+                    targetValue(checkedValues.toString())
+                }
+            >
                 <Row gutter={[0, 16]}>
                     {dataSource.map((option) => (
                         <Col span={24} key={`${key}${option.id}`}>

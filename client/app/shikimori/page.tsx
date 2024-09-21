@@ -32,6 +32,7 @@ import {
 } from "antd";
 import {
     RightOutlined,
+    UndoOutlined,
     LeftOutlined,
     SearchOutlined,
     InfoCircleOutlined,
@@ -334,7 +335,19 @@ export default function ShikimoriPage() {
             )}
             {!loading && <Animes animes={animes} />}
             <Drawer
-                title="Укажите критерии поиска"
+                style={{ opacity: 0.95 }}
+                title={
+                    <Flex align="center" justify="space-between">
+                        <Title level={5}>{"Укажите критерии поиска"}</Title>
+                        <Tooltip title={"Сбросить всё"}>
+                            <Button
+                                icon={<UndoOutlined />}
+                                type="text"
+                                shape="round"
+                            ></Button>
+                        </Tooltip>
+                    </Flex>
+                }
                 size="large"
                 onClose={() => setIsOpen(false)}
                 open={isOpen}
@@ -430,7 +443,7 @@ export default function ShikimoriPage() {
                                         inputReadOnly
                                         minDate={dayjs(1967)}
                                         maxDate={date}
-                                        placeholder="Год выхода"
+                                        placeholder="Укажите год выхода"
                                         style={{ width: "100%" }}
                                         picker="year"
                                     />
@@ -441,7 +454,8 @@ export default function ShikimoriPage() {
                                 label: <Title level={5}>Статус</Title>,
                                 children: (
                                     <FilterItem
-                                        onChange={handleCheckboxChangeStatus}
+                                        value={status}
+                                        targetValue={setStatus}
                                         dataSource={statusOptions}
                                         key="status"
                                     />
@@ -452,7 +466,8 @@ export default function ShikimoriPage() {
                                 label: <Title level={5}>Тип</Title>,
                                 children: (
                                     <FilterItem
-                                        onChange={handleCheckboxChangeKind}
+                                        value={kind}
+                                        targetValue={setKind}
                                         dataSource={kindOptions}
                                         key="kind"
                                     />
@@ -463,7 +478,8 @@ export default function ShikimoriPage() {
                                 label: <Title level={5}>Аудитория</Title>,
                                 children: (
                                     <FilterItem
-                                        onChange={handleCheckboxChangeAudience}
+                                        value={genre}
+                                        targetValue={setGenre}
                                         dataSource={genres.demographic}
                                         key="demographic"
                                     />
@@ -474,7 +490,8 @@ export default function ShikimoriPage() {
                                 label: <Title level={5}>Жанры</Title>,
                                 children: (
                                     <FilterItem
-                                        onChange={handleCheckboxChangeGenre}
+                                        value={genre}
+                                        targetValue={setGenre}
                                         dataSource={genres.genre}
                                         key="genre"
                                     />
@@ -485,7 +502,8 @@ export default function ShikimoriPage() {
                                 label: <Title level={5}>Темы</Title>,
                                 children: (
                                     <FilterItem
-                                        onChange={handleCheckboxChangeTheme}
+                                        value={genre}
+                                        targetValue={setGenre}
                                         dataSource={genres.theme}
                                         key="theme"
                                     />

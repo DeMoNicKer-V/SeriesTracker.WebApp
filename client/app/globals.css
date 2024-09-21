@@ -423,3 +423,6 @@ div.ant-upload-list-item {
 .ant-tooltip {
     max-width: max-content;
 }
+.ant-typography {
+    margin-bottom: 0 !important;
+}

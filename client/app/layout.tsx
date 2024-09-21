@@ -278,13 +278,13 @@ export default function RootLayout({
                                 zIndex: 99,
                                 width: "100%",
                                 alignItems: "center",
-                                padding: "0 10px",
+                                padding: "0 20px",
                                 boxShadow:
                                     "0 2px 4px -1px rgba(0,0,0,.3), 0 4px 5px 0 rgba(0,0,0,.24), 0 1px 10px 0 rgba(0,0,0,.22)",
                             }}
                         >
-                            <Row align="middle" justify={"start"}>
-                                <Col span={7}>
+                            <Row align="middle" justify={"space-between"}>
+                                <Col>
                                     <Button
                                         type="link"
                                         icon={
@@ -297,17 +297,19 @@ export default function RootLayout({
                                         onClick={() => setCollapsed(!collapsed)}
                                     />
                                 </Col>
-
-                                <Col span={10}>
-                                    <SearchBar
-                                        listBG={
-                                            currentTheme ? "#1e1e1e" : "#ffffff"
-                                        }
-                                    />
-                                </Col>
-
+                                {currentKey !== "shikimori" && (
+                                    <Col span={10}>
+                                        <SearchBar
+                                            listBG={
+                                                currentTheme
+                                                    ? "#1e1e1e"
+                                                    : "#ffffff"
+                                            }
+                                        />
+                                    </Col>
+                                )}
                                 {isUser && (
-                                    <Col span={4} offset={3}>
+                                    <Col>
                                         <Dropdown menu={menuProps}>
                                             <Button
                                                 type="text"
@@ -333,7 +335,7 @@ export default function RootLayout({
                                     </Col>
                                 )}
                                 {!isUser && (
-                                    <Col span={4} offset={3}>
+                                    <Col>
                                         <Space size={[10, 10]}>
                                             <Button
                                                 href={"/login"}
