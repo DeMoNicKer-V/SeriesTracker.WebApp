@@ -7,31 +7,25 @@ interface DataType {
 
 interface Props {
     dataSource: DataType[];
-    key: string;
-    value: [];
+    index: string;
+    value: [] | any;
     targetValue: Dispatch<SetStateAction<[] | any>>;
 }
 
-function FilterItem({ dataSource, key, value, targetValue }: Props) {
+function FilterItem({ dataSource, index, value, targetValue }: Props) {
     return (
-        <Form.Item name={key}>
-            <Checkbox.Group
-                value={value}
-                onChange={(checkedValues) =>
-                    targetValue(checkedValues.toString())
-                }
-            >
-                <Row gutter={[0, 16]}>
-                    {dataSource.map((option) => (
-                        <Col span={24} key={`${key}${option.id}`}>
-                            <Checkbox value={option.id}>
-                                {option.russian}
-                            </Checkbox>
-                        </Col>
-                    ))}
-                </Row>
-            </Checkbox.Group>
-        </Form.Item>
+        <Checkbox.Group
+            value={value}
+            onChange={(checkedValues) => targetValue(checkedValues)}
+        >
+            <Row gutter={[0, 16]}>
+                {dataSource.map((option) => (
+                    <Col span={24} key={`${index}${option.id}`}>
+                        <Checkbox value={option.id}>{option.russian}</Checkbox>
+                    </Col>
+                ))}
+            </Row>
+        </Checkbox.Group>
     );
 }
 

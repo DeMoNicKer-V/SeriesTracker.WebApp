@@ -1,5 +1,3 @@
-const userId = localStorage.getItem("userId");
-
 export interface AnimeReqruest {
     title: string;
     description: string;

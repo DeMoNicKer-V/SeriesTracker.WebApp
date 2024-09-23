@@ -8,7 +8,6 @@ import {
 } from "../services/shikimori";
 import {
     Button,
-    Checkbox,
     Col,
     Collapse,
     ConfigProvider,
@@ -19,8 +18,6 @@ import {
     Drawer,
     Flex,
     FloatButton,
-    Form,
-    GetProp,
     Input,
     Menu,
     MenuProps,
@@ -47,14 +44,49 @@ import {
 } from "@ant-design/icons";
 import dayjs from "dayjs";
 import FilterItem from "../components/FilterItem";
-export default function ShikimoriPage() {
-    type MenuItem = Required<MenuProps>["items"][number];
-    const statusOptions = [
-        { russian: "Онгоинг", id: "ongoing" },
-        { russian: "Вышло", id: "released" },
-    ];
 
-    const { Text, Title } = Typography;
+///////////////////////////////////////////////////////
+const { Text, Title } = Typography;
+type MenuItem = Required<MenuProps>["items"][number];
+const date = dayjs();
+
+const statusOptions = [
+    { russian: "Онгоинг", id: "ongoing" },
+    { russian: "Вышло", id: "released" },
+];
+
+const kindOptions = [
+    { russian: "TV-Сериал", id: "tv" },
+    { russian: "П/ф", id: "movie" },
+    { russian: "ONA", id: "ona" },
+    { russian: "OVA", id: "ova" },
+    { russian: "Спешл", id: "special" },
+    { russian: "TV-Спешл", id: "tv_special" },
+];
+const sortMenuItems: MenuItem[] = [
+    {
+        style: { marginLeft: "auto" },
+        label: "По рейтингу",
+        key: "ranked",
+        icon: <StarOutlined />,
+    },
+    {
+        label: "По популярности",
+        key: "popularity",
+        icon: <TeamOutlined />,
+    },
+    {
+        label: "По алфавиту",
+        key: "name",
+        icon: <FontColorsOutlined />,
+    },
+    {
+        label: "По дате выхода",
+        key: "aired_on",
+        icon: <CalendarOutlined />,
+    },
+];
+export default function ShikimoriPage() {
     const [loading, setLoading] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
     const [animes, setAnimes] = useState<SeriesAnime[] | any>([]);
@@ -102,7 +134,9 @@ export default function ShikimoriPage() {
         setGenres(list);
     };
     useEffect(() => {
-        getGenresList();
+        return () => {
+            getGenresList();
+        };
     }, []);
 
     const getAnimesPost = async (req: ShikimoriRequest) => {
@@ -125,18 +159,18 @@ export default function ShikimoriPage() {
         setPage(1);
     };
     useEffect(() => {
+        console.log(genre.toString() + audience.toString() + theme.toString());
         if (query) {
             setOrder("ranked");
         }
+
         const req: ShikimoriRequest = {
             page: page,
             name: query,
             season: season,
             status: status.toString(),
             kind: kind.toString(),
-            genre: genre
-                .toString()
-                .concat(audience.toString(), theme.toString()),
+            genre: genre.concat(audience).concat(theme).toString(),
             order: order,
             censored: safe,
         };
@@ -146,38 +180,20 @@ export default function ShikimoriPage() {
         }, 1000);
 
         return () => clearTimeout(timer);
-    }, [page, query, season, status, kind, genre, order, safe]);
-
-    useEffect(() => {
-        resetAllFields();
-    }, [safe]);
-
-    const kindOptions = [
-        { russian: "TV-Сериал", id: "tv" },
-        { russian: "П/ф", id: "movie" },
-        { russian: "ONA", id: "ona" },
-        { russian: "OVA", id: "ova" },
-        { russian: "Спешл", id: "special" },
-        { russian: "TV-Спешл", id: "tv_special" },
-    ];
-
-    const date = dayjs();
-    const [selectedItems, setSelectedItems] = useState<string[]>([]);
-    const valueChange = (value: any, key: string) => {
-        const index = selectedItems.indexOf(key);
-        if (!value) {
-            selectedItems.splice(index, 1);
-        } else {
-            if (index === -1) {
-                selectedItems.push(key);
-            }
-        }
-        setPage(1);
-    };
+    }, [
+        page,
+        query,
+        season,
+        status,
+        kind,
+        audience,
+        genre,
+        theme,
+        order,
+        safe,
+    ]);
 
     const resetAllFields = () => {
-        form.resetFields();
-        setSelectedItems([]);
         setPage(1);
         setOrder("ranked");
         setQuery("");
@@ -187,73 +203,9 @@ export default function ShikimoriPage() {
         setSeason("");
     };
 
-    const onClear = (key: string) => {
-        const index = selectedItems.indexOf(key);
-        selectedItems.splice(index, 1);
-    };
-    const [form] = Form.useForm();
-    const handleCheckboxChangeStatus: GetProp<
-        typeof Checkbox.Group,
-        "onChange"
-    > = (checkedValues) => {
-        setStatus(checkedValues);
-    };
-    const handleCheckboxChangeKind: GetProp<
-        typeof Checkbox.Group,
-        "onChange"
-    > = (checkedValues) => {
-        setKind(checkedValues);
-    };
-    const handleCheckboxChangeGenre: GetProp<
-        typeof Checkbox.Group,
-        "onChange"
-    > = (checkedValues) => {
-        setGenre(checkedValues);
-    };
-    const handleCheckboxChangeAudience: GetProp<
-        typeof Checkbox.Group,
-        "onChange"
-    > = (checkedValues) => {
-        setAudience(checkedValues);
-    };
-    const handleCheckboxChangeTheme: GetProp<
-        typeof Checkbox.Group,
-        "onChange"
-    > = (checkedValues) => {
-        setTheme(checkedValues);
-    };
-
-    const [collapsed, setCollapsed] = useState(false);
     const toggleOpen = () => {
         setIsOpen(!isOpen);
     };
-    const toggleCollapsed = () => {
-        setIsOpen(!collapsed);
-    };
-
-    const items2: MenuItem[] = [
-        {
-            style: { marginLeft: "auto" },
-            label: "По рейтингу",
-            key: "ranked",
-            icon: <StarOutlined />,
-        },
-        {
-            label: "По популярности",
-            key: "popularity",
-            icon: <TeamOutlined />,
-        },
-        {
-            label: "По алфавиту",
-            key: "name",
-            icon: <FontColorsOutlined />,
-        },
-        {
-            label: "По дате выхода",
-            key: "aired_on",
-            icon: <CalendarOutlined />,
-        },
-    ];
 
     return (
         <div className="container">
@@ -341,6 +293,7 @@ export default function ShikimoriPage() {
                         <Title level={5}>{"Укажите критерии поиска"}</Title>
                         <Tooltip title={"Сбросить всё"}>
                             <Button
+                                onClick={resetAllFields}
                                 icon={<UndoOutlined />}
                                 type="text"
                                 shape="round"
@@ -352,166 +305,167 @@ export default function ShikimoriPage() {
                 onClose={() => setIsOpen(false)}
                 open={isOpen}
             >
-                <Form layout="vertical" form={form}>
-                    <Form.Item
-                        name={"safe"}
-                        label={<Title level={5}>Безопасный поиск</Title>}
-                    >
-                        <Flex>
-                            <Descriptions items={items}></Descriptions>{" "}
-                            <Tooltip title={safe ? "Включить" : "Выключить"}>
-                                <Button
-                                    danger={!safe}
-                                    onClick={() => setSafe(!safe)}
-                                    shape="circle"
-                                    size="small"
-                                    type="dashed"
-                                    icon={
-                                        safe ? (
-                                            <EyeOutlined />
-                                        ) : (
-                                            <EyeInvisibleOutlined />
-                                        )
-                                    }
-                                />
-                            </Tooltip>
-                        </Flex>
-                    </Form.Item>
-                    <Form.Item
-                        name={"query"}
-                        label={<Title level={5}>Найти аниме</Title>}
-                        style={{ marginBottom: 10 }}
-                    >
-                        <Input
-                            allowClear
-                            onChange={(e: { target: { value: any } }) => {
-                                setQuery(String(e.target.value));
-                            }}
-                            value={query}
-                            suffix={<SearchOutlined />}
-                            style={{
-                                fontSize: 16,
-                                background: "none",
-                            }}
-                            spellCheck={false}
-                        />
-                    </Form.Item>
-                    <Collapse
-                        defaultActiveKey={["sort", "date", "kind", "status"]}
-                        bordered={false}
-                        items={[
-                            {
-                                key: "sort",
-                                label: <Title level={5}>Сортировка</Title>,
-                                children: (
-                                    <ConfigProvider
-                                        theme={{
-                                            components: {
-                                                Menu: {
-                                                    itemBg: "transparent",
-                                                    darkItemBg: "transparent",
-                                                },
+                <Flex
+                    style={{ flexDirection: "column", marginBottom: 10 }}
+                    gap={10}
+                >
+                    <Title level={5}>Безопасный поиск</Title>
+                    <Flex>
+                        <Descriptions items={items}></Descriptions>
+                        <Tooltip title={safe ? "Включить" : "Выключить"}>
+                            <Button
+                                danger={!safe}
+                                onClick={() => {
+                                    setSafe(!safe);
+                                    resetAllFields();
+                                }}
+                                shape="circle"
+                                size="small"
+                                type="dashed"
+                                icon={
+                                    safe ? (
+                                        <EyeOutlined />
+                                    ) : (
+                                        <EyeInvisibleOutlined />
+                                    )
+                                }
+                            />
+                        </Tooltip>
+                    </Flex>
+                </Flex>
+                <Flex
+                    style={{ flexDirection: "column", marginBottom: 10 }}
+                    gap={10}
+                >
+                    <Title level={5}>Найти аниме</Title>
+
+                    <Input
+                        allowClear
+                        onChange={(e: { target: { value: any } }) => {
+                            setQuery(String(e.target.value));
+                        }}
+                        value={query}
+                        suffix={<SearchOutlined />}
+                        style={{
+                            fontSize: 16,
+                            background: "none",
+                        }}
+                        spellCheck={false}
+                    />
+                </Flex>
+
+                <Collapse
+                    defaultActiveKey={["sort", "date", "kind", "status"]}
+                    bordered={false}
+                    items={[
+                        {
+                            key: "sort",
+                            label: <Title level={5}>Сортировка</Title>,
+                            children: (
+                                <ConfigProvider
+                                    theme={{
+                                        components: {
+                                            Menu: {
+                                                itemBg: "transparent",
+                                                darkItemBg: "transparent",
                                             },
-                                        }}
-                                    >
-                                        <Menu
-                                            disabled={loading}
-                                            onSelect={onClick}
-                                            selectedKeys={[order]}
-                                            items={items2}
-                                            mode="vertical"
-                                        />
-                                    </ConfigProvider>
-                                ),
-                            },
-                            {
-                                key: "date",
-                                label: <Title level={5}>Год выхода</Title>,
-                                children: (
-                                    <DatePicker
-                                        onChange={(date) => {
-                                            if (date) {
-                                                setSeason(
-                                                    date
-                                                        .format("YYYY")
-                                                        .toString()
-                                                );
-                                            } else setSeason("");
-                                            valueChange(date, "1");
-                                        }}
-                                        variant="borderless"
-                                        inputReadOnly
-                                        minDate={dayjs(1967)}
-                                        maxDate={date}
-                                        placeholder="Укажите год выхода"
-                                        style={{ width: "100%" }}
-                                        picker="year"
+                                        },
+                                    }}
+                                >
+                                    <Menu
+                                        disabled={loading}
+                                        onSelect={onClick}
+                                        selectedKeys={[order]}
+                                        items={sortMenuItems}
+                                        mode="vertical"
                                     />
-                                ),
-                            },
-                            {
-                                key: "status",
-                                label: <Title level={5}>Статус</Title>,
-                                children: (
-                                    <FilterItem
-                                        value={status}
-                                        targetValue={setStatus}
-                                        dataSource={statusOptions}
-                                        key="status"
-                                    />
-                                ),
-                            },
-                            {
-                                key: "kind",
-                                label: <Title level={5}>Тип</Title>,
-                                children: (
-                                    <FilterItem
-                                        value={kind}
-                                        targetValue={setKind}
-                                        dataSource={kindOptions}
-                                        key="kind"
-                                    />
-                                ),
-                            },
-                            {
-                                key: "demographic",
-                                label: <Title level={5}>Аудитория</Title>,
-                                children: (
-                                    <FilterItem
-                                        value={genre}
-                                        targetValue={setGenre}
-                                        dataSource={genres.demographic}
-                                        key="demographic"
-                                    />
-                                ),
-                            },
-                            {
-                                key: "genre",
-                                label: <Title level={5}>Жанры</Title>,
-                                children: (
-                                    <FilterItem
-                                        value={genre}
-                                        targetValue={setGenre}
-                                        dataSource={genres.genre}
-                                        key="genre"
-                                    />
-                                ),
-                            },
-                            {
-                                key: "theme",
-                                label: <Title level={5}>Темы</Title>,
-                                children: (
-                                    <FilterItem
-                                        value={genre}
-                                        targetValue={setGenre}
-                                        dataSource={genres.theme}
-                                        key="theme"
-                                    />
-                                ),
-                            },
-                        ]}
-                    ></Collapse>
-                </Form>
+                                </ConfigProvider>
+                            ),
+                        },
+                        {
+                            key: "date",
+                            label: <Title level={5}>Год выхода</Title>,
+                            children: (
+                                <DatePicker
+                                    onChange={(date) => {
+                                        if (date) {
+                                            setSeason(
+                                                date.format("YYYY").toString()
+                                            );
+                                        } else setSeason("");
+                                    }}
+                                    variant="borderless"
+                                    inputReadOnly
+                                    minDate={dayjs(1967)}
+                                    maxDate={date}
+                                    placeholder="Укажите год выхода"
+                                    style={{ width: "100%" }}
+                                    picker="year"
+                                />
+                            ),
+                        },
+                        {
+                            key: "status",
+                            label: <Title level={5}>Статус</Title>,
+                            children: (
+                                <FilterItem
+                                    value={status}
+                                    targetValue={setStatus}
+                                    dataSource={statusOptions}
+                                    index="status"
+                                />
+                            ),
+                        },
+                        {
+                            key: "kind",
+                            label: <Title level={5}>Тип</Title>,
+                            children: (
+                                <FilterItem
+                                    value={kind}
+                                    targetValue={setKind}
+                                    dataSource={kindOptions}
+                                    index="kind"
+                                />
+                            ),
+                        },
+                        {
+                            key: "demographic",
+                            label: <Title level={5}>Аудитория</Title>,
+                            children: (
+                                <FilterItem
+                                    value={audience}
+                                    targetValue={setAudience}
+                                    dataSource={genres.demographic}
+                                    index="demographic"
+                                />
+                            ),
+                        },
+                        {
+                            key: "genre",
+                            label: <Title level={5}>Жанры</Title>,
+                            children: (
+                                <FilterItem
+                                    value={genre}
+                                    targetValue={setGenre}
+                                    dataSource={genres.genre}
+                                    index="genre"
+                                />
+                            ),
+                        },
+                        {
+                            key: "theme",
+                            label: <Title level={5}>Темы</Title>,
+                            children: (
+                                <FilterItem
+                                    value={theme}
+                                    targetValue={setTheme}
+                                    dataSource={genres.theme}
+                                    index="theme"
+                                />
+                            ),
+                        },
+                    ]}
+                ></Collapse>
             </Drawer>
             <FloatButton.Group style={{ right: 0, margin: 10, bottom: 32 }}>
                 <FloatButton
