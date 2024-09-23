@@ -159,7 +159,6 @@ export default function ShikimoriPage() {
         setPage(1);
     };
     useEffect(() => {
-        console.log(genre.toString() + audience.toString() + theme.toString());
         if (query) {
             setOrder("ranked");
         }

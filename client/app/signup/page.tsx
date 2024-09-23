@@ -43,51 +43,9 @@ import Link from "next/link";
 import locale from "antd/es/date-picker/locale/ru_RU";
 import dayjs from "dayjs";
 import "dayjs/locale/ru";
+import AvatarPicker from "../components/AvatarPicker";
 dayjs.locale("ru");
 const SignupPage = () => {
-    const [fileList, setFileList] = useState<UploadFile[]>([]);
-    const onChange: UploadProps["onChange"] = ({ fileList: newFileList }) => {
-        if (newFileList.length) {
-            const isJpgOrPng =
-                newFileList[0].type === "image/jpeg" ||
-                newFileList[0].type === "image/png";
-            if (!isJpgOrPng) {
-                message.error("Только JPG/PNG файлы!");
-                return;
-            }
-            const isLt2M = newFileList[0].size / 1024 / 1024 < 0.5;
-            if (!isLt2M) {
-                message.error("Размер файла не должен превышать 512КБ!");
-                return;
-            }
-        }
-        const reader = new FileReader();
-        reader.onloadend = () => {
-            setAvatar(reader.result?.toString());
-        };
-        reader.readAsDataURL(newFileList[0].originFileObj);
-        setFileList(newFileList);
-    };
-
-    type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
-    const getBase64 = (file: FileType): Promise<string> =>
-        new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = () => resolve(reader.result as string);
-            reader.onerror = (error) => reject(error);
-        });
-    const [previewOpen, setPreviewOpen] = useState(false);
-    const [previewImage, setPreviewImage] = useState("");
-    const handlePreview = async (file: UploadFile) => {
-        if (!file.url && !file.preview) {
-            file.preview = await getBase64(file.originFileObj as FileType);
-        }
-
-        setPreviewImage(file.url || (file.preview as string));
-        setPreviewOpen(true);
-    };
-
     const [form] = Form.useForm();
     const [isActive, setIsActive] = useState<Record<string, boolean>>({
         email: true,
@@ -112,7 +70,6 @@ const SignupPage = () => {
     const [current, setCurrent] = useState(0);
 
     const onChangeCurrent = (value: number) => {
-        console.log("onChange:", value);
         setCurrent(value);
     };
 
@@ -195,7 +152,7 @@ const SignupPage = () => {
                     >
                         {current === 0 && (
                             <Form.List name="items">
-                                {(fields, { add, remove }) => (
+                                {(fields, { add }) => (
                                     <div
                                         style={{
                                             display: "flex",
@@ -605,62 +562,7 @@ const SignupPage = () => {
                                     wrap
                                     size={[10, 10]}
                                 >
-                                    <Form.Item name={"avatar"}>
-                                        <ImgCrop
-                                            maxZoom={2}
-                                            showReset
-                                            resetText="Сбросить"
-                                            modalOk="Выбрать"
-                                            modalCancel="Отмена"
-                                            fillColor={"transparent"}
-                                            modalTitle="Выбор изображения профиля"
-                                        >
-                                            <Upload
-                                                listType="picture-card"
-                                                maxCount={1}
-                                                fileList={fileList}
-                                                onChange={onChange}
-                                                onPreview={handlePreview}
-                                            >
-                                                {fileList.length < 1 && (
-                                                    <Flex
-                                                        style={{
-                                                            flexDirection:
-                                                                "column",
-                                                            justifyContent:
-                                                                "center",
-                                                        }}
-                                                    >
-                                                        <UserOutlined
-                                                            style={{
-                                                                fontSize: 30,
-                                                            }}
-                                                        />
-                                                    </Flex>
-                                                )}
-                                            </Upload>
-                                        </ImgCrop>
-                                        {previewImage && (
-                                            <Image
-                                                wrapperStyle={{
-                                                    display: "none",
-                                                }}
-                                                preview={{
-                                                    visible: previewOpen,
-                                                    onVisibleChange: (
-                                                        visible
-                                                    ) =>
-                                                        setPreviewOpen(visible),
-                                                    afterOpenChange: (
-                                                        visible
-                                                    ) =>
-                                                        !visible &&
-                                                        setPreviewImage(""),
-                                                }}
-                                                src={previewImage}
-                                            />
-                                        )}
-                                    </Form.Item>
+                                    <AvatarPicker targetValue={setAvatar} />
                                     <Meta
                                         title={
                                             <Typography.Title level={5}>
@@ -780,8 +682,10 @@ const SignupPage = () => {
                                                     )
                                                 )}
                                                 onChange={(date) => {
-                                                    console.log(
-                                                        date.toString()
+                                                    setDateBirth(
+                                                        new Date(
+                                                            date.toDate()
+                                                        ).toString()
                                                     );
                                                 }}
                                                 value={
@@ -798,7 +702,7 @@ const SignupPage = () => {
                                 <Flex justify="center" align="center">
                                     <Button
                                         htmlType="submit"
-                                        onClick={() => setCurrent(2)}
+                                        onClick={() => console.log(dateBirth)}
                                         type="primary"
                                         style={{
                                             margin: 15,
