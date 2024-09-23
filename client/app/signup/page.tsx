@@ -7,6 +7,7 @@ import {
     ProfileOutlined,
     CheckSquareOutlined,
 } from "@ant-design/icons";
+import Typewriter from "typewriter-effect";
 import {
     Avatar,
     Button,
@@ -44,6 +45,7 @@ import locale from "antd/es/date-picker/locale/ru_RU";
 import dayjs from "dayjs";
 import "dayjs/locale/ru";
 import AvatarPicker from "../components/AvatarPicker";
+import Title from "antd/es/typography/Title";
 dayjs.locale("ru");
 const SignupPage = () => {
     const [form] = Form.useForm();
@@ -107,19 +109,26 @@ const SignupPage = () => {
                     gap: 30,
                 }}
             >
-                <Meta
-                    style={{ textAlign: "center" }}
-                    title={
-                        <Typography.Title level={3}>
-                            Добро пожаловать на Series Tracker Web
-                        </Typography.Title>
-                    }
-                    description={
-                        <Typography.Text>
-                            Давайте пройдем быструю регистрацию
-                        </Typography.Text>
-                    }
-                />
+                {" "}
+                <Typography.Text
+                    strong
+                    style={{ fontSize: 16, textAlign: "center" }}
+                >
+                    <Typewriter
+                        onInit={(typewriter) => {
+                            typewriter
+                                .changeDelay(50)
+                                .typeString(
+                                    "Добро пожаловать на Series Tracker!"
+                                )
+
+                                .pauseFor(1000)
+                                .typeString("<br>Давайте зарегестрируем Вас")
+
+                                .start();
+                        }}
+                    />
+                </Typography.Text>
                 <Card
                     hoverable
                     style={{ width: "100%", padding: 24, cursor: "default" }}
@@ -139,7 +148,6 @@ const SignupPage = () => {
                             },
                         ]}
                     />
-
                     <Form
                         onFinish={(values) => {
                             setCurrent(1);
@@ -169,6 +177,7 @@ const SignupPage = () => {
                                                 >
                                                     <Col span={19}>
                                                         <Form.Item
+                                                            validateFirst
                                                             validateDebounce={
                                                                 1500
                                                             }
@@ -177,7 +186,13 @@ const SignupPage = () => {
                                                                 field.name,
                                                                 "email",
                                                             ]}
-                                                            label="Эл. почта"
+                                                            label={
+                                                                <Title
+                                                                    level={5}
+                                                                >
+                                                                    Эл. почта
+                                                                </Title>
+                                                            }
                                                             rules={[
                                                                 {
                                                                     required:
@@ -196,6 +211,12 @@ const SignupPage = () => {
                                                                             _,
                                                                             value
                                                                         ) => {
+                                                                            if (
+                                                                                !value
+                                                                            ) {
+                                                                                // Проверка на пустоту
+                                                                                return Promise.resolve(); // Возвращаем Promise.resolve(), если поле пустое
+                                                                            }
                                                                             // Проверка на стороне сервера
                                                                             const exists =
                                                                                 await checkExistEmail(
@@ -247,6 +268,7 @@ const SignupPage = () => {
                                                                 {() => (
                                                                     <Button
                                                                         disabled={
+                                                                            form.isFieldsValidating() ||
                                                                             !form.getFieldValue(
                                                                                 [
                                                                                     "items",
@@ -302,6 +324,7 @@ const SignupPage = () => {
                                                 >
                                                     <Col span={19}>
                                                         <Form.Item
+                                                            validateFirst
                                                             validateDebounce={
                                                                 1500
                                                             }
@@ -311,7 +334,13 @@ const SignupPage = () => {
                                                                 field.name,
                                                                 "password",
                                                             ]}
-                                                            label="Пароль"
+                                                            label={
+                                                                <Title
+                                                                    level={5}
+                                                                >
+                                                                    Пароль
+                                                                </Title>
+                                                            }
                                                             rules={[
                                                                 {
                                                                     required:
@@ -361,6 +390,7 @@ const SignupPage = () => {
                                                                 {() => (
                                                                     <Button
                                                                         disabled={
+                                                                            form.isFieldsValidating() ||
                                                                             !form.getFieldValue(
                                                                                 [
                                                                                     "items",
@@ -416,6 +446,7 @@ const SignupPage = () => {
                                                 >
                                                     <Col span={19}>
                                                         <Form.Item
+                                                            validateFirst
                                                             validateDebounce={
                                                                 1500
                                                             }
@@ -424,7 +455,14 @@ const SignupPage = () => {
                                                                 field.name,
                                                                 "userName",
                                                             ]}
-                                                            label="Логин (никнейм)"
+                                                            label={
+                                                                <Title
+                                                                    level={5}
+                                                                >
+                                                                    Логин
+                                                                    (никнейм)
+                                                                </Title>
+                                                            }
                                                             tooltip="Чувствителен к регистру"
                                                             rules={[
                                                                 {

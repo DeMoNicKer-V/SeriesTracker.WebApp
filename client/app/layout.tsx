@@ -267,9 +267,7 @@ export default function RootLayout({
                             : lightThemeLayout,
                     }}
                 >
-                    <Layout
-                        className={currentTheme ? "darkTheme" : "lightTheme"}
-                    >
+                    <Layout>
                         <title>Series Tracker</title>
                         <Header
                             style={{

@@ -426,3 +426,7 @@ div.ant-upload-list-item {
 .ant-typography {
     margin-bottom: 0 !important;
 }
+
+.ant-form-item-explain {
+    display: none;
+}
