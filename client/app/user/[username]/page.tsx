@@ -1,5 +1,14 @@
 "use client";
-import { Avatar, Col, Flex, Row, Space, Tooltip, Typography } from "antd";
+import {
+    Avatar,
+    Button,
+    Col,
+    Flex,
+    Row,
+    Space,
+    Tooltip,
+    Typography,
+} from "antd";
 import { useEffect, useState } from "react";
 import {
     DefaultUser,
@@ -15,8 +24,11 @@ import {
     getAnimesByUserId,
     ShikimoriRequest,
 } from "@/app/services/shikimori";
+import { usePathname, useRouter } from "next/navigation";
 
 export default function UserPage({ params }: { params: { username: string } }) {
+    const router = useRouter();
+    const pathname = usePathname();
     const [user, setUser] = useState<DefaultUser>();
     const [animes, setAnimes] = useState<SeriesAnime[] | any>([]);
     const { Text, Title } = Typography;
@@ -25,17 +37,14 @@ export default function UserPage({ params }: { params: { username: string } }) {
         setUser(currentUser);
     };
 
-    const getAnimesPost = async (userId: string) => {
-        const animes = await getAnimesByUserId(userId);
-        setAnimes(animes);
-    };
-
     useEffect(() => {
         return () => {
             getCurrentUser();
-            getAnimesPost("46772ed5-b34e-4c11-be99-8084b906774b");
         };
     }, []);
+    const handleNavigate = () => {
+        router.push(`${pathname}/list?mylist=0`);
+    };
     return (
         <div className="container">
             <Row gutter={[15, 15]} align={"middle"} justify={"center"}>
@@ -72,18 +81,18 @@ export default function UserPage({ params }: { params: { username: string } }) {
                                             })}
                                         >
                                             <QuestionCircleOutlined
+                                                onClick={handleNavigate}
                                                 style={{ cursor: "help" }}
                                             />
                                         </Tooltip>
                                     </Text>
+                                    <Button onClick={handleNavigate}>
+                                        Вперед
+                                    </Button>
                                 </Flex>
                             }
                         ></Meta>
                     </Space>
-                </Col>
-                <Col span={20}>
-                    {" "}
-                    <Animes animes={animes} />
                 </Col>
             </Row>
         </div>

@@ -67,13 +67,13 @@ namespace SeriesTracker.DataAccess.Repositories
             return userSeries;
         }
 
-        public async Task<List<int>> GetSeriesAnimeIdsList(string id)
+        public async Task<List<int>> GetSeriesAnimeIdsList(string id, int categoryId)
         {
             List<int> seriesAnimeIdsList = new List<int>();
             if (string.IsNullOrEmpty(id) == false)
             {
                 var guid = Guid.Parse(id);
-                seriesAnimeIdsList = await _context.UserSeriesEntities.AsNoTracking().Where(s => s.UserId == guid).Select(s => s.AnimeId).ToListAsync();
+                seriesAnimeIdsList = await _context.UserSeriesEntities.AsNoTracking().Where(s => s.UserId == guid && categoryId != 0 ? s.CategoryId == categoryId : true).Select(s => s.AnimeId).ToListAsync();
             }
             else
             {

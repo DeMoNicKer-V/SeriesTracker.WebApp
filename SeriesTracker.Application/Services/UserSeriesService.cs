@@ -48,9 +48,9 @@ namespace SeriesTracker.Application.Services
             return await _userSeriesRepository.UpdateSeries(id, watched, changed, categoryId, favorite);
         }
 
-        public async Task<string> GetSeriesAnimeIdsList(string id)
+        public async Task<string> GetSeriesAnimeIdsList(string id, int categoryId)
         {
-            var result = await _userSeriesRepository.GetSeriesAnimeIdsList(id);
+            var result = await _userSeriesRepository.GetSeriesAnimeIdsList(id, categoryId);
             return string.Join(",", result);
         }
     }

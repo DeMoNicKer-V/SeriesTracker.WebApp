@@ -28,9 +28,13 @@ namespace SeriesTracker.API.Controllers
 
 
         [HttpGet("user/{id}")]
-        public async Task<ActionResult> GetAnimesByUser(string id)
+        public async Task<ActionResult<ShikimoriAnimeBaseList[]>> GetAnimesByUser(string id, int mylist)
         {
-            string? userSeries = await _userSeriesService.GetSeriesAnimeIdsList(id);
+            string? userSeries = await _userSeriesService.GetSeriesAnimeIdsList(id, mylist);
+            if (string.IsNullOrEmpty(userSeries))
+            {
+                return Ok(new List<ShikimoriAnimeBaseList>());
+            }
             GraphQLResponse<ShikimoriAnimeBaseList> graphQLResponse = await ShikimoriService.GetAnimeListByIds(userSeries);
             return new ObjectResult(graphQLResponse.Data.Animes);
         }
