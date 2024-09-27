@@ -82,7 +82,6 @@ export const getAnimesByParams = async (request: ShikimoriRequest) => {
 export const getAnimeById = async (id: string) => {
     const response = await fetch(`http://localhost:5125/shikimori/id/${id}`);
     const animes: AnimeInfo = await response.json();
-    console.log(animes);
     return animes;
 };
 
@@ -96,11 +95,21 @@ export const getAnimesByName = async (query: any) => {
     return animes;
 };
 
+export const getAnimesByUserId = async (userId: string) => {
+    const response = await fetch(
+        `http://localhost:5125/shikimori/user/${userId}`
+    );
+
+    const animes: SeriesAnime[] = await response.json();
+    return animes;
+};
+
 export const getRandomAnime = async () => {
     const response = await fetch(`http://localhost:5125/shikimori/random/`);
     const id: string = await response.json();
     return id;
 };
+
 export const getRelatedAnimes = async (id: string) => {
     const response = await fetch(
         `http://localhost:5125/shikimori/related/${id}`

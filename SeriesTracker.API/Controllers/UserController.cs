@@ -33,7 +33,7 @@ namespace SeriesTracker.API.Controllers
         {
             var user = await _userService.GetUserByUserName(username);
             var userResponse = new DefaultUserResponse(user.Email, user.PasswordHash,
-                user.UserName, user.Avatar, user.Name, user.Surname, user.DateOfBirth, user.RegistrationDate, (int)(DateTime.Now - DateTime.Parse(user.DateOfBirth)).TotalDays /365);
+                user.UserName, user.Avatar, user.Name, user.Surname, user.DateOfBirth, user.RegistrationDate, !string.IsNullOrEmpty(user.DateOfBirth) ? (int)(DateTime.Now - DateTime.Parse(user.DateOfBirth)).TotalDays /365 : 0);
             return Results.Ok(userResponse);
         }
 

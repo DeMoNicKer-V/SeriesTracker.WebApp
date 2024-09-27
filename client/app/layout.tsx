@@ -318,7 +318,12 @@ export default function RootLayout({
                                                     padding: 0,
                                                 }}
                                             >
-                                                <Space size={[20, 20]}>
+                                                <Space
+                                                    style={{
+                                                        padding: "0 10px",
+                                                    }}
+                                                    size={[20, 20]}
+                                                >
                                                     <Avatar
                                                         size={40}
                                                         shape="square"

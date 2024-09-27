@@ -11,5 +11,6 @@ namespace SeriesTracker.Core.Abstractions
         Task<Series> GetSeriesById(Guid id);
         Task<Guid> UpdateSeries(Guid id, int watched, string changed, int categoryId, bool favorite);
         Task<Guid> GetSeriesByAnimeId(int id);
+
     }
 }

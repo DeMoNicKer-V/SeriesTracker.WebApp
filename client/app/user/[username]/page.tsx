@@ -9,17 +9,31 @@ import {
 } from "../../services/user";
 import Meta from "antd/es/card/Meta";
 import { QuestionCircleOutlined } from "@ant-design/icons";
+import { Animes } from "@/app/components/Animes";
+import {
+    getAnimesByParams,
+    getAnimesByUserId,
+    ShikimoriRequest,
+} from "@/app/services/shikimori";
 
 export default function UserPage({ params }: { params: { username: string } }) {
     const [user, setUser] = useState<DefaultUser>();
+    const [animes, setAnimes] = useState<SeriesAnime[] | any>([]);
     const { Text, Title } = Typography;
     const getCurrentUser = async () => {
         const currentUser = await getUserByUserName(params.username);
         setUser(currentUser);
     };
+
+    const getAnimesPost = async (userId: string) => {
+        const animes = await getAnimesByUserId(userId);
+        setAnimes(animes);
+    };
+
     useEffect(() => {
         return () => {
             getCurrentUser();
+            getAnimesPost("46772ed5-b34e-4c11-be99-8084b906774b");
         };
     }, []);
     return (
@@ -66,6 +80,10 @@ export default function UserPage({ params }: { params: { username: string } }) {
                             }
                         ></Meta>
                     </Space>
+                </Col>
+                <Col span={20}>
+                    {" "}
+                    <Animes animes={animes} />
                 </Col>
             </Row>
         </div>

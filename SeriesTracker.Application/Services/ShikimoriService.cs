@@ -34,6 +34,11 @@ namespace SeriesTracker.Application.Services
             return await graphQLClient.SendQueryAsync<ShikimoriAnimeList>(GetRequest(Id));
         }
 
+        public async Task<GraphQLResponse<ShikimoriAnimeBaseList>> GetAnimeListByIds(string Id)
+        {
+            return await graphQLClient.SendQueryAsync<ShikimoriAnimeBaseList>(GetAnimeListByIdsRequest(Id));
+        }
+
         public async Task<GraphQLResponse<ShikimoriAnimeBaseList>> GetAnimesByAllParams(int page, string name, string season, string status, string kind, string genre, string order, bool censored)
         {
             return await graphQLClient.SendQueryAsync<ShikimoriAnimeBaseList>(GetRequest(page, name, season, status, kind, genre, order, censored));
@@ -229,6 +234,41 @@ namespace SeriesTracker.Application.Services
                                 }
                             }",
                 OperationName = "GetById",
+                Variables = new
+                {
+                    id,
+                }
+            };
+        }
+
+        private static GraphQLRequest GetAnimeListByIdsRequest(string id)
+        {
+            return new GraphQLRequest
+            {
+                Query = @"query GetListById($id: String) {
+                                animes(ids: $id, limit: 28) {
+                                    id
+                                    russian
+                                    name
+                                    description
+                                    kind
+                                    rating
+                                    duration
+                                    episodes
+                                    genres{ id kind russian }
+                                    episodesAired
+                                    status
+                                    score
+                                    airedOn {
+                                        date
+                                    }
+                                    poster {
+                                        
+                                        mainUrl
+                                    }
+                                }
+                            }",
+                OperationName = "GetListById",
                 Variables = new
                 {
                     id,
