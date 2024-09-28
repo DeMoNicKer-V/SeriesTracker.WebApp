@@ -14,18 +14,22 @@ interface Props {
 
 function FilterItem({ dataSource, index, value, targetValue }: Props) {
     return (
-        <Checkbox.Group
-            value={value}
-            onChange={(checkedValues) => targetValue(checkedValues)}
-        >
-            <Row gutter={[0, 16]}>
-                {dataSource.map((option) => (
-                    <Col span={24} key={`${index}${option.id}`}>
-                        <Checkbox value={option.id}>{option.russian}</Checkbox>
-                    </Col>
-                ))}
-            </Row>
-        </Checkbox.Group>
+        <Form.Item name={index}>
+            <Checkbox.Group
+                value={value}
+                onChange={(checkedValues) => targetValue(checkedValues)}
+            >
+                <Row gutter={[0, 16]}>
+                    {dataSource.map((option) => (
+                        <Col span={24} key={`${index}${option.id}`}>
+                            <Checkbox value={option.id}>
+                                {option.russian}
+                            </Checkbox>
+                        </Col>
+                    ))}
+                </Row>
+            </Checkbox.Group>
+        </Form.Item>
     );
 }
 
