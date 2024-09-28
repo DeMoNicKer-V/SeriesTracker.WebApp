@@ -16,12 +16,8 @@ import {
     Typography,
 } from "antd";
 import {
-    RightOutlined,
     UndoOutlined,
-    LeftOutlined,
     SearchOutlined,
-    InfoCircleOutlined,
-    DoubleLeftOutlined,
     QuestionCircleOutlined,
     StarOutlined,
     FontColorsOutlined,
@@ -32,13 +28,27 @@ import {
 } from "@ant-design/icons";
 import dayjs from "dayjs";
 import FilterItem from "../components/FilterItem";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
+import { ShikimoriRequest } from "../services/shikimori";
 type MenuItem = Required<MenuProps>["items"][number];
-function AnimeParamsMenu({}) {
+const date = dayjs();
+interface Props {
+    genres: Genre[] | any;
+    open: boolean;
+    onClose: () => void;
+    setRequest: Dispatch<SetStateAction<ShikimoriRequest>>;
+    setPage: Dispatch<SetStateAction<number>>;
+    page: number;
+}
+function AnimeParamsMenu({
+    genres,
+    open,
+    page,
+    setPage,
+    onClose,
+    setRequest,
+}: Props) {
     const { Title, Text } = Typography;
-    const [loading, setLoading] = useState(false);
-    const [isOpen, setIsOpen] = useState(false);
-    const [genres, setGenres] = useState<Genre[] | any>([]);
 
     const [query, setQuery] = useState<string>("");
     const [status, setStatus] = useState<any[]>([]);
@@ -48,9 +58,21 @@ function AnimeParamsMenu({}) {
     const [theme, setTheme] = useState<any[]>([]);
     const [season, setSeason] = useState<string>("");
     const [order, setOrder] = useState<string>("ranked");
-    const [page, setPage] = useState<number>(1);
     const [safe, setSafe] = useState<boolean>(false);
 
+    const statusOptions = [
+        { russian: "Онгоинг", id: "ongoing" },
+        { russian: "Вышло", id: "released" },
+    ];
+
+    const kindOptions = [
+        { russian: "TV-Сериал", id: "tv" },
+        { russian: "П/ф", id: "movie" },
+        { russian: "ONA", id: "ona" },
+        { russian: "OVA", id: "ova" },
+        { russian: "Спешл", id: "special" },
+        { russian: "TV-Спешл", id: "tv_special" },
+    ];
     const resetAllFields = () => {
         setPage(1);
         setOrder("ranked");
@@ -108,6 +130,21 @@ function AnimeParamsMenu({}) {
             icon: <CalendarOutlined />,
         },
     ];
+    const handleCheckboxChange = (_: any, allValues: any) => {
+        if (query) {
+            setOrder("ranked");
+        }
+        setRequest({
+            page: page,
+            name: query,
+            season: season,
+            status: status.toString(),
+            kind: kind.toString(),
+            genre: genre.concat(audience).concat(theme).toString(),
+            order: order,
+            censored: safe,
+        });
+    };
     return (
         <Drawer
             style={{ opacity: 0.95 }}
@@ -125,10 +162,10 @@ function AnimeParamsMenu({}) {
                 </Flex>
             }
             size="large"
-            onClose={() => setIsOpen(false)}
-            open={isOpen}
+            onClose={onClose}
+            open={open}
         >
-            <Form>
+            <Form onValuesChange={handleCheckboxChange}>
                 <Flex
                     style={{ flexDirection: "column", marginBottom: 10 }}
                     gap={10}
@@ -137,23 +174,25 @@ function AnimeParamsMenu({}) {
                     <Flex>
                         <Descriptions items={items}></Descriptions>
                         <Tooltip title={safe ? "Включить" : "Выключить"}>
-                            <Button
-                                danger={!safe}
-                                onClick={() => {
-                                    setSafe(!safe);
-                                    resetAllFields();
-                                }}
-                                shape="circle"
-                                size="small"
-                                type="dashed"
-                                icon={
-                                    safe ? (
-                                        <EyeOutlined />
-                                    ) : (
-                                        <EyeInvisibleOutlined />
-                                    )
-                                }
-                            />
+                            <Form.Item name={"safe"}>
+                                <Button
+                                    danger={!safe}
+                                    onClick={() => {
+                                        setSafe(!safe);
+                                        resetAllFields();
+                                    }}
+                                    shape="circle"
+                                    size="small"
+                                    type="dashed"
+                                    icon={
+                                        safe ? (
+                                            <EyeOutlined />
+                                        ) : (
+                                            <EyeInvisibleOutlined />
+                                        )
+                                    }
+                                />
+                            </Form.Item>
                         </Tooltip>
                     </Flex>
                 </Flex>
@@ -162,19 +201,21 @@ function AnimeParamsMenu({}) {
                     gap={10}
                 >
                     <Title level={5}>Найти аниме</Title>
-                    <Input
-                        allowClear
-                        onChange={(e: { target: { value: any } }) => {
-                            setQuery(String(e.target.value));
-                        }}
-                        value={query}
-                        suffix={<SearchOutlined />}
-                        style={{
-                            fontSize: 16,
-                            background: "none",
-                        }}
-                        spellCheck={false}
-                    />
+                    <Form.Item name={"query"}>
+                        <Input
+                            allowClear
+                            onChange={(e: { target: { value: any } }) => {
+                                setQuery(String(e.target.value));
+                            }}
+                            value={query}
+                            suffix={<SearchOutlined />}
+                            style={{
+                                fontSize: 16,
+                                background: "none",
+                            }}
+                            spellCheck={false}
+                        />
+                    </Form.Item>
                 </Flex>
 
                 <Collapse
@@ -196,7 +237,6 @@ function AnimeParamsMenu({}) {
                                     }}
                                 >
                                     <Menu
-                                        disabled={loading}
                                         onSelect={onClick}
                                         selectedKeys={[order]}
                                         items={sortMenuItems}
@@ -209,22 +249,26 @@ function AnimeParamsMenu({}) {
                             key: "date",
                             label: <Title level={5}>Год выхода</Title>,
                             children: (
-                                <DatePicker
-                                    onChange={(date) => {
-                                        if (date) {
-                                            setSeason(
-                                                date.format("YYYY").toString()
-                                            );
-                                        } else setSeason("");
-                                    }}
-                                    variant="borderless"
-                                    inputReadOnly
-                                    minDate={dayjs(1967)}
-                                    maxDate={date}
-                                    placeholder="Укажите год выхода"
-                                    style={{ width: "100%" }}
-                                    picker="year"
-                                />
+                                <Form.Item name={"date"}>
+                                    <DatePicker
+                                        onChange={(date) => {
+                                            if (date) {
+                                                setSeason(
+                                                    date
+                                                        .format("YYYY")
+                                                        .toString()
+                                                );
+                                            } else setSeason("");
+                                        }}
+                                        variant="borderless"
+                                        inputReadOnly
+                                        minDate={dayjs(1967)}
+                                        maxDate={date}
+                                        placeholder="Укажите год выхода"
+                                        style={{ width: "100%" }}
+                                        picker="year"
+                                    />
+                                </Form.Item>
                             ),
                         },
                         {
