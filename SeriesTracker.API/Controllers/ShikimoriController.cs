@@ -50,7 +50,7 @@ namespace SeriesTracker.API.Controllers
         }
 
         [HttpPost("animes")]
-        public async Task<ActionResult> GetAnimesByAllParams([FromBody] ShikimoriParamsRequest request)
+        public async Task<ActionResult> GetAnimesByAllParams([FromBody] ShikimoriParamsRequest request, int page = 1, string order = "ranked")
         {
             var userId = HttpContext.User.FindFirst("userId")?.Value;
 
@@ -60,8 +60,8 @@ namespace SeriesTracker.API.Controllers
                 .ToDictionary(c => c.Id, c => c);
 
             GraphQLResponse<ShikimoriAnimeBaseList> graphQLResponse =
-                await ShikimoriService.GetAnimesByAllParams(request.Page, request.Name, request.Season, request.Status,
-                                                           request.Kind, request.Genre, request.Order, request.Censored);
+                await ShikimoriService.GetAnimesByAllParams(page, request.Name, request.Season, request.Status,
+                                                           request.Kind, request.Genre, order, request.Censored);
 
             var animeResponses = graphQLResponse.Data.Animes
                 .Select(item =>

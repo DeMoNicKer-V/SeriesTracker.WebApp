@@ -6,13 +6,11 @@ export interface AnimeReqruest {
 }
 
 export interface ShikimoriRequest {
-    page: number;
     name: string;
     season: string;
     status: string;
     kind: string;
     genre: string;
-    order: string;
     censored: boolean;
 }
 
@@ -66,15 +64,22 @@ export const getAnimes = async (page: number, order: string) => {
     return animes;
 };
 
-export const getAnimesByParams = async (request: ShikimoriRequest) => {
-    const response = await fetch(`http://localhost:5125/shikimori/animes/`, {
-        method: "POST",
-        headers: {
-            "content-type": "application/json",
-        },
-        body: JSON.stringify(request),
-        credentials: "include",
-    });
+export const getAnimesByParams = async (
+    request: ShikimoriRequest,
+    page: number = 1,
+    order: string = "ranked"
+) => {
+    const response = await fetch(
+        `http://localhost:5125/shikimori/animes?page=${page}&order=${order}`,
+        {
+            method: "POST",
+            headers: {
+                "content-type": "application/json",
+            },
+            body: JSON.stringify(request),
+            credentials: "include",
+        }
+    );
     const animes: SeriesAnime = await response.json();
     return animes;
 };

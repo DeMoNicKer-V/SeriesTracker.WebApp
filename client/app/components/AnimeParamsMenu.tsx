@@ -1,5 +1,7 @@
 import {
     Button,
+    Checkbox,
+    CheckboxProps,
     Col,
     Collapse,
     ConfigProvider,
@@ -30,7 +32,20 @@ import dayjs from "dayjs";
 import FilterItem from "../components/FilterItem";
 import { Dispatch, SetStateAction, useState } from "react";
 import { ShikimoriRequest } from "../services/shikimori";
+import CustomIconCheckbox from "./CustomIconCheckbox";
 type MenuItem = Required<MenuProps>["items"][number];
+type FieldType = {
+    page: number;
+    query: string;
+    season: string;
+    status: [];
+    kind: [];
+    audience: [];
+    genre: [];
+    theme: [];
+    order: [];
+    censored: boolean;
+};
 const date = dayjs();
 interface Props {
     genres: Genre[] | any;
@@ -38,27 +53,28 @@ interface Props {
     onClose: () => void;
     setRequest: Dispatch<SetStateAction<ShikimoriRequest>>;
     setPage: Dispatch<SetStateAction<number>>;
-    page: number;
+    setOrder: Dispatch<SetStateAction<string>>;
+    order: string;
 }
 function AnimeParamsMenu({
     genres,
     open,
-    page,
     setPage,
+    setOrder,
+    order,
     onClose,
     setRequest,
 }: Props) {
     const { Title, Text } = Typography;
-
+    const [form] = Form.useForm();
     const [query, setQuery] = useState<string>("");
-    const [status, setStatus] = useState<any[]>([]);
-    const [kind, setKind] = useState<any[]>([]);
-    const [genre, setGenre] = useState<any[]>([]);
-    const [audience, setAudience] = useState<any[]>([]);
-    const [theme, setTheme] = useState<any[]>([]);
+    const [status, setStatus] = useState<string[]>([]);
+    const [kind, setKind] = useState<string[]>([]);
+    const [genre, setGenre] = useState<number[]>([]);
+    const [audience, setAudience] = useState<number[]>([]);
+    const [theme, setTheme] = useState<number[]>([]);
     const [season, setSeason] = useState<string>("");
-    const [order, setOrder] = useState<string>("ranked");
-    const [safe, setSafe] = useState<boolean>(false);
+    const [censored, setCensored] = useState<boolean>(true);
 
     const statusOptions = [
         { russian: "Онгоинг", id: "ongoing" },
@@ -76,27 +92,18 @@ function AnimeParamsMenu({
     const resetAllFields = () => {
         setPage(1);
         setOrder("ranked");
-        setQuery("");
-        setStatus([]);
-        setKind([]);
-        setGenre([]);
-        setSeason("");
-    };
-    const onClick: MenuProps["onSelect"] = (e) => {
-        setQuery("");
-        setPage(1);
-        setOrder(e.key);
+        form.resetFields();
     };
     const items: DescriptionsProps["items"] = [
         {
             label: "Состояние",
             children: (
                 <Flex gap={5}>
-                    {safe ? "Выключен" : "Включен"}
+                    {censored ? "Включен" : "Выключен"}
                     <Tooltip
                         trigger={"hover"}
                         title={
-                            safe
+                            censored
                                 ? "Рекомендуется в большинстве случаев"
                                 : "Если вы ищете что-то определенное"
                         }
@@ -130,20 +137,32 @@ function AnimeParamsMenu({
             icon: <CalendarOutlined />,
         },
     ];
-    const handleCheckboxChange = (_: any, allValues: any) => {
+    const handleCheckboxChange = (_: any, allValues: FieldType) => {
         if (query) {
             setOrder("ranked");
         }
+        setPage(1);
+
         setRequest({
-            page: page,
-            name: query,
-            season: season,
+            name: allValues.query,
+            season: allValues.season
+                ? dayjs(allValues.season).format("YYYY")
+                : "",
             status: status.toString(),
             kind: kind.toString(),
-            genre: genre.concat(audience).concat(theme).toString(),
-            order: order,
-            censored: safe,
+            genre: allValues.genre
+                .concat(allValues.audience)
+                .concat(allValues.theme)
+                .toString(),
+            censored: censored,
         });
+    };
+    const onChange: CheckboxProps["onChange"] = (e) => {
+        setCensored(e.target.checked);
+    };
+
+    const handleSelect: MenuProps["onSelect"] = (e) => {
+        setOrder(e.key);
     };
     return (
         <Drawer
@@ -165,7 +184,21 @@ function AnimeParamsMenu({
             onClose={onClose}
             open={open}
         >
-            <Form onValuesChange={handleCheckboxChange}>
+            <Form
+                initialValues={{
+                    censored: true,
+                    query: "",
+                    kind: [],
+                    status: [],
+                    order: "ranked",
+                    season: "",
+                    genre: [],
+                    demographic: [],
+                    theme: [],
+                }}
+                form={form}
+                onValuesChange={handleCheckboxChange}
+            >
                 <Flex
                     style={{ flexDirection: "column", marginBottom: 10 }}
                     gap={10}
@@ -173,29 +206,21 @@ function AnimeParamsMenu({
                     <Title level={5}>Безопасный поиск</Title>
                     <Flex>
                         <Descriptions items={items}></Descriptions>
-                        <Tooltip title={safe ? "Включить" : "Выключить"}>
-                            <Form.Item name={"safe"}>
-                                <Button
-                                    danger={!safe}
-                                    onClick={() => {
-                                        setSafe(!safe);
-                                        resetAllFields();
-                                    }}
-                                    shape="circle"
-                                    size="small"
-                                    type="dashed"
-                                    icon={
-                                        safe ? (
-                                            <EyeOutlined />
-                                        ) : (
-                                            <EyeInvisibleOutlined />
-                                        )
-                                    }
+                        <Tooltip title={censored ? "Выключить" : "Включить"}>
+                            <Form.Item
+                                name={"censored"}
+                                valuePropName="checked"
+                            >
+                                <Checkbox
+                                    onChange={onChange}
+                                    defaultChecked
+                                    checked={censored}
                                 />
                             </Form.Item>
                         </Tooltip>
                     </Flex>
                 </Flex>
+
                 <Flex
                     style={{ flexDirection: "column", marginBottom: 10 }}
                     gap={10}
@@ -203,10 +228,10 @@ function AnimeParamsMenu({
                     <Title level={5}>Найти аниме</Title>
                     <Form.Item name={"query"}>
                         <Input
-                            allowClear
                             onChange={(e: { target: { value: any } }) => {
                                 setQuery(String(e.target.value));
                             }}
+                            allowClear
                             value={query}
                             suffix={<SearchOutlined />}
                             style={{
@@ -219,7 +244,7 @@ function AnimeParamsMenu({
                 </Flex>
 
                 <Collapse
-                    defaultActiveKey={["sort", "date", "kind", "status"]}
+                    defaultActiveKey={["sort", "season", "kind", "status"]}
                     bordered={false}
                     items={[
                         {
@@ -237,8 +262,9 @@ function AnimeParamsMenu({
                                     }}
                                 >
                                     <Menu
-                                        onSelect={onClick}
                                         selectedKeys={[order]}
+                                        onSelect={handleSelect}
+                                        defaultSelectedKeys={["ranked"]}
                                         items={sortMenuItems}
                                         mode="vertical"
                                     />
@@ -246,20 +272,11 @@ function AnimeParamsMenu({
                             ),
                         },
                         {
-                            key: "date",
+                            key: "season",
                             label: <Title level={5}>Год выхода</Title>,
                             children: (
-                                <Form.Item name={"date"}>
+                                <Form.Item name={"season"}>
                                     <DatePicker
-                                        onChange={(date) => {
-                                            if (date) {
-                                                setSeason(
-                                                    date
-                                                        .format("YYYY")
-                                                        .toString()
-                                                );
-                                            } else setSeason("");
-                                        }}
                                         variant="borderless"
                                         inputReadOnly
                                         minDate={dayjs(1967)}
@@ -296,6 +313,7 @@ function AnimeParamsMenu({
                             ),
                         },
                         {
+                            forceRender: true,
                             key: "demographic",
                             label: <Title level={5}>Аудитория</Title>,
                             children: (
@@ -308,6 +326,7 @@ function AnimeParamsMenu({
                             ),
                         },
                         {
+                            forceRender: true,
                             key: "genre",
                             label: <Title level={5}>Жанры</Title>,
                             children: (
@@ -320,6 +339,7 @@ function AnimeParamsMenu({
                             ),
                         },
                         {
+                            forceRender: true,
                             key: "theme",
                             label: <Title level={5}>Темы</Title>,
                             children: (
