@@ -1,5 +1,12 @@
 "use client";
-import { SetStateAction, useCallback, useEffect, useState } from "react";
+import {
+    SetStateAction,
+    useCallback,
+    useEffect,
+    useMemo,
+    useRef,
+    useState,
+} from "react";
 import { Animes } from "../components/Animes";
 import {
     ShikimoriRequest,
@@ -47,6 +54,7 @@ import FilterItem from "../components/FilterItem";
 import AnimeParamsMenu from "../components/AnimeParamsMenu";
 import { useRouter } from "next/navigation";
 import { usePathname, useSearchParams } from "next/navigation";
+import useSWR from "swr";
 
 ///////////////////////////////////////////////////////
 const { Text, Title } = Typography;
@@ -91,36 +99,39 @@ const sortMenuItems: MenuItem[] = [
 ];
 export default function ShikimoriPage() {
     const searchParams = useSearchParams();
-    const createQueryString = useCallback(
-        (name: string, value: any) => {
-            const params = new URLSearchParams(searchParams.toString());
-            params.set(name, value);
+    const createQueryString = useMemo(
+        () => (query: any) => {
+            const params = new URLSearchParams(searchParams);
+            for (const [name, value] of Object.entries(query)) {
+                if (name && value) {
+                    params.set(name, String(value));
+                } else {
+                    params.delete(name);
+                }
+            }
 
             return params.toString();
         },
         [searchParams]
     );
-    const [loading, setLoading] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
-    const [animes, setAnimes] = useState<SeriesAnime[] | any>([]);
     const [genres, setGenres] = useState<Genre[] | any>([]);
     const router = useRouter();
     const path = usePathname();
 
+    const [page, setPage] = useState<number | any>(
+        searchParams.get("page") != null ? searchParams.get("page") : 1
+    );
     const [request, setRequest] = useState<ShikimoriRequest>({
+        page: page,
         name: "",
         season: "",
         status: "",
         kind: "",
         genre: "",
+        order: "ranked",
         censored: true,
     });
-    const [order, setOrder] = useState<string | any>(
-        searchParams.get("order") != null ? searchParams.get("order") : "ranked"
-    );
-    const [page, setPage] = useState<number | any>(
-        searchParams.get("page") != null ? searchParams.get("page") : 1
-    );
 
     const getGenresList = async () => {
         const list = await getGenres();
@@ -132,50 +143,52 @@ export default function ShikimoriPage() {
         };
     }, []);
 
-    const getAnimesPost = async (req: ShikimoriRequest) => {
-        const animes = await getAnimesByParams(req, page, order);
-        setAnimes(animes);
-        setLoading(false);
+    const getAnimesPost = async (url: string) => {
+        const animes: SeriesAnime[] = await getAnimesByParams(url);
+        return animes;
     };
 
     const nextPage = () => {
-        setPage(page + 1);
+        setPage(Number(page) + 1);
+        request.page = Number(page) + 1;
     };
 
     const prePage = () => {
         if (page > 1) {
-            setPage(page - 1);
+            setPage(Number(page) - 1);
+            request.page = Number(page) - 1;
         }
     };
 
     const firstPage = () => {
         setPage(1);
+        request.page = 1;
     };
-    useEffect(() => {
-        setLoading(true);
-        const timer = setTimeout(() => {
-            getAnimesPost(request);
-        }, 1000);
 
-        return () => clearTimeout(timer);
-    }, [request, searchParams]);
-
-    useEffect(() => {
-        router.push(path + "?" + createQueryString("page", page));
-    }, [page]);
-    useEffect(() => {
-        router.push(path + "?" + createQueryString("order", order));
-    }, [order]);
     const toggleOpen = () => {
         setIsOpen(!isOpen);
     };
+    const timeoutIdRef = useRef<NodeJS.Timeout | null>(null);
+    const {
+        data = [],
+        error,
+        isLoading,
+    } = useSWR(`${path}?${createQueryString(request)}`, getAnimesPost, {
+        // Опции для useSWR
+        revalidateOnFocus: false, // Отключить обновление при фокусе
+        revalidateOnReconnect: false, // Отключить обновление при восстановлении соединения
+    });
+    useEffect(() => {
+        console.log(request);
+        router.push(`${path}?${createQueryString(request)}`);
+    }, [request]);
 
     return (
         <div className="container">
             <title>Series Tracker - Shikimori</title>
             <Spin
                 size="large"
-                spinning={loading}
+                spinning={isLoading}
                 style={{
                     position: "absolute",
                     top: "50%",
@@ -191,7 +204,7 @@ export default function ShikimoriPage() {
                 {page > 2 && (
                     <Tooltip title={"В начало"}>
                         <Button
-                            disabled={loading}
+                            disabled={isLoading}
                             size="small"
                             type="link"
                             onClick={firstPage}
@@ -202,7 +215,7 @@ export default function ShikimoriPage() {
                 {page > 1 && (
                     <Tooltip title={"Назад"}>
                         <Button
-                            disabled={loading}
+                            disabled={isLoading}
                             size="small"
                             type="link"
                             onClick={prePage}
@@ -218,10 +231,10 @@ export default function ShikimoriPage() {
                         transition: "all .2s",
                     }}
                 >{`Страница: ${page}`}</Tag>
-                {animes.length == 28 && (
+                {data.length == 28 && (
                     <Tooltip title={"Дальше"}>
                         <Button
-                            disabled={loading}
+                            disabled={isLoading}
                             size="small"
                             type="link"
                             onClick={nextPage}
@@ -231,7 +244,7 @@ export default function ShikimoriPage() {
                 )}
             </Flex>
             <Divider />
-            {Number(animes.length) <= 0 && loading === false && (
+            {Number(data.length) <= 0 && isLoading === false && (
                 <Row>
                     <Col span={16} offset={4}>
                         <Flex
@@ -248,15 +261,13 @@ export default function ShikimoriPage() {
                     </Col>
                 </Row>
             )}
-            {!loading && <Animes animes={animes} />}
+            {!isLoading && <Animes animes={data} />}
             <AnimeParamsMenu
                 genres={genres}
                 open={isOpen}
                 onClose={toggleOpen}
                 setRequest={setRequest}
                 setPage={setPage}
-                setOrder={setOrder}
-                order={order}
             />
             <FloatButton.Group style={{ right: 0, margin: 10, bottom: 32 }}>
                 <FloatButton

@@ -215,7 +215,7 @@ input,
 }
 
 .container {
-    padding: 30px;
+    padding: 20px;
     min-height: 100%;
 }
 .container.detail {
@@ -341,7 +341,12 @@ input,
     .flex-ant-image {
         flex-direction: column;
     }
-
+    .ant-segmented-item-label > span:nth-child(2) {
+        display: none;
+    }
+    .anime_tag {
+        font-size: 10px;
+    }
     .anime-detail-col .ant-card-meta-title .ant-typography {
         font-size: 20px;
     }
@@ -429,4 +434,8 @@ div.ant-upload-list-item {
 
 .ant-form-item-explain {
     display: none;
+}
+
+.ant-list .ant-row {
+    justify-content: center;
 }

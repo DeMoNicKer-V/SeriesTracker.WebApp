@@ -21,7 +21,7 @@ export const Animes = ({ animes }: Props) => {
         <List
             grid={{
                 gutter: 15,
-                xs: 1,
+                xs: 2,
                 sm: 2,
                 md: 4,
                 lg: 5,
@@ -104,9 +104,9 @@ export const Animes = ({ animes }: Props) => {
                         </Link>
                     </Title>
                     <Flex>
-                        <Tag>{animes.kind}</Tag>
-                        <Tag>{animes.status}</Tag>
-                        <Tag>{`${animes.episodes} эп.`}</Tag>
+                        <Tag className="anime_tag">{animes.kind}</Tag>
+                        <Tag className="anime_tag">{animes.status}</Tag>
+                        <Tag className="anime_tag">{`${animes.episodes} эп.`}</Tag>
 
                         {animes.isFavorite && (
                             <Tooltip title={"В избранном"} trigger={"hover"}>

@@ -1,20 +1,19 @@
-import { Menu, MenuProps } from "antd";
-import { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import { Menu, Form, FormInstance, MenuProps } from "antd";
+
+interface Props {
+    value: string;
+}
 import {
-    UndoOutlined,
-    SearchOutlined,
-    QuestionCircleOutlined,
     StarOutlined,
     FontColorsOutlined,
     TeamOutlined,
     CalendarOutlined,
-    EyeOutlined,
-    EyeInvisibleOutlined,
 } from "@ant-design/icons";
 type MenuItem = Required<MenuProps>["items"][number];
-const CustomIconCheckbox = ({ onValuesChange, name, defaultSelectedKeys }) => {
-    const [selectedKeys, setSelectedKeys] =
-        useState<string[]>(defaultSelectedKeys);
+// Создаем custom компонент
+export const SortMenu = ({ value }) => {
+    const [selectedKeys, setSelectedKeys] = useState(["ranked"]);
 
     const sortMenuItems: MenuItem[] = [
         {
@@ -39,18 +38,17 @@ const CustomIconCheckbox = ({ onValuesChange, name, defaultSelectedKeys }) => {
             icon: <CalendarOutlined />,
         },
     ];
-    const handleSelect = (e: any) => {
-        setSelectedKeys([e.key]);
-        onValuesChange({ [name]: [e.key] }); // Отправка изменений в Form
+    // Обработчик события onSelect
+    const handleSelect: MenuProps["onSelect"] = (e) => {
+        value = e.key;
     };
 
     return (
         <Menu
-            onSelect={handleSelect}
-            selectedKeys={selectedKeys}
-            mode="vertical"
             items={sortMenuItems}
-        ></Menu>
+            onSelect={handleSelect}
+            selectedKeys={[value]}
+            mode="vertical"
+        />
     );
 };
-export default CustomIconCheckbox;

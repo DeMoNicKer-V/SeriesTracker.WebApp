@@ -2,9 +2,7 @@ import {
     Button,
     Checkbox,
     CheckboxProps,
-    Col,
     Collapse,
-    ConfigProvider,
     DatePicker,
     Descriptions,
     DescriptionsProps,
@@ -12,8 +10,7 @@ import {
     Flex,
     Form,
     Input,
-    Menu,
-    MenuProps,
+    Segmented,
     Tooltip,
     Typography,
 } from "antd";
@@ -25,15 +22,11 @@ import {
     FontColorsOutlined,
     TeamOutlined,
     CalendarOutlined,
-    EyeOutlined,
-    EyeInvisibleOutlined,
 } from "@ant-design/icons";
 import dayjs from "dayjs";
 import FilterItem from "../components/FilterItem";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useRef, useState } from "react";
 import { ShikimoriRequest } from "../services/shikimori";
-import CustomIconCheckbox from "./CustomIconCheckbox";
-type MenuItem = Required<MenuProps>["items"][number];
 type FieldType = {
     page: number;
     query: string;
@@ -43,7 +36,7 @@ type FieldType = {
     audience: [];
     genre: [];
     theme: [];
-    order: [];
+    order: string;
     censored: boolean;
 };
 const date = dayjs();
@@ -53,27 +46,16 @@ interface Props {
     onClose: () => void;
     setRequest: Dispatch<SetStateAction<ShikimoriRequest>>;
     setPage: Dispatch<SetStateAction<number>>;
-    setOrder: Dispatch<SetStateAction<string>>;
-    order: string;
 }
 function AnimeParamsMenu({
     genres,
     open,
     setPage,
-    setOrder,
-    order,
     onClose,
     setRequest,
 }: Props) {
     const { Title, Text } = Typography;
     const [form] = Form.useForm();
-    const [query, setQuery] = useState<string>("");
-    const [status, setStatus] = useState<string[]>([]);
-    const [kind, setKind] = useState<string[]>([]);
-    const [genre, setGenre] = useState<number[]>([]);
-    const [audience, setAudience] = useState<number[]>([]);
-    const [theme, setTheme] = useState<number[]>([]);
-    const [season, setSeason] = useState<string>("");
     const [censored, setCensored] = useState<boolean>(true);
 
     const statusOptions = [
@@ -91,7 +73,16 @@ function AnimeParamsMenu({
     ];
     const resetAllFields = () => {
         setPage(1);
-        setOrder("ranked");
+        setRequest({
+            censored: true,
+            page: 1,
+            name: "",
+            kind: "",
+            status: "",
+            order: "ranked",
+            season: "",
+            genre: "",
+        });
         form.resetFields();
     };
     const items: DescriptionsProps["items"] = [
@@ -114,56 +105,36 @@ function AnimeParamsMenu({
             ),
         },
     ];
-    const sortMenuItems: MenuItem[] = [
-        {
-            style: { marginLeft: "auto" },
-            label: "По рейтингу",
-            key: "ranked",
-            icon: <StarOutlined />,
-        },
-        {
-            label: "По популярности",
-            key: "popularity",
-            icon: <TeamOutlined />,
-        },
-        {
-            label: "По алфавиту",
-            key: "name",
-            icon: <FontColorsOutlined />,
-        },
-        {
-            label: "По дате выхода",
-            key: "aired_on",
-            icon: <CalendarOutlined />,
-        },
-    ];
-    const handleCheckboxChange = (_: any, allValues: FieldType) => {
-        if (query) {
-            setOrder("ranked");
+    const timeoutIdRef = useRef<NodeJS.Timeout | null>(null);
+    const handleFieldsChange = (_: any, allValues: FieldType) => {
+        if (timeoutIdRef.current) {
+            clearTimeout(timeoutIdRef.current);
         }
-        setPage(1);
-
-        setRequest({
-            name: allValues.query,
-            season: allValues.season
-                ? dayjs(allValues.season).format("YYYY")
-                : "",
-            status: status.toString(),
-            kind: kind.toString(),
-            genre: allValues.genre
-                .concat(allValues.audience)
-                .concat(allValues.theme)
-                .toString(),
-            censored: censored,
-        });
+        timeoutIdRef.current = setTimeout(() => {
+            const order = allValues.query ? "ranked" : allValues.order;
+            setPage(1);
+            setRequest({
+                page: 1,
+                name: allValues.query,
+                season: allValues.season
+                    ? dayjs(allValues.season).format("YYYY")
+                    : "",
+                status: allValues.status.toString(),
+                kind: allValues.kind.toString(),
+                genre: allValues.genre
+                    .concat(allValues.audience)
+                    .concat(allValues.theme)
+                    .toString(),
+                order: order,
+                censored: allValues.censored,
+            });
+        }, 1000);
+        return () => clearTimeout(timeoutIdRef.current!);
     };
     const onChange: CheckboxProps["onChange"] = (e) => {
         setCensored(e.target.checked);
     };
 
-    const handleSelect: MenuProps["onSelect"] = (e) => {
-        setOrder(e.key);
-    };
     return (
         <Drawer
             style={{ opacity: 0.95 }}
@@ -197,7 +168,7 @@ function AnimeParamsMenu({
                     theme: [],
                 }}
                 form={form}
-                onValuesChange={handleCheckboxChange}
+                onValuesChange={handleFieldsChange}
             >
                 <Flex
                     style={{ flexDirection: "column", marginBottom: 10 }}
@@ -228,11 +199,7 @@ function AnimeParamsMenu({
                     <Title level={5}>Найти аниме</Title>
                     <Form.Item name={"query"}>
                         <Input
-                            onChange={(e: { target: { value: any } }) => {
-                                setQuery(String(e.target.value));
-                            }}
                             allowClear
-                            value={query}
                             suffix={<SearchOutlined />}
                             style={{
                                 fontSize: 16,
@@ -251,24 +218,37 @@ function AnimeParamsMenu({
                             key: "sort",
                             label: <Title level={5}>Сортировка</Title>,
                             children: (
-                                <ConfigProvider
-                                    theme={{
-                                        components: {
-                                            Menu: {
-                                                itemBg: "transparent",
-                                                darkItemBg: "transparent",
+                                <Form.Item name={"order"}>
+                                    <Segmented
+                                        style={{
+                                            backgroundColor: "transparent",
+                                        }}
+                                        block
+                                        value="ranked"
+                                        options={[
+                                            {
+                                                label: "По рейтингу",
+                                                value: "ranked",
+                                                icon: <StarOutlined />,
                                             },
-                                        },
-                                    }}
-                                >
-                                    <Menu
-                                        selectedKeys={[order]}
-                                        onSelect={handleSelect}
-                                        defaultSelectedKeys={["ranked"]}
-                                        items={sortMenuItems}
-                                        mode="vertical"
+                                            {
+                                                label: "По популярности",
+                                                value: "popularity",
+                                                icon: <TeamOutlined />,
+                                            },
+                                            {
+                                                label: "По алфавиту",
+                                                value: "name",
+                                                icon: <FontColorsOutlined />,
+                                            },
+                                            {
+                                                label: "По дате выхода",
+                                                value: "aired_on",
+                                                icon: <CalendarOutlined />,
+                                            },
+                                        ]}
                                     />
-                                </ConfigProvider>
+                                </Form.Item>
                             ),
                         },
                         {
@@ -293,8 +273,6 @@ function AnimeParamsMenu({
                             label: <Title level={5}>Статус</Title>,
                             children: (
                                 <FilterItem
-                                    value={status}
-                                    targetValue={setStatus}
                                     dataSource={statusOptions}
                                     index="status"
                                 />
@@ -305,8 +283,6 @@ function AnimeParamsMenu({
                             label: <Title level={5}>Тип</Title>,
                             children: (
                                 <FilterItem
-                                    value={kind}
-                                    targetValue={setKind}
                                     dataSource={kindOptions}
                                     index="kind"
                                 />
@@ -318,8 +294,6 @@ function AnimeParamsMenu({
                             label: <Title level={5}>Аудитория</Title>,
                             children: (
                                 <FilterItem
-                                    value={audience}
-                                    targetValue={setAudience}
                                     dataSource={genres.demographic}
                                     index="demographic"
                                 />
@@ -331,8 +305,6 @@ function AnimeParamsMenu({
                             label: <Title level={5}>Жанры</Title>,
                             children: (
                                 <FilterItem
-                                    value={genre}
-                                    targetValue={setGenre}
                                     dataSource={genres.genre}
                                     index="genre"
                                 />
@@ -344,8 +316,6 @@ function AnimeParamsMenu({
                             label: <Title level={5}>Темы</Title>,
                             children: (
                                 <FilterItem
-                                    value={theme}
-                                    targetValue={setTheme}
                                     dataSource={genres.theme}
                                     index="theme"
                                 />

@@ -25,7 +25,7 @@
         string Status = "",
         string Kind = "",
         string Genre = "",
-        string Order = "",
+        string Order = "ranked",
         bool Censored = false
     );
 }

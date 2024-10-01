@@ -1,115 +1,75 @@
 ﻿using Newtonsoft.Json;
+using SeriesTracker.Core.Models;
 using System.Text.RegularExpressions;
 
 namespace SeriesTracker.Core.Models.Shikimori
 {
-    public class ShikimoriAnimeBase 
+    public class ShikimoriAnimeBase
     {
-        public ShikimoriAnimeBase()
-        {
-            airedOne = new AiredDate();
-            poster = new Poster();
-        }
-        [JsonProperty("airedOn")] public AiredDate airedOne { get; set; }
-        [JsonProperty("poster")] public Poster poster { get; set; }
+        public readonly Poster Poster = new();
+
+        [JsonProperty("airedOn")] public readonly AiredDate AiredDate = new();
         [JsonProperty("genres")] public Genre[]? Genre { get; set; }
-
-        [JsonIgnore]
-        public string Genres
-        {
-            get
-            { return Genre != null ? string.Join(", ", Genre.Select(l => l.Russian)) : ""; }
-            set { }
-        }
-
         [JsonProperty("id")] public int Id { get; set; }
-        [JsonIgnore] public string Description { get { return string.IsNullOrEmpty(description) ? description : Regex.Replace(description, @" ?\[.*?\]", " "); } set { } }
+        [JsonProperty("description")] private string? description { get; set; }
         [JsonProperty("duration")] public double Duration { get; set; }
         [JsonProperty("episodes")] public int EpisodesInfo { get; set; }
         [JsonProperty("episodesAired")] public int EpisodesAired { get; set; }
-        [JsonIgnore] public int Episodes { get { return EpisodesInfo > 0 ? EpisodesInfo : 1; } set { } }
-
-        [JsonIgnore] public string Kind { get { return kindInfo != null ? kindInfo.ToUpper() : ""; } set { } }
-
         [JsonProperty("kind")] private string? kindInfo { get; set; }
-        [JsonProperty("status")] public string? StatuscInfo { get; set; }
+        [JsonProperty("status")] private string? StatuscInfo { get; set; }
+        [JsonProperty("rating")] private string? RatingInfo { get; set; }
 
-        [JsonIgnore]
-        public string Status
-        {
-            get { return ConvertStatusToDefault(StatuscInfo); }
-            set { }
-        }
 
-        [JsonIgnore] public string? PictureUrl { get { return poster != null ? poster.Url : null; } }
-
-        [JsonIgnore]
-        public string Rating
-        {
-            get { return ConvertRatingToImageName(RatingInfo); }
-            set { }
-        }
-
-        [JsonProperty("rating")] public string? RatingInfo { get; set; }
+        [JsonIgnore] public string Genres => Genre != null ? string.Join(", ", Genre.Select(l => l.Russian)) : "";
+        [JsonProperty("name")] public string? SubTitle { get; set; }
+        [JsonProperty("russian")] public string? Title { get; set; }
         [JsonProperty("score")] public double Score { get; set; }
+        [JsonIgnore] public int Episodes { get { return EpisodesInfo > 0 ? EpisodesInfo : 1; } set { } }
+        [JsonIgnore] public string? Description { get { return string.IsNullOrEmpty(description) ? description : Regex.Replace(description, @" ?\[.*?\]", " "); } }
+        [JsonIgnore] public string? PictureUrl { get { return Poster != null ? Poster.Url : null; } }
+        [JsonIgnore] public string? StartDate => AiredDate.Date;
+        [JsonIgnore] public string Rating => ConvertRatingToImageName(RatingInfo);
+        [JsonIgnore] public string Kind => ConvertKindToRussian(kindInfo);
+        [JsonIgnore] public string Status => ConvertStatusToDefault(StatuscInfo);
 
-        [JsonIgnore]
-        public string StartDate
+
+        private static string ConvertRatingToImageName(string? ratingName)
         {
-            get
+            return ratingName switch
             {
-                return airedOne.Date;
-            }
-            set { }
+                "pg_13" => "PG-13",
+                "pg" => "PG",
+                "g" => "G",
+                "r" => "R-16",
+                "r_plus" => "R+",
+                null => "Неизвестно",
+                _ => ratingName,
+            };
         }
 
-        [JsonProperty("name")] public string SubTitle { get; set; }
-        [JsonProperty("russian")] public string Title { get; set; }
-        [JsonProperty("description")] private string description { get; set; }
-
-        protected string ConvertRatingToImageName(string ratingName)
+        private static string ConvertKindToRussian(string? kindName)
         {
-            switch (ratingName)
+            return kindName switch
             {
-                case "pg_13":
-                    return "PG-13";
-
-                case "pg":
-                    return "PG";
-
-                case "g":
-                    return "G";
-
-                case "r":
-                    return "R-16";
-
-                case "r_plus":
-                    return "R+";
-
-                case null: return "None";
-                default:
-                    return ratingName;
-            }
+                "tv" => "TV-Сериал",
+                "movie" => "Фильм",
+                "special" => "Спешл",
+                "tv_special" => "TV-Спешл",
+                null => "Неизвестно",
+                _ => kindName.ToUpper(),
+            };
         }
 
-        protected string ConvertStatusToDefault(string statusName)
+        private static string ConvertStatusToDefault(string? statusName)
         {
-            switch (statusName)
+            return statusName switch
             {
-                case "anons":
-                    return "Анонс";
-
-                case "ongoing":
-                    return "Онгоинг";
-
-                case "released":
-                    return "Вышло";
-
-                case null: return "Неизвестно";
-                default:
-                    return statusName;
-            }
+                "anons" => "Анонс",
+                "ongoing" => "Онгоинг",
+                "released" => "Вышло",
+                null => "Неизвестно",
+                _ => statusName,
+            };
         }
     }
 }
-
