@@ -8,10 +8,10 @@ interface Props {
 export const AbsoluteImage = ({ src, zIndex, children }: Props) => {
     return (
         <Flex
+            align={"flex-end"}
+            justify={"space-between"}
             style={{
                 flexDirection: "column",
-                justifyContent: "space-between",
-                overflow: "hidden",
                 backgroundImage: `url(${src})`,
                 backgroundSize: "cover",
                 backgroundRepeat: "no-repeat",
@@ -21,9 +21,8 @@ export const AbsoluteImage = ({ src, zIndex, children }: Props) => {
                 right: 0,
                 bottom: 0,
                 position: "absolute",
-                borderRadius: 7,
+                borderRadius: 10,
                 zIndex: zIndex,
-                alignItems: "flex-end",
             }}
         >
             {children}

@@ -8,6 +8,7 @@ import {
     DeleteOutlined,
     BookOutlined,
     HeartFilled,
+    BookFilled,
 } from "@ant-design/icons";
 import AnimePopover from "./AnimePopover";
 import AbsoluteImage from "./AbsoluteImage";
@@ -45,45 +46,65 @@ export const Animes = ({ animes }: Props) => {
                             <Card
                                 bordered={false}
                                 style={{
-                                    maxHeight: 310,
-                                    maxWidth: 210,
+                                    overflow: "hidden",
+                                    maxHeight: 300,
+                                    maxWidth: 200,
                                     minHeight: "auto",
                                     minWidth: "auto",
                                     aspectRatio: "auto 8/11",
-                                    borderRadius: 7,
                                 }}
                                 cover={
                                     <AbsoluteImage
                                         src={animes.pictureUrl}
                                         zIndex={0}
                                     >
-                                        <Tag
-                                            color="#DE1EB2"
-                                            style={{
-                                                width: "fit-content",
-                                                display: "inline-block",
-                                                margin: 5,
-                                            }}
-                                        >
-                                            {new Date(
-                                                animes.startDate
-                                            ).getFullYear()}
-                                        </Tag>
+                                        <Flex>
+                                            <Tag
+                                                color="magenta"
+                                                style={{
+                                                    width: "fit-content",
+                                                    display: "inline-block",
+                                                    margin: 5,
+                                                }}
+                                            >
+                                                {new Date(
+                                                    animes.startDate
+                                                ).getFullYear()}
+                                            </Tag>
+                                            {animes.isFavorite && (
+                                                <Tooltip
+                                                    title={"В избранном"}
+                                                    trigger={"hover"}
+                                                >
+                                                    <Tag
+                                                        style={{
+                                                            width: "fit-content",
+                                                            display:
+                                                                "inline-block",
+                                                            margin: 5,
+                                                        }}
+                                                        color="magenta"
+                                                    >
+                                                        <HeartFilled />
+                                                    </Tag>
+                                                </Tooltip>
+                                            )}
+                                        </Flex>
                                         {animes.categoryId > 0 && (
                                             <Tag
                                                 color={animes.categoryColor}
                                                 bordered={false}
                                                 style={{
-                                                    fontSize: 14,
-                                                    fontStyle: "italic",
                                                     textAlign: "center",
                                                     width: "100%",
                                                     padding: 0,
                                                     margin: 0,
-                                                    borderRadius: "0",
+                                                    borderRadius: 0,
                                                 }}
                                             >
-                                                {animes.categoryName}
+                                                <Typography.Text strong>
+                                                    {animes.categoryName}
+                                                </Typography.Text>
                                             </Tag>
                                         )}
                                     </AbsoluteImage>
@@ -91,30 +112,18 @@ export const Animes = ({ animes }: Props) => {
                             ></Card>
                         </Link>
                     </Popover>
-                    <Title
-                        level={5}
-                        className="cardTitle"
-                        style={{
-                            maxWidth: 200,
-                            marginTop: "10px",
-                        }}
+                    <Link
+                        className="title-link"
+                        href={`/shikimori/${animes.id}`}
                     >
-                        <Link href={`/shikimori/${animes.id}`}>
-                            {animes.title}
-                        </Link>
-                    </Title>
+                        {animes.title}
+                    </Link>
                     <Flex>
-                        <Tag className="anime_tag">{animes.kind}</Tag>
-                        <Tag className="anime_tag">{animes.status}</Tag>
-                        <Tag className="anime_tag">{`${animes.episodes} эп.`}</Tag>
-
-                        {animes.isFavorite && (
-                            <Tooltip title={"В избранном"} trigger={"hover"}>
-                                <Tag color="pink">
-                                    <HeartFilled />
-                                </Tag>
-                            </Tooltip>
-                        )}
+                        <Tag style={{ fontSize: 10 }}>{animes.kind}</Tag>
+                        <Tag style={{ fontSize: 10 }}>{animes.status}</Tag>
+                        <Tag
+                            style={{ fontSize: 10 }}
+                        >{`${animes.episodes} эп.`}</Tag>
                     </Flex>
                 </List.Item>
             )}

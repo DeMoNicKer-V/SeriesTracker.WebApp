@@ -179,7 +179,6 @@ export default function ShikimoriPage() {
         revalidateOnReconnect: false, // Отключить обновление при восстановлении соединения
     });
     useEffect(() => {
-        console.log(request);
         router.push(`${path}?${createQueryString(request)}`);
     }, [request]);
 

@@ -99,7 +99,7 @@ namespace SeriesTracker.API.Controllers
         public async Task<ActionResult<Guid>> UpdateSeries(Guid id, [FromBody] SeriesRequest request)
         {
             var date = DateTime.Now.ToString("s");
-            var seriesId = await _seriesService.UpdateSeries(id, request.WatchedEpisode,
+            var seriesId = await _userSeriesService.UpdateSeries(id, request.WatchedEpisode,
                date, request.CategoryId, request.IsFavorite);
             return Ok(seriesId);
         }

@@ -267,11 +267,8 @@ input,
 }
 
 .overlay-background {
-    background-image: linear-gradient(180deg, transparent -50%, #fff);
-    width: 100%;
-}
-.darkTheme .overlay-background {
     background-image: linear-gradient(180deg, transparent -50%, #121212);
+    width: 100%;
 }
 
 @media (max-width: 1200px) {
@@ -343,9 +340,6 @@ input,
     }
     .ant-segmented-item-label > span:nth-child(2) {
         display: none;
-    }
-    .anime_tag {
-        font-size: 10px;
     }
     .anime-detail-col .ant-card-meta-title .ant-typography {
         font-size: 20px;
@@ -438,4 +432,15 @@ div.ant-upload-list-item {
 
 .ant-list .ant-row {
     justify-content: center;
+}
+
+.title-link {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-block;
+    max-width: 100%;
+    font-weight: 600;
+    vertical-align: bottom;
+    margin-top: 5px;
 }
