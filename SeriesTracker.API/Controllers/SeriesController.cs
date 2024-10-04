@@ -49,26 +49,6 @@ namespace SeriesTracker.API.Controllers
         }
         private readonly ShikimoriService ShikimoriService = new();
 
-        [HttpGet("{page:int}/{query}")]
-        public async Task<ActionResult<List<SeriesResponse>>> GetSeriesList(int page = 1) 
-        {
-            var seriesList = await _seriesService.GetSeriesList();
-            var response = seriesList.Select(s => new SeriesResponse(s.Id, s.AnimeId, s.WatchedEpisode, s.AddedDate, s.ChangedDate, s.CategoryId, s.IsFavorite)).Skip(30 * (page - 1)).Take(30);
-            var count = await _seriesService.GetAllSeriesCount();
-            string idsRequest = string.Join(",", seriesList.Select(s => s.AnimeId));
-            var graphQLResponse = await ShikimoriService.GetAnimeById(idsRequest);
-            var response2 = graphQLResponse.Data.Animes.Select(s => new ShikimoriResponse(s.Id, s.Description, s.Episodes, s.StartDate, s.Score, s.Title, s.SubTitle, s.PictureUrl, s.Rating, s.Kind, s.Status));
-            int index = 0;
-            List<SeriesAnimeResponse> animeResponses = [];
-            foreach (var item in response2)
-            {
-                animeResponses.Add(new SeriesAnimeResponse(response.ElementAt(index).Id, response.ElementAt(index).AnimeId, response.ElementAt(index).WatchedEpisode, response.ElementAt(index).AddedDate, response.ElementAt(index).ChangedDate, response.ElementAt(index).CategoryId, response.ElementAt(index).IsFavorite, item.Description, item.Episodes, item.StartDate, item.Score, item.Title, item.SubTitle, item.PictureUrl, item.Rating, item.Kind, item.Status));
-            index++;
-            }
-
-
-            return Ok(animeResponses);
-        }
 
         [Authorize]
         [HttpPost]
@@ -107,14 +87,7 @@ namespace SeriesTracker.API.Controllers
         [HttpDelete("{id:guid}")]
         public async Task<ActionResult<Guid>> DeleteSeries(Guid id)
         {
-            return Ok(await _seriesService.DeleteSeries(id));
-        }
-
-        [HttpDelete("animeId/{animeId:int}")]
-        public async Task<ActionResult<Guid>> DeleteSeriesByAnimeId(int animeId)
-        {
-            Guid seriesId = await _seriesService.GetSeriesByAnimeId(animeId);
-            return Ok(await _seriesService.DeleteSeries(seriesId));
+            return Ok(await _userSeriesService.DeleteSeries(id));
         }
     }
 }

@@ -1,22 +1,20 @@
-﻿using GraphQLParser;
+﻿using GraphQL;
+using GraphQLParser;
 using Microsoft.AspNetCore.Mvc;
 using SeriesTracker.API.Contracts;
 using SeriesTracker.Application.Services;
 using SeriesTracker.Core.Abstractions;
 using SeriesTracker.Core.Abstractions.UserAbastractions;
+using SeriesTracker.Core.Models;
 
 namespace SeriesTracker.API.Controllers
 {
     [ApiController]
     [Route("user")]
-    public class UserController :ControllerBase
+    public class UserController(IUserService userService, IUserSeriesService userSeriesService) : ControllerBase
     {
-        private readonly IUserService _userService;
-
-        public UserController(IUserService userService)
-        {
-            _userService = userService;
-        }
+        private readonly IUserService _userService = userService;
+        private readonly IUserSeriesService _userSeriesService = userSeriesService;
 
         [HttpGet("id/{id}")]
         public async Task<IResult> GetUserById(Guid id)
@@ -29,9 +27,11 @@ namespace SeriesTracker.API.Controllers
         }
 
         [HttpGet("username/{username}")]
-        public async Task<IResult> GetUserByUserName(string username)
+        public async Task<IResult> GetUserInfoByUserName(string username)
         {
             var user = await _userService.GetUserByUserName(username);
+            var seriesList = await _userSeriesService.GetSeriesList(user.Id.ToString());
+            var group = seriesList.GroupBy(s => s.CategoryId).Select(g => new { CategoryName = (Core.Enums.Category)g.Key, SeriesCount = g.Count() }).ToList();
             var userResponse = new DefaultUserResponse(user.Email, user.PasswordHash,
                 user.UserName, user.Avatar, user.Name, user.Surname, user.DateOfBirth, user.RegistrationDate, !string.IsNullOrEmpty(user.DateOfBirth) ? (int)(DateTime.Now - DateTime.Parse(user.DateOfBirth)).TotalDays /365 : 0);
             return Results.Ok(userResponse);

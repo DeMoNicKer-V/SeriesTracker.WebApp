@@ -102,7 +102,13 @@ export const Animes = ({ animes }: Props) => {
                                                     borderRadius: 0,
                                                 }}
                                             >
-                                                <Typography.Text strong>
+                                                <Typography.Text
+                                                    style={{
+                                                        textShadow:
+                                                            "1px 1px 2px black",
+                                                    }}
+                                                    strong
+                                                >
                                                     {animes.categoryName}
                                                 </Typography.Text>
                                             </Tag>
