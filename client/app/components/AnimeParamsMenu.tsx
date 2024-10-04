@@ -40,6 +40,16 @@ type FieldType = {
     censored: boolean;
 };
 const date = dayjs();
+const defaultRequest = {
+    page: 1,
+    name: "",
+    season: "",
+    status: "",
+    kind: "",
+    genre: "",
+    order: "ranked",
+    censored: true,
+};
 interface Props {
     genres: Genre[] | any;
     open: boolean;
@@ -106,28 +116,41 @@ function AnimeParamsMenu({
         },
     ];
     const timeoutIdRef = useRef<NodeJS.Timeout | null>(null);
-    const handleFieldsChange = (_: any, allValues: FieldType) => {
+    const handleFieldsChange = (changedValue: any, allValues: FieldType) => {
         if (timeoutIdRef.current) {
             clearTimeout(timeoutIdRef.current);
         }
         timeoutIdRef.current = setTimeout(() => {
-            const order = allValues.query ? "ranked" : allValues.order;
-            setPage(1);
-            setRequest({
-                page: 1,
-                name: allValues.query,
-                season: allValues.season
-                    ? dayjs(allValues.season).format("YYYY")
-                    : "",
-                status: allValues.status.toString(),
-                kind: allValues.kind.toString(),
-                genre: allValues.genre
-                    .concat(allValues.audience)
-                    .concat(allValues.theme)
-                    .toString(),
-                order: order,
-                censored: allValues.censored,
-            });
+            if (changedValue["censored"] !== undefined) {
+                setRequest(defaultRequest);
+                form.resetFields([
+                    "name",
+                    "season",
+                    "status",
+                    "kind",
+                    "audience",
+                    "genre",
+                    "theme",
+                ]);
+            } else {
+                const order = allValues.query ? "ranked" : allValues.order;
+                setPage(1);
+                setRequest({
+                    page: 1,
+                    name: allValues.query,
+                    season: allValues.season
+                        ? dayjs(allValues.season).format("YYYY")
+                        : "",
+                    status: allValues.status.toString(),
+                    kind: allValues.kind.toString(),
+                    genre: allValues.genre
+                        .concat(allValues.audience)
+                        .concat(allValues.theme)
+                        .toString(),
+                    order: order,
+                    censored: allValues.censored,
+                });
+            }
         }, 1000);
         return () => clearTimeout(timeoutIdRef.current!);
     };
@@ -177,18 +200,13 @@ function AnimeParamsMenu({
                     <Title level={5}>Безопасный поиск</Title>
                     <Flex>
                         <Descriptions items={items}></Descriptions>
-                        <Tooltip title={censored ? "Выключить" : "Включить"}>
-                            <Form.Item
-                                name={"censored"}
-                                valuePropName="checked"
-                            >
-                                <Checkbox
-                                    onChange={onChange}
-                                    defaultChecked
-                                    checked={censored}
-                                />
-                            </Form.Item>
-                        </Tooltip>
+                        <Form.Item name={"censored"} valuePropName="checked">
+                            <Checkbox
+                                onChange={onChange}
+                                defaultChecked
+                                checked={censored}
+                            />
+                        </Form.Item>
                     </Flex>
                 </Flex>
 
@@ -305,6 +323,7 @@ function AnimeParamsMenu({
                             label: <Title level={5}>Жанры</Title>,
                             children: (
                                 <FilterItem
+                                    censored={censored}
                                     dataSource={genres.genre}
                                     index="genre"
                                 />

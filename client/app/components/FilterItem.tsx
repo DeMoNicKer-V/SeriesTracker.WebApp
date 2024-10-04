@@ -1,5 +1,5 @@
 import { Checkbox, Col, Form, GetProp, Row } from "antd";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useEffect } from "react";
 interface DataType {
     id: any;
     russian: string;
@@ -8,9 +8,15 @@ interface DataType {
 interface Props {
     dataSource: DataType[];
     index: string;
+    censored?: boolean;
 }
 
-function FilterItem({ dataSource, index }: Props) {
+function FilterItem({ dataSource, index, censored }: Props) {
+    if (censored != undefined) {
+        dataSource = censored
+            ? dataSource.filter((item) => ![12, 539].includes(item.id))
+            : dataSource;
+    }
     return (
         <Form.Item name={index}>
             <Checkbox.Group>
