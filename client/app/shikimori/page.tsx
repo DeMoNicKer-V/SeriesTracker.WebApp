@@ -168,7 +168,6 @@ export default function ShikimoriPage() {
     const toggleOpen = () => {
         setIsOpen(!isOpen);
     };
-    const timeoutIdRef = useRef<NodeJS.Timeout | null>(null);
     const {
         data = [],
         error,

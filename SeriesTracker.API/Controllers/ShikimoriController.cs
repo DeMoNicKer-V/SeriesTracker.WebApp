@@ -49,6 +49,22 @@ namespace SeriesTracker.API.Controllers
             return new OkObjectResult(response);
         }
 
+        [HttpGet("activity")]
+        public async Task<ActionResult> GetLastAnimesById(string id)
+        {
+            GraphQLResponse<ShikimoriAnimeBaseList> graphQLResponse = await ShikimoriService.GetAnimeListByIds(id);
+            var anime = graphQLResponse.Data.Animes;
+            var response = new List<LastActivityResponse>();
+            foreach (var item in anime)
+            {
+                var ob = await _userSeriesService.GetSeriesByAnimeIdAsync(item.Id);
+                var b = new LastActivityResponse(item.Id, item.PictureUrl, item.Title, ob.ChangedDate);
+                response.Add(b);
+            }
+            var sortedResponse = response.OrderByDescending(item => DateTime.Parse(item.Date));
+            return new OkObjectResult(sortedResponse);
+        }
+
         [HttpGet]
         public async Task<ActionResult> GetAnimesByAllParams([FromQuery] ShikimoriParamsRequest request)
         {

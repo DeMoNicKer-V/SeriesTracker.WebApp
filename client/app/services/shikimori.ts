@@ -28,6 +28,13 @@ export interface CalendarItem {
     anime: CalendarAnime;
 }
 
+export interface LastActivityAnime {
+    id: number;
+    image: string;
+    title: string;
+    date: string;
+}
+
 export interface AnimeImage {
     original: string;
     preview: string;
@@ -84,6 +91,14 @@ export const getAnimeById = async (id: string) => {
     return animes;
 };
 
+export const getAnimesById = async (id: string) => {
+    const response = await fetch(
+        `http://localhost:5125/shikimori/activity/?id=${id}`
+    );
+    const animes: LastActivityAnime[] = await response.json();
+    return animes;
+};
+
 export const getAnimesByName = async (query: any) => {
     if (query === "") {
         return;
@@ -95,7 +110,9 @@ export const getAnimesByName = async (query: any) => {
 };
 
 export const getAnimesByUserId = async (userId: string, mylist: number) => {
-    const response = await fetch(`http://localhost:5125/user/${"Vitek"}/list`);
+    const response = await fetch(
+        `http://localhost:5125/shikimori/user/${userId}?mylist=${mylist}`
+    );
     const animes: SeriesAnime[] = await response.json();
     return animes;
 };

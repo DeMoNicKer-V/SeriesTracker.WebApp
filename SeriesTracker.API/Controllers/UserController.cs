@@ -11,9 +11,10 @@ namespace SeriesTracker.API.Controllers
 {
     [ApiController]
     [Route("user")]
-    public class UserController(IUserService userService, IUserSeriesService userSeriesService) : ControllerBase
+    public class UserController(IUserService userService, IUserSeriesService userSeriesService, ICategoryService categoryService) : ControllerBase
     {
         private readonly IUserService _userService = userService;
+        private readonly ICategoryService _categoryService = categoryService;
         private readonly IUserSeriesService _userSeriesService = userSeriesService;
 
         [HttpGet("id/{id}")]
@@ -29,12 +30,21 @@ namespace SeriesTracker.API.Controllers
         [HttpGet("username/{username}")]
         public async Task<IResult> GetUserInfoByUserName(string username)
         {
+            var categoryList = await _categoryService.GetCategoryList();
             var user = await _userService.GetUserByUserName(username);
             var seriesList = await _userSeriesService.GetSeriesList(user.Id.ToString());
-            var group = seriesList.GroupBy(s => s.CategoryId).Select(g => new { CategoryName = (Core.Enums.Category)g.Key, SeriesCount = g.Count() }).ToList();
+            var categoryGroup = seriesList
+              .GroupBy(s => s.CategoryId)
+              .Join(categoryList,
+                  g => g.Key,
+                  c => c.Id,
+                  (g, c) => new { CategoryName = c.Name, CategoryColor = c.Color, SeriesCount = g.Count() })
+              .ToList();
+            var lastActivityList = seriesList.OrderByDescending(s => s.ChangedDate).Take(3).Select(s => s.AnimeId).ToList();
             var userResponse = new DefaultUserResponse(user.Email, user.PasswordHash,
                 user.UserName, user.Avatar, user.Name, user.Surname, user.DateOfBirth, user.RegistrationDate, !string.IsNullOrEmpty(user.DateOfBirth) ? (int)(DateTime.Now - DateTime.Parse(user.DateOfBirth)).TotalDays /365 : 0);
-            return Results.Ok(userResponse);
+            
+            return Results.Ok(new {UserInfo = userResponse, SeriesInfo = categoryGroup, ActivityInfo = lastActivityList});
         }
 
         [HttpPost("register")]

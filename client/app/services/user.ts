@@ -22,7 +22,7 @@ export interface UserResponse {
     permissions: number[];
 }
 
-export interface DefaultUser {
+export interface UserInfo {
     email: string;
     password: string;
     userName: string;
@@ -34,6 +34,17 @@ export interface DefaultUser {
     yearsOld: number;
 }
 
+export interface SeriesInfo {
+    categoryName: string;
+    categoryColor: string;
+    seriesCount: number;
+}
+
+export interface MainUserInfo {
+    userInfo: UserInfo;
+    seriesInfo: SeriesInfo[];
+    activityInfo: number[];
+}
 export interface LoginRequest {
     email: string;
     password: string;
@@ -66,7 +77,7 @@ export const login = async (request: LoginRequest) => {
 
 export const getUserById = async (id: string) => {
     const response = await fetch(`http://localhost:5125/user/id/${id}`);
-    const user: UserResponse = await response.json();
+    const user: UserInfo = await response.json();
 
     return user;
 };
@@ -95,7 +106,7 @@ export const getUserByUserName = async (username: string) => {
     const response = await fetch(
         `http://localhost:5125/user/username/${username}`
     );
-    const user: DefaultUser = await response.json();
+    const user: MainUserInfo = await response.json();
 
     return user;
 };
