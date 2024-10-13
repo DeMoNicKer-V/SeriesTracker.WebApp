@@ -35,8 +35,9 @@ export interface UserInfo {
 }
 
 export interface SeriesInfo {
-    categoryName: string;
-    categoryColor: string;
+    id: number;
+    name: string;
+    color: string;
     seriesCount: number;
 }
 

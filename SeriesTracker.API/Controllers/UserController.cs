@@ -38,7 +38,7 @@ namespace SeriesTracker.API.Controllers
               .Join(categoryList,
                   g => g.Key,
                   c => c.Id,
-                  (g, c) => new { CategoryName = c.Name, CategoryColor = c.Color, SeriesCount = g.Count() })
+                  (g, c) => new { Id = c.Id, Name = c.Name, Color = c.Color, SeriesCount = g.Count() })
               .ToList();
             var lastActivityList = seriesList.OrderByDescending(s => s.ChangedDate).Take(4).Select(s => s.AnimeId).ToList();
             var userResponse = new DefaultUserResponse(user.Email, user.PasswordHash,

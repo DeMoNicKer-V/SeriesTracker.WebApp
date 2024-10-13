@@ -25,7 +25,6 @@ import {
     getAnimesById,
     LastActivityAnime,
 } from "@/app/services/shikimori";
-const { Text, Title } = Typography;
 export default function UserPage({ params }: { params: { username: string } }) {
     const router = useRouter();
     const pathname = usePathname();
@@ -140,14 +139,11 @@ export default function UserPage({ params }: { params: { username: string } }) {
                     <Divider />
                     <Row>
                         {userInfo?.seriesInfo.map((item) => (
-                            <Tooltip
-                                color={item.categoryColor}
-                                title={item.categoryName}
-                            >
+                            <Tooltip color={item.color} title={item.name}>
                                 <Col
                                     flex={item.seriesCount}
                                     style={{
-                                        backgroundColor: item.categoryColor,
+                                        backgroundColor: item.color,
                                         textAlign: "center",
                                     }}
                                 >
@@ -165,13 +161,13 @@ export default function UserPage({ params }: { params: { username: string } }) {
                                     <Link
                                         style={{ marginBottom: 3 }}
                                         className="title-link"
-                                        href={`${userInfo?.userInfo.userName}/list`}
+                                        href={`${userInfo?.userInfo.userName}/list?mylist=${item.id}`}
                                     >
-                                        {`${item.categoryName} (${item.seriesCount})`}
+                                        {`${item.name} (${item.seriesCount})`}
                                     </Link>
                                     <Tag
                                         style={{ padding: 0, margin: 0 }}
-                                        color={item.categoryColor}
+                                        color={item.color}
                                     ></Tag>
                                 </Flex>
                             </Col>
