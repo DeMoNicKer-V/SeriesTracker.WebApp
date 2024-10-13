@@ -40,7 +40,7 @@ namespace SeriesTracker.API.Controllers
                   c => c.Id,
                   (g, c) => new { CategoryName = c.Name, CategoryColor = c.Color, SeriesCount = g.Count() })
               .ToList();
-            var lastActivityList = seriesList.OrderByDescending(s => s.ChangedDate).Take(3).Select(s => s.AnimeId).ToList();
+            var lastActivityList = seriesList.OrderByDescending(s => s.ChangedDate).Take(4).Select(s => s.AnimeId).ToList();
             var userResponse = new DefaultUserResponse(user.Email, user.PasswordHash,
                 user.UserName, user.Avatar, user.Name, user.Surname, user.DateOfBirth, user.RegistrationDate, !string.IsNullOrEmpty(user.DateOfBirth) ? (int)(DateTime.Now - DateTime.Parse(user.DateOfBirth)).TotalDays /365 : 0);
             

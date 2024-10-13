@@ -687,6 +687,9 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                                                             hoverable
                                                         >
                                                             <Row
+                                                                gutter={[
+                                                                    15, 15,
+                                                                ]}
                                                                 className="related-anime"
                                                                 align={"middle"}
                                                                 justify={
@@ -708,7 +711,7 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                                                                         }
                                                                     />
                                                                 </Col>
-                                                                <Col offset={1}>
+                                                                <Col>
                                                                     <Meta
                                                                         style={{
                                                                             padding: 0,

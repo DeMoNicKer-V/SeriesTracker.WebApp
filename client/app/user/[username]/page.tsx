@@ -2,6 +2,7 @@
 import {
     Avatar,
     Button,
+    Card,
     Col,
     Divider,
     Flex,
@@ -38,7 +39,6 @@ export default function UserPage({ params }: { params: { username: string } }) {
             const animes = await getAnimesById(
                 currentUser.activityInfo.join(",")
             );
-            console.log(animes);
             setAnimes(animes);
         }
     };
@@ -48,43 +48,68 @@ export default function UserPage({ params }: { params: { username: string } }) {
             getCurrentUser();
         };
     }, []);
-    const handleNavigate = () => {
-        router.push(`${pathname}/list?mylist=0`);
+    const getFormatedAge = (age: number) => {
+        if (age % 10 === 1 && age % 100 !== 11) {
+            return ` / ${age} год`;
+        } else if (
+            age % 10 >= 2 &&
+            age % 10 <= 4 &&
+            (age % 100 < 12 || age % 100 > 14)
+        ) {
+            return ` / ${age} года`;
+        } else {
+            return ` / ${age} лет`;
+        }
+    };
+    const handleNavigate = (mylist: number) => {
+        router.push(`${pathname}/list?mylist=${mylist}`);
     };
     return (
         <div className="container">
-            <Row gutter={[15, 15]} align={"middle"} justify={"center"}>
-                <Col span={12}>
-                    <Space wrap>
-                        <Avatar
-                            size={100}
-                            src={userInfo?.userInfo?.avatar}
-                            shape="square"
-                        ></Avatar>
-
-                        <Meta
-                            title={
-                                <Title level={3}>
-                                    {userInfo?.userInfo?.userName}
-                                </Title>
-                            }
-                            description={
-                                <Flex align="center" justify="center" gap={5}>
-                                    <Text>
-                                        {userInfo?.userInfo?.surName}
-                                        {userInfo?.userInfo?.name}
-                                    </Text>
-                                    {userInfo?.userInfo.yearsOld > 0 && (
+            <Row gutter={[15, 15]} align={"top"} justify={"center"}>
+                <Col xs={24} sm={24} md={24} lg={16} xl={16} xxl={16}>
+                    <Row
+                        className="profile-header"
+                        gutter={[15, 15]}
+                        align={"middle"}
+                    >
+                        <Col>
+                            <Avatar
+                                size={100}
+                                src={userInfo?.userInfo?.avatar}
+                                shape="square"
+                            ></Avatar>
+                        </Col>
+                        <Col>
+                            <Meta
+                                style={{
+                                    marginBottom: 0,
+                                    fontSize: 17,
+                                }}
+                                title={
+                                    <Title
+                                        style={{
+                                            margin: 0,
+                                        }}
+                                        level={3}
+                                    >
+                                        {userInfo?.userInfo.userName}
+                                    </Title>
+                                }
+                                description={
+                                    <Flex gap={5}>
                                         <Text>
-                                            возраст:
-                                            {userInfo?.userInfo?.yearsOld}
+                                            {userInfo?.userInfo.surName}
                                         </Text>
-                                    )}
-                                    <Text>
-                                        {` сайте с: ${new Date(
-                                            userInfo?.userInfo?.regDate
-                                        ).getFullYear()} г.`}
-
+                                        <Text>{userInfo?.userInfo.name}</Text>
+                                        {userInfo?.userInfo.yearsOld > 0 && (
+                                            <Text>
+                                                {getFormatedAge(
+                                                    userInfo?.userInfo.yearsOld
+                                                )}
+                                            </Text>
+                                        )}
+                                        <Text>{`/ на сайте с`}</Text>
                                         <Tooltip
                                             title={new Date(
                                                 userInfo?.userInfo?.regDate
@@ -94,19 +119,19 @@ export default function UserPage({ params }: { params: { username: string } }) {
                                                 year: "numeric",
                                             })}
                                         >
-                                            <QuestionCircleOutlined
-                                                onClick={handleNavigate}
-                                                style={{ cursor: "help" }}
-                                            />
+                                            <Text>
+                                                {`${new Date(
+                                                    userInfo?.userInfo?.regDate
+                                                ).getFullYear()} г.`}
+                                            </Text>
                                         </Tooltip>
-                                    </Text>
-                                    <Button onClick={handleNavigate}>
-                                        Вперед
-                                    </Button>
-                                </Flex>
-                            }
-                        ></Meta>
-                    </Space>
+                                    </Flex>
+                                }
+                            />
+                        </Col>
+                    </Row>
+                </Col>
+                <Col xs={24} sm={24} md={24} lg={16} xl={16}>
                     <Title level={4}>
                         <Link href={`${userInfo?.userInfo.userName}/list`}>
                             Список аниме
@@ -131,11 +156,14 @@ export default function UserPage({ params }: { params: { username: string } }) {
                             </Tooltip>
                         ))}
                     </Row>
+                </Col>
+                <Col xs={24} sm={24} md={24} lg={16} xl={16}>
                     <Row gutter={[25, 25]} justify={"center"}>
                         {userInfo?.seriesInfo.map((item) => (
                             <Col>
                                 <Flex style={{ flexDirection: "column" }}>
                                     <Link
+                                        style={{ marginBottom: 3 }}
                                         className="title-link"
                                         href={`${userInfo?.userInfo.userName}/list`}
                                     >
@@ -150,49 +178,61 @@ export default function UserPage({ params }: { params: { username: string } }) {
                         ))}
                     </Row>
                 </Col>
-                <Col offset={1} span={6}>
+                <Col xs={24} sm={24} md={24} lg={16} xl={16}>
                     <Title level={4}>
                         <Link href={`${userInfo?.userInfo.userName}/list`}>
                             Последняя активность
                         </Link>
                     </Title>
                     <Divider />
-
-                    {animes &&
-                        animes.map((item) => (
-                            <Row
-                                gutter={[15, 15]}
-                                style={{ margin: "15px 0" }}
-                                justify={"center"}
-                            >
-                                <Col>
-                                    <Image
-                                        preview={false}
-                                        width={60}
-                                        src={item.image}
-                                    />
-                                </Col>
-                                <Col span={16}>
-                                    <Title level={5}>
-                                        <Link href={`/shikimori/${item.id}`}>
-                                            {item.title}{" "}
-                                        </Link>
-                                    </Title>
-
-                                    <Text>
-                                        {new Date(item.date).toLocaleDateString(
-                                            "ru-RU",
-                                            {
-                                                day: "numeric",
-                                                month: "long",
-                                                year: "numeric",
-                                            }
-                                        )}
-                                    </Text>
-                                </Col>
-                            </Row>
-                        ))}
                 </Col>
+                {animes && (
+                    <Col xs={24} sm={24} md={24} lg={16} xl={16}>
+                        {animes.map((item) => (
+                            <Link href={`/shikimori/${item.id}`}>
+                                <Card
+                                    style={{
+                                        padding: 12,
+                                        marginBottom: 8,
+                                    }}
+                                    hoverable
+                                >
+                                    <Row
+                                        gutter={[15, 15]}
+                                        className="related-anime"
+                                        align={"middle"}
+                                        justify={"start"}
+                                    >
+                                        <Col>
+                                            <Image
+                                                preview={false}
+                                                height={90}
+                                                src={item.image}
+                                            />
+                                        </Col>
+                                        <Col>
+                                            <Meta
+                                                style={{
+                                                    padding: 0,
+                                                    marginBottom: 8,
+                                                    whiteSpace: "break-spaces",
+                                                }}
+                                                title={item.title}
+                                                description={new Date(
+                                                    item.date
+                                                ).toLocaleDateString("ru-RU", {
+                                                    day: "numeric",
+                                                    month: "long",
+                                                    year: "numeric",
+                                                })}
+                                            />
+                                        </Col>
+                                    </Row>
+                                </Card>
+                            </Link>
+                        ))}
+                    </Col>
+                )}
             </Row>
         </div>
     );

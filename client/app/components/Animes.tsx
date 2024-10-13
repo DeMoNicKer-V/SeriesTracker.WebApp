@@ -20,6 +20,7 @@ export const Animes = ({ animes }: Props) => {
     const { Title } = Typography;
     return (
         <List
+            className="animes-list"
             grid={{
                 gutter: 15,
                 xs: 2,
