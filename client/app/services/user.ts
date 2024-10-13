@@ -51,6 +51,11 @@ export interface LoginRequest {
     password: string;
 }
 
+export interface CategoryCount {
+    key: string;
+    value: number;
+}
+
 export const registerUser = async (request: UserRequest) => {
     const response = await fetch(`http://localhost:5125/user/register`, {
         method: "POST",
@@ -79,8 +84,15 @@ export const login = async (request: LoginRequest) => {
 export const getUserById = async (id: string) => {
     const response = await fetch(`http://localhost:5125/user/id/${id}`);
     const user: UserInfo = await response.json();
-
     return user;
+};
+
+export const getUserCategoriesCount = async (username: string) => {
+    const response = await fetch(
+        `http://localhost:5125/user/categoryCount?username=${username}`
+    );
+    const series: CategoryCount[] = await response.json();
+    return series;
 };
 
 export const checkExistEmail = async (email: string) => {

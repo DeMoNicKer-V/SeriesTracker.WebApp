@@ -47,6 +47,26 @@ namespace SeriesTracker.API.Controllers
             return Results.Ok(new {UserInfo = userResponse, SeriesInfo = categoryGroup, ActivityInfo = lastActivityList});
         }
 
+        [HttpGet("categoryCount")]
+        public async Task<IResult> GetCategoriesSeriesCount(string username)
+        {
+            var categoryList = await _categoryService.GetCategoryList();
+            var user = await _userService.GetUserByUserName(username);
+            var seriesList = await _userSeriesService.GetSeriesList(user.Id.ToString());
+
+            var categoryGroup = seriesList
+              .GroupBy(s => s.CategoryId)
+              .Join(categoryList,
+                  g => g.Key,
+                  c => c.Id,
+                  (g, c) => new { Key = c.Id.ToString(), Value = g.Count() })
+              .ToList();
+            var allSeries = new { Key = 0.ToString(), Value = seriesList.Count };
+            categoryGroup.Insert(0,allSeries);
+
+            return Results.Ok(categoryGroup);
+        }
+
         [HttpPost("register")]
         public async Task<IResult> Register([FromBody] UserRequest userRequest)
         {

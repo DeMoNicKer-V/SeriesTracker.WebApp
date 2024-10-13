@@ -1,13 +1,16 @@
 "use client";
 import {
     Avatar,
+    Breadcrumb,
     Col,
     ConfigProvider,
     Divider,
     Flex,
+    FloatButton,
     Menu,
     MenuProps,
     Row,
+    Segmented,
     Space,
     Tooltip,
     Typography,
@@ -36,20 +39,34 @@ import {
     EyeOutlined,
     EyeInvisibleOutlined,
     CheckOutlined,
+    UserOutlined,
 } from "@ant-design/icons";
 import { Animes } from "@/app/components/Animes";
 import {
     getAnimesByParams,
-    getAnimesByUserId,
     getAnimesByUsername,
     ShikimoriRequest,
 } from "@/app/services/shikimori";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import useSWR from "swr";
+import { LongLeftArrow } from "@/app/img/LongLeftArrow";
+import { ShikimoriLogo } from "@/app/img/ShikimoriLogo";
+import { CategoryCount, getUserCategoriesCount } from "@/app/services/user";
 
 export default function UserPage({ params }: { params: { username: string } }) {
     const [animes, setAnimes] = useState<SeriesAnime[] | any>([]);
+    const [series, setSeries] = useState<Map<string, number>>(
+        new Map([
+            ["0", 0],
+            ["1", 0],
+            ["2", 0],
+            ["3", 0],
+            ["4", 0],
+            ["5", 0],
+            ["6", 0],
+        ])
+    );
     const { Text, Title } = Typography;
     const path = usePathname();
     const searchParams = useSearchParams();
@@ -68,10 +85,21 @@ export default function UserPage({ params }: { params: { username: string } }) {
         },
         [searchParams]
     );
-    const [mylist, setMylist] = useState<string>("0");
     const search = useSearchParams();
+    const [mylist, setMylist] = useState<string | any>(
+        search.get("mylist")?.toString()
+    );
+
     const getAnimesPost = async (mylist: number) => {
         const animes = await getAnimesByUsername(params.username, mylist);
+        if (animes.length) {
+            const myData = await getUserCategoriesCount(params.username);
+            setSeries(
+                new Map<string, number>(
+                    myData.map((item) => [item.key, item.value])
+                )
+            );
+        }
         setAnimes(animes);
         setLoading(false);
     };
@@ -79,55 +107,86 @@ export default function UserPage({ params }: { params: { username: string } }) {
     type MenuItem = Required<MenuProps>["items"][number];
     const sortMenuItems: MenuItem[] = [
         {
-            style: { marginLeft: "auto" },
-            label: "Всё",
+            label: `Всё (${
+                series.get("0") !== undefined ? series.get("0") : 0
+            })`,
             key: "0",
             icon: <NumberOutlined />,
         },
         {
-            label: "Запланировано",
+            label: `Запланировано (${
+                series.get("1") !== undefined ? series.get("1") : 0
+            })`,
             key: "1",
             icon: <BookOutlined />,
+            disabled: series.get("1") === undefined,
         },
         {
-            label: "Смотрю",
+            label: `Смотрю (${
+                series.get("2") !== undefined ? series.get("2") : 0
+            })`,
             key: "2",
             icon: <EyeOutlined />,
+            disabled: series.get("2") === undefined,
         },
         {
-            label: "Просмотрено",
+            label: `Просмотрено (${
+                series.get("3") !== undefined ? series.get("3") : 0
+            })`,
             key: "3",
             icon: <CheckOutlined />,
+            disabled: series.get("3") === undefined,
         },
         {
-            label: "Пересматриваю",
+            label: `Пересматриваю (${
+                series.get("4") !== undefined ? series.get("4") : 0
+            })`,
             key: "4",
             icon: <SyncOutlined />,
+            disabled: series.get("4") === undefined,
         },
         {
-            label: "Отложено",
+            label: `Отложено (${
+                series.get("5") !== undefined ? series.get("5") : 0
+            })`,
             key: "5",
             icon: <FieldTimeOutlined />,
+            disabled: series.get("5") === undefined,
         },
         {
-            label: "Брошено",
+            label: `Брошено (${
+                series.get("6") !== undefined ? series.get("6") : 0
+            })`,
             key: "6",
             icon: <CloseOutlined />,
+            disabled: series.get("6") === undefined,
         },
     ];
     const [loading, setLoading] = useState(false);
+    const {
+        data = [],
+        error,
+        isLoading,
+    } = useSWR(mylist, getAnimesPost, {
+        // Опции для useSWR
+        revalidateOnFocus: false, // Отключить обновление при фокусе
+        revalidateOnReconnect: false, // Отключить обновление при восстановлении соединения
+    });
     const router = useRouter();
     useEffect(() => {
-        setLoading(true);
-        getAnimesPost(Number(search.get("mylist")));
-    }, [search.get("mylist")]);
+        router.push(`?mylist=${mylist}`);
+    }, [mylist]);
     const onClick: MenuProps["onSelect"] = (e) => {
         setMylist(e.key);
-        router.push(`?mylist=${e.key}`);
     };
 
+    const [isOpen, setIsOpen] = useState(false);
+    const toggleOpen = () => {
+        setIsOpen(!isOpen);
+    };
     return (
         <div className="container">
+            <title>{`${params.username} / Список аниме`}</title>
             <ConfigProvider
                 theme={{
                     components: {
@@ -138,23 +197,75 @@ export default function UserPage({ params }: { params: { username: string } }) {
                     },
                 }}
             ></ConfigProvider>
-            <Link href={"./"}>Назад</Link>
-            {!loading && (
-                <Row gutter={[15, 15]} align={"middle"} justify={"center"}>
-                    <Col span={20}>
-                        <Menu
-                            onSelect={onClick}
-                            selectedKeys={[mylist]}
-                            items={sortMenuItems}
-                            mode="horizontal"
-                        />
-                    </Col>
-                    <Divider />
-                    <Col span={20}>
-                        <Animes animes={animes} />
-                    </Col>
-                </Row>
-            )}
+
+            <Row gutter={[15, 15]} align={"middle"} justify={"center"}>
+                <Col span={24}>
+                    <Breadcrumb
+                        separator=""
+                        items={[
+                            {
+                                title: (
+                                    <Link href={"./"}>
+                                        <Flex justify="center" gap={5}>
+                                            <UserOutlined /> {params.username}
+                                        </Flex>
+                                    </Link>
+                                ),
+                            },
+                            {
+                                type: "separator",
+                                separator: ":",
+                            },
+                            {
+                                title: (
+                                    <Link
+                                        style={{
+                                            display: "flex",
+                                            flexDirection: "row",
+                                            fontStyle: "italic",
+                                            gap: 5,
+                                            fontSize: 11,
+                                            alignItems: "center",
+                                            justifyContent: "center",
+                                        }}
+                                        href={"./"}
+                                    >
+                                        <LongLeftArrow />
+                                        Назад
+                                    </Link>
+                                ),
+                            },
+                            {
+                                type: "separator",
+                            },
+                            {
+                                title: "Список аниме",
+                            },
+                        ]}
+                    />
+                </Col>
+                <Col span={20}>
+                    <Menu
+                        style={{ justifyContent: "center" }}
+                        onSelect={onClick}
+                        selectedKeys={[mylist]}
+                        items={sortMenuItems}
+                        mode="horizontal"
+                    />
+                </Col>
+                <Divider />
+                <Col span={20}>
+                    <Animes animes={animes} />
+                </Col>
+            </Row>
+            <FloatButton.Group style={{ right: 0, margin: 10, bottom: 32 }}>
+                <FloatButton
+                    type="primary"
+                    icon={<SearchOutlined />}
+                    onClick={toggleOpen}
+                />
+                <FloatButton.BackTop />
+            </FloatButton.Group>
         </div>
     );
 }

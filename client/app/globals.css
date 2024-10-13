@@ -349,6 +349,9 @@ input,
     .ant-segmented-item-label > span:nth-child(2) {
         display: none;
     }
+    .mylist-menu .ant-menu-title-content {
+        display: none;
+    }
     .anime-detail-col .ant-card-meta-title .ant-typography {
         font-size: 20px;
     }

@@ -296,7 +296,7 @@ export default function RootLayout({
                                     />
                                 </Col>
                                 {currentKey !== "shikimori" && (
-                                    <Col md={0} xl={10}>
+                                    <Col xs={0} sm={0} md={0} xl={10}>
                                         <SearchBar
                                             listBG={
                                                 currentTheme

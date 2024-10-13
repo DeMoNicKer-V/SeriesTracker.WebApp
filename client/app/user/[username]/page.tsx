@@ -65,6 +65,7 @@ export default function UserPage({ params }: { params: { username: string } }) {
     };
     return (
         <div className="container">
+            <title>{`${params.username} / Профиль`}</title>
             <Row gutter={[15, 15]} align={"top"} justify={"center"}>
                 <Col xs={24} sm={24} md={24} lg={16} xl={16} xxl={16}>
                     <Row
@@ -132,7 +133,9 @@ export default function UserPage({ params }: { params: { username: string } }) {
                 </Col>
                 <Col xs={24} sm={24} md={24} lg={16} xl={16}>
                     <Title level={4}>
-                        <Link href={`${userInfo?.userInfo.userName}/list`}>
+                        <Link
+                            href={`${userInfo?.userInfo.userName}/list?mylist=0`}
+                        >
                             Список аниме
                         </Link>
                     </Title>
