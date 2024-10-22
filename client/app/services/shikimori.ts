@@ -109,10 +109,8 @@ export const getAnimesByName = async (query: any) => {
     return animes;
 };
 
-export const getAnimesByUsername = async (username: string, mylist: number) => {
-    const response = await fetch(
-        `http://localhost:5125/shikimori/user/${username}?mylist=${mylist}`
-    );
+export const getAnimesByUsername = async (username: string, url: string) => {
+    const response = await fetch(`http://localhost:5125/shikimori${url}`);
     const animes: SeriesAnime[] = await response.json();
     return animes;
 };

@@ -44,6 +44,11 @@ namespace SeriesTracker.Application.Services
             return await graphQLClient.SendQueryAsync<ShikimoriAnimeBaseList>(GetRequest(page, name, season, status, kind, genre, order, censored));
         }
 
+        public async Task<GraphQLResponse<ShikimoriAnimeBaseList>> GetAnimesByAllParamsAndIds(int page, string name, string ids, string season, string status, string kind, string genre, string order, bool censored)
+        {
+            return await graphQLClient.SendQueryAsync<ShikimoriAnimeBaseList>(GetRequest(page, name, ids, season, status, kind, genre, order, censored));
+        }
+
         public async Task<GraphQLResponse<GenreList>> GetGenres()
         {
             return await graphQLClient.SendQueryAsync<GenreList>(GetRequest());
@@ -148,6 +153,50 @@ namespace SeriesTracker.Application.Services
                 Variables = new
                 {
                     name,
+                }
+            };
+        }
+
+        private static GraphQLRequest GetRequest(int page, string name, string ids, string season, string status, string kind, string genre, string order, bool censored)
+        {
+
+            return new GraphQLRequest
+            {
+                Query = @"query GetByAllParams($page: Int, $ids: String, $name: String, $season: SeasonString, $status: AnimeStatusString, $kind: AnimeKindString, $genre: String, $order: OrderEnum, $censored: Boolean) {
+                                animes(page: $page, ids: $ids, search: $name, season: $season, status: $status, kind: $kind, genre: $genre, order: $order, censored: $censored, score: 1, limit: 28) {
+                                    id
+                                    russian
+                                    name
+                                    description
+                                    kind
+                                    rating
+                                    duration
+                                    episodes
+                                    genres{ id kind russian }
+                                    episodesAired
+                                    status
+                                    score
+                                    airedOn {
+                                        date
+                                    }
+                                    poster {
+                                        
+                                        mainUrl
+                                    }
+                                }
+                            }",
+                OperationName = "GetByAllParams",
+                Variables = new
+                {
+                    ids = ids,
+                    page = page,
+                    name = name,
+                    season = season,
+                    status = string.IsNullOrEmpty(status) ? "!anons" : status,
+                    kind = string.IsNullOrEmpty(kind) ? "!music,!pv,!cm" : kind,
+                    genre = genre,
+                    order = order,
+                    censored = censored
                 }
             };
         }

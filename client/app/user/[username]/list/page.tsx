@@ -45,6 +45,7 @@ import { Animes } from "@/app/components/Animes";
 import {
     getAnimesByParams,
     getAnimesByUsername,
+    getGenres,
     ShikimoriRequest,
 } from "@/app/services/shikimori";
 import Link from "next/link";
@@ -53,9 +54,27 @@ import useSWR from "swr";
 import { LongLeftArrow } from "@/app/img/LongLeftArrow";
 import { ShikimoriLogo } from "@/app/img/ShikimoriLogo";
 import { CategoryCount, getUserCategoriesCount } from "@/app/services/user";
+import AnimeParamsMenu from "@/app/components/AnimeParamsMenu";
 
 export default function UserPage({ params }: { params: { username: string } }) {
+    const path = usePathname();
+    const searchParams = useSearchParams();
+    const [genres, setGenres] = useState<Genre[] | any>([]);
     const [animes, setAnimes] = useState<SeriesAnime[] | any>([]);
+    const [page, setPage] = useState<number | any>(
+        searchParams.get("page") != null ? searchParams.get("page") : 1
+    );
+    const [request, setRequest] = useState<ShikimoriRequest>({
+        page: page,
+        name: "",
+        season: "",
+        status: "",
+        kind: "",
+        genre: "",
+        order: "ranked",
+        censored: true,
+    });
+
     const [series, setSeries] = useState<Map<string, number>>(
         new Map([
             ["0", 0],
@@ -68,11 +87,11 @@ export default function UserPage({ params }: { params: { username: string } }) {
         ])
     );
     const { Text, Title } = Typography;
-    const path = usePathname();
-    const searchParams = useSearchParams();
+
     const createQueryString = useMemo(
-        () => (query: any) => {
+        () => (mylist: any, query: any) => {
             const params = new URLSearchParams(searchParams);
+            params.set("mylist", String(mylist));
             for (const [name, value] of Object.entries(query)) {
                 if (name && value) {
                     params.set(name, String(value));
@@ -80,18 +99,26 @@ export default function UserPage({ params }: { params: { username: string } }) {
                     params.delete(name);
                 }
             }
-
             return params.toString();
         },
         [searchParams]
     );
     const search = useSearchParams();
     const [mylist, setMylist] = useState<string | any>(
-        search.get("mylist")?.toString()
+        search.get("mylist") ? search.get("mylist")?.toString() : "0"
     );
 
-    const getAnimesPost = async (mylist: number) => {
-        const animes = await getAnimesByUsername(params.username, mylist);
+    const getGenresList = async () => {
+        const list = await getGenres();
+        setGenres(list);
+    };
+    useEffect(() => {
+        return () => {
+            getGenresList();
+        };
+    }, []);
+    const getAnimesPost = async (url: string) => {
+        const animes = await getAnimesByUsername(params.username, url);
         if (animes.length) {
             const myData = await getUserCategoriesCount(params.username);
             setSeries(
@@ -167,15 +194,14 @@ export default function UserPage({ params }: { params: { username: string } }) {
         data = [],
         error,
         isLoading,
-    } = useSWR(mylist, getAnimesPost, {
+    } = useSWR(`${path}?${createQueryString(mylist, request)}`, getAnimesPost, {
         // Опции для useSWR
         revalidateOnFocus: false, // Отключить обновление при фокусе
         revalidateOnReconnect: false, // Отключить обновление при восстановлении соединения
     });
+
     const router = useRouter();
-    useEffect(() => {
-        router.push(`?mylist=${mylist}`);
-    }, [mylist]);
+
     const onClick: MenuProps["onSelect"] = (e) => {
         setMylist(e.key);
     };
@@ -258,6 +284,13 @@ export default function UserPage({ params }: { params: { username: string } }) {
                     <Animes animes={animes} />
                 </Col>
             </Row>
+            <AnimeParamsMenu
+                genres={genres}
+                open={isOpen}
+                onClose={toggleOpen}
+                setRequest={setRequest}
+                setPage={setPage}
+            />
             <FloatButton.Group style={{ right: 0, margin: 10, bottom: 32 }}>
                 <FloatButton
                     type="primary"
