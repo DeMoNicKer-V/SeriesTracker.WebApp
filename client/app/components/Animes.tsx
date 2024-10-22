@@ -125,11 +125,15 @@ export const Animes = ({ animes }: Props) => {
                     >
                         {animes.title}
                     </Link>
-                    <Flex>
-                        <Tag style={{ fontSize: 10 }}>{animes.kind}</Tag>
-                        <Tag style={{ fontSize: 10 }}>{animes.status}</Tag>
+                    <Flex className="subtitle-tags">
+                        <Tag style={{ fontSize: 11, fontWeight: 500 }}>
+                            {animes.kind}
+                        </Tag>
+                        <Tag style={{ fontSize: 11, fontWeight: 500 }}>
+                            {animes.status}
+                        </Tag>
                         <Tag
-                            style={{ fontSize: 10 }}
+                            style={{ fontSize: 11, fontWeight: 500 }}
                         >{`${animes.episodes} эп.`}</Tag>
                     </Flex>
                 </List.Item>
