@@ -143,14 +143,20 @@ export default function UserPage({ params }: { params: { username: string } }) {
                     <Row>
                         {userInfo?.seriesInfo.map((item) => (
                             <Tooltip color={item.color} title={item.name}>
-                                <Col
-                                    flex={item.seriesCount}
-                                    style={{
-                                        backgroundColor: item.color,
-                                        textAlign: "center",
-                                    }}
-                                >
-                                    {item.seriesCount}
+                                <Col flex={item.seriesCount}>
+                                    <Card
+                                        bordered={false}
+                                        hoverable
+                                        style={{
+                                            backgroundColor: item.color,
+                                            borderRadius: 0,
+                                            textAlign: "center",
+                                            padding: 0,
+                                            margin: 0,
+                                        }}
+                                    >
+                                        {item.seriesCount}
+                                    </Card>
                                 </Col>
                             </Tooltip>
                         ))}

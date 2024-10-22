@@ -199,7 +199,9 @@ export default function UserPage({ params }: { params: { username: string } }) {
         revalidateOnFocus: false, // Отключить обновление при фокусе
         revalidateOnReconnect: false, // Отключить обновление при восстановлении соединения
     });
-
+    useEffect(() => {
+        router.push(`${path}?${createQueryString(mylist, request)}`);
+    }, [request, mylist]);
     const router = useRouter();
 
     const onClick: MenuProps["onSelect"] = (e) => {
