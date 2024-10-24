@@ -89,12 +89,12 @@ namespace SeriesTracker.API.Controllers
 
                         var category = categoryDictionary[series.CategoryId];
                         return new AnimeSeriesResponse(item.Id, series.CategoryId, category.Name, category.Color, series.IsFavorite,
-                                                     item.Description, item.Episodes, item.StartDate, item.Score, item.Title, item.SubTitle,
+                                                     item.Description, item.Episodes, item.Duration, item.StartDate, item.Score, item.Title, item.SubTitle,
                                                      item.PictureUrl, item.Rating, item.Kind, item.Status);
                     }
 
                     return new AnimeSeriesResponse(item.Id, 0, string.Empty, string.Empty, false,
-                                                 item.Description, item.Episodes, item.StartDate, item.Score, item.Title, item.SubTitle,
+                                                 item.Description, item.Episodes, item.Duration, item.StartDate, item.Score, item.Title, item.SubTitle,
                                                  item.PictureUrl, item.Rating, item.Kind, item.Status);
                 })
                 .ToList();

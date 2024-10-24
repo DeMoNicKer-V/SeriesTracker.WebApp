@@ -60,7 +60,6 @@ export default function UserPage({ params }: { params: { username: string } }) {
     const path = usePathname();
     const searchParams = useSearchParams();
     const [genres, setGenres] = useState<Genre[] | any>([]);
-    const [animes, setAnimes] = useState<SeriesAnime[] | any>([]);
     const [page, setPage] = useState<number | any>(
         searchParams.get("page") != null ? searchParams.get("page") : 1
     );
@@ -127,8 +126,7 @@ export default function UserPage({ params }: { params: { username: string } }) {
                 )
             );
         }
-        setAnimes(animes);
-        setLoading(false);
+        return animes;
     };
     const pathname = usePathname();
     type MenuItem = Required<MenuProps>["items"][number];
@@ -272,7 +270,7 @@ export default function UserPage({ params }: { params: { username: string } }) {
                         ]}
                     />
                 </Col>
-                <Col span={20}>
+                <Col span={22}>
                     <Menu
                         style={{ justifyContent: "center" }}
                         onSelect={onClick}
@@ -282,8 +280,8 @@ export default function UserPage({ params }: { params: { username: string } }) {
                     />
                 </Col>
                 <Divider />
-                <Col span={20}>
-                    <Animes animes={animes} />
+                <Col span={22}>
+                    <Animes loading={isLoading} animes={data} />
                 </Col>
             </Row>
             <AnimeParamsMenu

@@ -12,7 +12,7 @@ namespace SeriesTracker.Core.Models.Shikimori
         [JsonProperty("genres")] public Genre[]? Genre { get; set; }
         [JsonProperty("id")] public int Id { get; set; }
         [JsonProperty("description")] private string? DescriptionInfo { get; set; }
-        [JsonProperty("duration")] public double Duration { get; set; }
+        [JsonProperty("duration")] public int Duration { get; set; }
         [JsonProperty("episodes")] public int EpisodesInfo { get; set; }
         [JsonProperty("episodesAired")] public int EpisodesAired { get; set; }
         [JsonProperty("kind")] private string? kindInfo { get; set; }

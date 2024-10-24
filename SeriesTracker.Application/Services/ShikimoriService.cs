@@ -216,7 +216,6 @@ namespace SeriesTracker.Application.Services
                                     rating
                                     duration
                                     episodes
-                                    genres{ id kind russian }
                                     episodesAired
                                     status
                                     score

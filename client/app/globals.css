@@ -277,6 +277,9 @@ input,
         font-size: 10px;
         gap: 5px !important;
     }
+    .subtitle-tags {
+        flex-wrap: wrap;
+    }
 }
 @media (max-width: 768px) {
     .profile-header {
@@ -337,9 +340,6 @@ input,
     }*/
 }
 @media (max-width: 992px) {
-    .subtitle-tags > span:nth-child(3) {
-        display: none;
-    }
     .dot-separator {
         display: none;
     }

@@ -184,16 +184,6 @@ export default function ShikimoriPage() {
     return (
         <div className="container">
             <title>Series Tracker - Shikimori</title>
-            <Spin
-                size="large"
-                spinning={isLoading}
-                style={{
-                    position: "absolute",
-                    top: "50%",
-                    left: "50%",
-                }}
-            />
-
             <Typography.Title style={{ margin: 0 }} level={3}>
                 Аниме
             </Typography.Title>
@@ -242,24 +232,8 @@ export default function ShikimoriPage() {
                 )}
             </Flex>
             <Divider />
-            {Number(data.length) <= 0 && isLoading === false && (
-                <Row>
-                    <Col span={16} offset={4}>
-                        <Flex
-                            className="emptyview"
-                            justify="center"
-                            align="middle"
-                            gap={10}
-                        >
-                            <InfoCircleOutlined style={{ fontSize: 32 }} />
-                            <span style={{ fontSize: 22 }}>
-                                {"По вашему запросу ничего не найдено."}
-                            </span>
-                        </Flex>
-                    </Col>
-                </Row>
-            )}
-            {!isLoading && <Animes animes={data} />}
+
+            <Animes loading={isLoading} animes={data} />
             <AnimeParamsMenu
                 genres={genres}
                 open={isOpen}

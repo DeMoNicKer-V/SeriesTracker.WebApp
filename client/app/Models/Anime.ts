@@ -43,6 +43,7 @@ interface SeriesAnime {
     score: number;
     episodes: number;
     episodesAired: number;
+    duration: number;
     rating: string;
     kind: string;
     status: string;
