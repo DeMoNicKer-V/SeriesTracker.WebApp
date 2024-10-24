@@ -2,6 +2,7 @@
 import {
     Avatar,
     Breadcrumb,
+    Button,
     Col,
     ConfigProvider,
     Divider,
@@ -12,6 +13,7 @@ import {
     Row,
     Segmented,
     Space,
+    Tag,
     Tooltip,
     Typography,
 } from "antd";
@@ -107,28 +109,25 @@ export default function UserPage({ params }: { params: { username: string } }) {
         search.get("mylist") ? search.get("mylist")?.toString() : "0"
     );
 
-    const getGenresList = async () => {
-        const list = await getGenres();
-        setGenres(list);
+    const getUserInfo = async (username: string) => {
+        const myData = await getUserCategoriesCount(username);
+        setSeries(
+            new Map<string, number>(
+                myData.map((item) => [item.key, item.value])
+            )
+        );
     };
-    useEffect(() => {
-        return () => {
-            getGenresList();
-        };
-    }, []);
-    const getAnimesPost = async (url: string) => {
-        const animes = await getAnimesByUsername(params.username, url);
-        if (animes.length) {
-            const myData = await getUserCategoriesCount(params.username);
-            setSeries(
-                new Map<string, number>(
-                    myData.map((item) => [item.key, item.value])
-                )
-            );
-        }
-        return animes;
-    };
-    const pathname = usePathname();
+
+    const {
+        data = [],
+        error,
+        isLoading,
+    } = useSWR(params.username, getUserInfo, {
+        // Опции для useSWR
+        revalidateOnFocus: false, // Отключить обновление при фокусе
+        revalidateOnReconnect: false, // Отключить обновление при восстановлении соединения
+    });
+
     type MenuItem = Required<MenuProps>["items"][number];
     const sortMenuItems: MenuItem[] = [
         {
@@ -187,19 +186,10 @@ export default function UserPage({ params }: { params: { username: string } }) {
             disabled: series.get("6") === undefined,
         },
     ];
-    const [loading, setLoading] = useState(false);
-    const {
-        data = [],
-        error,
-        isLoading,
-    } = useSWR(`${path}?${createQueryString(mylist, request)}`, getAnimesPost, {
-        // Опции для useSWR
-        revalidateOnFocus: false, // Отключить обновление при фокусе
-        revalidateOnReconnect: false, // Отключить обновление при восстановлении соединения
-    });
+
     useEffect(() => {
-        router.push(`${path}?${createQueryString(mylist, request)}`);
-    }, [request, mylist]);
+        router.push(`${path}?mylist=${mylist}`);
+    }, [mylist]);
     const router = useRouter();
 
     const onClick: MenuProps["onSelect"] = (e) => {
@@ -279,18 +269,18 @@ export default function UserPage({ params }: { params: { username: string } }) {
                         mode="horizontal"
                     />
                 </Col>
-                <Divider />
-                <Col span={22}>
-                    <Animes loading={isLoading} animes={data} />
+                <Col span={24}>
+                    <Animes
+                        isDrawerOpen={isOpen}
+                        onDrawerClose={toggleOpen}
+                        userPath="/shikimori"
+                        disableBottomNav={
+                            series.get("0") !== undefined ? true : false
+                        }
+                    />
                 </Col>
             </Row>
-            <AnimeParamsMenu
-                genres={genres}
-                open={isOpen}
-                onClose={toggleOpen}
-                setRequest={setRequest}
-                setPage={setPage}
-            />
+
             <FloatButton.Group style={{ right: 0, margin: 10, bottom: 32 }}>
                 <FloatButton
                     type="primary"

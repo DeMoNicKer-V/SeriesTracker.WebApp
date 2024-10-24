@@ -74,6 +74,7 @@ export const getAnimes = async (page: number, order: string) => {
 };
 
 export const getAnimesByParams = async (fullUrl: string) => {
+    console.log(fullUrl);
     const response = await fetch(`http://localhost:5125${fullUrl}`, {
         method: "GET",
         headers: {

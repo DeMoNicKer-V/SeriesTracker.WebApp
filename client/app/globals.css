@@ -343,6 +343,9 @@ input,
     .dot-separator {
         display: none;
     }
+    .navigation-btn > span:nth-child(2) {
+        display: none;
+    }
     .azList {
         display: none;
     }

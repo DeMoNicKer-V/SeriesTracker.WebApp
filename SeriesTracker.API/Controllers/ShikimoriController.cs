@@ -28,7 +28,7 @@ namespace SeriesTracker.API.Controllers
 
 
         [HttpGet("user/{usermame}/list")]
-        public async Task<ActionResult<ShikimoriAnimeBaseList[]>> GetAnimesByUser(string usermame, int mylist, [FromQuery] ShikimoriParamsRequest request)
+        public async Task<ActionResult<ShikimoriAnimeBaseList[]>> GetAnimesByUser(string usermame, [FromQuery] ShikimoriParamsRequest request, int mylist = 0)
         {
             string? userSeries = await _userSeriesService.GetSeriesAnimeIdsList(usermame, mylist);
             if (string.IsNullOrEmpty(userSeries))

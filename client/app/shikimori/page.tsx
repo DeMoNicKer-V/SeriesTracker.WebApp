@@ -98,88 +98,11 @@ const sortMenuItems: MenuItem[] = [
     },
 ];
 export default function ShikimoriPage() {
-    const searchParams = useSearchParams();
-    const createQueryString = useMemo(
-        () => (query: any) => {
-            const params = new URLSearchParams(searchParams);
-            for (const [name, value] of Object.entries(query)) {
-                if (name && value) {
-                    params.set(name, String(value));
-                } else {
-                    params.delete(name);
-                }
-            }
-
-            return params.toString();
-        },
-        [searchParams]
-    );
     const [isOpen, setIsOpen] = useState(false);
-    const [genres, setGenres] = useState<Genre[] | any>([]);
-    const router = useRouter();
-    const path = usePathname();
-
-    const [page, setPage] = useState<number | any>(
-        searchParams.get("page") != null ? searchParams.get("page") : 1
-    );
-    const [request, setRequest] = useState<ShikimoriRequest>({
-        page: page,
-        name: "",
-        season: "",
-        status: "",
-        kind: "",
-        genre: "",
-        order: "ranked",
-        censored: true,
-    });
-
-    const getGenresList = async () => {
-        const list = await getGenres();
-        setGenres(list);
-    };
-    useEffect(() => {
-        return () => {
-            getGenresList();
-        };
-    }, []);
-
-    const getAnimesPost = async (url: string) => {
-        const animes: SeriesAnime[] = await getAnimesByParams(url);
-        return animes;
-    };
-
-    const nextPage = () => {
-        setPage(Number(page) + 1);
-        request.page = Number(page) + 1;
-    };
-
-    const prePage = () => {
-        if (page > 1) {
-            setPage(Number(page) - 1);
-            request.page = Number(page) - 1;
-        }
-    };
-
-    const firstPage = () => {
-        setPage(1);
-        request.page = 1;
-    };
 
     const toggleOpen = () => {
         setIsOpen(!isOpen);
     };
-    const {
-        data = [],
-        error,
-        isLoading,
-    } = useSWR(`${path}?${createQueryString(request)}`, getAnimesPost, {
-        // Опции для useSWR
-        revalidateOnFocus: false, // Отключить обновление при фокусе
-        revalidateOnReconnect: false, // Отключить обновление при восстановлении соединения
-    });
-    useEffect(() => {
-        router.push(`${path}?${createQueryString(request)}`);
-    }, [request]);
 
     return (
         <div className="container">
@@ -187,60 +110,8 @@ export default function ShikimoriPage() {
             <Typography.Title style={{ margin: 0 }} level={3}>
                 Аниме
             </Typography.Title>
+            <Animes isDrawerOpen={isOpen} onDrawerClose={toggleOpen} />
 
-            <Flex justify="start">
-                {page > 2 && (
-                    <Tooltip title={"В начало"}>
-                        <Button
-                            disabled={isLoading}
-                            size="small"
-                            type="link"
-                            onClick={firstPage}
-                            icon={<DoubleLeftOutlined />}
-                        />
-                    </Tooltip>
-                )}
-                {page > 1 && (
-                    <Tooltip title={"Назад"}>
-                        <Button
-                            disabled={isLoading}
-                            size="small"
-                            type="link"
-                            onClick={prePage}
-                            icon={<LeftOutlined />}
-                        />
-                    </Tooltip>
-                )}
-                <Tag
-                    style={{
-                        fontStyle: "italic",
-                        cursor: "default",
-                        marginLeft: page <= 1 ? 0 : 5,
-                        transition: "all .2s",
-                    }}
-                >{`Страница: ${page}`}</Tag>
-                {data.length == 28 && (
-                    <Tooltip title={"Дальше"}>
-                        <Button
-                            disabled={isLoading}
-                            size="small"
-                            type="link"
-                            onClick={nextPage}
-                            icon={<RightOutlined />}
-                        />
-                    </Tooltip>
-                )}
-            </Flex>
-            <Divider />
-
-            <Animes loading={isLoading} animes={data} />
-            <AnimeParamsMenu
-                genres={genres}
-                open={isOpen}
-                onClose={toggleOpen}
-                setRequest={setRequest}
-                setPage={setPage}
-            />
             <FloatButton.Group style={{ right: 0, margin: 10, bottom: 32 }}>
                 <FloatButton
                     type="primary"
