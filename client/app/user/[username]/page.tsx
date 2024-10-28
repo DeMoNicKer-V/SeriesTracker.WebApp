@@ -6,6 +6,7 @@ import {
     Col,
     Divider,
     Flex,
+    FloatButton,
     Image,
     Row,
     Space,
@@ -16,7 +17,11 @@ import {
 import { useEffect, useState } from "react";
 import { getUserByUserName, MainUserInfo } from "../../services/user";
 import Meta from "antd/es/card/Meta";
-import { QuestionCircleOutlined } from "@ant-design/icons";
+import {
+    EditOutlined,
+    QuestionCircleOutlined,
+    SettingOutlined,
+} from "@ant-design/icons";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import {
@@ -128,6 +133,14 @@ export default function UserPage({ params }: { params: { username: string } }) {
                                     </Flex>
                                 }
                             />
+                            <Button
+                                onClick={() => router.push(`${pathname}/edit`)}
+                                icon={<SettingOutlined />}
+                                size="small"
+                                type="link"
+                            >
+                                Управление профилем
+                            </Button>
                         </Col>
                     </Row>
                 </Col>
@@ -239,6 +252,10 @@ export default function UserPage({ params }: { params: { username: string } }) {
                     </Col>
                 )}
             </Row>
+
+            <FloatButton.Group style={{ right: 32 }}>
+                <FloatButton icon={<EditOutlined />} />
+            </FloatButton.Group>
         </div>
     );
 }

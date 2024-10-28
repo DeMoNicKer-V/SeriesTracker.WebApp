@@ -241,7 +241,7 @@ export const Animes = ({
                 }
                 className="animes-list"
                 grid={{
-                    gutter: 15,
+                    gutter: 30,
                     xs: 2,
                     sm: 3,
                     md: 4,
@@ -251,9 +251,7 @@ export const Animes = ({
                 }}
                 dataSource={data}
                 renderItem={(animes: SeriesAnime) => (
-                    <List.Item
-                        colStyle={{ maxWidth: 210, marginInline: "auto" }}
-                    >
+                    <List.Item>
                         <Popover
                             trigger={"hover"}
                             mouseEnterDelay={0.5}
@@ -269,8 +267,7 @@ export const Animes = ({
                                     bordered={false}
                                     style={{
                                         overflow: "hidden",
-                                        maxHeight: 300,
-                                        maxWidth: 200,
+
                                         minHeight: "auto",
                                         minWidth: "auto",
                                         aspectRatio: "auto 8/11",
@@ -348,13 +345,8 @@ export const Animes = ({
                         </Link>
                         <Row
                             gutter={[0, 5]}
-                            style={{ justifyContent: "space-between" }}
+                            style={{ justifyContent: "start" }}
                         >
-                            <Col>
-                                <Tag style={{ fontSize: 11, fontWeight: 500 }}>
-                                    {animes.kind}
-                                </Tag>
-                            </Col>
                             <Col>
                                 {animes.status.length > 6 ? (
                                     <Tag
@@ -377,6 +369,11 @@ export const Animes = ({
                                         {animes.status}
                                     </Tag>
                                 )}
+                            </Col>{" "}
+                            <Col>
+                                <Tag style={{ fontSize: 11, fontWeight: 500 }}>
+                                    {animes.kind}
+                                </Tag>
                             </Col>
                             <Col>
                                 {animes.kind === "Фильм" && (
