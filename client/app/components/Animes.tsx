@@ -16,6 +16,7 @@ import {
 import Link from "next/link";
 import {
     DoubleLeftOutlined,
+    FireOutlined,
     HeartFilled,
     InfoCircleOutlined,
     LeftOutlined,
@@ -355,9 +356,27 @@ export const Animes = ({
                                 </Tag>
                             </Col>
                             <Col>
-                                <Tag style={{ fontSize: 11, fontWeight: 500 }}>
-                                    {animes.status}
-                                </Tag>
+                                {animes.status.length > 6 ? (
+                                    <Tag
+                                        color="orange"
+                                        icon={<FireOutlined />}
+                                        style={{
+                                            fontSize: 11,
+                                            fontWeight: 500,
+                                        }}
+                                    >
+                                        {animes.status}
+                                    </Tag>
+                                ) : (
+                                    <Tag
+                                        style={{
+                                            fontSize: 11,
+                                            fontWeight: 500,
+                                        }}
+                                    >
+                                        {animes.status}
+                                    </Tag>
+                                )}
                             </Col>
                             <Col>
                                 {animes.kind === "Фильм" && (

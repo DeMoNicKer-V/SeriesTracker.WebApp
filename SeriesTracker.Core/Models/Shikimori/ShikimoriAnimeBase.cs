@@ -24,7 +24,7 @@ namespace SeriesTracker.Core.Models.Shikimori
         [JsonProperty("name")] public string? SubTitle { get; set; }
         [JsonProperty("russian")] public string? Title { get; set; }
         [JsonProperty("score")] public double Score { get; set; }
-        [JsonIgnore] public int Episodes { get { return EpisodesInfo > 0 ? EpisodesInfo : EpisodesAired; } set { } }
+        [JsonIgnore] public int Episodes { get { return StatuscInfo == "ongoing" ? EpisodesAired : EpisodesInfo; } set { } }
         [JsonIgnore] public string? Description { get { return string.IsNullOrEmpty(DescriptionInfo) ? null : DescriptionFormatRegex().Replace(DescriptionInfo, " "); } }
         [JsonIgnore] public string? PictureUrl { get { return Poster?.Url; } }
         [JsonIgnore] public string? StartDate => AiredDate.Date;
