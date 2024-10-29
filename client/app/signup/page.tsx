@@ -721,9 +721,11 @@ const SignupPage = () => {
                                                 )}
                                                 onChange={(date) => {
                                                     setDateBirth(
-                                                        new Date(
-                                                            date.toDate()
-                                                        ).toString()
+                                                        date
+                                                            .format(
+                                                                "DD-MM-YYYY"
+                                                            )
+                                                            .toString()
                                                     );
                                                 }}
                                                 value={
