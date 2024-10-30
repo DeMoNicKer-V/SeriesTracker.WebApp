@@ -63,17 +63,19 @@ import AvatarPicker from "../../../components/AvatarPicker";
 import Title from "antd/es/typography/Title";
 import { LongLeftArrow } from "@/app/img/LongLeftArrow";
 import Paragraph from "antd/es/typography/Paragraph";
+import { useRouter } from "next/navigation";
+import { LogOut } from "@/app/api/coockie";
 dayjs.locale("ru");
 export default function EditUserPage({
     params,
 }: {
     params: { username: string };
 }) {
+    const router = useRouter();
     const [user, setUser] = useState<UserInfo>();
     const [deleteStr, setDeleteStr] = useState<string>("");
     const [openDelete, setOpenDelete] = useState<boolean>(false);
     const [openDeleteUser, setOpenDeleteUser] = useState<boolean>(false);
-    const [loading, setLoading] = useState<boolean>(false);
     const [form] = Form.useForm();
     const getUser = async () => {
         const user = await getUserByUserName(params.username);
@@ -81,15 +83,13 @@ export default function EditUserPage({
     };
 
     const deleteUser = async () => {
-        setLoading(true);
+        setOpenDeleteUser(false);
         await deleteUserByUsername(params.username);
-        setLoading(false);
     };
 
     const deleteSeriesByUser = async () => {
-        setLoading(true);
+        setOpenDelete(false);
         await deleteSeriesByUsername(params.username);
-        setLoading(false);
     };
     useEffect(() => {
         getUser();
@@ -289,7 +289,6 @@ export default function EditUserPage({
                 okButtonProps={{
                     danger: true,
                     disabled: deleteStr !== "УДАЛИТЬ",
-                    loading: loading,
                 }}
                 title={
                     <Flex gap={10}>
@@ -349,7 +348,7 @@ export default function EditUserPage({
                 okButtonProps={{
                     danger: true,
                     disabled: deleteStr !== "УДАЛИТЬ",
-                    loading: loading,
+                    href: "/login",
                 }}
                 title={
                     <Flex gap={10}>

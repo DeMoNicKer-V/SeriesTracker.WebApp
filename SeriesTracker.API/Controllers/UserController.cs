@@ -1,10 +1,12 @@
 ﻿using GraphQL;
 using GraphQLParser;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Linq;
 using SeriesTracker.API.Contracts;
 using SeriesTracker.Application.Services;
 using SeriesTracker.Core.Abstractions;
 using SeriesTracker.Core.Abstractions.UserAbastractions;
+using SeriesTracker.Core.Enums;
 using SeriesTracker.Core.Models;
 
 namespace SeriesTracker.API.Controllers
@@ -96,7 +98,7 @@ namespace SeriesTracker.API.Controllers
             return Results.Ok();
         }
 
-
+        [RequirePermission(Permission.Read)]
         [HttpDelete("deleteSeries/{username}")]
         public async Task<IResult> DeleteAllSeriesByUsername(string username)
         {
@@ -110,6 +112,7 @@ namespace SeriesTracker.API.Controllers
             return Results.Ok();
         }
 
+        [Authorize]
         [HttpDelete("deleteUser/{username}")]
         public async Task<IResult> DeleteUserByUsername(string username)
         {
@@ -118,6 +121,8 @@ namespace SeriesTracker.API.Controllers
             {
                 var user = await _userService.GetUserByUserName(username);
                 await _userService.DeleteUser(user.Id);
+                Response.Cookies.Delete("secretCookie");
+                Response.Redirect("/login");
             }
 
             return Results.Ok();

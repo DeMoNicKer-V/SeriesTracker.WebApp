@@ -1,6 +1,7 @@
 import cookie from "cookie";
 import axios, { parseCookies } from "nookies";
 import { getCookie } from "cookies-next";
+import { LogOut } from "../api/coockie";
 export interface UserRequest {
     email: string;
     password: string;
@@ -90,6 +91,7 @@ export const getUserById = async (id: string) => {
 export const deleteUserByUsername = async (username: string) => {
     await fetch(`http://localhost:5125/user/deleteUser/${username}`, {
         method: "DELETE",
+        credentials: "include",
     });
 };
 

@@ -40,7 +40,16 @@ namespace SeriesTracker.API.Extensions
             services.AddScoped<IPermissionSevice, PermissionService>();
             services.AddSingleton<IAuthorizationHandler, PermissionAuthorizationHandler>();
 
-            services.AddAuthorization();
+            services.AddAuthorization(options =>
+            {
+                foreach (var permission in Enum.GetValues(typeof(Permission)))
+                {
+                    options.AddPolicy(permission.ToString(), policy =>
+                    {
+                        policy.Requirements.Add(new PermissionRequirement(new[] { (Permission)permission }));
+                    });
+                }
+            });
         }
 
         public static IEndpointConventionBuilder RequirePermissions<TBuilder>(
