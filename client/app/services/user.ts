@@ -87,6 +87,18 @@ export const getUserById = async (id: string) => {
     return user;
 };
 
+export const deleteUserByUsername = async (username: string) => {
+    await fetch(`http://localhost:5125/user/deleteUser/${username}`, {
+        method: "DELETE",
+    });
+};
+
+export const deleteSeriesByUsername = async (username: string) => {
+    await fetch(`http://localhost:5125/user/deleteSeries/${username}`, {
+        method: "DELETE",
+    });
+};
+
 export const getUserCategoriesCount = async (username: string) => {
     const response = await fetch(
         `http://localhost:5125/user/categoryCount?username=${username}`

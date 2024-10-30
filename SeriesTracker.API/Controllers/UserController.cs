@@ -96,6 +96,33 @@ namespace SeriesTracker.API.Controllers
             return Results.Ok();
         }
 
+
+        [HttpDelete("deleteSeries/{username}")]
+        public async Task<IResult> DeleteAllSeriesByUsername(string username)
+        {
+            var checkUser = await _userService.CheckUsersUserName(username);
+            if (checkUser == true)
+            {
+                var user = await _userService.GetUserByUserName(username);
+                await _userSeriesService.DeleteAllSeriesByUserId(user.Id);
+            }
+
+            return Results.Ok();
+        }
+
+        [HttpDelete("deleteUser/{username}")]
+        public async Task<IResult> DeleteUserByUsername(string username)
+        {
+            var checkUser = await _userService.CheckUsersUserName(username);
+            if (checkUser == true)
+            {
+                var user = await _userService.GetUserByUserName(username);
+                await _userService.DeleteUser(user.Id);
+            }
+
+            return Results.Ok();
+        }
+
         [HttpPost("login")]
         public async Task<IResult> Login([FromBody] LoginUserRequest request)
         {

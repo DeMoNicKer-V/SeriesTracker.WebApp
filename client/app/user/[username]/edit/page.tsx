@@ -47,6 +47,8 @@ import Meta from "antd/es/card/Meta";
 import {
     checkExistEmail,
     checkExistUserName,
+    deleteSeriesByUsername,
+    deleteUserByUsername,
     getUserByUserName,
     MainUserInfo,
     registerUser,
@@ -60,23 +62,38 @@ import "dayjs/locale/ru";
 import AvatarPicker from "../../../components/AvatarPicker";
 import Title from "antd/es/typography/Title";
 import { LongLeftArrow } from "@/app/img/LongLeftArrow";
+import Paragraph from "antd/es/typography/Paragraph";
 dayjs.locale("ru");
 export default function EditUserPage({
     params,
 }: {
     params: { username: string };
 }) {
+    const [user, setUser] = useState<UserInfo>();
+    const [deleteStr, setDeleteStr] = useState<string>("");
+    const [openDelete, setOpenDelete] = useState<boolean>(false);
+    const [openDeleteUser, setOpenDeleteUser] = useState<boolean>(false);
+    const [loading, setLoading] = useState<boolean>(false);
     const [form] = Form.useForm();
     const getUser = async () => {
         const user = await getUserByUserName(params.username);
         setUser(user.userInfo);
     };
+
+    const deleteUser = async () => {
+        setLoading(true);
+        await deleteUserByUsername(params.username);
+        setLoading(false);
+    };
+
+    const deleteSeriesByUser = async () => {
+        setLoading(true);
+        await deleteSeriesByUsername(params.username);
+        setLoading(false);
+    };
     useEffect(() => {
         getUser();
     }, []);
-    const [user, setUser] = useState<UserInfo>();
-    const [openDelete, setOpenDelete] = useState<boolean>(false);
-    const [openDeleteUser, setOpenDeleteUser] = useState<boolean>(false);
 
     const onFinish = (values) => {
         console.log("Success:", values);
@@ -89,28 +106,11 @@ export default function EditUserPage({
         form.setFieldsValue(user); // Устанавливаем начальные значения формы
         form.setFieldValue("dateBirth", dayjs(user?.dateBirth));
     }, [user, form]);
-    const handleConfirm = () => {
-        return (
-            <Modal
-                open={open}
-                title="Title"
-                footer={(_, { OkBtn, CancelBtn }) => (
-                    <>
-                        <Button style={{ marginRight: "auto" }}>
-                            Custom Button
-                        </Button>
-                        <CancelBtn />
-                        <OkBtn />
-                    </>
-                )}
-            >
-                <p>Some contents...</p>
-                <p>Some contents...</p>
-                <p>Some contents...</p>
-                <p>Some contents...</p>
-                <p>Some contents...</p>
-            </Modal>
-        );
+
+    const onClose = () => {
+        setOpenDelete(false);
+        setOpenDeleteUser(false);
+        setDeleteStr("");
     };
     const [fileList, setFileList] = useState<UploadFile[]>([]);
     return (
@@ -267,28 +267,30 @@ export default function EditUserPage({
                             Очистить мои списки
                         </Button>
 
-                        <Popconfirm
-                            okText={"Удалить"}
-                            okButtonProps={{ danger: true }}
-                            cancelText={"Нет"}
-                            title="Удалить аккаунт?"
-                            description={"Будьте осторожны, это необратимо!"}
+                        <Button
+                            onClick={() => setOpenDeleteUser(true)}
+                            ghost
+                            type="primary"
+                            danger
                         >
-                            <Button ghost type="primary" danger>
-                                Удалить аккаунт
-                            </Button>
-                        </Popconfirm>
+                            Удалить аккаунт
+                        </Button>
                     </Flex>
                 </Col>
             </Row>
             <Modal
+                onOk={deleteSeriesByUser}
                 centered
-                onCancel={() => setOpenDelete(false)}
+                onCancel={onClose}
                 closeIcon={false}
                 open={openDelete}
                 cancelText="Нет"
                 okText="Удалить"
-                okButtonProps={{ danger: true }}
+                okButtonProps={{
+                    danger: true,
+                    disabled: deleteStr !== "УДАЛИТЬ",
+                    loading: loading,
+                }}
                 title={
                     <Flex gap={10}>
                         <QuestionCircleOutlined style={{ color: "orange" }} />
@@ -303,19 +305,90 @@ export default function EditUserPage({
                             <Button
                                 icon={<UploadOutlined />}
                                 style={{ marginRight: "auto" }}
-                            >
-                                Экспортировать
-                            </Button>
+                            ></Button>
                             <CancelBtn />
                             <OkBtn />
                         </Flex>
                     </>
                 )}
             >
-                <Typography.Text>
-                    Будьте внимательны, это необратимое действие! <br />
-                    Убедитесь, что Вы экспортировали свои данные заранее.
-                </Typography.Text>
+                <Flex style={{ flexDirection: "column" }} gap={10}>
+                    <Paragraph>
+                        Будьте внимательны, это необратимое действие! <br />
+                        Убедитесь, что Вы экспортировали свои данные заранее.
+                        <br />
+                        Для того, чтобы удалить данные, введите в поле ниже - (
+                        <Typography.Text type="danger" code strong>
+                            УДАЛИТЬ
+                        </Typography.Text>
+                        ) .
+                    </Paragraph>
+
+                    <Input
+                        onChange={(e) => setDeleteStr(e.target.value)}
+                        value={deleteStr}
+                        spellCheck={false}
+                        status="error"
+                        size="small"
+                        style={{
+                            textAlign: "center",
+                            fontSize: 16,
+                            fontWeight: 500,
+                        }}
+                    />
+                </Flex>
+            </Modal>
+            <Modal
+                centered
+                onOk={deleteUser}
+                onCancel={onClose}
+                closeIcon={false}
+                open={openDeleteUser}
+                cancelText="Нет"
+                okText="Удалить"
+                okButtonProps={{
+                    danger: true,
+                    disabled: deleteStr !== "УДАЛИТЬ",
+                    loading: loading,
+                }}
+                title={
+                    <Flex gap={10}>
+                        <QuestionCircleOutlined style={{ color: "orange" }} />
+                        <Typography.Title level={5}>
+                            Удалить Ваш Аккаунт?
+                        </Typography.Title>
+                    </Flex>
+                }
+                footer={(_, { OkBtn, CancelBtn }) => (
+                    <>
+                        <CancelBtn />
+                        <OkBtn />
+                    </>
+                )}
+            >
+                <Flex style={{ flexDirection: "column" }} gap={10}>
+                    <Paragraph>
+                        Будьте внимательны, это необратимое действие! <br />
+                        Для того, чтобы удалить аккаунт, введите в поле ниже - (
+                        <Typography.Text type="danger" code strong>
+                            УДАЛИТЬ
+                        </Typography.Text>
+                        ) .
+                    </Paragraph>
+
+                    <Input
+                        onChange={(e) => setDeleteStr(e.target.value)}
+                        value={deleteStr}
+                        spellCheck={false}
+                        status="error"
+                        size="small"
+                        style={{
+                            textAlign: "center",
+                            fontSize: 16,
+                            fontWeight: 500,
+                        }}
+                    />
+                </Flex>
             </Modal>
         </div>
     );

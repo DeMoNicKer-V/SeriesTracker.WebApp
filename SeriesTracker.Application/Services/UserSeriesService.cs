@@ -53,5 +53,10 @@ namespace SeriesTracker.Application.Services
             var result = await _userSeriesRepository.GetSeriesAnimeIdsList(username, categoryId);
             return string.Join(",", result);
         }
+
+        public async Task<Guid> DeleteAllSeriesByUserId(Guid userId)
+        {
+            return await _userSeriesRepository.DeleteAllSeriesByUserId(userId);
+        }
     }
 }

@@ -41,6 +41,12 @@ namespace SeriesTracker.DataAccess.Repositories
             return id;
         }
 
+        public async Task<Guid> DeleteAllSeriesByUserId(Guid userId)
+        {
+            await _context.UserSeriesEntities.Where(s => s.UserId == userId).ExecuteDeleteAsync();
+            return userId;
+        }
+
         public async Task<int> GetAllSeriesCount()
         {
             return await _context.UserSeriesEntities.CountAsync();
