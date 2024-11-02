@@ -3,12 +3,12 @@ import axios, { parseCookies } from "nookies";
 import { getCookie } from "cookies-next";
 import { LogOut } from "../api/coockie";
 export interface UserRequest {
-    email: string;
-    password: string;
     userName: string;
-    avatar: string;
     name: string;
     surName: string;
+    email: string;
+    password: string;
+    avatar: string;
     dateBirth: string;
 }
 
@@ -86,6 +86,19 @@ export const getUserById = async (id: string) => {
     const response = await fetch(`http://localhost:5125/user/id/${id}`);
     const user: UserInfo = await response.json();
     return user;
+};
+
+export const updateUser = async (
+    username: string,
+    userRequset: UserRequest
+) => {
+    await fetch(`http://localhost:5125/controller/user/update/${username}`, {
+        method: "PUT",
+        headers: {
+            "content-type": "application/json",
+        },
+        body: JSON.stringify(userRequset),
+    });
 };
 
 export const deleteUserByUsername = async (username: string) => {

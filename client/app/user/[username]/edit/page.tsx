@@ -95,16 +95,28 @@ export default function EditUserPage({
         getUser();
     }, []);
 
-    const onFinish = (values) => {
-        console.log("Success:", values);
-        // Здесь вы должны обработать данные и обновить профиль пользователя
-        setUser(values);
+    const onFinish = (values: any) => {
+        const UserRequest = {
+            userName: values["userName"],
+            name: values["name"],
+            surName: values["surName"],
+            email: values["email"],
+            password: values["password"],
+            avatar: values["avatar"],
+            dateBirth: values["dateBirth"]
+                ? values["dateBirth"].format("DD-MM-YYYY").toString()
+                : "",
+        };
+        console.log(UserRequest);
         message.success("Профиль успешно обновлен!");
     };
 
     useEffect(() => {
         form.setFieldsValue(user); // Устанавливаем начальные значения формы
-        form.setFieldValue("dateBirth", dayjs(user?.dateBirth));
+        form.setFieldValue(
+            "dateBirth",
+            !user?.dateBirth ? null : dayjs(user?.dateBirth)
+        );
     }, [user, form]);
 
     const onClose = () => {
@@ -160,8 +172,15 @@ export default function EditUserPage({
             />
             <Row justify="center" align="middle">
                 <Col>
-                    <Form form={form}>
-                        <Form.Item valuePropName="src" name={"avatar"}>
+                    <Form onFinish={onFinish} form={form}>
+                        <Form.Item
+                            style={{
+                                display: "flex",
+                                justifyContent: "center",
+                            }}
+                            valuePropName="src"
+                            name={"avatar"}
+                        >
                             <Avatar size={160} shape="square" />
                         </Form.Item>
                         <Space

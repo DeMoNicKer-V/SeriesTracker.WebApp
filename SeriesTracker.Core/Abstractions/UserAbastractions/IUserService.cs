@@ -12,6 +12,7 @@ namespace SeriesTracker.Core.Abstractions.UserAbastractions
     {
         Task Register(string email, string password, string nickname, string avatar, string name, string surname, string dateBirth);
         Task<string> Login(string email, string password);
+        string HashPassword(string password);
         Task<Guid> CreateUser(User user);
         Task<Guid> DeleteUser(Guid id);
         Task<User> GetUserById(Guid id);
@@ -19,5 +20,6 @@ namespace SeriesTracker.Core.Abstractions.UserAbastractions
         Task<bool> CheckUsersUserName(string userName);
         Task<ICollection<Permission>> GetUserPermissions(Guid id);
         Task<User> GetUserByUserName(string username);
+        Task<Guid> UpdateUser(Guid id, string username, string name, string surname, string email, string passwordHash, string avatar, string dateBirth);
     }
 }

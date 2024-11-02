@@ -112,7 +112,22 @@ namespace SeriesTracker.API.Controllers
             return Results.Ok();
         }
 
-        [Authorize]
+        [RequirePermission(Permission.Read)]
+        [HttpPut("update/{username}")]
+        public async Task<IResult> UpdateUser(string username, [FromBody] UserRequest request)
+        {
+            var checkUser = await _userService.CheckUsersUserName(username);
+            if (checkUser == true)
+            {
+                var user = await _userService.GetUserByUserName(username);
+                string passwordHash = _userService.HashPassword(request.Password);
+                await _userService.UpdateUser(user.Id, request.UserName, request.Name, request.SurName, request.Email, passwordHash, request.Avatar, request.DateBirth);
+            }
+
+            return Results.Ok();
+        }
+
+        [RequirePermission(Permission.Read)]
         [HttpDelete("deleteUser/{username}")]
         public async Task<IResult> DeleteUserByUsername(string username)
         {

@@ -30,6 +30,11 @@ namespace SeriesTracker.Application.Services
             var user = User.Create(Guid.NewGuid(), nickname, name, surname, email, hashedPassword, avatar, dateBirth, DateTime.Now.ToString("s"));
             await _userRepository.CreateUser(user.User);
         }
+        public string HashPassword(string password)
+        {
+            var hashedPassword = _passwordHasher.Generate(password);
+            return hashedPassword;
+        }
 
         public async Task<string> Login(string email, string password)
         {
@@ -78,6 +83,11 @@ namespace SeriesTracker.Application.Services
         public async Task<bool> CheckUsersUserName(string userName)
         {
             return await _userRepository.CheckUsersUserName(userName);
+        }
+
+        public async Task<Guid> UpdateUser(Guid id, string username, string name, string surname, string email, string passwordHash, string avatar, string dateBirth)
+        {
+           return await _userRepository.UpdateUser(id, username, name, surname, email, passwordHash, avatar, dateBirth);
         }
     }
 }

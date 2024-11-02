@@ -85,6 +85,19 @@ namespace SeriesTracker.DataAccess.Repositories
             return id;
         }
 
+        public async Task<Guid> UpdateUser(Guid id, string username, string name, string surname, string email, string passwordHash, string avatar, string dateBirth)
+        {
+            await _context.UserEntities.Where(s => s.Id == id)
+                .ExecuteUpdateAsync(s => s.SetProperty(s => s.UserName, s => username)
+                .SetProperty(s => s.Name, s => name)
+                .SetProperty(s => s.Surname, s => surname)
+                .SetProperty(s => s.Email, s => email)
+                .SetProperty(s => s.PasswordHash, s => passwordHash)
+                .SetProperty(s => s.DateOfBirth, s => dateBirth).SetProperty(s => s.Avatar, s => avatar)); ;
+
+            return id;
+        }
+
         public async Task<HashSet<Permission>> GetUserPermissions(Guid userId)
         {
             var roles = await _context.UserEntities
