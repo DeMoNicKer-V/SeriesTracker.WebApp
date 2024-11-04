@@ -50,6 +50,19 @@ namespace SeriesTracker.Application.Services
             return token;
         }
 
+        public async Task<bool> Verify(string email, string password)
+        {
+            var user = await _userRepository.GetUserByEmail(email);
+            var result = _passwordHasher.Verify(password, user.PasswordHash);
+
+            if (result == false)
+            {
+                throw new Exception("Failed ot Login");
+            }
+
+            return result;
+        }
+
         public async Task<ICollection<Permission>> GetUserPermissions(Guid id)
         {
             return await _userRepository.GetUserPermissions(id);

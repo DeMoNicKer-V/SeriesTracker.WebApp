@@ -442,10 +442,6 @@ div.ant-upload-list-item {
     margin-bottom: 0 !important;
 }
 
-.ant-form-item-explain {
-    display: none;
-}
-
 .animes-list .ant-row {
     justify-content: center;
 }
@@ -459,4 +455,10 @@ div.ant-upload-list-item {
     font-weight: 600;
     vertical-align: bottom;
     margin-top: 5px;
+}
+
+.main-user-info .ant-card-head {
+    position: absolute;
+    right: 0;
+    z-index: 1;
 }

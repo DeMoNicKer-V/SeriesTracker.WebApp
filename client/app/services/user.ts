@@ -82,6 +82,21 @@ export const login = async (request: LoginRequest) => {
     await response.json();
 };
 
+export const verify = async (request: LoginRequest) => {
+    const response = await fetch(`http://localhost:5125/user/verify`, {
+        method: "POST",
+        headers: {
+            "content-type": "application/json",
+        },
+        body: JSON.stringify(request),
+        credentials: "include",
+    });
+    if (response.status !== 200) {
+        return await response.json();
+    }
+    await response.json();
+};
+
 export const getUserById = async (id: string) => {
     const response = await fetch(`http://localhost:5125/user/id/${id}`);
     const user: UserInfo = await response.json();

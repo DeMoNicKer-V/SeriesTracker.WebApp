@@ -12,6 +12,7 @@ namespace SeriesTracker.Core.Abstractions.UserAbastractions
     {
         Task Register(string email, string password, string nickname, string avatar, string name, string surname, string dateBirth);
         Task<string> Login(string email, string password);
+        Task<bool> Verify(string email, string password);
         string HashPassword(string password);
         Task<Guid> CreateUser(User user);
         Task<Guid> DeleteUser(Guid id);

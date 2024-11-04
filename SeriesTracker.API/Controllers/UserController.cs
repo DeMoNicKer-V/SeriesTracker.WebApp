@@ -143,7 +143,22 @@ namespace SeriesTracker.API.Controllers
             return Results.Ok();
         }
 
-        [HttpPost("login")]
+        [HttpPost("verify")]
+        public async Task<IResult> Verify([FromBody] LoginUserRequest request)
+        {
+            bool token = false;
+            try
+            {
+                token = await _userService.Verify(request.Email, request.Password);
+            }
+            catch (Exception)
+            {
+                return Results.BadRequest("Неверный пароль");
+            }
+            return Results.Ok(token);
+        }
+    
+    [HttpPost("login")]
         public async Task<IResult> Login([FromBody] LoginUserRequest request)
         {
             string token = string.Empty;
