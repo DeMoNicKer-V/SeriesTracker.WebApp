@@ -14,6 +14,7 @@ namespace SeriesTracker.Core.Abstractions.UserAbastractions
         Task<Guid> DeleteUser(Guid id);
         Task<HashSet<Permission>> GetUserPermissions(Guid userId);
         Task<User> GetUserById(Guid id);
+        Task<List<User>> GetUserList();
         Task<User> GetUserByEmail(string email);
         Task<bool> CheckUsersEmail(string email);
         Task<bool> CheckUsersUserName(string userName);

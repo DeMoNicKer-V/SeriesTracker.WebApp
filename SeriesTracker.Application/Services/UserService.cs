@@ -78,6 +78,11 @@ namespace SeriesTracker.Application.Services
             return await _userRepository.DeleteUser(id);
         }
 
+        public async Task<List<User>> GetUserList()
+        {
+            return await _userRepository.GetUserList();
+        }
+
         public async Task<User> GetUserById(Guid id)
         {
             return await _userRepository.GetUserById(id);

@@ -50,6 +50,15 @@ namespace SeriesTracker.DataAccess.Repositories
             return user;
         }
 
+        public async Task<List<User>> GetUserList()
+        {
+            var userEntities = await _context.UserEntities.AsNoTracking().ToListAsync();
+
+            var userList = userEntities.Select(s => User.Create(s.Id, s.UserName, s.Name, s.Surname, s.Email, s.PasswordHash, s.Avatar, s.DateOfBirth, s.RegistrationDate).User).ToList();
+
+            return userList;
+        }
+
         public async Task<User> GetUserByEmail(string email)
         {
             var userEntity = await _context.UserEntities.AsNoTracking().Where(c => c.Email == email).FirstAsync();

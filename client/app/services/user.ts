@@ -162,6 +162,12 @@ export const checkExistUserName = async (username: string) => {
     return false;
 };
 
+export const getUserList = async () => {
+    const response = await fetch(`http://localhost:5125/user`);
+    const user: User[] = await response.json();
+    console.log(user);
+    return user;
+};
 export const getUserByUserName = async (username: string) => {
     const response = await fetch(
         `http://localhost:5125/user/username/${username}`

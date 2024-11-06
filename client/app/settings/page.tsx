@@ -1,7 +1,8 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
     Button,
+    Carousel,
     Col,
     ColorPicker,
     Flex,
@@ -11,6 +12,7 @@ import {
     Segmented,
     Space,
     Table,
+    Tabs,
     Tag,
     Tooltip,
     Typography,
@@ -18,14 +20,23 @@ import {
 import type { TableProps } from "antd";
 import { getCategoryList, updateCategoryById } from "../services/category";
 import { LongLeftArrow } from "../img/LongLeftArrow";
-import { QuestionCircleOutlined } from "@ant-design/icons";
+import {
+    EyeOutlined,
+    QuestionCircleOutlined,
+    TeamOutlined,
+} from "@ant-design/icons";
+import { CarouselRef } from "antd/es/carousel";
+import { getUserList } from "../services/user";
 
 export default function SettingsPage() {
     const [api, contextHolder] = notification.useNotification();
     const [categories, setCategories] = useState<Category[]>([]);
+    const [users, setUsers] = useState<User[]>([]);
     const getCategories = async () => {
         const category = await getCategoryList();
+        const users = await getUserList();
         setCategories(category);
+        setUsers(users);
     };
 
     const updateCategory = async (record: Category, color: string) => {
@@ -86,7 +97,7 @@ export default function SettingsPage() {
         });
     };
 
-    const columns: TableProps<Category>["columns"] = [
+    const categoryColumns: TableProps<Category>["columns"] = [
         {
             title: "ID",
             dataIndex: "id",
@@ -177,27 +188,77 @@ export default function SettingsPage() {
                 }),
         },
     ];
+    const userColumn: TableProps<User>["columns"] = [
+        {
+            title: "ID",
+            dataIndex: "id",
+            key: "id",
+        },
+        {
+            title: "UserName",
+            dataIndex: "userName",
+            key: "userName",
+        },
+
+        {
+            title: "Email",
+            dataIndex: "email",
+            key: "email",
+        },
+        {
+            title: "Дата регистрации",
+            dataIndex: "registrationDate",
+            key: "registrationDate",
+            showSorterTooltip: false,
+            sorter: (a, b) =>
+                new Date(a.registrationDate).getTime() -
+                new Date(b.registrationDate).getTime(),
+            render: (_, record) =>
+                new Date(record.registrationDate).toLocaleString("ru-Ru", {
+                    year: "numeric",
+                    month: "short",
+                    day: "numeric",
+                    hour: "numeric",
+                    minute: "numeric",
+                }),
+        },
+    ];
 
     return (
         <div className="container">
             <title>Series Tracker - Настройки</title>
             <Row gutter={[20, 20]} align={"middle"} justify={"center"}>
-                <Col span={18}>
-                    <Segmented<string>
-                        defaultValue={"Список категорий"}
-                        options={[
-                            "Список категорий",
-                            "Роли пользователей",
-                            "Список пользователей",
+                <Col span={22}>
+                    <Tabs
+                        animated
+                        defaultActiveKey="category"
+                        centered
+                        items={[
+                            {
+                                label: "Список категорий",
+                                key: "category",
+                                icon: <EyeOutlined />,
+                                children: (
+                                    <Table
+                                        pagination={false}
+                                        columns={categoryColumns}
+                                        dataSource={categories}
+                                    />
+                                ),
+                            },
+                            {
+                                label: "Список пользователей",
+                                key: "user",
+                                icon: <TeamOutlined />,
+                                children: (
+                                    <Table
+                                        pagination={false}
+                                        columns={userColumn}
+                                        dataSource={users}
+                                    />
+                                ),
+                            },
                         ]}
-                        block
-                    />
-                </Col>
-                <Col span={21}>
-                    <Table
-                        pagination={false}
-                        columns={columns}
-                        dataSource={categories}
                     />
                 </Col>
             </Row>

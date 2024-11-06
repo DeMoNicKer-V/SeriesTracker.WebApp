@@ -29,6 +29,13 @@ namespace SeriesTracker.API.Controllers
             return Results.Ok(userResponse);
         }
 
+        [HttpGet]
+        public async Task<IResult> GetUserList()
+        {
+            var userList = await _userService.GetUserList();
+            return Results.Ok(userList);
+        }
+
         [HttpGet("username/{username}")]
         public async Task<IResult> GetUserInfoByUserName(string username)
         {
