@@ -91,8 +91,8 @@ namespace SeriesTracker.DataAccess.Repositories
                 .ExecuteUpdateAsync(s => s.SetProperty(s => s.UserName, s => username)
                 .SetProperty(s => s.Name, s => name)
                 .SetProperty(s => s.Surname, s => surname)
-                .SetProperty(s => s.Email, s => email)
-                .SetProperty(s => s.PasswordHash, s => passwordHash)
+                .SetProperty(s => s.Email, s => string.IsNullOrEmpty(email)? s.Email: email)
+                .SetProperty(s => s.PasswordHash, s => string.IsNullOrEmpty(passwordHash) ? s.PasswordHash : passwordHash)
                 .SetProperty(s => s.DateOfBirth, s => dateBirth).SetProperty(s => s.Avatar, s => avatar)); ;
 
             return id;

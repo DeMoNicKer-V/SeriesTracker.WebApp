@@ -30,13 +30,16 @@ import {
     getAnimesById,
     LastActivityAnime,
 } from "@/app/services/shikimori";
+import { IsCurrentUser } from "@/app/api/coockie";
 export default function UserPage({ params }: { params: { username: string } }) {
     const router = useRouter();
+    const [error, setError] = useState<boolean>(false);
     const pathname = usePathname();
     const [userInfo, setUserInfo] = useState<MainUserInfo>();
     const [animes, setAnimes] = useState<LastActivityAnime[]>();
     const { Text, Title } = Typography;
     const getCurrentUser = async () => {
+        setError(await IsCurrentUser(params.username));
         const currentUser = await getUserByUserName(params.username);
         setUserInfo(currentUser);
         if (currentUser.activityInfo.length > 0) {
@@ -133,14 +136,6 @@ export default function UserPage({ params }: { params: { username: string } }) {
                                     </Flex>
                                 }
                             />
-                            <Button
-                                onClick={() => router.push(`${pathname}/edit`)}
-                                icon={<SettingOutlined />}
-                                size="small"
-                                type="link"
-                            >
-                                Управление профилем
-                            </Button>
                         </Col>
                     </Row>
                 </Col>
@@ -253,9 +248,15 @@ export default function UserPage({ params }: { params: { username: string } }) {
                 )}
             </Row>
 
-            <FloatButton.Group style={{ right: 32 }}>
-                <FloatButton icon={<EditOutlined />} />
-            </FloatButton.Group>
+            {error && (
+                <FloatButton.Group style={{ right: 32 }}>
+                    <FloatButton
+                        onClick={() => router.push(`${pathname}/edit`)}
+                        icon={<SettingOutlined />}
+                    />
+                    <FloatButton.BackTop />
+                </FloatButton.Group>
+            )}
         </div>
     );
 }

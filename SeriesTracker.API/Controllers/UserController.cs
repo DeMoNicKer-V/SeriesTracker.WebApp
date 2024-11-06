@@ -120,11 +120,12 @@ namespace SeriesTracker.API.Controllers
             if (checkUser == true)
             {
                 var user = await _userService.GetUserByUserName(username);
-                string passwordHash = _userService.HashPassword(request.Password);
+                string passwordHash = string.IsNullOrEmpty(request.Password) ? string.Empty : _userService.HashPassword(request.Password);
                 await _userService.UpdateUser(user.Id, request.UserName, request.Name, request.SurName, request.Email, passwordHash, request.Avatar, request.DateBirth);
+                return Results.Ok();
             }
 
-            return Results.Ok();
+            return Results.BadRequest();
         }
 
         [RequirePermission(Permission.Read)]
@@ -137,7 +138,6 @@ namespace SeriesTracker.API.Controllers
                 var user = await _userService.GetUserByUserName(username);
                 await _userService.DeleteUser(user.Id);
                 Response.Cookies.Delete("secretCookie");
-                Response.Redirect("/login");
             }
 
             return Results.Ok();

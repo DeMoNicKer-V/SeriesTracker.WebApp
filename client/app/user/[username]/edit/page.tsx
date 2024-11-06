@@ -57,6 +57,7 @@ import {
     getUserByUserName,
     MainUserInfo,
     registerUser,
+    updateUser,
     UserInfo,
     UserRequest,
     verify,
@@ -70,7 +71,7 @@ import Title from "antd/es/typography/Title";
 import { LongLeftArrow } from "@/app/img/LongLeftArrow";
 import Paragraph from "antd/es/typography/Paragraph";
 import { useRouter } from "next/navigation";
-import { LogOut } from "@/app/api/coockie";
+import { IsCurrentUser, LogOut } from "@/app/api/coockie";
 dayjs.locale("ru");
 export default function EditUserPage({
     params,
@@ -79,11 +80,16 @@ export default function EditUserPage({
 }) {
     const router = useRouter();
     const [user, setUser] = useState<UserInfo>();
+    const [error, setError] = useState<boolean>(false);
     const [deleteStr, setDeleteStr] = useState<string>("");
     const [openDelete, setOpenDelete] = useState<boolean>(false);
     const [openDeleteUser, setOpenDeleteUser] = useState<boolean>(false);
     const [form] = Form.useForm();
     const getUser = async () => {
+        if ((await IsCurrentUser(params.username)) === false) {
+            return null;
+        }
+        setError(true);
         const user = await getUserByUserName(params.username);
         setUser(user.userInfo);
     };
@@ -101,20 +107,28 @@ export default function EditUserPage({
         getUser();
     }, []);
 
-    const onFinish = (values: any) => {
+    const [email, setEmail] = useState<string>("");
+    const [password, setPassword] = useState<string>("");
+    const onFinish = async (values: any) => {
         const UserRequest = {
             userName: values["userName"],
             name: values["name"],
             surName: values["surName"],
-            email: values["emailPassword"][0].email,
-            password: values["emailPassword"][0]["passwordList"][0].newPassword,
+            email: email,
+            password: password,
             avatar: values["avatar"],
             dateBirth: values["dateBirth"]
-                ? values["dateBirth"].format("DD-MM-YYYY").toString()
+                ? values["dateBirth"].format("YYYY-MM-DD").toString()
                 : "",
         };
-        console.log(UserRequest);
-        message.success("Профиль успешно обновлен!");
+        const response = await updateUser(params.username, UserRequest);
+        if (response === 200) {
+            message.success("Профиль успешно обновлен!");
+            router.push(`user/${values["userName"]}`);
+        }
+        message.success(
+            `Не удалось обновить пользователя. Ошибка - ${response}`
+        );
     };
 
     useEffect(() => {
@@ -131,7 +145,7 @@ export default function EditUserPage({
         setDeleteStr("");
     };
     const [fileList, setFileList] = useState<UploadFile[]>([]);
-    return (
+    return error === true ? (
         <div className="container">
             <Breadcrumb
                 separator=""
@@ -179,21 +193,19 @@ export default function EditUserPage({
             <Row justify="center" align="middle">
                 <Col>
                     <Form
+                        style={{ maxWidth: 600 }}
                         spellCheck={false}
                         layout="vertical"
                         onFinish={onFinish}
                         form={form}
                     >
-                        <Form.Item
-                            style={{
-                                display: "flex",
-                                justifyContent: "center",
-                            }}
-                            valuePropName="src"
-                            name={"avatar"}
-                        >
-                            <Avatar size={160} shape="square" />
-                        </Form.Item>
+                        {user?.avatar && (
+                            <Avatar
+                                src={user?.avatar}
+                                size={160}
+                                shape="square"
+                            />
+                        )}
                         <Space
                             style={{ justifyContent: "center" }}
                             wrap
@@ -262,11 +274,6 @@ export default function EditUserPage({
                                                 name={[field.name, "email"]}
                                                 rules={[
                                                     {
-                                                        required: true,
-                                                        message:
-                                                            "Эл. почта не может быть пустой.",
-                                                    },
-                                                    {
                                                         type: "email",
                                                         message:
                                                             "Эл. почта имеет некорректную сигнатуру",
@@ -298,7 +305,18 @@ export default function EditUserPage({
                                                     },
                                                 ]}
                                             >
-                                                <Input placeholder="Введите новый адрес" />
+                                                <Input
+                                                    onChange={(e: {
+                                                        target: {
+                                                            value: any;
+                                                        };
+                                                    }) => {
+                                                        setEmail(
+                                                            e.target.value
+                                                        );
+                                                    }}
+                                                    placeholder="Введите новый адрес"
+                                                />
                                             </Form.Item>
 
                                             <Form.List
@@ -409,7 +427,20 @@ export default function EditUserPage({
                                                                             },
                                                                         ]}
                                                                     >
-                                                                        <Input.Password placeholder="Введите новый пароль" />
+                                                                        <Input.Password
+                                                                            onChange={(e: {
+                                                                                target: {
+                                                                                    value: any;
+                                                                                };
+                                                                            }) => {
+                                                                                setPassword(
+                                                                                    e
+                                                                                        .target
+                                                                                        .value
+                                                                                );
+                                                                            }}
+                                                                            placeholder="Введите новый пароль"
+                                                                        />
                                                                     </Form.Item>
                                                                     <Form.Item
                                                                         style={{
@@ -661,5 +692,7 @@ export default function EditUserPage({
                 </Flex>
             </Modal>
         </div>
+    ) : (
+        <p>У вас нет доступа к данной странице</p>
     );
 }

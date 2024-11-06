@@ -20,6 +20,17 @@ export async function IsAuth() {
     return hasCookie;
 }
 
+export async function IsCurrentUser(username: string) {
+    const cookieStore = cookies();
+    const hasCookie = cookieStore.has("secretCookie");
+    if (hasCookie) {
+        const a: string = cookieStore.get("secretCookie")?.value.toString();
+        const decodedToken = jwtDecode(a); // Декодируем токен
+        return decodedToken.userName === username;
+    }
+    return hasCookie;
+}
+
 export async function LogOut() {
     const cookieStore = cookies();
     cookieStore.delete("secretCookie");

@@ -107,13 +107,18 @@ export const updateUser = async (
     username: string,
     userRequset: UserRequest
 ) => {
-    await fetch(`http://localhost:5125/controller/user/update/${username}`, {
-        method: "PUT",
-        headers: {
-            "content-type": "application/json",
-        },
-        body: JSON.stringify(userRequset),
-    });
+    const response = await fetch(
+        `http://localhost:5125/user/update/${username}`,
+        {
+            method: "PUT",
+            credentials: "include",
+            headers: {
+                "content-type": "application/json",
+            },
+            body: JSON.stringify(userRequset),
+        }
+    );
+    return response.status;
 };
 
 export const deleteUserByUsername = async (username: string) => {

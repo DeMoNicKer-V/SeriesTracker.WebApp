@@ -723,7 +723,7 @@ const SignupPage = () => {
                                                     setDateBirth(
                                                         date
                                                             .format(
-                                                                "DD-MM-YYYY"
+                                                                "YYYY-MM-DD"
                                                             )
                                                             .toString()
                                                     );
