@@ -39,10 +39,7 @@ export default function SettingsPage() {
         if (!prevColor) {
             return;
         }
-        const tempColor = prevColor;
-        record.color = tempColor;
-        record.prevColor = record.color;
-        await updateCategoryById(record.id, record);
+        await updateCategoryById(record.id, prevColor);
         await getCategories();
     };
     useEffect(() => {
@@ -60,8 +57,7 @@ export default function SettingsPage() {
                     type="primary"
                     size="small"
                     onClick={async () => {
-                        record.color = color;
-                        await updateCategoryById(record.id, record);
+                        await updateCategoryById(record.id, color);
                         await getCategories();
                         api.destroy(key);
                     }}

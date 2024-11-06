@@ -8,19 +8,12 @@ export const getCategoryById = async (id: number) => {
     return response.json();
 };
 
-export interface CategoryRequest {
-    name: string;
-    color: string;
-}
-export const updateCategoryById = async (
-    id: number,
-    category: CategoryRequest
-) => {
+export const updateCategoryById = async (id: number, color: string) => {
     await fetch(`http://localhost:5125/category/${id}`, {
         method: "PUT",
         headers: {
             "content-type": "application/json",
         },
-        body: JSON.stringify(category),
+        body: JSON.stringify(color),
     });
 };
