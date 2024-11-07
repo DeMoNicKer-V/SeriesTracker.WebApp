@@ -9,4 +9,5 @@ interface User {
     avatar: string;
     dateBirth: string;
     regDate: string;
+    roleId: number;
 }

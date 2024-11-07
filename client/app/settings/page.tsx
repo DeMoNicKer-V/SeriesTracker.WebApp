@@ -10,6 +10,7 @@ import {
     Popconfirm,
     Row,
     Segmented,
+    Select,
     Space,
     Table,
     Tabs,
@@ -29,6 +30,13 @@ import { CarouselRef } from "antd/es/carousel";
 import { getUserList } from "../services/user";
 
 export default function SettingsPage() {
+    const userRoles = [
+        {
+            roleId: 1,
+            name: "Админ",
+        },
+        { roleId: 2, name: "Пользователь" },
+    ];
     const [api, contextHolder] = notification.useNotification();
     const [categories, setCategories] = useState<Category[]>([]);
     const [users, setUsers] = useState<User[]>([]);
@@ -102,6 +110,8 @@ export default function SettingsPage() {
             title: "ID",
             dataIndex: "id",
             key: "id",
+            sorter: (a, b) => b.id - a.id,
+            showSorterTooltip: false,
         },
         {
             title: "Название",
@@ -188,12 +198,11 @@ export default function SettingsPage() {
                 }),
         },
     ];
+    const handleRoleChange = (value: any, record: any) => {
+        // Обработка изменения роли
+        // Например, обновление данных в базе данных
+    };
     const userColumn: TableProps<User>["columns"] = [
-        {
-            title: "ID",
-            dataIndex: "id",
-            key: "id",
-        },
         {
             title: "UserName",
             dataIndex: "userName",
@@ -204,6 +213,23 @@ export default function SettingsPage() {
             title: "Email",
             dataIndex: "email",
             key: "email",
+        },
+        {
+            title: "RoleId",
+            dataIndex: "roleId",
+            key: "roleId",
+            render: (roleId, record) => (
+                <Select
+                    defaultValue={roleId}
+                    onChange={(value) => handleRoleChange(value, record)}
+                >
+                    {userRoles.map((role) => (
+                        <Select.Option key={role.roleId} value={role.roleId}>
+                            {role.name}
+                        </Select.Option>
+                    ))}
+                </Select>
+            ),
         },
         {
             title: "Дата регистрации",

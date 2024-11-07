@@ -8,7 +8,7 @@ namespace SeriesTracker.Core.Models
 {
     public class User
     {
-        private User(Guid id, string userName, string name, string surName, string email, string password, string avatar, string dateBirth, string regDate)
+        private User(Guid id, string userName, string name, string surName, string email, string password, string avatar, string dateBirth, string regDate, int roleId)
         {
             this.Id = id;
             this.UserName = userName;
@@ -19,6 +19,7 @@ namespace SeriesTracker.Core.Models
             this.Avatar = avatar;
             this.DateOfBirth = dateBirth;
             this.RegistrationDate = regDate;
+            this.RoleId = roleId;
         }
 
         public string Avatar
@@ -66,8 +67,13 @@ namespace SeriesTracker.Core.Models
             get; private set;
         }
 
+        public int RoleId
+        {
+            get; private set;
+        }
 
-        public static (User User, string Error) Create(Guid id, string userName, string name, string surName, string email, string password, string avatar, string dateBirth, string regDate)
+
+        public static (User User, string Error) Create(Guid id, string userName, string name, string surName, string email, string password, string avatar, string dateBirth, string regDate, int roleId = 2)
         {
             string error = string.Empty;
             if (string.IsNullOrEmpty(userName))
@@ -86,7 +92,7 @@ namespace SeriesTracker.Core.Models
             {
                 error = "Дата рождения это обязательное поле";
             }
-            User user = new User(id, userName, name, surName, email, password, avatar, dateBirth, regDate);
+            User user = new User(id, userName, name, surName, email, password, avatar, dateBirth, regDate, roleId);
 
             return (user, error);
         }

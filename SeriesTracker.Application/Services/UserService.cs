@@ -68,6 +68,11 @@ namespace SeriesTracker.Application.Services
             return await _userRepository.GetUserPermissions(id);
         }
 
+        public async Task<ICollection<Role>> GetUserRoles(Guid id)
+        {
+            return await _userRepository.GetUserRoles(id);
+        }
+
         public async Task<Guid> CreateUser(User user)
         {
             return await _userRepository.CreateUser(user);

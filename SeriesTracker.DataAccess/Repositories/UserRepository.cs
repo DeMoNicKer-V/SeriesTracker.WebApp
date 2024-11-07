@@ -50,14 +50,7 @@ namespace SeriesTracker.DataAccess.Repositories
             return user;
         }
 
-        public async Task<List<User>> GetUserList()
-        {
-            var userEntities = await _context.UserEntities.AsNoTracking().ToListAsync();
 
-            var userList = userEntities.Select(s => User.Create(s.Id, s.UserName, s.Name, s.Surname, s.Email, s.PasswordHash, s.Avatar, s.DateOfBirth, s.RegistrationDate).User).ToList();
-
-            return userList;
-        }
 
         public async Task<User> GetUserByEmail(string email)
         {
@@ -105,6 +98,46 @@ namespace SeriesTracker.DataAccess.Repositories
                 .SetProperty(s => s.DateOfBirth, s => dateBirth).SetProperty(s => s.Avatar, s => avatar)); ;
 
             return id;
+        }
+
+        public async Task<List<User>> GetUserList()
+        {
+            var result = await _context.UserEntities
+                .AsNoTracking()
+                .Include(u => u.Roles)
+                .Select(u => new
+                {
+                    Id = u.Id,
+                    UserName = u.UserName,
+                    Name = u.Name,
+                    Surname = u.Surname,
+                    Email = u.Email,
+                    PasswordHash = u.PasswordHash,
+                    Avatar = u.Avatar,
+                    DateOfBirth = u.DateOfBirth,
+                    RegistrationDate = u.RegistrationDate,
+                    RoleId = u.Roles.Select(r => r.Id).First()
+                })
+                .ToListAsync();
+
+            var userList = result.Select(s => User.Create(s.Id, s.UserName, s.Name, s.Surname, s.Email, s.PasswordHash, s.Avatar, s.DateOfBirth, s.RegistrationDate, s.RoleId).User).ToList();
+
+            return userList;
+        }
+
+        public async Task<HashSet<Role>> GetUserRoles(Guid userId)
+        {
+            var roles = await _context.UserEntities
+                .AsNoTracking()
+                .Include(u => u.Roles)
+                .Where(u => u.Id == userId)
+                .Select(u => u.Roles)
+                .ToArrayAsync();
+
+            return roles
+                .SelectMany(r => r)
+                .Select(p => (Role)p.Id)
+                .ToHashSet();
         }
 
         public async Task<HashSet<Permission>> GetUserPermissions(Guid userId)
