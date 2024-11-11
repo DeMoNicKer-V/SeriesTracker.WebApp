@@ -24,5 +24,6 @@ namespace SeriesTracker.Core.Abstractions.UserAbastractions
         Task<ICollection<Role>> GetUserRoles(Guid userId);
         Task<User> GetUserByUserName(string username);
         Task<Guid> UpdateUser(Guid id, string username, string name, string surname, string email, string passwordHash, string avatar, string dateBirth);
+        Task<Guid> ChangeUserRole(Guid id, int roleId);
     }
 }

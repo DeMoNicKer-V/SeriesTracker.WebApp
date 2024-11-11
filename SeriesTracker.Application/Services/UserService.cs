@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace SeriesTracker.Application.Services
 {
@@ -111,6 +112,11 @@ namespace SeriesTracker.Application.Services
         public async Task<Guid> UpdateUser(Guid id, string username, string name, string surname, string email, string passwordHash, string avatar, string dateBirth)
         {
            return await _userRepository.UpdateUser(id, username, name, surname, email, passwordHash, avatar, dateBirth);
+        }
+
+        public async Task<Guid> ChangeUserRole(Guid id, int roleId)
+        {
+            return await _userRepository.ChangeUserRole(id, roleId);
         }
     }
 }

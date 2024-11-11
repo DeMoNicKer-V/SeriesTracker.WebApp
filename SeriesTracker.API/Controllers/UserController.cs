@@ -135,6 +135,14 @@ namespace SeriesTracker.API.Controllers
             return Results.BadRequest();
         }
 
+        [RequirePermission(Permission.Update)]
+        [HttpPut("changeUserRole")]
+        public async Task<IResult> ChangeUserRole(Guid id, [FromBody] int roleId)
+        {
+            await _userService.ChangeUserRole(id, roleId);
+            return Results.Ok();
+        }
+
         [RequirePermission(Permission.Read)]
         [HttpDelete("deleteUser/{username}")]
         public async Task<IResult> DeleteUserByUsername(string username)

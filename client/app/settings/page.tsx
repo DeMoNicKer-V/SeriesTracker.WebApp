@@ -6,8 +6,11 @@ import {
     Col,
     ColorPicker,
     Flex,
+    Input,
+    Modal,
     notification,
     Popconfirm,
+    Radio,
     Row,
     Segmented,
     Select,
@@ -22,27 +25,46 @@ import type { TableProps } from "antd";
 import { getCategoryList, updateCategoryById } from "../services/category";
 import { LongLeftArrow } from "../img/LongLeftArrow";
 import {
+    DeleteOutlined,
     EyeOutlined,
+    LinkOutlined,
     QuestionCircleOutlined,
     TeamOutlined,
 } from "@ant-design/icons";
 import { CarouselRef } from "antd/es/carousel";
-import { getUserList } from "../services/user";
+import { deleteUserByUsername, getUserList } from "../services/user";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { GetCoockie, GetPermissions } from "../api/coockie";
 
 export default function SettingsPage() {
+    const [error, setError] = useState<boolean>(false);
+
     const userRoles = [
         {
-            roleId: 1,
-            name: "Админ",
+            value: 1,
+            label: "Админ",
         },
-        { roleId: 2, name: "Пользователь" },
+        { value: 2, label: "Пользователь" },
     ];
     const [api, contextHolder] = notification.useNotification();
     const [categories, setCategories] = useState<Category[]>([]);
     const [users, setUsers] = useState<User[]>([]);
+    const [currentUserId, setCurrentUserId] = useState<string>("");
+    const [deleteUserUsername, setDeleteUserUsername] = useState<string>("");
+    const [deleteStr, setDeleteStr] = useState<string>("");
+    const [openDeleteUser, setOpenDeleteUser] = useState<boolean>(false);
     const getCategories = async () => {
+        const currentUser = await GetPermissions(1);
+        if (currentUser === false) {
+            return null;
+        }
+        setError(true);
+        const uu = await GetCoockie();
+        setCurrentUserId(uu);
         const category = await getCategoryList();
         const users = await getUserList();
+
         setCategories(category);
         setUsers(users);
     };
@@ -52,6 +74,21 @@ export default function SettingsPage() {
             return;
         }
         await openNotification(record, color);
+    };
+    const router = useRouter();
+    const deleteUser = async () => {
+        await deleteUserByUsername(deleteUserUsername);
+        router.refresh();
+    };
+
+    const openDeleteModal = (username: string) => {
+        setDeleteUserUsername(username);
+        setOpenDeleteUser(true);
+    };
+
+    const onClose = () => {
+        setOpenDeleteUser(false);
+        setDeleteStr("");
     };
 
     const returnColor = async (record: Category, prevColor: string) => {
@@ -114,6 +151,7 @@ export default function SettingsPage() {
             showSorterTooltip: false,
         },
         {
+            fixed: "left",
             title: "Название",
             dataIndex: "name",
             key: "name",
@@ -204,7 +242,8 @@ export default function SettingsPage() {
     };
     const userColumn: TableProps<User>["columns"] = [
         {
-            title: "UserName",
+            fixed: "left",
+            title: "Никнейм",
             dataIndex: "userName",
             key: "userName",
         },
@@ -215,20 +254,19 @@ export default function SettingsPage() {
             key: "email",
         },
         {
-            title: "RoleId",
+            title: "Роль",
             dataIndex: "roleId",
             key: "roleId",
+            showSorterTooltip: false,
+            sorter: (a, b) => a.roleId - b.roleId,
             render: (roleId, record) => (
-                <Select
+                <Radio.Group
+                    disabled={record.id === currentUserId ? true : false}
+                    size="small"
+                    options={userRoles}
                     defaultValue={roleId}
-                    onChange={(value) => handleRoleChange(value, record)}
-                >
-                    {userRoles.map((role) => (
-                        <Select.Option key={role.roleId} value={role.roleId}>
-                            {role.name}
-                        </Select.Option>
-                    ))}
-                </Select>
+                    optionType={"button"}
+                />
             ),
         },
         {
@@ -248,13 +286,34 @@ export default function SettingsPage() {
                     minute: "numeric",
                 }),
         },
+        {
+            fixed: "right",
+            title: "Действия",
+            key: "action",
+            render: (_, record) => (
+                <Space size={"small"}>
+                    <Button
+                        href={`user/${record.userName}`}
+                        size="small"
+                        icon={<EyeOutlined />}
+                    />
+                    <Button
+                        disabled={record.id === currentUserId ? true : false}
+                        danger
+                        onClick={() => openDeleteModal(record.userName)}
+                        size="small"
+                        icon={<DeleteOutlined />}
+                    />
+                </Space>
+            ),
+        },
     ];
 
-    return (
+    return error === true ? (
         <div className="container">
             <title>Series Tracker - Настройки</title>
             <Row gutter={[20, 20]} align={"middle"} justify={"center"}>
-                <Col span={22}>
+                <Col span={23}>
                     <Tabs
                         animated
                         defaultActiveKey="category"
@@ -266,6 +325,7 @@ export default function SettingsPage() {
                                 icon: <EyeOutlined />,
                                 children: (
                                     <Table
+                                        scroll={{ x: "max-content" }}
                                         pagination={false}
                                         columns={categoryColumns}
                                         dataSource={categories}
@@ -278,6 +338,7 @@ export default function SettingsPage() {
                                 icon: <TeamOutlined />,
                                 children: (
                                     <Table
+                                        scroll={{ x: "max-content" }}
                                         pagination={false}
                                         columns={userColumn}
                                         dataSource={users}
@@ -288,6 +349,59 @@ export default function SettingsPage() {
                     />
                 </Col>
             </Row>
+            <Modal
+                centered
+                onOk={deleteUser}
+                onCancel={onClose}
+                closeIcon={false}
+                open={openDeleteUser}
+                cancelText="Нет"
+                okText="Удалить"
+                okButtonProps={{
+                    danger: true,
+                    disabled: deleteStr !== "УДАЛИТЬ",
+                }}
+                title={
+                    <Flex gap={10}>
+                        <QuestionCircleOutlined style={{ color: "orange" }} />
+                        <Typography.Title level={5}>
+                            Удалить {deleteUserUsername}?
+                        </Typography.Title>
+                    </Flex>
+                }
+                footer={(_, { OkBtn, CancelBtn }) => (
+                    <>
+                        <CancelBtn />
+                        <OkBtn />
+                    </>
+                )}
+            >
+                <Flex style={{ flexDirection: "column" }} gap={10}>
+                    <Typography.Paragraph>
+                        Будьте внимательны, это необратимое действие! <br />
+                        Для того, чтобы удалить аккаунт, введите в поле ниже - (
+                        <Typography.Text type="danger" code strong>
+                            УДАЛИТЬ
+                        </Typography.Text>
+                        ) .
+                    </Typography.Paragraph>
+
+                    <Input
+                        onChange={(e) => setDeleteStr(e.target.value)}
+                        value={deleteStr}
+                        spellCheck={false}
+                        status="error"
+                        size="small"
+                        style={{
+                            textAlign: "center",
+                            fontSize: 16,
+                            fontWeight: 500,
+                        }}
+                    />
+                </Flex>
+            </Modal>
         </div>
+    ) : (
+        <p>У вас нет доступа к данной странице</p>
     );
 }
