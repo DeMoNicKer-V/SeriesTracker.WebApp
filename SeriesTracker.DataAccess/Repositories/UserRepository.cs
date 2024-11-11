@@ -98,12 +98,18 @@ namespace SeriesTracker.DataAccess.Repositories
             return id;
         }
 
-        public async Task<Guid> ChangeUserRole(Guid id, int roleId)
+        public async Task<Guid> ChangeUserRole(Guid userId, int roleId)
         {
-            var roleEntity = await _context.RoleEntities.AsNoTracking().Where(r => r.Id == roleId).ToArrayAsync();
-            await _context.UserEntities.Where(s => s.Id == id)
-                .ExecuteUpdateAsync(s => s.SetProperty(s => s.Roles, s => roleEntity));
-            return id;
+            var roleEntity = await _context.RoleEntities.AsNoTracking().Where(r => r.Id == roleId).FirstAsync();
+            var userEntity = await _context.UserEntities
+                   .Include(u => u.Roles)
+                   .FirstAsync(u => u.Id == userId);
+
+            userEntity.Roles.Clear();
+            userEntity.Roles.Add(roleEntity);
+
+            await _context.SaveChangesAsync();
+            return userId;
         }
 
         public async Task<List<User>> GetUserList()

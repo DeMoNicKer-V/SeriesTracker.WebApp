@@ -21,7 +21,7 @@ import {
     Tooltip,
     Typography,
 } from "antd";
-import type { TableProps } from "antd";
+import type { RadioChangeEvent, TableProps } from "antd";
 import { getCategoryList, updateCategoryById } from "../services/category";
 import { LongLeftArrow } from "../img/LongLeftArrow";
 import {
@@ -32,9 +32,11 @@ import {
     TeamOutlined,
 } from "@ant-design/icons";
 import { CarouselRef } from "antd/es/carousel";
-import { deleteUserByUsername, getUserList } from "../services/user";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
+import {
+    changeUserRole,
+    deleteUserByUsername,
+    getUserList,
+} from "../services/user";
 import { GetCoockie, GetPermissions } from "../api/coockie";
 
 export default function SettingsPage() {
@@ -75,10 +77,10 @@ export default function SettingsPage() {
         }
         await openNotification(record, color);
     };
-    const router = useRouter();
+
     const deleteUser = async () => {
         await deleteUserByUsername(deleteUserUsername);
-        router.refresh();
+        window.location.reload();
     };
 
     const openDeleteModal = (username: string) => {
@@ -101,6 +103,11 @@ export default function SettingsPage() {
     useEffect(() => {
         getCategories();
     }, []);
+
+    const onChange = async (userId: string, e: RadioChangeEvent) => {
+        await changeUserRole(userId, e.target.value);
+        window.location.reload();
+    };
 
     const openNotification = async (record: Category, color: string) => {
         const key = `open-confirm-notify`;
@@ -261,6 +268,7 @@ export default function SettingsPage() {
             sorter: (a, b) => a.roleId - b.roleId,
             render: (roleId, record) => (
                 <Radio.Group
+                    onChange={(e) => onChange(record.id, e)}
                     disabled={record.id === currentUserId ? true : false}
                     size="small"
                     options={userRoles}

@@ -136,7 +136,7 @@ namespace SeriesTracker.API.Controllers
         }
 
         [RequirePermission(Permission.Update)]
-        [HttpPut("changeUserRole")]
+        [HttpPut("changeUserRole/{id}")]
         public async Task<IResult> ChangeUserRole(Guid id, [FromBody] int roleId)
         {
             await _userService.ChangeUserRole(id, roleId);

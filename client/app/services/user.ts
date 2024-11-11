@@ -121,11 +121,28 @@ export const updateUser = async (
     return response.status;
 };
 
+export const changeUserRole = async (userId: string, roleId: number) => {
+    const response = await fetch(
+        `http://localhost:5125/user/changeUserRole/${userId}`,
+        {
+            method: "PUT",
+            credentials: "include",
+            headers: {
+                "content-type": "application/json",
+            },
+            body: JSON.stringify(roleId),
+        }
+    );
+    return response.status;
+};
+
 export const deleteUserByUsername = async (username: string) => {
-    await fetch(`http://localhost:5125/user/deleteUser/${username}`, {
-        method: "DELETE",
-        credentials: "include",
-    });
+    const response = await fetch(
+        `http://localhost:5125/user/username/${username}`
+    );
+    const user: MainUserInfo = await response.json();
+
+    return user;
 };
 
 export const deleteSeriesByUsername = async (username: string) => {
