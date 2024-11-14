@@ -75,7 +75,6 @@ export const Animes = ({
         [searchParams]
     );
     const [genres, setGenres] = useState<Genre[] | any>([]);
-    const [animes, setAnimes] = useState<SeriesAnime[] | any>([]);
     const path = userPath ? userPath + usePathname() : usePathname();
 
     const [page, setPage] = useState<number | any>(
@@ -92,21 +91,31 @@ export const Animes = ({
         censored: true,
     });
 
+    function scrollTop() {
+        window.scrollTo({
+            top: 0,
+            left: 0,
+            behavior: "smooth",
+        });
+    }
     const nextPage = () => {
         setPage(Number(page) + 1);
         request.page = Number(page) + 1;
+        scrollTop();
     };
 
     const prePage = () => {
         if (page > 1) {
             setPage(Number(page) - 1);
             request.page = Number(page) - 1;
+            scrollTop();
         }
     };
 
     const firstPage = () => {
         setPage(1);
         request.page = 1;
+        scrollTop();
     };
     const getGenresList = async () => {
         const list = await getGenres();
@@ -188,17 +197,14 @@ export const Animes = ({
                 loading={{
                     spinning: isLoading,
                     size: "large",
+                    style: { height: "100vh" },
                 }}
                 loadMore={
                     disableBottomNav
                         ? null
                         : !isLoading &&
                           data.length > 0 && (
-                              <Flex
-                                  style={{ marginInline: "30px" }}
-                                  gap={20}
-                                  justify="end"
-                              >
+                              <Flex gap={20} justify="end">
                                   <Button
                                       disabled={page === 1}
                                       className="navigation-btn"

@@ -3,32 +3,20 @@ import React, { useEffect, useState } from "react";
 import "./globals.css";
 import {
     Button,
-    Card,
     Col,
     ConfigProvider,
     Divider,
-    Drawer,
-    Flex,
-    FloatButton,
     Layout,
-    List,
     Menu,
     Row,
-    Switch,
     Typography,
-    Image,
     theme,
-    Segmented,
-    Input,
-    Collapse,
     Space,
     Avatar,
     Dropdown,
-    message,
 } from "antd";
 
 import Icon, {
-    SearchOutlined,
     MailOutlined,
     MenuFoldOutlined,
     CalendarOutlined,
@@ -36,17 +24,12 @@ import Icon, {
     SettingOutlined,
     MenuUnfoldOutlined,
     QuestionOutlined,
-    HomeOutlined,
-    MoonOutlined,
-    SunOutlined,
 } from "@ant-design/icons";
-import { Footer } from "antd/es/layout/layout";
 import Link from "next/link";
 
 import { ShikimoriLogo } from "./img/ShikimoriLogo";
 
 import SearchBar from "./components/searchbar";
-import { getCookie, setCookie } from "cookies-next";
 import type { GetProp, GetProps, MenuProps } from "antd";
 import { getRandomAnime } from "./services/shikimori";
 import { usePathname, useRouter } from "next/navigation";
@@ -77,7 +60,6 @@ export default function RootLayout({
 
     const getRandomAnimeId = async () => {
         const id = await getRandomAnime();
-        setCurrentKey("shikimori");
         if (id) {
             router.push(`/shikimori/${id}`);
         }
@@ -98,7 +80,7 @@ export default function RootLayout({
 
             {
                 key: "random",
-                onClick: () => getRandomAnimeId,
+                onClick: async () => getRandomAnimeId(),
                 icon: <QuestionOutlined />,
                 label: <Text>Случайное аниме</Text>,
             },
@@ -216,6 +198,7 @@ export default function RootLayout({
         },
         Segmented: {
             itemSelectedBg: "#DE1EB2",
+            colorBg: "transparent",
         },
         Drawer: {
             colorBgElevated: "#101010",
@@ -235,6 +218,18 @@ export default function RootLayout({
     return (
         <html lang="en">
             <body>
+                <style
+                    id="holderStyle"
+                    dangerouslySetInnerHTML={{
+                        __html: `
+      /* https://github.com/ant-design/ant-design/issues/16037#issuecomment-483140458 */
+      /* Not only antd, but also any other style if you want to use ssr. */
+      *, *::before, *::after {
+        transition: none!important;
+      }
+    `,
+                    }}
+                />
                 <ConfigProvider
                     theme={{
                         token: darkTheme,
@@ -275,11 +270,12 @@ export default function RootLayout({
                                         onClick={() => setCollapsed(!collapsed)}
                                     />
                                 </Col>
-                                {currentKey !== "shikimori" && (
-                                    <Col xs={0} sm={0} md={0} xl={10}>
-                                        <SearchBar />
-                                    </Col>
-                                )}
+                                {currentKey !== "shikimori" &&
+                                    currentKey !== "random" && (
+                                        <Col xs={0} sm={0} md={0} xl={10}>
+                                            <SearchBar />
+                                        </Col>
+                                    )}
                                 {isUser && (
                                     <Col>
                                         <Dropdown menu={menuProps}>

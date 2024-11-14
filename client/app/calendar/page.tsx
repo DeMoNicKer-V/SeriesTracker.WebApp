@@ -10,6 +10,8 @@ import {
     Flex,
     Spin,
     ConfigProvider,
+    Tabs,
+    TabsProps,
 } from "antd";
 import { useEffect, useState } from "react";
 import { CalendarItem, aaa } from "../services/shikimori";
@@ -24,7 +26,7 @@ import {
 import Link from "next/link";
 interface customDate {
     label: JSX.Element;
-    value: Date;
+    key: string;
 }
 export default function CalendarPage() {
     function getDatesArray(): customDate[] {
@@ -45,10 +47,11 @@ export default function CalendarPage() {
             const newDate = new Date(currentDate);
             newDate.setDate(currentDate.getDate() + i);
             datesArray.push({
-                value: newDate,
+                key: newDate.toString(),
                 label: (
                     <Flex
                         style={{
+                            textAlign: "center",
                             padding: 4,
                             flexDirection: "column",
                         }}
@@ -143,7 +146,7 @@ export default function CalendarPage() {
         return () => {
             const b = getDatesArray();
             setGenres(b);
-            setValue(b[0].value);
+            setValue(new Date(b[0].key));
             getGenresList();
         };
     }, []);
@@ -159,15 +162,15 @@ export default function CalendarPage() {
             <title>Series Tracker - Расписание</title>
             <Row gutter={[20, 20]} align={"middle"} justify={"center"}>
                 <Col span={21}>
-                    <Segmented<Date>
-                        block
-                        disabled={filter.length <= 0 && loading}
-                        options={genres}
-                        value={value}
-                        onChange={(value) => {
-                            setValue(value);
-                        }}
-                    />
+                    {filter.length > 0 && (
+                        <Tabs
+                            animated
+                            size="large"
+                            onChange={(key) => setValue(new Date(key))}
+                            centered
+                            items={genres}
+                        />
+                    )}
                 </Col>
                 <Col span={21}>
                     <ConfigProvider

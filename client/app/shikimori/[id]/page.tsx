@@ -261,7 +261,7 @@ export default function AnimePage({ params }: { params: { id: string } }) {
             />
             {!loading && (
                 <Row align={"middle"} justify={"center"}>
-                    <Col span={21}>
+                    <Col xxl={20} md={22}>
                         <Card
                             cover={
                                 <Flex
