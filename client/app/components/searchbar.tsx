@@ -1,6 +1,3 @@
-export interface Props {
-    listBG: string;
-}
 import {
     Avatar,
     Button,
@@ -49,7 +46,7 @@ import { AnimeInfo, getAnimesByName } from "../services/shikimori";
 import Meta from "antd/es/card/Meta";
 import noFoundImage from "../img/empty.png";
 
-export const SearchBar = ({ listBG }: Props) => {
+export const SearchBar = ({}) => {
     const ref = useRef<HTMLDivElement>(null);
     const [query, setQuery] = useState<string>("");
 
@@ -127,7 +124,7 @@ export const SearchBar = ({ listBG }: Props) => {
                         name={"query"}
                         style={{
                             margin: 0,
-                            background: listBG,
+                            background: "#1e1e1e",
                             borderRadius: 5,
                         }}
                     >
@@ -138,7 +135,7 @@ export const SearchBar = ({ listBG }: Props) => {
                             spellCheck={"false"}
                             variant="borderless"
                             onClick={handleClick}
-                            placeholder="Найти сериал"
+                            placeholder="Найти аниме"
                             onChange={(e: { target: { value: any } }) => {
                                 setIsShown(true);
                                 setQuery(String(e.target.value));
@@ -155,7 +152,7 @@ export const SearchBar = ({ listBG }: Props) => {
 
                 {isShown && !loading && (
                     <List
-                        style={{ background: listBG }}
+                        style={{ background: "#1e1e1e" }}
                         className="search_result"
                         header={
                             nullString && (

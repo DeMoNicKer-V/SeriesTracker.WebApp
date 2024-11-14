@@ -2,6 +2,11 @@
     padding: 0;
     margin: 0;
 }
+@media print {
+    .ant-layout {
+        visibility: hidden;
+    }
+}
 
 .cards {
     display: grid;

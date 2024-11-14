@@ -152,7 +152,8 @@ const LoginPage = () => {
                 <Space wrap size={[5, 5]}>
                     <Typography.Text>Еще нет акканута?</Typography.Text>
                     <Link
-                        href={"./"}
+                        target="_top"
+                        href={"./signup"}
                         style={{
                             fontWeight: 700,
                         }}

@@ -775,7 +775,8 @@ const SignupPage = () => {
                 <Space wrap size={[5, 5]}>
                     <Typography.Text>Уже есть аккаунт?</Typography.Text>
                     <Link
-                        href={"./"}
+                        target="_top"
+                        href={"/login"}
                         style={{
                             fontWeight: 700,
                         }}

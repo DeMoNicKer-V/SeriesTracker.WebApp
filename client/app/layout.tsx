@@ -62,7 +62,6 @@ export default function RootLayout({
 }>) {
     const pathName = usePathname();
     const [collapsed, setCollapsed] = useState(true);
-    const [currentTheme, setCurrentTheme] = useState(false);
     const [isUser, setIsUser] = useState<boolean>(false);
     const [user, setUser] = useState<UserResponse>();
     const [currentKey, setCurrentKey] = useState<string>("shikimori");
@@ -171,13 +170,16 @@ export default function RootLayout({
     useEffect(() => {
         setCurrentKey(pathName?.split("/")[1]);
     }, [pathName]);
-
+    const [mounted, setMounted] = useState(false);
     useEffect(() => {
         GetUser();
-        const colorThemeCookie = getCookie("theme");
-        const vv = colorThemeCookie === "false" ? false : true;
-        setCurrentTheme(vv);
+        setMounted(true);
     }, []);
+    if (typeof window !== "undefined") {
+        window.onload = () => {
+            document.getElementById("holderStyle")!.remove();
+        };
+    }
     useEffect(() => {
         document.getElementsByClassName(
             "ant-layout-sider-collapsed ant-layout-sider-below"
@@ -189,14 +191,9 @@ export default function RootLayout({
     const darkTheme = {
         colorPrimary: "#DE1EB2",
         colorInfo: "#DE1EB2",
-        marginLG: "5px 0 24px",
         colorLink: "#fff",
     };
 
-    const setColorThemeCookie = (value: boolean) => {
-        setCurrentTheme(value);
-        setCookie("theme", value);
-    };
     const darkThemeLayout = {
         Layout: {
             headerBg: "#101010",
@@ -234,47 +231,30 @@ export default function RootLayout({
             verticalLabelPadding: "8px 0",
         },
     };
-    const lightTheme = {};
-
-    const lightThemeLayout = {
-        Layout: {
-            headerBg: "#ffffff",
-            siderBg: "#ffffff",
-        },
-        Menu: {
-            activeBarBorderWidth: 0,
-        },
-        Radio: {
-            colorBorder: "transparent",
-        },
-        Card: {
-            colorBorderSecondary: "transparent",
-        },
-    };
 
     return (
         <html lang="en">
-            <body style={{ background: currentTheme ? "#0f0f0f" : "#ffffff" }}>
+            <body>
                 <ConfigProvider
                     theme={{
-                        token: currentTheme ? darkTheme : lightTheme,
-                        algorithm: currentTheme
-                            ? theme.darkAlgorithm
-                            : theme.defaultAlgorithm,
-
-                        components: currentTheme
-                            ? darkThemeLayout
-                            : lightThemeLayout,
+                        token: darkTheme,
+                        algorithm: theme.darkAlgorithm,
+                        components: darkThemeLayout,
                     }}
                 >
-                    <Layout>
+                    <Layout
+                        style={{
+                            visibility: !mounted ? "hidden" : "visible",
+                            minHeight: "100vh",
+                        }}
+                    >
                         <title>Series Tracker</title>
                         <Header
                             style={{
                                 position: "sticky",
                                 top: 0,
                                 zIndex: 99,
-                                width: "100%",
+
                                 alignItems: "center",
                                 padding: "0 20px",
                                 boxShadow:
@@ -297,13 +277,7 @@ export default function RootLayout({
                                 </Col>
                                 {currentKey !== "shikimori" && (
                                     <Col xs={0} sm={0} md={0} xl={10}>
-                                        <SearchBar
-                                            listBG={
-                                                currentTheme
-                                                    ? "#1e1e1e"
-                                                    : "#ffffff"
-                                            }
-                                        />
+                                        <SearchBar />
                                     </Col>
                                 )}
                                 {isUser && (
@@ -363,6 +337,7 @@ export default function RootLayout({
                             </Row>
                         </Header>
                         <Layout
+                            hasSider
                             style={{
                                 padding: 10,
                             }}
