@@ -59,7 +59,7 @@ export const getGenres = async () => {
     return genres;
 };
 
-export const aaa = async () => {
+export const getAiredAnimes = async () => {
     const response = await fetch(`https://shikimori.one/api/calendar/`);
     const genres: CalendarItem[] = await response.json();
     return genres;
@@ -74,7 +74,6 @@ export const getAnimes = async (page: number, order: string) => {
 };
 
 export const getAnimesByParams = async (fullUrl: string) => {
-    console.log(fullUrl);
     const response = await fetch(`http://localhost:5125${fullUrl}`, {
         method: "GET",
         headers: {
@@ -110,7 +109,7 @@ export const getAnimesByName = async (query: any) => {
     return animes;
 };
 
-export const getAnimesByUsername = async (username: string, url: string) => {
+export const getAnimesByUsername = async (url: string) => {
     const response = await fetch(`http://localhost:5125/shikimori${url}`);
     const animes: SeriesAnime[] = await response.json();
     return animes;

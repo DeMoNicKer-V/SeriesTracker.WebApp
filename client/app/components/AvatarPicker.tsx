@@ -12,11 +12,13 @@ import ImgCrop from "antd-img-crop";
 import { Dispatch, SetStateAction, useState } from "react";
 import { UserOutlined } from "@ant-design/icons";
 interface Props {
-    targetValue: Dispatch<SetStateAction<[] | any>>;
+    onChange: (value: any) => void;
 }
-function AvatarPicker({ targetValue }: Props) {
+const AvatarPicker = ({ onChange }: Props) => {
     const [fileList, setFileList] = useState<UploadFile[]>([]);
-    const onChange: UploadProps["onChange"] = ({ fileList: newFileList }) => {
+    const onUploadChange: UploadProps["onChange"] = ({
+        fileList: newFileList,
+    }) => {
         if (newFileList.length) {
             const isJpgOrPng =
                 newFileList[0].type === "image/jpeg" ||
@@ -32,10 +34,10 @@ function AvatarPicker({ targetValue }: Props) {
             }
             const reader = new FileReader();
             reader.onloadend = () => {
-                targetValue(reader.result?.toString());
+                onChange(newFileList[0].thumbUrl);
             };
             reader.readAsDataURL(newFileList[0].originFileObj);
-        } else targetValue("");
+        } else onChange("");
         setFileList(newFileList);
     };
 
@@ -59,7 +61,7 @@ function AvatarPicker({ targetValue }: Props) {
     };
 
     return (
-        <Form.Item name={"avatar"}>
+        <Flex>
             <ImgCrop
                 maxZoom={2}
                 showReset
@@ -73,7 +75,7 @@ function AvatarPicker({ targetValue }: Props) {
                     listType="picture-card"
                     maxCount={1}
                     fileList={fileList}
-                    onChange={onChange}
+                    onChange={onUploadChange}
                     onPreview={handlePreview}
                 >
                     {fileList.length < 1 && (
@@ -106,8 +108,8 @@ function AvatarPicker({ targetValue }: Props) {
                     src={previewImage}
                 />
             )}
-        </Form.Item>
+        </Flex>
     );
-}
+};
 
 export default AvatarPicker;

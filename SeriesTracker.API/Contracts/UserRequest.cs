@@ -2,12 +2,12 @@
 {
     public record UserRequest
       (
-          string Email,
-          string Password,
+          string? Email,
+          string? Password,
           string UserName,
-          string Avatar,
-          string Name,
-          string SurName,
-          string DateBirth
+          string? Avatar,
+          string? Name,
+          string? SurName,
+          string? DateBirth
       );
 }

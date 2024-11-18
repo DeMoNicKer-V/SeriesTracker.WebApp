@@ -1,22 +1,15 @@
 "use client";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
     UserOutlined,
-    RightOutlined,
-    LoginOutlined,
-    ProfileOutlined,
-    CheckSquareOutlined,
     UploadOutlined,
     QuestionCircleOutlined,
     WarningOutlined,
-    DownloadOutlined,
     MinusCircleOutlined,
-    PlusOutlined,
     EditOutlined,
     CloseOutlined,
     KeyOutlined,
 } from "@ant-design/icons";
-import Typewriter from "typewriter-effect";
 import {
     Avatar,
     Button,
@@ -25,41 +18,24 @@ import {
     DatePicker,
     Flex,
     Form,
-    GetProp,
     Input,
     Row,
     Space,
-    Image,
-    Steps,
     Typography,
-    Upload,
-    UploadFile,
-    UploadProps,
     message,
     Divider,
-    Result,
-    ConfigProvider,
-    InputRef,
     Breadcrumb,
-    DescriptionsProps,
-    Descriptions,
     Tooltip,
-    Popconfirm,
     Modal,
 } from "antd";
-import ImgCrop from "antd-img-crop";
 import Meta from "antd/es/card/Meta";
 import {
     checkExistEmail,
-    checkExistUserName,
     deleteSeriesByUsername,
     deleteUserByUsername,
     getUserByUserName,
-    MainUserInfo,
-    registerUser,
     updateUser,
     UserInfo,
-    UserRequest,
     verify,
 } from "../../../services/user";
 import Link from "next/link";
@@ -67,11 +43,9 @@ import locale from "antd/es/date-picker/locale/ru_RU";
 import dayjs from "dayjs";
 import "dayjs/locale/ru";
 import AvatarPicker from "../../../components/AvatarPicker";
-import Title from "antd/es/typography/Title";
-import { LongLeftArrow } from "@/app/img/LongLeftArrow";
 import Paragraph from "antd/es/typography/Paragraph";
 import { useRouter } from "next/navigation";
-import { IsCurrentUser, LogOut } from "@/app/api/coockie";
+import { IsCurrentUser } from "@/app/api/coockie";
 dayjs.locale("ru");
 export default function EditUserPage({
     params,
@@ -79,6 +53,7 @@ export default function EditUserPage({
     params: { username: string };
 }) {
     const router = useRouter();
+    const [messageApi, contextHolder] = message.useMessage();
     const [user, setUser] = useState<UserInfo>();
     const [error, setError] = useState<boolean>(false);
     const [deleteStr, setDeleteStr] = useState<string>("");
@@ -107,15 +82,14 @@ export default function EditUserPage({
         getUser();
     }, []);
 
-    const [email, setEmail] = useState<string>("");
-    const [password, setPassword] = useState<string>("");
     const onFinish = async (values: any) => {
         const UserRequest = {
             userName: values["userName"],
             name: values["name"],
             surName: values["surName"],
-            email: email,
-            password: password,
+            email: values["emailPassword"]?.[0].email,
+            password:
+                values["emailPassword"]?.[0].passwordList?.[0].newPassword,
             avatar: values["avatar"],
             dateBirth: values["dateBirth"]
                 ? values["dateBirth"].format("YYYY-MM-DD").toString()
@@ -123,12 +97,17 @@ export default function EditUserPage({
         };
         const response = await updateUser(params.username, UserRequest);
         if (response === 200) {
-            message.success("Профиль успешно обновлен!");
-            router.push(`user/${values["userName"]}`);
+            messageApi.open({
+                type: "success",
+                content: "Профиль успешно обновлен!",
+            });
+            router.back();
+            return;
         }
-        message.success(
-            `Не удалось обновить пользователя. Ошибка - ${response}`
-        );
+        messageApi.open({
+            type: "error",
+            content: `Не удалось обновить пользователя. Ошибка - ${response}`,
+        });
     };
 
     useEffect(() => {
@@ -144,9 +123,9 @@ export default function EditUserPage({
         setOpenDeleteUser(false);
         setDeleteStr("");
     };
-    const [fileList, setFileList] = useState<UploadFile[]>([]);
     return error === true ? (
         <div className="container">
+            {contextHolder}
             <Breadcrumb
                 separator=""
                 items={[
@@ -159,29 +138,7 @@ export default function EditUserPage({
                             </Link>
                         ),
                     },
-                    {
-                        type: "separator",
-                        separator: ":",
-                    },
-                    {
-                        title: (
-                            <Link
-                                style={{
-                                    display: "flex",
-                                    flexDirection: "row",
-                                    fontStyle: "italic",
-                                    gap: 5,
-                                    fontSize: 11,
-                                    alignItems: "center",
-                                    justifyContent: "center",
-                                }}
-                                href={"./"}
-                            >
-                                <LongLeftArrow />
-                                Назад
-                            </Link>
-                        ),
-                    },
+
                     {
                         type: "separator",
                     },
@@ -200,18 +157,30 @@ export default function EditUserPage({
                         form={form}
                     >
                         {user?.avatar && (
-                            <Avatar
-                                src={user?.avatar}
-                                size={160}
-                                shape="square"
-                            />
+                            <Flex justify="center">
+                                <Avatar
+                                    src={user?.avatar}
+                                    size={160}
+                                    shape="square"
+                                />
+                            </Flex>
                         )}
                         <Space
                             style={{ justifyContent: "center" }}
                             wrap
                             size={[10, 10]}
                         >
-                            <AvatarPicker targetValue={setFileList} />
+                            <Form.Item
+                                style={{ margin: 0 }}
+                                name="avatar"
+                                valuePropName="fileList"
+                            >
+                                <AvatarPicker
+                                    onChange={(fileList) =>
+                                        form.setFieldValue("avatar", fileList)
+                                    }
+                                />
+                            </Form.Item>
                             <Meta
                                 title={
                                     <Typography.Title level={5}>
@@ -305,18 +274,7 @@ export default function EditUserPage({
                                                     },
                                                 ]}
                                             >
-                                                <Input
-                                                    onChange={(e: {
-                                                        target: {
-                                                            value: any;
-                                                        };
-                                                    }) => {
-                                                        setEmail(
-                                                            e.target.value
-                                                        );
-                                                    }}
-                                                    placeholder="Введите новый адрес"
-                                                />
+                                                <Input placeholder="Введите новый адрес" />
                                             </Form.Item>
 
                                             <Form.List
@@ -427,20 +385,7 @@ export default function EditUserPage({
                                                                             },
                                                                         ]}
                                                                     >
-                                                                        <Input.Password
-                                                                            onChange={(e: {
-                                                                                target: {
-                                                                                    value: any;
-                                                                                };
-                                                                            }) => {
-                                                                                setPassword(
-                                                                                    e
-                                                                                        .target
-                                                                                        .value
-                                                                                );
-                                                                            }}
-                                                                            placeholder="Введите новый пароль"
-                                                                        />
+                                                                        <Input.Password placeholder="Введите новый пароль" />
                                                                     </Form.Item>
                                                                     <Form.Item
                                                                         style={{
@@ -530,7 +475,10 @@ export default function EditUserPage({
                         <Divider />
                         <Flex gap={10} justify="end">
                             <Form.Item>
-                                <Button type="primary" htmlType="submit">
+                                <Button
+                                    type="primary"
+                                    onClick={() => router.back()}
+                                >
                                     Назад
                                 </Button>
                             </Form.Item>

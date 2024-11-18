@@ -14,7 +14,7 @@ import {
     TabsProps,
 } from "antd";
 import { useEffect, useState } from "react";
-import { CalendarItem, aaa } from "../services/shikimori";
+import { CalendarItem, getAiredAnimes } from "../services/shikimori";
 
 import {
     CheckCircleOutlined,
@@ -135,7 +135,7 @@ export default function CalendarPage() {
         setFilter(filteredData);
     };
     const getGenresList = async () => {
-        const list = await aaa();
+        const list = await getAiredAnimes();
         filterItems(list);
         setAA(list);
     };

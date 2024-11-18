@@ -26,12 +26,12 @@ namespace SeriesTracker.Application.Services
 
         public async Task<GraphQLResponse<ShikimoriAnimeList>> GetAnimesByName(string name)
         {
-            return await graphQLClient.SendQueryAsync<ShikimoriAnimeList>(GetByNameRequest(name));
+            return await graphQLClient.SendQueryAsync<ShikimoriAnimeList>(GetAnimeByNameRequest(name));
         }
 
         public async Task<GraphQLResponse<ShikimoriAnimeList>> GetAnimeById(string Id)
         {
-            return await graphQLClient.SendQueryAsync<ShikimoriAnimeList>(GetRequest(Id));
+            return await graphQLClient.SendQueryAsync<ShikimoriAnimeList>(GetAnimeByIdRequest(Id));
         }
 
         public async Task<GraphQLResponse<ShikimoriAnimeBaseList>> GetAnimeListByIds(string Id)
@@ -41,22 +41,22 @@ namespace SeriesTracker.Application.Services
 
         public async Task<GraphQLResponse<ShikimoriAnimeBaseList>> GetAnimesByAllParams(int page, string name, string season, string status, string kind, string genre, string order, bool censored)
         {
-            return await graphQLClient.SendQueryAsync<ShikimoriAnimeBaseList>(GetRequest(page, name, season, status, kind, genre, order, censored));
+            return await graphQLClient.SendQueryAsync<ShikimoriAnimeBaseList>(GetAnimesParamsRequest(page, name, season, status, kind, genre, order, censored));
         }
 
         public async Task<GraphQLResponse<ShikimoriAnimeBaseList>> GetAnimesByAllParamsAndIds(int page, string name, string ids, string season, string status, string kind, string genre, string order, bool censored)
         {
-            return await graphQLClient.SendQueryAsync<ShikimoriAnimeBaseList>(GetRequest(page, name, ids, season, status, kind, genre, order, censored));
+            return await graphQLClient.SendQueryAsync<ShikimoriAnimeBaseList>(GetAnimesParamsIdsRequest(page, name, ids, season, status, kind, genre, order, censored));
         }
 
         public async Task<GraphQLResponse<GenreList>> GetGenres()
         {
-            return await graphQLClient.SendQueryAsync<GenreList>(GetRequest());
+            return await graphQLClient.SendQueryAsync<GenreList>(GetGenresRequest());
         }
 
         public async Task<GraphQLResponse<ShikimoriAnimeList>> GetRandomAnime()
         {
-            return await graphQLClient.SendQueryAsync<ShikimoriAnimeList>(RandomRequest());
+            return await graphQLClient.SendQueryAsync<ShikimoriAnimeList>(GetRandomAnimeRequest());
         }
 
         private static GraphQLRequest GetAnimesRequest(int page, string order)
@@ -95,7 +95,7 @@ namespace SeriesTracker.Application.Services
             };
         }
 
-        private static GraphQLRequest GetRequest()
+        private static GraphQLRequest GetGenresRequest()
         {
             return new GraphQLRequest
             {
@@ -110,7 +110,8 @@ namespace SeriesTracker.Application.Services
             };
         }
 
-        private static GraphQLRequest RandomRequest()
+
+        private static GraphQLRequest GetRandomAnimeRequest()
         {
             return new GraphQLRequest
             {
@@ -125,7 +126,7 @@ namespace SeriesTracker.Application.Services
         }
 
 
-        private static GraphQLRequest GetByNameRequest(string name)
+        private static GraphQLRequest GetAnimeByNameRequest(string name)
         {
             return new GraphQLRequest
             {
@@ -157,7 +158,7 @@ namespace SeriesTracker.Application.Services
             };
         }
 
-        private static GraphQLRequest GetRequest(int page, string name, string ids, string season, string status, string kind, string genre, string order, bool censored)
+        private static GraphQLRequest GetAnimesParamsIdsRequest(int page, string name, string ids, string season, string status, string kind, string genre, string order, bool censored)
         {
 
             return new GraphQLRequest
@@ -201,7 +202,7 @@ namespace SeriesTracker.Application.Services
             };
         }
 
-        private static GraphQLRequest GetRequest(int page, string name, string season, string status, string kind, string genre, string order, bool censored)
+        private static GraphQLRequest GetAnimesParamsRequest(int page, string name, string season, string status, string kind, string genre, string order, bool censored)
         {
 
             return new GraphQLRequest
@@ -243,7 +244,7 @@ namespace SeriesTracker.Application.Services
             };
         }
 
-        private static GraphQLRequest GetRequest(string id)
+        private static GraphQLRequest GetAnimeByIdRequest(string id)
         {
             return new GraphQLRequest
             {

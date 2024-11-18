@@ -5,6 +5,7 @@ import {
     ConfigProvider,
     Divider,
     Flex,
+    FloatButton,
     List,
     Popover,
     Row,
@@ -18,9 +19,9 @@ import {
     DoubleLeftOutlined,
     FireOutlined,
     HeartFilled,
-    InfoCircleOutlined,
     LeftOutlined,
     RightOutlined,
+    SearchOutlined,
 } from "@ant-design/icons";
 import AnimePopover from "./AnimePopover";
 import AbsoluteImage from "./AbsoluteImage";
@@ -31,31 +32,20 @@ import {
     ShikimoriRequest,
 } from "../services/shikimori";
 import { useEffect, useMemo, useState } from "react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import useSWR from "swr";
 import { LongLeftArrow } from "../img/LongLeftArrow";
 import { LongRightArrow } from "../img/LongRightArrow";
+import { EmptyView } from "./EmptyView";
 
 interface Props {
-    isDrawerOpen: boolean;
-    onDrawerClose: () => void;
     userPath?: string;
     disableBottomNav?: boolean;
 }
 
-export const Animes = ({
-    isDrawerOpen,
-    onDrawerClose,
-    userPath,
-    disableBottomNav,
-}: Props) => {
+export const Animes = ({ userPath, disableBottomNav }: Props) => {
     const customizeRenderEmpty = () => (
-        <Flex className="emptyview" justify="center" align="middle" gap={10}>
-            <InfoCircleOutlined style={{ fontSize: 32 }} />
-            <span style={{ fontSize: 22 }}>
-                {"По вашему запросу ничего не найдено."}
-            </span>
-        </Flex>
+        <EmptyView text="По вашему запросу ничего не найдено" />
     );
 
     const searchParams = useSearchParams();
@@ -98,6 +88,10 @@ export const Animes = ({
             behavior: "smooth",
         });
     }
+    const [isOpen, setIsOpen] = useState(false);
+    const toggleOpen = () => {
+        setIsOpen(!isOpen);
+    };
     const nextPage = () => {
         setPage(Number(page) + 1);
         request.page = Number(page) + 1;
@@ -405,11 +399,19 @@ export const Animes = ({
             />
             <AnimeParamsMenu
                 genres={genres}
-                open={isDrawerOpen}
-                onClose={onDrawerClose}
+                open={isOpen}
+                onClose={() => setIsOpen(false)}
                 setRequest={setRequest}
                 setPage={setPage}
             />
+            <FloatButton.Group style={{ right: 0, margin: 10, bottom: 32 }}>
+                <FloatButton
+                    type="primary"
+                    icon={<SearchOutlined />}
+                    onClick={toggleOpen}
+                />
+                <FloatButton.BackTop />
+            </FloatButton.Group>
         </ConfigProvider>
     );
 };

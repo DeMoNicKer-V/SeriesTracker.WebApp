@@ -9,7 +9,6 @@ import {
     FloatButton,
     Image,
     Row,
-    Space,
     Tag,
     Tooltip,
     Typography,
@@ -17,20 +16,12 @@ import {
 import { useEffect, useState } from "react";
 import { getUserByUserName, MainUserInfo } from "../../services/user";
 import Meta from "antd/es/card/Meta";
-import {
-    EditOutlined,
-    QuestionCircleOutlined,
-    SettingOutlined,
-} from "@ant-design/icons";
+import { SettingOutlined, UserOutlined } from "@ant-design/icons";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
-import {
-    AnimeInfo,
-    getAnimeById,
-    getAnimesById,
-    LastActivityAnime,
-} from "@/app/services/shikimori";
+import { getAnimesById, LastActivityAnime } from "@/app/services/shikimori";
 import { IsCurrentUser } from "@/app/api/coockie";
+import { EmptyView } from "@/app/components/EmptyView";
 export default function UserPage({ params }: { params: { username: string } }) {
     const router = useRouter();
     const [error, setError] = useState<boolean>(false);
@@ -68,9 +59,6 @@ export default function UserPage({ params }: { params: { username: string } }) {
             return ` / ${age} лет`;
         }
     };
-    const handleNavigate = (mylist: number) => {
-        router.push(`${pathname}/list?mylist=${mylist}`);
-    };
     return (
         <div className="container">
             <title>{`${params.username} / Профиль`}</title>
@@ -83,8 +71,14 @@ export default function UserPage({ params }: { params: { username: string } }) {
                     >
                         <Col>
                             <Avatar
+                                style={{ backgroundColor: "transparent" }}
+                                icon={<UserOutlined />}
                                 size={100}
-                                src={userInfo?.userInfo?.avatar}
+                                src={
+                                    userInfo?.userInfo?.avatar
+                                        ? userInfo?.userInfo?.avatar
+                                        : null
+                                }
                                 shape="square"
                             ></Avatar>
                         </Col>
@@ -139,37 +133,43 @@ export default function UserPage({ params }: { params: { username: string } }) {
                         </Col>
                     </Row>
                 </Col>
-                <Col xs={24} sm={24} md={24} lg={16} xl={16}>
-                    <Title level={4}>
-                        <Link
-                            href={`${userInfo?.userInfo.userName}/list?mylist=0`}
-                        >
-                            Список аниме
-                        </Link>
-                    </Title>
-                    <Divider />
-                    <Row>
-                        {userInfo?.seriesInfo.map((item) => (
-                            <Tooltip color={item.color} title={item.name}>
-                                <Col flex={item.seriesCount}>
-                                    <Card
-                                        bordered={false}
-                                        hoverable
-                                        style={{
-                                            backgroundColor: item.color,
-                                            borderRadius: 0,
-                                            textAlign: "center",
-                                            padding: 0,
-                                            margin: 0,
-                                        }}
-                                    >
-                                        {item.seriesCount}
-                                    </Card>
-                                </Col>
-                            </Tooltip>
-                        ))}
-                    </Row>
-                </Col>
+                {userInfo?.seriesInfo.length ? (
+                    <Col xs={24} sm={24} md={24} lg={16} xl={16}>
+                        <Title level={4}>
+                            <Link
+                                href={`${userInfo?.userInfo.userName}/list?mylist=0`}
+                            >
+                                Список аниме
+                            </Link>
+                        </Title>
+                        <Divider />
+                        <Row>
+                            {userInfo?.seriesInfo.map((item) => (
+                                <Tooltip color={item.color} title={item.name}>
+                                    <Col flex={item.seriesCount}>
+                                        <Card
+                                            bordered={false}
+                                            hoverable
+                                            style={{
+                                                backgroundColor: item.color,
+                                                borderRadius: 0,
+                                                textAlign: "center",
+                                                padding: 0,
+                                                margin: 0,
+                                            }}
+                                        >
+                                            {item.seriesCount}
+                                        </Card>
+                                    </Col>
+                                </Tooltip>
+                            ))}
+                        </Row>
+                    </Col>
+                ) : (
+                    <Col xs={24} sm={24} md={24} lg={16} xl={16}>
+                        <EmptyView text="Пользователь еще ничего не добавил" />
+                    </Col>
+                )}
                 <Col xs={24} sm={24} md={24} lg={16} xl={16}>
                     <Row gutter={[25, 25]} justify={"center"}>
                         {userInfo?.seriesInfo.map((item) => (
@@ -191,16 +191,15 @@ export default function UserPage({ params }: { params: { username: string } }) {
                         ))}
                     </Row>
                 </Col>
-                <Col xs={24} sm={24} md={24} lg={16} xl={16}>
-                    <Title level={4}>
-                        <Link href={`${userInfo?.userInfo.userName}/list`}>
-                            Последняя активность
-                        </Link>
-                    </Title>
-                    <Divider />
-                </Col>
+
                 {animes && (
                     <Col xs={24} sm={24} md={24} lg={16} xl={16}>
+                        <Title level={4}>
+                            <Link href={`${userInfo?.userInfo.userName}/list`}>
+                                Последняя активность
+                            </Link>
+                        </Title>
+                        <Divider />
                         {animes.map((item) => (
                             <Link href={`/shikimori/${item.id}`}>
                                 <Card

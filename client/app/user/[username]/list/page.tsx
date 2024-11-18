@@ -1,81 +1,39 @@
 "use client";
 import {
-    Avatar,
     Breadcrumb,
-    Button,
     Col,
     ConfigProvider,
-    Divider,
     Flex,
     FloatButton,
     Menu,
     MenuProps,
     Row,
-    Segmented,
-    Space,
-    Tag,
-    Tooltip,
-    Typography,
 } from "antd";
-import { useEffect, useMemo, useState } from "react";
-import Meta from "antd/es/card/Meta";
+import { useEffect, useState } from "react";
 import {
-    RightOutlined,
-    UndoOutlined,
-    LeftOutlined,
     SearchOutlined,
-    InfoCircleOutlined,
-    DoubleLeftOutlined,
-    QuestionCircleOutlined,
-    StarOutlined,
-    FontColorsOutlined,
-    TeamOutlined,
-    CalendarOutlined,
     BookOutlined,
-    HistoryOutlined,
     CloseOutlined,
     NumberOutlined,
     SyncOutlined,
     FieldTimeOutlined,
-    MoreOutlined,
     EyeOutlined,
-    EyeInvisibleOutlined,
     CheckOutlined,
     UserOutlined,
 } from "@ant-design/icons";
 import { Animes } from "@/app/components/Animes";
-import {
-    getAnimesByParams,
-    getAnimesByUsername,
-    getGenres,
-    ShikimoriRequest,
-} from "@/app/services/shikimori";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import useSWR from "swr";
-import { LongLeftArrow } from "@/app/img/LongLeftArrow";
-import { ShikimoriLogo } from "@/app/img/ShikimoriLogo";
-import { CategoryCount, getUserCategoriesCount } from "@/app/services/user";
-import AnimeParamsMenu from "@/app/components/AnimeParamsMenu";
+import { getUserCategoriesCount } from "@/app/services/user";
+import { EmptyView } from "@/app/components/EmptyView";
 
 export default function UserPage({ params }: { params: { username: string } }) {
     const path = usePathname();
     const searchParams = useSearchParams();
-    const [genres, setGenres] = useState<Genre[] | any>([]);
     const [page, setPage] = useState<number | any>(
         searchParams.get("page") != null ? searchParams.get("page") : 1
     );
-    const [request, setRequest] = useState<ShikimoriRequest>({
-        page: page,
-        name: "",
-        season: "",
-        status: "",
-        kind: "",
-        genre: "",
-        order: "ranked",
-        censored: true,
-    });
-
     const [series, setSeries] = useState<Map<string, number>>(
         new Map([
             ["0", 0],
@@ -86,23 +44,6 @@ export default function UserPage({ params }: { params: { username: string } }) {
             ["5", 0],
             ["6", 0],
         ])
-    );
-    const { Text, Title } = Typography;
-
-    const createQueryString = useMemo(
-        () => (mylist: any, query: any) => {
-            const params = new URLSearchParams(searchParams);
-            params.set("mylist", String(mylist));
-            for (const [name, value] of Object.entries(query)) {
-                if (name && value) {
-                    params.set(name, String(value));
-                } else {
-                    params.delete(name);
-                }
-            }
-            return params.toString();
-        },
-        [searchParams]
     );
     const search = useSearchParams();
     const [mylist, setMylist] = useState<string | any>(
@@ -196,10 +137,6 @@ export default function UserPage({ params }: { params: { username: string } }) {
         setMylist(e.key);
     };
 
-    const [isOpen, setIsOpen] = useState(false);
-    const toggleOpen = () => {
-        setIsOpen(!isOpen);
-    };
     return (
         <div className="container">
             <title>{`${params.username} / Список аниме`}</title>
@@ -212,54 +149,29 @@ export default function UserPage({ params }: { params: { username: string } }) {
                         },
                     },
                 }}
-            ></ConfigProvider>
+            ></ConfigProvider>{" "}
+            <Breadcrumb
+                separator=""
+                items={[
+                    {
+                        title: (
+                            <Link href={"./"}>
+                                <Flex justify="center" gap={5}>
+                                    <UserOutlined /> {params.username}
+                                </Flex>
+                            </Link>
+                        ),
+                    },
 
+                    {
+                        type: "separator",
+                    },
+                    {
+                        title: "Список аниме",
+                    },
+                ]}
+            />
             <Row gutter={[15, 15]} align={"middle"} justify={"center"}>
-                <Col span={24}>
-                    <Breadcrumb
-                        separator=""
-                        items={[
-                            {
-                                title: (
-                                    <Link href={"./"}>
-                                        <Flex justify="center" gap={5}>
-                                            <UserOutlined /> {params.username}
-                                        </Flex>
-                                    </Link>
-                                ),
-                            },
-                            {
-                                type: "separator",
-                                separator: ":",
-                            },
-                            {
-                                title: (
-                                    <Link
-                                        style={{
-                                            display: "flex",
-                                            flexDirection: "row",
-                                            fontStyle: "italic",
-                                            gap: 5,
-                                            fontSize: 11,
-                                            alignItems: "center",
-                                            justifyContent: "center",
-                                        }}
-                                        href={"./"}
-                                    >
-                                        <LongLeftArrow />
-                                        Назад
-                                    </Link>
-                                ),
-                            },
-                            {
-                                type: "separator",
-                            },
-                            {
-                                title: "Список аниме",
-                            },
-                        ]}
-                    />
-                </Col>
                 <Col span={22}>
                     <Menu
                         style={{ justifyContent: "center" }}
@@ -269,10 +181,9 @@ export default function UserPage({ params }: { params: { username: string } }) {
                         mode="horizontal"
                     />
                 </Col>
+
                 <Col span={24}>
                     <Animes
-                        isDrawerOpen={isOpen}
-                        onDrawerClose={toggleOpen}
                         userPath="/shikimori"
                         disableBottomNav={
                             series.get("0") !== undefined ? true : false
@@ -280,15 +191,6 @@ export default function UserPage({ params }: { params: { username: string } }) {
                     />
                 </Col>
             </Row>
-
-            <FloatButton.Group style={{ right: 0, margin: 10, bottom: 32 }}>
-                <FloatButton
-                    type="primary"
-                    icon={<SearchOutlined />}
-                    onClick={toggleOpen}
-                />
-                <FloatButton.BackTop />
-            </FloatButton.Group>
         </div>
     );
 }
