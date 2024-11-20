@@ -4,10 +4,12 @@ import {
     Button,
     Card,
     Col,
+    ConfigProvider,
     Divider,
     Flex,
     FloatButton,
     Image,
+    List,
     Row,
     Tag,
     Tooltip,
@@ -22,6 +24,7 @@ import Link from "next/link";
 import { getAnimesById, LastActivityAnime } from "@/app/services/shikimori";
 import { IsCurrentUser } from "@/app/api/coockie";
 import { EmptyView } from "@/app/components/EmptyView";
+import useSWR from "swr";
 export default function UserPage({ params }: { params: { username: string } }) {
     const router = useRouter();
     const [error, setError] = useState<boolean>(false);
@@ -29,9 +32,10 @@ export default function UserPage({ params }: { params: { username: string } }) {
     const [userInfo, setUserInfo] = useState<MainUserInfo>();
     const [animes, setAnimes] = useState<LastActivityAnime[]>();
     const { Text, Title } = Typography;
-    const getCurrentUser = async () => {
-        setError(await IsCurrentUser(params.username));
-        const currentUser = await getUserByUserName(params.username);
+
+    const getCurrentUser = async (username: string) => {
+        setError(await IsCurrentUser(username));
+        const currentUser = await getUserByUserName(username);
         setUserInfo(currentUser);
         if (currentUser.activityInfo.length > 0) {
             const animes = await getAnimesById(
@@ -41,48 +45,60 @@ export default function UserPage({ params }: { params: { username: string } }) {
         }
     };
 
-    useEffect(() => {
-        return () => {
-            getCurrentUser();
-        };
-    }, []);
+    const { data = [], isLoading } = useSWR(params.username, getCurrentUser, {
+        // Опции для useSWR
+        revalidateOnFocus: false, // Отключить обновление при фокусе
+        revalidateOnReconnect: false, // Отключить обновление при восстановлении соединения
+    });
     const getFormatedAge = (age: number) => {
         if (age % 10 === 1 && age % 100 !== 11) {
-            return ` / ${age} год`;
+            return `${age} год`;
         } else if (
             age % 10 >= 2 &&
             age % 10 <= 4 &&
             (age % 100 < 12 || age % 100 > 14)
         ) {
-            return ` / ${age} года`;
+            return `${age} года`;
         } else {
-            return ` / ${age} лет`;
+            return `${age} лет`;
         }
     };
+    const { Meta } = Card;
+    const customizeRenderEmpty = () => (
+        <EmptyView text="Пользователь еще ничего не добавил" />
+    );
     return (
         <div className="container">
             <title>{`${params.username} / Профиль`}</title>
             <Row gutter={[15, 15]} align={"top"} justify={"center"}>
                 <Col xs={24} sm={24} md={24} lg={16} xl={16} xxl={16}>
-                    <Row
-                        className="profile-header"
-                        gutter={[15, 15]}
-                        align={"middle"}
-                    >
-                        <Col>
-                            <Avatar
-                                style={{ backgroundColor: "transparent" }}
-                                icon={<UserOutlined />}
-                                size={100}
-                                src={
-                                    userInfo?.userInfo?.avatar
-                                        ? userInfo?.userInfo?.avatar
-                                        : null
-                                }
-                                shape="square"
-                            ></Avatar>
-                        </Col>
-                        <Col>
+                    <Row gutter={[15, 15]} align={"middle"}>
+                        <Card
+                            className="profile-header"
+                            style={{
+                                display: "flex",
+                                width: "100%",
+                                alignItems: "center",
+                                padding: 12,
+                                gap: 10,
+                            }}
+                            bordered
+                            cover={
+                                <Avatar
+                                    style={{
+                                        backgroundColor: "transparent",
+                                    }}
+                                    icon={<UserOutlined />}
+                                    size={100}
+                                    src={
+                                        userInfo?.userInfo?.avatar
+                                            ? userInfo?.userInfo?.avatar
+                                            : null
+                                    }
+                                    shape="square"
+                                ></Avatar>
+                            }
+                        >
                             <Meta
                                 style={{
                                     marginBottom: 0,
@@ -99,38 +115,59 @@ export default function UserPage({ params }: { params: { username: string } }) {
                                     </Title>
                                 }
                                 description={
-                                    <Flex gap={5}>
+                                    <Flex
+                                        gap={5}
+                                        justify="center"
+                                        align="center"
+                                    >
+                                        <Text>{userInfo?.userInfo.name}</Text>
                                         <Text>
                                             {userInfo?.userInfo.surName}
                                         </Text>
-                                        <Text>{userInfo?.userInfo.name}</Text>
-                                        {userInfo?.userInfo.yearsOld > 0 && (
+
+                                        <Divider type="vertical" />
+                                        {userInfo?.userInfo.yearsOld && (
                                             <Text>
                                                 {getFormatedAge(
                                                     userInfo?.userInfo.yearsOld
                                                 )}
                                             </Text>
                                         )}
-                                        <Text>{`/ на сайте с`}</Text>
-                                        <Tooltip
-                                            title={new Date(
-                                                userInfo?.userInfo?.regDate
-                                            ).toLocaleDateString("ru-RU", {
-                                                day: "numeric",
-                                                month: "long",
-                                                year: "numeric",
-                                            })}
-                                        >
-                                            <Text>
-                                                {`${new Date(
-                                                    userInfo?.userInfo?.regDate
-                                                ).getFullYear()} г.`}
-                                            </Text>
-                                        </Tooltip>
+                                        <Divider type="vertical" />
+                                        {userInfo?.userInfo.regDate && (
+                                            <Flex gap={5}>
+                                                <Text>{`на сайте с`}</Text>
+                                                <Text
+                                                    underline
+                                                    style={{
+                                                        cursor: "help",
+                                                        textDecorationStyle:
+                                                            "dashed",
+                                                    }}
+                                                >
+                                                    <Tooltip
+                                                        title={new Date(
+                                                            userInfo?.userInfo?.regDate
+                                                        ).toLocaleDateString(
+                                                            "ru-RU",
+                                                            {
+                                                                day: "numeric",
+                                                                month: "long",
+                                                                year: "numeric",
+                                                            }
+                                                        )}
+                                                    >
+                                                        {`${new Date(
+                                                            userInfo?.userInfo?.regDate
+                                                        ).getFullYear()} г.`}{" "}
+                                                    </Tooltip>
+                                                </Text>
+                                            </Flex>
+                                        )}
                                     </Flex>
                                 }
                             />
-                        </Col>
+                        </Card>
                     </Row>
                 </Col>
                 {userInfo?.seriesInfo.length ? (
@@ -191,8 +228,7 @@ export default function UserPage({ params }: { params: { username: string } }) {
                         ))}
                     </Row>
                 </Col>
-
-                {animes && (
+                {userInfo?.seriesInfo.length > 0 && (
                     <Col xs={24} sm={24} md={24} lg={16} xl={16}>
                         <Title level={4}>
                             <Link href={`${userInfo?.userInfo.userName}/list`}>
@@ -200,49 +236,53 @@ export default function UserPage({ params }: { params: { username: string } }) {
                             </Link>
                         </Title>
                         <Divider />
-                        {animes.map((item) => (
-                            <Link href={`/shikimori/${item.id}`}>
-                                <Card
-                                    style={{
-                                        padding: 12,
-                                        marginBottom: 8,
-                                    }}
-                                    hoverable
-                                >
-                                    <Row
-                                        gutter={[15, 15]}
-                                        className="related-anime"
-                                        align={"middle"}
-                                        justify={"start"}
-                                    >
-                                        <Col>
-                                            <Image
-                                                preview={false}
-                                                height={90}
-                                                src={item.image}
-                                            />
-                                        </Col>
-                                        <Col>
-                                            <Meta
+                        <ConfigProvider renderEmpty={customizeRenderEmpty}>
+                            <List
+                                loading={{
+                                    spinning: isLoading,
+                                    size: "large",
+                                }}
+                                dataSource={animes}
+                                renderItem={(item: LastActivityAnime) => (
+                                    <List.Item style={{ display: "block" }}>
+                                        <Link href={`/shikimori/${item.id}`}>
+                                            <Card
+                                                className="related-anime"
+                                                cover={
+                                                    <Image
+                                                        preview={false}
+                                                        height={90}
+                                                        src={item.image}
+                                                    />
+                                                }
                                                 style={{
-                                                    padding: 0,
+                                                    alignItems: "center",
+                                                    gap: 10,
+                                                    display: "flex",
+                                                    padding: 12,
                                                     marginBottom: 8,
-                                                    whiteSpace: "break-spaces",
                                                 }}
-                                                title={item.title}
-                                                description={new Date(
-                                                    item.date
-                                                ).toLocaleDateString("ru-RU", {
-                                                    day: "numeric",
-                                                    month: "long",
-                                                    year: "numeric",
-                                                })}
-                                            />
-                                        </Col>
-                                    </Row>
-                                </Card>
-                            </Link>
-                        ))}
+                                                hoverable
+                                            >
+                                                <Meta
+                                                    title={item.title}
+                                                    description={new Date(
+                                                        item.date
+                                                    ).toLocaleDateString(
+                                                        "ru-RU",
+                                                        {
+                                                            day: "numeric",
+                                                            month: "long",
+                                                            year: "numeric",
+                                                        }
+                                                    )}
+                                                />
+                                            </Card>
+                                        </Link>
+                                    </List.Item>
+                                )}
+                            ></List>
+                        </ConfigProvider>
                     </Col>
                 )}
             </Row>

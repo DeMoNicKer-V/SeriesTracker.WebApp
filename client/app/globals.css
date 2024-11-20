@@ -285,6 +285,7 @@ input,
     .profile-header {
         justify-content: center;
         text-align: center;
+        flex-direction: column;
     }
 }
 @media (max-width: 1200px) {
