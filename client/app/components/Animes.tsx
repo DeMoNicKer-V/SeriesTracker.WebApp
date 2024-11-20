@@ -40,10 +40,9 @@ import { EmptyView } from "./EmptyView";
 
 interface Props {
     userPath?: string;
-    disableBottomNav?: boolean;
 }
 
-export const Animes = ({ userPath, disableBottomNav }: Props) => {
+export const Animes = ({ userPath }: Props) => {
     const customizeRenderEmpty = () => (
         <EmptyView text="По вашему запросу ничего не найдено" />
     );
@@ -194,50 +193,48 @@ export const Animes = ({ userPath, disableBottomNav }: Props) => {
                     style: { height: "100vh" },
                 }}
                 loadMore={
-                    disableBottomNav
-                        ? null
-                        : !isLoading &&
-                          data.length > 0 && (
-                              <Flex gap={20} justify="end">
-                                  <Button
-                                      disabled={page === 1}
-                                      className="navigation-btn"
-                                      icon={<DoubleLeftOutlined />}
-                                      style={{ marginRight: "auto" }}
-                                      type="primary"
-                                      ghost
-                                      onClick={firstPage}
-                                      loading={isLoading}
-                                  >
-                                      В начало
-                                  </Button>
-                                  <Space.Compact>
-                                      <Button
-                                          disabled={page === 1}
-                                          className="navigation-btn"
-                                          icon={<LongLeftArrow />}
-                                          type="primary"
-                                          ghost
-                                          onClick={prePage}
-                                          loading={isLoading}
-                                      >
-                                          Назад
-                                      </Button>
-                                      <Button
-                                          disabled={data.length < 28}
-                                          className="navigation-btn"
-                                          iconPosition="end"
-                                          icon={<LongRightArrow />}
-                                          type="primary"
-                                          ghost
-                                          onClick={nextPage}
-                                          loading={isLoading}
-                                      >
-                                          Вперед
-                                      </Button>
-                                  </Space.Compact>
-                              </Flex>
-                          )
+                    !isLoading &&
+                    data.length >= 28 && (
+                        <Flex gap={20} justify="end">
+                            <Button
+                                disabled={page === 1}
+                                className="navigation-btn"
+                                icon={<DoubleLeftOutlined />}
+                                style={{ marginRight: "auto" }}
+                                type="primary"
+                                ghost
+                                onClick={firstPage}
+                                loading={isLoading}
+                            >
+                                В начало
+                            </Button>
+                            <Space.Compact>
+                                <Button
+                                    disabled={page === 1}
+                                    className="navigation-btn"
+                                    icon={<LongLeftArrow />}
+                                    type="primary"
+                                    ghost
+                                    onClick={prePage}
+                                    loading={isLoading}
+                                >
+                                    Назад
+                                </Button>
+                                <Button
+                                    disabled={data.length < 28}
+                                    className="navigation-btn"
+                                    iconPosition="end"
+                                    icon={<LongRightArrow />}
+                                    type="primary"
+                                    ghost
+                                    onClick={nextPage}
+                                    loading={isLoading}
+                                >
+                                    Вперед
+                                </Button>
+                            </Space.Compact>
+                        </Flex>
+                    )
                 }
                 className="animes-list"
                 grid={{
@@ -404,7 +401,13 @@ export const Animes = ({ userPath, disableBottomNav }: Props) => {
                 setRequest={setRequest}
                 setPage={setPage}
             />
-            <FloatButton.Group style={{ right: 0, margin: 10, bottom: 32 }}>
+            <FloatButton.Group
+                style={
+                    data.length < 5
+                        ? { display: "none" }
+                        : { right: 0, margin: 10, bottom: 32 }
+                }
+            >
                 <FloatButton
                     type="primary"
                     icon={<SearchOutlined />}

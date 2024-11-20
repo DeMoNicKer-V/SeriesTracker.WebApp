@@ -183,12 +183,7 @@ export default function UserPage({ params }: { params: { username: string } }) {
                 </Col>
 
                 <Col span={24}>
-                    <Animes
-                        userPath="/shikimori"
-                        disableBottomNav={
-                            series.get("0") !== undefined ? true : false
-                        }
-                    />
+                    <Animes userPath="/shikimori" />
                 </Col>
             </Row>
         </div>
