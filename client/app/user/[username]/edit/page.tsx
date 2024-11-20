@@ -9,6 +9,7 @@ import {
     EditOutlined,
     CloseOutlined,
     KeyOutlined,
+    DeleteOutlined,
 } from "@ant-design/icons";
 import {
     Avatar,
@@ -59,6 +60,7 @@ export default function EditUserPage({
     const [deleteStr, setDeleteStr] = useState<string>("");
     const [openDelete, setOpenDelete] = useState<boolean>(false);
     const [openDeleteUser, setOpenDeleteUser] = useState<boolean>(false);
+    const [avatarDelete, setAvatarDelete] = useState<boolean>(false);
     const [form] = Form.useForm();
     const getUser = async () => {
         if ((await IsCurrentUser(params.username)) === false) {
@@ -97,11 +99,14 @@ export default function EditUserPage({
         };
         const response = await updateUser(params.username, UserRequest);
         if (response === 200) {
-            messageApi.open({
-                type: "success",
-                content: "Профиль успешно обновлен!",
-            });
-            router.back();
+            messageApi
+                .open({
+                    type: "success",
+                    content: "Профиль успешно обновлен!",
+                    duration: 1.5,
+                })
+                .then(() => router.back());
+
             return;
         }
         messageApi.open({
@@ -122,6 +127,11 @@ export default function EditUserPage({
         setOpenDelete(false);
         setOpenDeleteUser(false);
         setDeleteStr("");
+    };
+
+    const onAvatarDeleteClick = () => {
+        setAvatarDelete(true);
+        form.setFieldValue("avatar", "");
     };
     return error === true ? (
         <div className="container">
@@ -156,12 +166,21 @@ export default function EditUserPage({
                         onFinish={onFinish}
                         form={form}
                     >
-                        {user?.avatar && (
-                            <Flex justify="center">
+                        {user?.avatar && !avatarDelete && (
+                            <Flex style={{ marginBottom: 10 }} justify="center">
                                 <Avatar
                                     src={user?.avatar}
                                     size={160}
                                     shape="square"
+                                />
+                                <Button
+                                    onClick={onAvatarDeleteClick}
+                                    style={{
+                                        position: "absolute",
+                                        top: "160px",
+                                    }}
+                                    type="text"
+                                    icon={<CloseOutlined />}
                                 />
                             </Flex>
                         )}
