@@ -467,3 +467,12 @@ div.ant-upload-list-item {
     display: none;
 }
 */
+.ant-list-header {
+    margin-bottom: 10px;
+}
+
+.ant-spin-container,
+::after,
+::before {
+    background: transparent !important;
+}

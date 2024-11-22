@@ -37,6 +37,7 @@ import useSWR from "swr";
 import { LongLeftArrow } from "../img/LongLeftArrow";
 import { LongRightArrow } from "../img/LongRightArrow";
 import { EmptyView } from "./EmptyView";
+import PageNavigator from "./PageNavigator";
 
 interface Props {
     userPath?: string;
@@ -97,7 +98,7 @@ export const Animes = ({ userPath }: Props) => {
         scrollTop();
     };
 
-    const prePage = () => {
+    const prevPage = () => {
         if (page > 1) {
             setPage(Number(page) - 1);
             request.page = Number(page) - 1;
@@ -114,16 +115,13 @@ export const Animes = ({ userPath }: Props) => {
         const list = await getGenres();
         setGenres(list);
     };
-    useEffect(() => {
-        return () => {
-            getGenresList();
-        };
-    }, []);
 
     const getAnimesPost = async (url: string) => {
         const data: SeriesAnime[] = await getAnimesByParams(url);
+        const list = await getGenres();
+        setGenres(list);
         if (data.length === 0) {
-            prePage();
+            prevPage();
         }
         return data;
     };
@@ -139,103 +137,35 @@ export const Animes = ({ userPath }: Props) => {
 
     return (
         <ConfigProvider renderEmpty={customizeRenderEmpty}>
-            <Flex justify="start">
-                {page > 2 && (
-                    <Tooltip title={"В начало"}>
-                        <Button
-                            onClick={firstPage}
-                            disabled={isLoading}
-                            size="small"
-                            type="link"
-                            icon={<DoubleLeftOutlined />}
-                        />
-                    </Tooltip>
-                )}
-                {page > 1 && (
-                    <Tooltip title={"Назад"}>
-                        <Button
-                            onClick={prePage}
-                            disabled={isLoading}
-                            size="small"
-                            type="link"
-                            icon={<LeftOutlined />}
-                        />
-                    </Tooltip>
-                )}
-                <Tag
-                    style={{
-                        fontStyle: "italic",
-                        cursor: "default",
-                        marginLeft: page <= 1 ? 0 : 5,
-                        transition: "all .2s",
-                    }}
-                >{`Страница: ${page}`}</Tag>
-
-                <Tooltip
-                    title={data.length === 28 ? "Дальше" : "Дальше страниц нет"}
-                >
-                    <Button
-                        loading={isLoading}
-                        onClick={nextPage}
-                        disabled={data.length < 28}
-                        size="small"
-                        type="link"
-                        icon={<RightOutlined />}
-                    />
-                </Tooltip>
-            </Flex>
-
-            <Divider />
             <List
+                header={
+                    !isLoading && (
+                        <PageNavigator
+                            nextButtonDisable={data.length < 28}
+                            onFirstButtonCLick={firstPage}
+                            onPrevButtonCLick={prevPage}
+                            onNextButtonCLick={nextPage}
+                            page={page}
+                        />
+                    )
+                }
+                footer={
+                    !isLoading &&
+                    data.length === 28 && (
+                        <PageNavigator
+                            nextButtonDisable={false}
+                            onFirstButtonCLick={firstPage}
+                            onPrevButtonCLick={prevPage}
+                            onNextButtonCLick={nextPage}
+                            page={page}
+                        />
+                    )
+                }
                 loading={{
                     spinning: isLoading,
                     size: "large",
                     style: { height: "100vh" },
                 }}
-                loadMore={
-                    !isLoading &&
-                    data.length >= 28 && (
-                        <Flex gap={20} justify="end">
-                            <Button
-                                disabled={page === 1}
-                                className="navigation-btn"
-                                icon={<DoubleLeftOutlined />}
-                                style={{ marginRight: "auto" }}
-                                type="primary"
-                                ghost
-                                onClick={firstPage}
-                                loading={isLoading}
-                            >
-                                В начало
-                            </Button>
-                            <Space.Compact>
-                                <Button
-                                    disabled={page === 1}
-                                    className="navigation-btn"
-                                    icon={<LongLeftArrow />}
-                                    type="primary"
-                                    ghost
-                                    onClick={prePage}
-                                    loading={isLoading}
-                                >
-                                    Назад
-                                </Button>
-                                <Button
-                                    disabled={data.length < 28}
-                                    className="navigation-btn"
-                                    iconPosition="end"
-                                    icon={<LongRightArrow />}
-                                    type="primary"
-                                    ghost
-                                    onClick={nextPage}
-                                    loading={isLoading}
-                                >
-                                    Вперед
-                                </Button>
-                            </Space.Compact>
-                        </Flex>
-                    )
-                }
                 className="animes-list"
                 grid={{
                     gutter: 30,
@@ -397,7 +327,7 @@ export const Animes = ({ userPath }: Props) => {
             <AnimeParamsMenu
                 genres={genres}
                 open={isOpen}
-                onClose={() => setIsOpen(false)}
+                onClose={toggleOpen}
                 setRequest={setRequest}
                 setPage={setPage}
             />

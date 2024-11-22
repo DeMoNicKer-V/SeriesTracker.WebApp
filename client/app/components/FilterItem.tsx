@@ -14,14 +14,14 @@ interface Props {
 function FilterItem({ dataSource, index, censored }: Props) {
     if (censored != undefined) {
         dataSource = censored
-            ? dataSource.filter((item) => ![12, 539].includes(item.id))
+            ? dataSource?.filter((item) => ![12, 539].includes(item.id))
             : dataSource;
     }
     return (
         <Form.Item name={index}>
             <Checkbox.Group>
                 <Row gutter={[0, 16]}>
-                    {dataSource.map((option) => (
+                    {dataSource?.map((option) => (
                         <Col span={24} key={`${index}${option.id}`}>
                             <Checkbox value={option.id}>
                                 {option.russian}
