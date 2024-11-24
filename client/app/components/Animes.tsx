@@ -153,7 +153,7 @@ export const Animes = ({ userPath }: Props) => {
                     !isLoading &&
                     data.length === 28 && (
                         <PageNavigator
-                            nextButtonDisable={false}
+                            nextButtonDisable={data.length < 28}
                             onFirstButtonCLick={firstPage}
                             onPrevButtonCLick={prevPage}
                             onNextButtonCLick={nextPage}
@@ -296,7 +296,7 @@ export const Animes = ({ userPath }: Props) => {
                                         {animes.status}
                                     </Tag>
                                 )}
-                            </Col>{" "}
+                            </Col>
                             <Col>
                                 <Tag style={{ fontSize: 11, fontWeight: 500 }}>
                                     {animes.kind}

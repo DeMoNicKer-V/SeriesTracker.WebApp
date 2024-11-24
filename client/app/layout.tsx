@@ -24,6 +24,7 @@ import Icon, {
     SettingOutlined,
     MenuUnfoldOutlined,
     QuestionOutlined,
+    LogoutOutlined,
 } from "@ant-design/icons";
 import Link from "next/link";
 
@@ -82,7 +83,7 @@ export default function RootLayout({
                 key: "random",
                 onClick: async () => getRandomAnimeId(),
                 icon: <QuestionOutlined />,
-                label: <Text>Случайное аниме</Text>,
+                label: "Случайное аниме",
             },
         ];
         if (user?.permissions.includes(1)) {
@@ -110,14 +111,22 @@ export default function RootLayout({
             disabled: true,
         },
         {
-            label: "Мои аниме",
+            label: (
+                <Link href={`/user/${user?.userName}`} target="_top">
+                    Профиль
+                </Link>
+            ),
             key: "1",
             icon: <UserOutlined />,
         },
         {
-            label: "Профиль",
+            label: (
+                <Link href={`/user/${user?.userName}/edit`} target="_top">
+                    Настройки
+                </Link>
+            ),
             key: "2",
-            icon: <UserOutlined />,
+            icon: <SettingOutlined />,
         },
         {
             label: (
@@ -130,7 +139,7 @@ export default function RootLayout({
                 await LogOut();
                 router;
             },
-            icon: <UserOutlined />,
+            icon: <LogoutOutlined />,
         },
     ];
 
@@ -221,13 +230,9 @@ export default function RootLayout({
                 <style
                     id="holderStyle"
                     dangerouslySetInnerHTML={{
-                        __html: `
-      /* https://github.com/ant-design/ant-design/issues/16037#issuecomment-483140458 */
-      /* Not only antd, but also any other style if you want to use ssr. */
-      *, *::before, *::after {
-        transition: none!important;
-      }
-    `,
+                        __html: `*, *::before, *::after {
+                        transition: none!important;
+                        }`,
                     }}
                 />
                 <ConfigProvider
@@ -241,6 +246,7 @@ export default function RootLayout({
                         style={{
                             visibility: !mounted ? "hidden" : "visible",
                             minHeight: "100vh",
+                            minWidth: "100vw",
                         }}
                     >
                         <title>Series Tracker</title>
@@ -339,6 +345,7 @@ export default function RootLayout({
                             }}
                         >
                             <Sider
+                                width={230}
                                 breakpoint="xl"
                                 trigger={null}
                                 collapsible
@@ -356,6 +363,7 @@ export default function RootLayout({
                                 }}
                             >
                                 <Menu
+                                    className="sider-menu"
                                     onSelect={({ key }) => {
                                         setCurrentKey(key);
                                         setCollapsed(true);
