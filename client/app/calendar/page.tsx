@@ -161,7 +161,7 @@ export default function CalendarPage() {
         <div className="container">
             <title>Series Tracker - Расписание</title>
             <Row gutter={[20, 20]} align={"middle"} justify={"center"}>
-                <Col span={21}>
+                <Col span={22}>
                     {filter.length > 0 && (
                         <Tabs
                             animated
@@ -172,7 +172,7 @@ export default function CalendarPage() {
                         />
                     )}
                 </Col>
-                <Col span={21}>
+                <Col span={22}>
                     <ConfigProvider
                         theme={{
                             components: {
@@ -203,9 +203,8 @@ export default function CalendarPage() {
                                                     padding: 15,
                                                 }}
                                                 align={"middle"}
-                                                justify={"center"}
                                             >
-                                                <Col span={4}>
+                                                <Col>
                                                     <Image
                                                         style={{
                                                             borderRadius: 5,
@@ -215,10 +214,18 @@ export default function CalendarPage() {
                                                         src={`https://desu.shikimori.one${item.anime.image.preview}`}
                                                     ></Image>
                                                 </Col>
-                                                <Col span={14}>
+                                                <Col
+                                                    offset={1}
+                                                    xs={14}
+                                                    sm={14}
+                                                    md={16}
+                                                    lg={16}
+                                                    xl={16}
+                                                    xxl={16}
+                                                >
                                                     <Title
                                                         className="calendar-card-text"
-                                                        level={3}
+                                                        level={4}
                                                     >
                                                         {item.anime.russian
                                                             ? item.anime.russian
@@ -248,8 +255,16 @@ export default function CalendarPage() {
                                                         </Text>
                                                     </Flex>
                                                 </Col>
-                                                <Col offset={4} span={2}>
-                                                    <Title level={3}>
+                                                <Col
+                                                    offset={1}
+                                                    style={{
+                                                        marginLeft: "auto",
+                                                    }}
+                                                    lg={2}
+                                                    xl={2}
+                                                    xxl={2}
+                                                >
+                                                    <Title level={4}>
                                                         {`${item.next_episode} эп.`}
                                                     </Title>
                                                     <Flex gap={5}>
