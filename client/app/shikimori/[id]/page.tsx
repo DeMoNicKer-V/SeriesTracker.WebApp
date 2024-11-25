@@ -63,6 +63,7 @@ import { getCategoryById, getCategoryList } from "@/app/services/category";
 import { skip } from "node:test";
 import CheckableTag from "antd/es/tag/CheckableTag";
 import noFoundImage from ".//..//../img/empty.png";
+import { IsAuth } from "@/app/api/coockie";
 
 export default function AnimePage({ params }: { params: { id: string } }) {
     const defaultValues = {
@@ -71,6 +72,7 @@ export default function AnimePage({ params }: { params: { id: string } }) {
         categoryId: 0,
         isFavorite: false,
     } as SeriesInfo;
+    const [isAuth, setIsAuth] = useState<boolean>(false);
     const [animes, setAnimes] = useState<Anime[] | any>([]);
     const [series, setSeries] = useState<SeriesInfo | any>(defaultValues);
     const [loading, setLoading] = useState<boolean>(true);
@@ -108,6 +110,9 @@ export default function AnimePage({ params }: { params: { id: string } }) {
 
         setCategories(array);
     };
+    const checkAuth = async () => {
+        setIsAuth(await IsAuth());
+    };
     const getAnimes = async (id: string) => {
         const response = await getAnimeById(id);
         setAnimes(response.anime);
@@ -129,6 +134,7 @@ export default function AnimePage({ params }: { params: { id: string } }) {
         setLoading(false);
     };
     useEffect(() => {
+        checkAuth();
         if (params.id) {
             getAnimes(params.id);
         }
@@ -468,138 +474,156 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                                                         </Flex>
                                                     </Tooltip>
                                                 </Space>
-                                                <Space
-                                                    wrap
-                                                    className="space-buttons"
-                                                    style={{
-                                                        cursor: "default",
-                                                    }}
-                                                >
-                                                    <Tooltip
-                                                        title={
-                                                            isFavorite
-                                                                ? "Удалить из избранного"
-                                                                : "Добавить в избранное"
-                                                        }
-                                                    >
-                                                        <Rate
-                                                            character={
-                                                                <HeartFilled />
-                                                            }
-                                                            style={{
-                                                                color: "#ff69b4",
-                                                            }}
-                                                            onChange={
-                                                                updateFavoriteSeries
-                                                            }
-                                                            defaultValue={
-                                                                isFavorite
-                                                                    ? 1
-                                                                    : 0
-                                                            }
-                                                            count={1}
-                                                        />
-                                                    </Tooltip>
-                                                    <Dropdown.Button
-                                                        size="small"
-                                                        menu={menuProps}
-                                                        icon={<DownOutlined />}
-                                                        className="manage-button"
-                                                        onClick={AddToMyList}
+                                                {isAuth ? (
+                                                    <Space
+                                                        wrap
+                                                        className="space-buttons"
                                                         style={{
-                                                            width: "100%",
-                                                            whiteSpace:
-                                                                "break-spaces",
-                                                            height: "auto",
-                                                            borderRadius: 5,
+                                                            cursor: "default",
                                                         }}
                                                     >
-                                                        {isSeries ? (
-                                                            <BookOutlined />
-                                                        ) : (
-                                                            <PlusOutlined />
-                                                        )}
-                                                        {series.categoryId ===
-                                                            0 &&
-                                                            "Добавить в мой список"}
-                                                        {category &&
-                                                            category.name}
-                                                    </Dropdown.Button>
-
-                                                    {series.categoryId > 1 && (
-                                                        <InputNumber
-                                                            readOnly={
-                                                                series.categoryId ===
-                                                                3
+                                                        <Tooltip
+                                                            title={
+                                                                isFavorite
+                                                                    ? "Удалить из избранного"
+                                                                    : "Добавить в избранное"
                                                             }
-                                                            value={
-                                                                watchedEpisode
-                                                            }
-                                                            onChange={(
-                                                                value
-                                                            ) => {
-                                                                updateEpisodeSeries(
-                                                                    value
-                                                                );
-                                                            }}
+                                                        >
+                                                            <Rate
+                                                                character={
+                                                                    <HeartFilled />
+                                                                }
+                                                                style={{
+                                                                    color: "#ff69b4",
+                                                                }}
+                                                                onChange={
+                                                                    updateFavoriteSeries
+                                                                }
+                                                                defaultValue={
+                                                                    isFavorite
+                                                                        ? 1
+                                                                        : 0
+                                                                }
+                                                                count={1}
+                                                            />
+                                                        </Tooltip>
+                                                        <Dropdown.Button
                                                             size="small"
-                                                            maxLength={4}
-                                                            addonBefore={
-                                                                <Button
-                                                                    disabled={
-                                                                        series.categoryId ===
-                                                                        3
-                                                                    }
-                                                                    type="link"
-                                                                    size="small"
-                                                                    icon={
-                                                                        <MinusOutlined />
-                                                                    }
-                                                                    onClick={
-                                                                        decEpisodeSeries
-                                                                    }
-                                                                ></Button>
+                                                            menu={menuProps}
+                                                            icon={
+                                                                <DownOutlined />
                                                             }
-                                                            addonAfter={
-                                                                <Button
-                                                                    disabled={
-                                                                        series.categoryId ===
-                                                                        3
-                                                                    }
-                                                                    type="link"
-                                                                    size="small"
-                                                                    icon={
-                                                                        <PlusOutlined />
-                                                                    }
-                                                                    onClick={
-                                                                        incEpisodeSeries
-                                                                    }
-                                                                ></Button>
+                                                            className="manage-button"
+                                                            onClick={
+                                                                AddToMyList
                                                             }
                                                             style={{
-                                                                width: "auto",
+                                                                width: "100%",
+                                                                whiteSpace:
+                                                                    "break-spaces",
+                                                                height: "auto",
+                                                                borderRadius: 5,
                                                             }}
-                                                            max={
-                                                                animes.episodes
-                                                            }
-                                                            prefix={
-                                                                <Text>
-                                                                    {"Эпизоды:"}
-                                                                </Text>
-                                                            }
-                                                            suffix={
-                                                                <Text>{`из ${animes.episodes} эп.`}</Text>
-                                                            }
-                                                            min={0}
-                                                            defaultValue={
-                                                                series.watchedEpisode
-                                                            }
-                                                            variant="filled"
-                                                            step={1}
-                                                            controls={false}
-                                                        />
-                                                    )}
-                                                </Space>
+                                                        >
+                                                            {isSeries ? (
+                                                                <BookOutlined />
+                                                            ) : (
+                                                                <PlusOutlined />
+                                                            )}
+                                                            {series.categoryId ===
+                                                                0 &&
+                                                                "Добавить в мой список"}
+                                                            {category &&
+                                                                category.name}
+                                                        </Dropdown.Button>
+
+                                                        {series.categoryId >
+                                                            1 && (
+                                                            <InputNumber
+                                                                readOnly={
+                                                                    series.categoryId ===
+                                                                    3
+                                                                }
+                                                                value={
+                                                                    watchedEpisode
+                                                                }
+                                                                onChange={(
+                                                                    value
+                                                                ) => {
+                                                                    updateEpisodeSeries(
+                                                                        value
+                                                                    );
+                                                                }}
+                                                                size="small"
+                                                                maxLength={4}
+                                                                addonBefore={
+                                                                    <Button
+                                                                        disabled={
+                                                                            series.categoryId ===
+                                                                            3
+                                                                        }
+                                                                        type="link"
+                                                                        size="small"
+                                                                        icon={
+                                                                            <MinusOutlined />
+                                                                        }
+                                                                        onClick={
+                                                                            decEpisodeSeries
+                                                                        }
+                                                                    ></Button>
+                                                                }
+                                                                addonAfter={
+                                                                    <Button
+                                                                        disabled={
+                                                                            series.categoryId ===
+                                                                            3
+                                                                        }
+                                                                        type="link"
+                                                                        size="small"
+                                                                        icon={
+                                                                            <PlusOutlined />
+                                                                        }
+                                                                        onClick={
+                                                                            incEpisodeSeries
+                                                                        }
+                                                                    ></Button>
+                                                                }
+                                                                style={{
+                                                                    width: "auto",
+                                                                }}
+                                                                max={
+                                                                    animes.episodes
+                                                                }
+                                                                prefix={
+                                                                    <Text>
+                                                                        {
+                                                                            "Эпизоды:"
+                                                                        }
+                                                                    </Text>
+                                                                }
+                                                                suffix={
+                                                                    <Text>{`из ${animes.episodes} эп.`}</Text>
+                                                                }
+                                                                min={0}
+                                                                defaultValue={
+                                                                    series.watchedEpisode
+                                                                }
+                                                                variant="filled"
+                                                                step={1}
+                                                                controls={false}
+                                                            />
+                                                        )}
+                                                    </Space>
+                                                ) : (
+                                                    <Button
+                                                        ghost
+                                                        type="primary"
+                                                        href="/login"
+                                                    >
+                                                        Войдите, чтобы добавить
+                                                        в свой список
+                                                    </Button>
+                                                )}
                                             </Col>
                                         </Row>
                                     </div>

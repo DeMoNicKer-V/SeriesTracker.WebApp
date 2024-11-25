@@ -131,7 +131,6 @@ export default function CalendarPage() {
             isDatesEqual(new Date(item.next_episode_at), value)
         );
         filteredData.length <= 0 ? setLoading(false) : setLoading(true);
-        console.log(value);
         setFilter(filteredData);
     };
     const getGenresList = async () => {
