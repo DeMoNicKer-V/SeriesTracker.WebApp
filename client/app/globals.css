@@ -222,7 +222,7 @@ input,
 }
 
 .container {
-    padding: 20px;
+    padding: 20px 20px 0px 20px;
     min-height: 100%;
 }
 .container.detail {

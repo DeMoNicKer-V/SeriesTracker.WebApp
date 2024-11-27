@@ -38,6 +38,11 @@ import { usePathname, useRouter } from "next/navigation";
 import { GetCoockie, LogOut } from "./api/coockie";
 import { getUserById, UserResponse } from "./services/user";
 import { LogoIcon } from "./img/LogoIcon";
+import { Footer } from "antd/es/layout/layout";
+import Meta from "antd/es/card/Meta";
+import { VKLogo } from "./img/socials/vk";
+import { GithubLogo } from "./img/socials/github";
+import { TelegramLogo } from "./img/socials/telegram";
 type CustomIconComponentProps = GetProps<typeof Icon>;
 const { Header, Content, Sider } = Layout;
 
@@ -168,11 +173,7 @@ export default function RootLayout({
         GetUser();
         setMounted(true);
     }, []);
-    if (typeof window !== "undefined") {
-        window.onload = () => {
-            document.getElementById("holderStyle")!.remove();
-        };
-    }
+
     useEffect(() => {
         document.getElementsByClassName(
             "ant-layout-sider-collapsed ant-layout-sider-below"
@@ -229,14 +230,6 @@ export default function RootLayout({
     return (
         <html lang="en">
             <body>
-                <style
-                    id="holderStyle"
-                    dangerouslySetInnerHTML={{
-                        __html: `*, *::before, *::after {
-                        transition: none!important;
-                        }`,
-                    }}
-                />
                 <ConfigProvider
                     theme={{
                         token: darkTheme,
@@ -398,6 +391,67 @@ export default function RootLayout({
                             </Sider>
                             <Layout>
                                 <Content>{children}</Content>
+
+                                <Footer>
+                                    <Divider style={{ margin: 0 }} />
+                                    <Flex style={{ flexDirection: "column" }}>
+                                        <Title level={4}>Соц. сети</Title>
+                                        <Space size={[10, 10]}>
+                                            <Button
+                                                target="_blank"
+                                                href="https://vk.com/v_shakov"
+                                                type="link"
+                                                icon={<VKLogo size={24} />}
+                                            ></Button>
+                                            <Button
+                                                target="_blank"
+                                                href="https://github.com/DeMoNicKer-V"
+                                                type="link"
+                                                icon={<GithubLogo size={24} />}
+                                            ></Button>
+                                            <Button
+                                                target="_blank"
+                                                href="https://t.me/Vitek_Dev"
+                                                type="link"
+                                                icon={
+                                                    <TelegramLogo size={24} />
+                                                }
+                                            ></Button>
+                                        </Space>
+                                        <Text
+                                            style={{ fontSize: 11 }}
+                                            type="secondary"
+                                        >
+                                            Данный сайт не хранит на своем
+                                            сервере никаких данных. Весь контент
+                                            на сайте предоставляется сайтом{" "}
+                                            <Typography.Link
+                                                href="https://shikimori.one"
+                                                target="_blank"
+                                                style={{ fontSize: 11 }}
+                                                type="secondary"
+                                            >
+                                                Shikimori.One.
+                                            </Typography.Link>
+                                        </Text>
+                                        <Text strong style={{ fontSize: 15 }}>
+                                            Copyright ©
+                                            <Typography.Link
+                                                style={{
+                                                    fontSize: 15,
+                                                    color: "#DE1EB2",
+                                                }}
+                                                className="info"
+                                                strong
+                                                href={"/shikimori"}
+                                            >
+                                                Series Tracker
+                                            </Typography.Link>
+                                            {` ${new Date().getFullYear()}. `}
+                                            All Rights Reserved.
+                                        </Text>
+                                    </Flex>
+                                </Footer>
                             </Layout>
                         </Layout>
                     </Layout>
