@@ -14,6 +14,7 @@ import {
     Space,
     Avatar,
     Dropdown,
+    Flex,
 } from "antd";
 
 import Icon, {
@@ -36,6 +37,7 @@ import { getRandomAnime } from "./services/shikimori";
 import { usePathname, useRouter } from "next/navigation";
 import { GetCoockie, LogOut } from "./api/coockie";
 import { getUserById, UserResponse } from "./services/user";
+import { LogoIcon } from "./img/LogoIcon";
 type CustomIconComponentProps = GetProps<typeof Icon>;
 const { Header, Content, Sider } = Layout;
 
@@ -264,17 +266,35 @@ export default function RootLayout({
                         >
                             <Row align="middle" justify={"space-between"}>
                                 <Col>
-                                    <Button
-                                        type="link"
-                                        icon={
-                                            collapsed ? (
-                                                <MenuUnfoldOutlined />
-                                            ) : (
-                                                <MenuFoldOutlined />
-                                            )
-                                        }
-                                        onClick={() => setCollapsed(!collapsed)}
-                                    />
+                                    <Flex gap={20}>
+                                        <Button
+                                            type="text"
+                                            icon={
+                                                collapsed ? (
+                                                    <MenuUnfoldOutlined />
+                                                ) : (
+                                                    <MenuFoldOutlined />
+                                                )
+                                            }
+                                            onClick={() =>
+                                                setCollapsed(!collapsed)
+                                            }
+                                        />
+                                        <Button
+                                            style={{ cursor: "pointer" }}
+                                            disabled={pathName === "/shikimori"}
+                                            href="/shikimori"
+                                            type="link"
+                                            icon={
+                                                <LogoIcon
+                                                    width={50}
+                                                    height={50}
+                                                    firstColor="white"
+                                                    secondColor="#DE1EB2"
+                                                />
+                                            }
+                                        />
+                                    </Flex>
                                 </Col>
                                 {currentKey !== "shikimori" &&
                                     currentKey !== "random" && (
