@@ -16,12 +16,14 @@ import {
 } from "antd";
 import Link from "next/link";
 import {
+    CalendarOutlined,
     DoubleLeftOutlined,
     FireOutlined,
     HeartFilled,
     LeftOutlined,
     RightOutlined,
     SearchOutlined,
+    StarOutlined,
 } from "@ant-design/icons";
 import AnimePopover from "./AnimePopover";
 import AbsoluteImage from "./AbsoluteImage";
@@ -207,6 +209,17 @@ export const Animes = ({ userPath }: Props) => {
                                             <Flex>
                                                 <Tag
                                                     color="magenta"
+                                                    icon={<StarOutlined />}
+                                                    style={{
+                                                        width: "fit-content",
+                                                        display: "inline-block",
+                                                        margin: 5,
+                                                    }}
+                                                >
+                                                    {animes.score}
+                                                </Tag>
+                                                <Tag
+                                                    color="magenta"
                                                     style={{
                                                         width: "fit-content",
                                                         display: "inline-block",
@@ -217,24 +230,6 @@ export const Animes = ({ userPath }: Props) => {
                                                         animes.startDate
                                                     ).getFullYear()}
                                                 </Tag>
-                                                {animes.isFavorite && (
-                                                    <Tooltip
-                                                        title={"В избранном"}
-                                                        trigger={"hover"}
-                                                    >
-                                                        <Tag
-                                                            style={{
-                                                                width: "fit-content",
-                                                                display:
-                                                                    "inline-block",
-                                                                margin: 5,
-                                                            }}
-                                                            color="magenta"
-                                                        >
-                                                            <HeartFilled />
-                                                        </Tag>
-                                                    </Tooltip>
-                                                )}
                                             </Flex>
                                             {animes.categoryId > 0 && (
                                                 <Tag
@@ -274,6 +269,19 @@ export const Animes = ({ userPath }: Props) => {
                             gutter={[0, 5]}
                             style={{ justifyContent: "start" }}
                         >
+                            {" "}
+                            {animes.isFavorite && (
+                                <Col>
+                                    <Tooltip
+                                        title={"В избранном"}
+                                        trigger={"hover"}
+                                    >
+                                        <Tag color="magenta">
+                                            <HeartFilled />
+                                        </Tag>
+                                    </Tooltip>
+                                </Col>
+                            )}
                             <Col>
                                 {animes.status.length > 6 ? (
                                     <Tag

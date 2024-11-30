@@ -6,6 +6,10 @@ import {
     LoginOutlined,
     ProfileOutlined,
     CheckSquareOutlined,
+    EditOutlined,
+    KeyOutlined,
+    MinusCircleOutlined,
+    QuestionCircleOutlined,
 } from "@ant-design/icons";
 import Typewriter from "typewriter-effect";
 import {
@@ -31,6 +35,10 @@ import {
     Result,
     ConfigProvider,
     InputRef,
+    Descriptions,
+    DescriptionsProps,
+    Tooltip,
+    Checkbox,
 } from "antd";
 import ImgCrop from "antd-img-crop";
 import Meta from "antd/es/card/Meta";
@@ -46,6 +54,7 @@ import dayjs from "dayjs";
 import "dayjs/locale/ru";
 import AvatarPicker from "../components/AvatarPicker";
 import Title from "antd/es/typography/Title";
+import "./style.css";
 dayjs.locale("ru");
 const SignupPage = () => {
     const [form] = Form.useForm();
@@ -149,6 +158,7 @@ const SignupPage = () => {
                         ]}
                     />
                     <Form
+                        id="registration-form"
                         onFinish={(values) => {
                             setCurrent(1);
                         }}
@@ -248,7 +258,6 @@ const SignupPage = () => {
                                                                             .value
                                                                     );
                                                                 }}
-                                                                autoFocus
                                                                 spellCheck={
                                                                     false
                                                                 }
@@ -600,7 +609,7 @@ const SignupPage = () => {
                                     wrap
                                     size={[10, 10]}
                                 >
-                                    <AvatarPicker targetValue={setAvatar} />
+                                    <AvatarPicker onChange={setAvatar} />
                                     <Meta
                                         title={
                                             <Typography.Title level={5}>
@@ -757,19 +766,93 @@ const SignupPage = () => {
                         )}
                     </Form>
                     {current === 2 && (
-                        <Result
-                            title="Мы почти закончили!"
-                            subTitle="Пожалуйста, проверьте введеные данные и подтвердите регистрацию!"
-                            extra={
-                                <Button
-                                    onClick={createNewAccount}
-                                    type="primary"
-                                    htmlType="submit"
-                                >
-                                    Зарегестрироваться
-                                </Button>
-                            }
-                        />
+                        <Form spellCheck={false} layout="horizontal">
+                            <Flex style={{ marginBottom: 10 }} justify="center">
+                                <Image src={avatar} preview />
+                            </Flex>
+
+                            <Flex
+                                gap={5}
+                                style={{
+                                    textAlign: "center",
+                                    justifyContent: "center",
+                                }}
+                            >
+                                <Typography.Title level={4}>
+                                    {userName}
+                                </Typography.Title>
+                                <Tooltip title={"Ваш никнейм"}>
+                                    <QuestionCircleOutlined />
+                                </Tooltip>
+                            </Flex>
+                            <Divider></Divider>
+                            <Form.Item label={"Эл. почта"}>
+                                <Input
+                                    variant="borderless"
+                                    readOnly
+                                    value={email}
+                                />
+                            </Form.Item>
+
+                            <Form.Item label={"Пароль"}>
+                                <Input.Password
+                                    readOnly
+                                    value={password}
+                                    variant="borderless"
+                                />
+                            </Form.Item>
+
+                            <Divider orientation="left">
+                                Необязательные параметры
+                            </Divider>
+                            <Form.Item label={"Имя"}>
+                                <Input
+                                    value={name}
+                                    placeholder="не указано"
+                                    readOnly
+                                    variant="borderless"
+                                />
+                            </Form.Item>
+                            <Form.Item label={"Фамилия"}>
+                                <Input
+                                    value={surName}
+                                    placeholder="не указано"
+                                    readOnly
+                                    variant="borderless"
+                                />
+                            </Form.Item>
+                            <Form.Item
+                                name={"dateBirth"}
+                                label={"Дата рождения"}
+                            >
+                                <DatePicker
+                                    style={{ width: "100%" }}
+                                    allowClear={false}
+                                    value={!dateBirth ? null : dayjs(dateBirth)}
+                                    placeholder="не указано"
+                                    readOnly
+                                    inputReadOnly
+                                    popupStyle={{ display: "none" }}
+                                    variant="borderless"
+                                />
+                            </Form.Item>
+
+                            <Divider />
+                            <Checkbox>
+                                Я ознакомился с правилами сайта и соглашаюсь с
+                                ними.
+                            </Checkbox>
+                            <Flex gap={10} justify="center">
+                                <Form.Item>
+                                    <Button type="primary">Назад</Button>
+                                </Form.Item>
+                                <Form.Item>
+                                    <Button type="primary" htmlType="submit">
+                                        Завершить регистрацию
+                                    </Button>
+                                </Form.Item>
+                            </Flex>
+                        </Form>
                     )}
                 </Card>
                 <Space wrap size={[5, 5]}>
