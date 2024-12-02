@@ -10,6 +10,9 @@ import {
     KeyOutlined,
     MinusCircleOutlined,
     QuestionCircleOutlined,
+    SolutionOutlined,
+    LoadingOutlined,
+    SmileOutlined,
 } from "@ant-design/icons";
 import Typewriter from "typewriter-effect";
 import {
@@ -118,45 +121,13 @@ const SignupPage = () => {
                     gap: 30,
                 }}
             >
-                {" "}
-                <Typography.Text
-                    strong
-                    style={{ fontSize: 16, textAlign: "center" }}
-                >
-                    <Typewriter
-                        onInit={(typewriter) => {
-                            typewriter
-                                .changeDelay(50)
-                                .typeString(
-                                    "Добро пожаловать на Series Tracker!"
-                                )
-
-                                .pauseFor(1000)
-                                .typeString("<br>Давайте зарегестрируем Вас")
-
-                                .start();
-                        }}
-                    />
-                </Typography.Text>
+                <Typography.Title level={3}>
+                    Регистрация на Series Tracker
+                </Typography.Title>
                 <Card
                     hoverable
                     style={{ width: "100%", padding: 24, cursor: "default" }}
                 >
-                    <Steps
-                        current={current}
-                        onChange={onChangeCurrent}
-                        items={[
-                            {
-                                icon: <LoginOutlined />,
-                            },
-                            {
-                                icon: <ProfileOutlined />,
-                            },
-                            {
-                                icon: <CheckSquareOutlined />,
-                            },
-                        ]}
-                    />
                     <Form
                         id="registration-form"
                         onFinish={(values) => {
@@ -248,6 +219,7 @@ const SignupPage = () => {
                                                             ]}
                                                         >
                                                             <Input
+                                                                autoFocus
                                                                 onChange={(e: {
                                                                     target: {
                                                                         value: any;
@@ -571,7 +543,10 @@ const SignupPage = () => {
                                 )}
                             </Form.List>
                         )}
-                        <Form.Item style={{ marginTop: 10 }} shouldUpdate>
+                        <Form.Item
+                            style={{ marginTop: -5, marginBottom: -10 }}
+                            shouldUpdate
+                        >
                             {() => (
                                 <Typography.Text
                                     strong
@@ -838,10 +813,17 @@ const SignupPage = () => {
                             </Form.Item>
 
                             <Divider />
-                            <Checkbox>
-                                Я ознакомился с правилами сайта и соглашаюсь с
-                                ними.
-                            </Checkbox>
+                            <Flex gap={10}>
+                                <Checkbox />
+                                <Typography.Paragraph>
+                                    Я ознакомлен (а) с{" "}
+                                    <Typography.Link type="warning">
+                                        правилами
+                                    </Typography.Link>{" "}
+                                    сайта и соглашаюсь с ними.
+                                </Typography.Paragraph>
+                            </Flex>
+
                             <Flex gap={10} justify="center">
                                 <Form.Item>
                                     <Button type="primary">Назад</Button>

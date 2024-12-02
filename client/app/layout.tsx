@@ -15,6 +15,7 @@ import {
     Avatar,
     Dropdown,
     Flex,
+    FloatButton,
 } from "antd";
 
 import Icon, {
@@ -26,6 +27,7 @@ import Icon, {
     MenuUnfoldOutlined,
     QuestionOutlined,
     LogoutOutlined,
+    QuestionCircleOutlined,
 } from "@ant-design/icons";
 import Link from "next/link";
 
@@ -43,6 +45,7 @@ import Meta from "antd/es/card/Meta";
 import { VKLogo } from "./img/socials/vk";
 import { GithubLogo } from "./img/socials/github";
 import { TelegramLogo } from "./img/socials/telegram";
+import { RandomIcon } from "./img/RandomIcon";
 type CustomIconComponentProps = GetProps<typeof Icon>;
 const { Header, Content, Sider } = Layout;
 
@@ -89,7 +92,11 @@ export default function RootLayout({
             {
                 key: "random",
                 onClick: async () => getRandomAnimeId(),
-                icon: <QuestionOutlined />,
+                icon: (
+                    <span role="img">
+                        <RandomIcon />
+                    </span>
+                ),
                 label: "Случайное аниме",
             },
         ];
@@ -289,12 +296,11 @@ export default function RootLayout({
                                         />
                                     </Flex>
                                 </Col>
-                                {currentKey !== "shikimori" &&
-                                    currentKey !== "random" && (
-                                        <Col xs={0} sm={0} md={0} xl={10}>
-                                            <SearchBar />
-                                        </Col>
-                                    )}
+
+                                <Col xs={0} sm={0} md={0} xl={10}>
+                                    <SearchBar />
+                                </Col>
+
                                 {isUser && (
                                     <Col>
                                         <Dropdown menu={menuProps}>
@@ -387,6 +393,10 @@ export default function RootLayout({
                                     }}
                                     mode="inline"
                                     items={menuItems}
+                                />
+                                <FloatButton
+                                    tooltip={"О сайте"}
+                                    icon={<QuestionCircleOutlined />}
                                 />
                             </Sider>
                             <Layout>
