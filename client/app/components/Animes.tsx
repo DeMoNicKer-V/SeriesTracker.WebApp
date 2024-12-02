@@ -1,5 +1,6 @@
 import Card from "antd/es/card/Card";
 import {
+    Badge,
     Button,
     Col,
     ConfigProvider,
@@ -192,71 +193,90 @@ export const Animes = ({ userPath }: Props) => {
                             }
                         >
                             <Link href={`/shikimori/${animes.id}`}>
-                                <Card
-                                    bordered={false}
-                                    style={{
-                                        overflow: "hidden",
-
-                                        minHeight: "auto",
-                                        minWidth: "auto",
-                                        aspectRatio: "auto 8/11",
-                                    }}
-                                    cover={
-                                        <AbsoluteImage
-                                            src={animes.pictureUrl}
-                                            zIndex={0}
-                                        >
-                                            <Flex>
-                                                <Tag
-                                                    color="magenta"
-                                                    icon={<StarOutlined />}
+                                <Badge.Ribbon
+                                    text={
+                                        <Flex justify="center" align="center">
+                                            <Flex
+                                                gap={2}
+                                                justify="center"
+                                                align="center"
+                                            >
+                                                <StarOutlined />
+                                                <Typography.Text
                                                     style={{
-                                                        width: "fit-content",
-                                                        display: "inline-block",
-                                                        margin: 5,
+                                                        textShadow:
+                                                            "1px 1px 2px black",
+                                                        fontSize: 13,
                                                     }}
+                                                    strong
                                                 >
                                                     {animes.score}
-                                                </Tag>
-                                                <Tag
-                                                    color="magenta"
-                                                    style={{
-                                                        width: "fit-content",
-                                                        display: "inline-block",
-                                                        margin: 5,
-                                                    }}
-                                                >
-                                                    {new Date(
-                                                        animes.startDate
-                                                    ).getFullYear()}
-                                                </Tag>
+                                                </Typography.Text>
                                             </Flex>
-                                            {animes.categoryId > 0 && (
-                                                <Tag
-                                                    color={animes.categoryColor}
-                                                    bordered={false}
-                                                    style={{
-                                                        textAlign: "center",
-                                                        width: "100%",
-                                                        padding: 0,
-                                                        margin: 0,
-                                                        borderRadius: 0,
-                                                    }}
-                                                >
-                                                    <Typography.Text
-                                                        style={{
-                                                            textShadow:
-                                                                "1px 1px 2px black",
-                                                        }}
-                                                        strong
-                                                    >
-                                                        {animes.categoryName}
-                                                    </Typography.Text>
-                                                </Tag>
-                                            )}
-                                        </AbsoluteImage>
+                                            <Divider
+                                                type="vertical"
+                                                style={{ top: 0 }}
+                                            />
+                                            <Typography.Text
+                                                style={{
+                                                    textShadow:
+                                                        "1px 1px 2px black",
+                                                    fontSize: 13,
+                                                }}
+                                                strong
+                                            >
+                                                {new Date(
+                                                    animes.startDate
+                                                ).getFullYear()}
+                                            </Typography.Text>
+                                        </Flex>
                                     }
-                                ></Card>
+                                >
+                                    <Card
+                                        bordered={false}
+                                        style={{
+                                            overflow: "hidden",
+
+                                            minHeight: "auto",
+                                            minWidth: "auto",
+                                            aspectRatio: "auto 8/11",
+                                        }}
+                                        cover={
+                                            <AbsoluteImage
+                                                src={animes.pictureUrl}
+                                                zIndex={0}
+                                            >
+                                                {animes.categoryId > 0 && (
+                                                    <Tag
+                                                        color={
+                                                            animes.categoryColor
+                                                        }
+                                                        bordered={false}
+                                                        style={{
+                                                            textAlign: "center",
+                                                            width: "100%",
+                                                            padding: 0,
+                                                            margin: 0,
+                                                            borderRadius: 0,
+                                                        }}
+                                                    >
+                                                        <Typography.Text
+                                                            style={{
+                                                                textShadow:
+                                                                    "1px 1px 2px black",
+                                                            }}
+                                                            strong
+                                                        >
+                                                            {
+                                                                animes.categoryName
+                                                            }
+                                                        </Typography.Text>
+                                                    </Tag>
+                                                )}
+                                            </AbsoluteImage>
+                                        }
+                                    ></Card>
+                                </Badge.Ribbon>
                             </Link>
                         </Popover>
                         <Link
@@ -269,7 +289,6 @@ export const Animes = ({ userPath }: Props) => {
                             gutter={[0, 5]}
                             style={{ justifyContent: "start" }}
                         >
-                            {" "}
                             {animes.isFavorite && (
                                 <Col>
                                     <Tooltip

@@ -371,7 +371,7 @@ export default function RootLayout({
                                 collapsed={collapsed}
                                 style={{
                                     top: 80,
-                                    overflow: "auto",
+                                    overflow: "hidden",
                                     height: "90vh",
                                     position: "sticky",
                                     transform: "translateX(0%)",
@@ -394,10 +394,8 @@ export default function RootLayout({
                                     mode="inline"
                                     items={menuItems}
                                 />
-                                <FloatButton
-                                    tooltip={"О сайте"}
-                                    icon={<QuestionCircleOutlined />}
-                                />
+                                <div style={{ flex: 1 }}></div>
+                                <Button icon={<QuestionCircleOutlined />} />
                             </Sider>
                             <Layout>
                                 <Content>{children}</Content>

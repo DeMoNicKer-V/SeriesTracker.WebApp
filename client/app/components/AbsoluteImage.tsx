@@ -9,7 +9,7 @@ export const AbsoluteImage = ({ src, zIndex, children }: Props) => {
     return (
         <Flex
             align={"flex-end"}
-            justify={"space-between"}
+            justify={"end"}
             style={{
                 flexDirection: "column",
                 backgroundImage: `url(${src})`,
