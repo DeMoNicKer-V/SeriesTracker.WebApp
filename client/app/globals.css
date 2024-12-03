@@ -492,3 +492,18 @@ div.ant-upload-list-item {
     font-size: 16px;
     font-weight: 600;
 }
+
+.zero-margin {
+    margin: 0 !important;
+}
+.zero-margin-padding {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+.zero-margin {
+    padding: 0 !important;
+}
+
+.width-100 {
+    width: 100%;
+}

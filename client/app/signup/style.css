@@ -1,3 +1,17 @@
 .ant-form-item-explain {
     display: none;
 }
+.review-form label {
+    font-size: 14px !important;
+    opacity: 0.75;
+    font-weight: 500;
+    font-style: italic;
+}
+
+.review-form input {
+    font-size: 15px !important;
+    font-weight: 500;
+}
+.nonrequired-collapse:hover {
+    box-shadow: none;
+}

@@ -398,7 +398,7 @@ export default function RootLayout({
                                     items={menuItems}
                                 />
                                 <FloatButton
-                                    href="about"
+                                    href="/about"
                                     tooltip={"Правила сайта"}
                                     badge={{ dot: true }}
                                     style={

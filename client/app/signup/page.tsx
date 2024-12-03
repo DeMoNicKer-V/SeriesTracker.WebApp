@@ -13,6 +13,7 @@ import {
     SolutionOutlined,
     LoadingOutlined,
     SmileOutlined,
+    CheckOutlined,
 } from "@ant-design/icons";
 import Typewriter from "typewriter-effect";
 import {
@@ -42,6 +43,7 @@ import {
     DescriptionsProps,
     Tooltip,
     Checkbox,
+    Collapse,
 } from "antd";
 import ImgCrop from "antd-img-crop";
 import Meta from "antd/es/card/Meta";
@@ -58,6 +60,8 @@ import "dayjs/locale/ru";
 import AvatarPicker from "../components/AvatarPicker";
 import Title from "antd/es/typography/Title";
 import "./style.css";
+import { LongLeftArrow } from "../img/LongLeftArrow";
+import { LongRightArrow } from "../img/LongRightArrow";
 dayjs.locale("ru");
 const SignupPage = () => {
     const [form] = Form.useForm();
@@ -156,7 +160,7 @@ const SignupPage = () => {
                                                     align={"bottom"}
                                                     justify={"center"}
                                                 >
-                                                    <Col span={19}>
+                                                    <Col sm={19} xs={24}>
                                                         <Form.Item
                                                             validateFirst
                                                             validateDebounce={
@@ -241,13 +245,14 @@ const SignupPage = () => {
                                                             />
                                                         </Form.Item>
                                                     </Col>
-                                                    <Col span={5}>
+                                                    <Col sm={5} xs={24}>
                                                         {isActive.email ? (
                                                             <Form.Item
                                                                 shouldUpdate
                                                             >
                                                                 {() => (
                                                                     <Button
+                                                                        className="width-100"
                                                                         disabled={
                                                                             form.isFieldsValidating() ||
                                                                             !form.getFieldValue(
@@ -303,7 +308,7 @@ const SignupPage = () => {
                                                     align={"bottom"}
                                                     justify={"center"}
                                                 >
-                                                    <Col span={19}>
+                                                    <Col sm={19} xs={24}>
                                                         <Form.Item
                                                             validateFirst
                                                             validateDebounce={
@@ -363,7 +368,7 @@ const SignupPage = () => {
                                                             />
                                                         </Form.Item>
                                                     </Col>
-                                                    <Col span={5}>
+                                                    <Col sm={5} xs={24}>
                                                         {isActive.password ? (
                                                             <Form.Item
                                                                 shouldUpdate
@@ -425,7 +430,7 @@ const SignupPage = () => {
                                                     align={"bottom"}
                                                     justify={"center"}
                                                 >
-                                                    <Col span={19}>
+                                                    <Col sm={19} xs={24}>
                                                         <Form.Item
                                                             validateFirst
                                                             validateDebounce={
@@ -502,13 +507,14 @@ const SignupPage = () => {
                                                             />
                                                         </Form.Item>
                                                     </Col>
-                                                    <Col span={5}>
+                                                    <Col sm={5} xs={24}>
                                                         {isActive.userName ? (
                                                             <Form.Item
                                                                 shouldUpdate
                                                             >
                                                                 {() => (
                                                                     <Button
+                                                                        className="width-100"
                                                                         htmlType="submit"
                                                                         disabled={
                                                                             !form.getFieldValue(
@@ -580,6 +586,7 @@ const SignupPage = () => {
                         {current === 1 && (
                             <Flex style={{ flexDirection: "column" }}>
                                 <Space
+                                    className="anime-title"
                                     style={{ justifyContent: "center" }}
                                     wrap
                                     size={[10, 10]}
@@ -603,238 +610,264 @@ const SignupPage = () => {
                                         }
                                     ></Meta>
                                 </Space>
-                                <Card
-                                    style={{
-                                        cursor: "default",
-                                        width: "100%",
-                                        padding: 5,
-                                        backgroundColor: "transparent",
-                                    }}
-                                >
-                                    <Flex
-                                        align="center"
-                                        justify="center"
-                                        style={{ flexDirection: "column" }}
-                                    >
-                                        <Typography.Text italic>
-                                            Как вас зовут?
-                                        </Typography.Text>
-                                        <Divider
-                                            style={{
-                                                margin: 10,
-                                            }}
-                                            dashed
-                                            type="horizontal"
-                                        ></Divider>
-                                    </Flex>
-                                    <Space
-                                        className="login-space"
-                                        style={{ width: "100%" }}
-                                        wrap
-                                        size={[10, 10]}
-                                    >
-                                        <Form.Item name={"name"}>
-                                            <Input
-                                                placeholder="Имя"
-                                                onChange={(e: {
-                                                    target: {
-                                                        value: any;
-                                                    };
-                                                }) => {
-                                                    setName(e.target.value);
-                                                }}
-                                            ></Input>
-                                        </Form.Item>
-                                        <Form.Item name={"surName"}>
-                                            <Input
-                                                placeholder="Фамилия "
-                                                onChange={(e: {
-                                                    target: {
-                                                        value: any;
-                                                    };
-                                                }) => {
-                                                    setSurname(e.target.value);
-                                                }}
-                                            ></Input>
-                                        </Form.Item>
-                                    </Space>
-                                </Card>
-                                <Card
-                                    style={{
-                                        cursor: "default",
-                                        width: "100%",
-                                        padding: 5,
-                                        backgroundColor: "transparent",
-                                    }}
-                                >
-                                    <Flex
-                                        align="center"
-                                        justify="center"
-                                        style={{ flexDirection: "column" }}
-                                    >
-                                        <Typography.Text italic>
-                                            Ваша дата рождения?
-                                        </Typography.Text>
-                                        <Divider
-                                            style={{
-                                                width: "50%",
-                                                minWidth: 0,
-                                                margin: 10,
-                                            }}
-                                            dashed
-                                            type="horizontal"
-                                        ></Divider>
-                                    </Flex>
-                                    <Flex
-                                        style={{ width: "100%" }}
-                                        justify="center"
-                                        align="center"
-                                    >
-                                        <Form.Item
-                                            name={"dateBirth"}
-                                            style={{ width: "50%" }}
-                                        >
-                                            <DatePicker
-                                                locale={locale}
-                                                format={"D MMMM, YYYY"}
-                                                maxDate={dayjs(
-                                                    new Date().setFullYear(
-                                                        new Date().getFullYear() -
-                                                            12
-                                                    )
-                                                )}
-                                                onChange={(date) => {
-                                                    setDateBirth(
-                                                        date
-                                                            .format(
-                                                                "YYYY-MM-DD"
-                                                            )
-                                                            .toString()
-                                                    );
-                                                }}
-                                                value={
-                                                    !dateBirth
-                                                        ? null
-                                                        : dayjs(dateBirth)
-                                                }
-                                                style={{ width: "100%" }}
-                                                placeholder="Укажите вашу дату рождения"
-                                            ></DatePicker>
-                                        </Form.Item>
-                                    </Flex>
-                                </Card>
-                                <Flex justify="center" align="center">
-                                    <Button
-                                        htmlType="submit"
-                                        onClick={() => console.log(dateBirth)}
-                                        type="primary"
-                                        style={{
-                                            margin: 15,
 
-                                            borderRadius: 5,
+                                <Divider>Как вас зовут?</Divider>
+
+                                <Space
+                                    className="login-space"
+                                    style={{
+                                        width: "100%",
+                                        textAlign: "center",
+                                    }}
+                                    wrap
+                                    size={[10, 10]}
+                                >
+                                    <Form.Item name={"name"}>
+                                        <Input
+                                            variant="filled"
+                                            placeholder="Имя"
+                                            onChange={(e: {
+                                                target: {
+                                                    value: any;
+                                                };
+                                            }) => {
+                                                setName(e.target.value);
+                                            }}
+                                        ></Input>
+                                    </Form.Item>
+                                    <Form.Item name={"surName"}>
+                                        <Input
+                                            variant="filled"
+                                            placeholder="Фамилия "
+                                            onChange={(e: {
+                                                target: {
+                                                    value: any;
+                                                };
+                                            }) => {
+                                                setSurname(e.target.value);
+                                            }}
+                                        ></Input>
+                                    </Form.Item>
+                                </Space>
+
+                                <Form.Item
+                                    layout="horizontal"
+                                    label={<Divider>Дата рождения</Divider>}
+                                    name={"dateBirth"}
+                                    style={{ width: "100%" }}
+                                >
+                                    <DatePicker
+                                        variant="borderless"
+                                        locale={locale}
+                                        format={"D MMMM, YYYY"}
+                                        maxDate={dayjs(
+                                            new Date().setFullYear(
+                                                new Date().getFullYear() - 12
+                                            )
+                                        )}
+                                        onChange={(date) => {
+                                            setDateBirth(
+                                                date
+                                                    ? date
+                                                          .format("YYYY-MM-DD")
+                                                          .toString()
+                                                    : ""
+                                            );
                                         }}
+                                        value={
+                                            !dateBirth ? null : dayjs(dateBirth)
+                                        }
+                                        style={{ width: "100%" }}
+                                        placeholder="Укажите дату рождения"
+                                    ></DatePicker>
+                                </Form.Item>
+
+                                <Flex gap={10} justify="center">
+                                    <Button
+                                        style={{
+                                            opacity: 0.75,
+                                        }}
+                                        icon={<LongLeftArrow />}
+                                        onClick={() => setCurrent(0)}
+                                        type="link"
                                     >
-                                        Перейти к завершению <RightOutlined />
+                                        Назад
+                                    </Button>
+
+                                    <Button
+                                        iconPosition="end"
+                                        onClick={() => setCurrent(2)}
+                                        icon={<LongRightArrow />}
+                                        htmlType="submit"
+                                    >
+                                        Перейти к завершению
                                     </Button>
                                 </Flex>
                             </Flex>
                         )}
                     </Form>
                     {current === 2 && (
-                        <Form spellCheck={false} layout="horizontal">
-                            <Flex style={{ marginBottom: 10 }} justify="center">
-                                <Image src={avatar} preview />
-                            </Flex>
-
-                            <Flex
-                                gap={5}
-                                style={{
-                                    textAlign: "center",
-                                    justifyContent: "center",
-                                }}
+                        <ConfigProvider
+                            theme={{
+                                components: {
+                                    Collapse: {
+                                        contentPadding: 0,
+                                        headerPadding: "0 0 24px 0",
+                                        boxShadow: "none !important",
+                                    },
+                                    Typography: {
+                                        colorLink: "#DE1EB2",
+                                        colorLinkHover: "#8b2675",
+                                    },
+                                },
+                            }}
+                        >
+                            <Form
+                                className="review-form"
+                                spellCheck={false}
+                                layout="horizontal"
                             >
-                                <Typography.Title level={4}>
-                                    {userName}
-                                </Typography.Title>
-                                <Tooltip title={"Ваш никнейм"}>
-                                    <QuestionCircleOutlined />
-                                </Tooltip>
-                            </Flex>
-                            <Divider></Divider>
-                            <Form.Item label={"Эл. почта"}>
-                                <Input
-                                    variant="borderless"
-                                    readOnly
-                                    value={email}
-                                />
-                            </Form.Item>
+                                <Flex
+                                    style={{ marginBottom: 10 }}
+                                    justify="center"
+                                >
+                                    <Image src={avatar} width={100} preview />
+                                </Flex>
 
-                            <Form.Item label={"Пароль"}>
-                                <Input.Password
-                                    readOnly
-                                    value={password}
-                                    variant="borderless"
-                                />
-                            </Form.Item>
-
-                            <Divider orientation="left">
-                                Необязательные параметры
-                            </Divider>
-                            <Form.Item label={"Имя"}>
-                                <Input
-                                    value={name}
-                                    placeholder="не указано"
-                                    readOnly
-                                    variant="borderless"
-                                />
-                            </Form.Item>
-                            <Form.Item label={"Фамилия"}>
-                                <Input
-                                    value={surName}
-                                    placeholder="не указано"
-                                    readOnly
-                                    variant="borderless"
-                                />
-                            </Form.Item>
-                            <Form.Item
-                                name={"dateBirth"}
-                                label={"Дата рождения"}
-                            >
-                                <DatePicker
-                                    style={{ width: "100%" }}
-                                    allowClear={false}
-                                    value={!dateBirth ? null : dayjs(dateBirth)}
-                                    placeholder="не указано"
-                                    readOnly
-                                    inputReadOnly
-                                    popupStyle={{ display: "none" }}
-                                    variant="borderless"
-                                />
-                            </Form.Item>
-
-                            <Divider />
-                            <Flex gap={10}>
-                                <Checkbox />
-                                <Typography.Paragraph>
-                                    Я ознакомлен (а) с{" "}
-                                    <Typography.Link type="warning">
-                                        правилами
-                                    </Typography.Link>{" "}
-                                    сайта и соглашаюсь с ними.
-                                </Typography.Paragraph>
-                            </Flex>
-
-                            <Flex gap={10} justify="center">
-                                <Form.Item>
-                                    <Button type="primary">Назад</Button>
+                                <Form.Item label={"Никнейм"}>
+                                    <Input
+                                        variant="borderless"
+                                        readOnly
+                                        value={userName}
+                                    />
                                 </Form.Item>
-                                <Form.Item>
-                                    <Button type="primary" htmlType="submit">
-                                        Завершить регистрацию
-                                    </Button>
+                                <Form.Item label={"Эл. почта"}>
+                                    <Input
+                                        variant="borderless"
+                                        readOnly
+                                        value={email}
+                                    />
                                 </Form.Item>
-                            </Flex>
-                        </Form>
+
+                                <Form.Item label={"Пароль"}>
+                                    <Input.Password
+                                        readOnly
+                                        value={password}
+                                        variant="borderless"
+                                    />
+                                </Form.Item>
+
+                                <Collapse
+                                    className="nonrequired-collapse"
+                                    bordered={false}
+                                    style={{
+                                        backgroundColor: "transparent",
+                                    }}
+                                    items={[
+                                        {
+                                            key: "1",
+                                            label: (
+                                                <Divider
+                                                    className="zero-margin"
+                                                    orientation="left"
+                                                >
+                                                    Необязательные параметры
+                                                </Divider>
+                                            ),
+                                            children: (
+                                                <Flex
+                                                    style={{
+                                                        flexDirection: "column",
+                                                    }}
+                                                >
+                                                    <Form.Item label={"Имя"}>
+                                                        <Input
+                                                            value={name}
+                                                            placeholder="не указано"
+                                                            readOnly
+                                                            variant="borderless"
+                                                        />
+                                                    </Form.Item>
+                                                    <Form.Item
+                                                        label={"Фамилия"}
+                                                    >
+                                                        <Input
+                                                            value={surName}
+                                                            placeholder="не указано"
+                                                            readOnly
+                                                            variant="borderless"
+                                                        />
+                                                    </Form.Item>
+                                                    <Form.Item
+                                                        name={"dateBirth"}
+                                                        label={"Дата рождения"}
+                                                    >
+                                                        <DatePicker
+                                                            suffixIcon={null}
+                                                            style={{
+                                                                width: "100%",
+                                                            }}
+                                                            allowClear={false}
+                                                            value={
+                                                                !dateBirth
+                                                                    ? null
+                                                                    : dayjs(
+                                                                          dateBirth
+                                                                      )
+                                                            }
+                                                            placeholder="не указано"
+                                                            inputReadOnly
+                                                            popupStyle={{
+                                                                display: "none",
+                                                            }}
+                                                            variant="borderless"
+                                                        />
+                                                    </Form.Item>
+                                                </Flex>
+                                            ),
+                                        },
+                                    ]}
+                                />
+
+                                <Checkbox>
+                                    <Typography.Paragraph>
+                                        Я ознакомлен (а) с{" "}
+                                        <Typography.Link
+                                            href="/about"
+                                            target="_blank"
+                                        >
+                                            правилами
+                                        </Typography.Link>{" "}
+                                        сайта и соглашаюсь с ними.
+                                    </Typography.Paragraph>
+                                </Checkbox>
+
+                                <Divider />
+                                <Flex gap={10} justify="center">
+                                    <Form.Item
+                                        style={{
+                                            opacity: 0.75,
+                                        }}
+                                    >
+                                        <Button
+                                            icon={<LongLeftArrow />}
+                                            onClick={() => setCurrent(1)}
+                                            type="link"
+                                        >
+                                            Назад
+                                        </Button>
+                                    </Form.Item>
+                                    <Form.Item>
+                                        <Button
+                                            icon={<CheckOutlined />}
+                                            htmlType="submit"
+                                        >
+                                            Завершить регистрацию
+                                        </Button>
+                                    </Form.Item>
+                                </Flex>
+                            </Form>
+                        </ConfigProvider>
                     )}
                 </Card>
                 <Space wrap size={[5, 5]}>

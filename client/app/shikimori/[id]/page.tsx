@@ -252,7 +252,7 @@ export default function AnimePage({ params }: { params: { id: string } }) {
             }}
         >
             <title>
-                {!animes.title
+                {!animes?.title
                     ? "Series Tracker"
                     : `Series Tracker - ${animes.subTitle}`}
             </title>
