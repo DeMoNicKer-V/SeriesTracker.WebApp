@@ -28,6 +28,9 @@ import Icon, {
     QuestionOutlined,
     LogoutOutlined,
     QuestionCircleOutlined,
+    InfoCircleTwoTone,
+    InfoCircleFilled,
+    InfoCircleOutlined,
 } from "@ant-design/icons";
 import Link from "next/link";
 
@@ -394,8 +397,17 @@ export default function RootLayout({
                                     mode="inline"
                                     items={menuItems}
                                 />
-                                <div style={{ flex: 1 }}></div>
-                                <Button icon={<QuestionCircleOutlined />} />
+                                <FloatButton
+                                    href="about"
+                                    tooltip={"Правила сайта"}
+                                    badge={{ dot: true }}
+                                    style={
+                                        collapsed
+                                            ? { right: "25%", bottom: 20 }
+                                            : { right: "3%", bottom: 20 }
+                                    }
+                                    icon={<InfoCircleOutlined />}
+                                />
                             </Sider>
                             <Layout>
                                 <Content>{children}</Content>

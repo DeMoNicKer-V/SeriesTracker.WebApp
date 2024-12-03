@@ -197,11 +197,13 @@ export const Animes = ({ userPath }: Props) => {
                                     text={
                                         <Flex justify="center" align="center">
                                             <Flex
-                                                gap={2}
+                                                gap={3}
                                                 justify="center"
                                                 align="center"
                                             >
-                                                <StarOutlined />
+                                                <StarOutlined
+                                                    style={{ fontSize: 11 }}
+                                                />
                                                 <Typography.Text
                                                     style={{
                                                         textShadow:
