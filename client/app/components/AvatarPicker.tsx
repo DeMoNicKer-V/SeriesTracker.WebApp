@@ -13,13 +13,25 @@ import { Dispatch, SetStateAction, useState } from "react";
 import { UserOutlined } from "@ant-design/icons";
 interface Props {
     onChange: (value: any) => void;
+    preloadFile?: string;
 }
-const AvatarPicker = ({ onChange }: Props) => {
-    const [fileList, setFileList] = useState<UploadFile[]>([]);
+const AvatarPicker = ({ onChange, preloadFile }: Props) => {
+    const [fileList, setFileList] = useState<any[]>(
+        preloadFile
+            ? [
+                  {
+                      uid: "-1",
+                      name: "image.png",
+                      status: "done",
+                      url: preloadFile,
+                  },
+              ]
+            : []
+    );
     const onUploadChange: UploadProps["onChange"] = ({
         fileList: newFileList,
     }) => {
-        if (newFileList.length) {
+        if (newFileList.length > 0) {
             const isJpgOrPng =
                 newFileList[0].type === "image/jpeg" ||
                 newFileList[0].type === "image/png";
@@ -32,12 +44,15 @@ const AvatarPicker = ({ onChange }: Props) => {
                 message.error("Размер файла не должен превышать 512КБ!");
                 return;
             }
+
             const reader = new FileReader();
+            reader.readAsDataURL(newFileList[0].originFileObj);
             reader.onloadend = () => {
                 onChange(newFileList[0].thumbUrl);
             };
-            reader.readAsDataURL(newFileList[0].originFileObj);
-        } else onChange("");
+        } else {
+            onChange("");
+        }
         setFileList(newFileList);
     };
 

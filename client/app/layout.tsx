@@ -201,9 +201,12 @@ export default function RootLayout({
     const darkThemeLayout = {
         Layout: {
             headerBg: "#101010",
-            footerBg: "#0f0f0f",
+            footerBg: "transparent",
             siderBg: "#101010",
-            bodyBg: "#0f0f0f",
+            bodyBg:
+                pathName === "/signup"
+                    ? "radial-gradient(ellipse at bottom, #de1eb12c 0%, #0f0f0f 100%)"
+                    : "#0f0f0f",
         },
         Menu: {
             activeBarBorderWidth: 0,
@@ -257,6 +260,7 @@ export default function RootLayout({
                         <title>Series Tracker</title>
                         <Header
                             style={{
+                                display: "none",
                                 position: "sticky",
                                 top: 0,
                                 zIndex: 99,
@@ -360,12 +364,7 @@ export default function RootLayout({
                                 )}
                             </Row>
                         </Header>
-                        <Layout
-                            hasSider
-                            style={{
-                                padding: 10,
-                            }}
-                        >
+                        <Layout hasSider>
                             <Sider
                                 width={230}
                                 breakpoint="xl"
@@ -374,6 +373,7 @@ export default function RootLayout({
                                 collapsed={collapsed}
                                 style={{
                                     top: 80,
+                                    display: "none",
                                     overflow: "hidden",
                                     height: "90vh",
                                     position: "sticky",

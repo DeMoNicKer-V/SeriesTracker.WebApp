@@ -1,7 +1,3 @@
-import cookie from "cookie";
-import axios, { parseCookies } from "nookies";
-import { getCookie } from "cookies-next";
-import { LogOut } from "../api/coockie";
 export interface UserRequest {
     userName: string;
     name: string;
@@ -65,6 +61,9 @@ export const registerUser = async (request: UserRequest) => {
         },
         body: JSON.stringify(request),
     });
+    if (response.status !== 200) {
+        return false;
+    }
 };
 
 export const login = async (request: LoginRequest) => {
@@ -77,9 +76,8 @@ export const login = async (request: LoginRequest) => {
         credentials: "include",
     });
     if (response.status !== 200) {
-        return await response.json();
+        return response.json();
     }
-    await response.json();
 };
 
 export const verify = async (request: LoginRequest) => {
@@ -92,9 +90,8 @@ export const verify = async (request: LoginRequest) => {
         credentials: "include",
     });
     if (response.status !== 200) {
-        return await response.json();
+        return response.json();
     }
-    await response.json();
 };
 
 export const getUserById = async (id: string) => {

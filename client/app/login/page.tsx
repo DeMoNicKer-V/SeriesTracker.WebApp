@@ -73,7 +73,7 @@ const LoginPage = () => {
                 }}
             >
                 <Typography.Title level={4}>
-                    Войти на Series Tracker Web
+                    Войти на @SeriesTracker
                 </Typography.Title>
                 <Typography.Text type="danger">{errorMessage}</Typography.Text>
                 <Card
