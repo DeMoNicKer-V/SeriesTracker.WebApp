@@ -15,6 +15,7 @@ import {
 import { login, LoginRequest } from "../services/user";
 import Link from "next/link";
 import { IsAuth } from "../api/coockie";
+import { EmptyView } from "../components/EmptyView";
 
 const LoginPage = () => {
     const router = useRouter();
@@ -33,9 +34,6 @@ const LoginPage = () => {
         getIsAuth();
     }, []);
 
-    if (auth) {
-        router.back();
-    }
     const loginUser = async () => {
         setErrorMessage("");
         let user: LoginRequest = {
@@ -52,7 +50,7 @@ const LoginPage = () => {
     const finishFailed = async () => {
         setErrorMessage("Эл. почта и пароль обязательны для входа");
     };
-    return (
+    return auth === false ? (
         <Flex
             style={{
                 flex: "auto",
@@ -162,6 +160,17 @@ const LoginPage = () => {
                     </Link>
                 </Space>
             </Flex>
+        </Flex>
+    ) : (
+        <Flex
+            gap={10}
+            justify="center"
+            align="center"
+            className="flex-column"
+            style={{ height: "100%" }}
+        >
+            <EmptyView text="Вы уже вошли в свой аккаунт" />
+            <Link href={"/shikimori"}>Венрнуться на главную</Link>
         </Flex>
     );
 };

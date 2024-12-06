@@ -64,8 +64,17 @@ import { LongLeftArrow } from "../img/LongLeftArrow";
 import { LongRightArrow } from "../img/LongRightArrow";
 import { LogoIcon } from "../img/LogoIcon";
 import { useRouter } from "next/navigation";
+import { IsAuth } from "../api/coockie";
+import { EmptyView } from "../components/EmptyView";
 dayjs.locale("ru");
 const SignupPage = () => {
+    const [auth, setAuth] = useState<boolean>(false);
+
+    const getIsAuth = async () => {
+        const a = await IsAuth();
+        setAuth(a);
+    };
+
     const [form] = Form.useForm();
     const [isActive, setIsActive] = useState<Record<string, boolean>>({
         email: true,
@@ -106,7 +115,11 @@ const SignupPage = () => {
         }
     };
 
-    return (
+    useEffect(() => {
+        getIsAuth();
+    }, []);
+
+    return auth === false ? (
         <Flex
             className="bg flex-column"
             style={{
@@ -950,6 +963,16 @@ const SignupPage = () => {
                     </Card>
                 </ConfigProvider>
             </Flex>
+        </Flex>
+    ) : (
+        <Flex
+            gap={10}
+            justify="center"
+            align="center"
+            className="bg flex-column"
+        >
+            <EmptyView text="Вы уже вошли в свой аккаунт" />
+            <Link href={"/shikimori"}>Венрнуться на главную</Link>
         </Flex>
     );
 };

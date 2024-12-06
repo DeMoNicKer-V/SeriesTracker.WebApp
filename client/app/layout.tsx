@@ -203,10 +203,9 @@ export default function RootLayout({
             headerBg: "#101010",
             footerBg: "transparent",
             siderBg: "#101010",
-            bodyBg:
-                pathName === "/signup"
-                    ? "radial-gradient(ellipse at bottom, #de1eb12c 0%, #0f0f0f 100%)"
-                    : "#0f0f0f",
+            bodyBg: ["/signup", "/login"].includes(pathName)
+                ? "radial-gradient(ellipse at bottom, #de1eb12c 0%, #0f0f0f 100%)"
+                : "#0f0f0f",
         },
         Menu: {
             activeBarBorderWidth: 0,
@@ -260,10 +259,14 @@ export default function RootLayout({
                         <title>Series Tracker</title>
                         <Header
                             style={{
-                                display: "none",
                                 position: "sticky",
                                 top: 0,
                                 zIndex: 99,
+                                display: ["/signup", "/login"].includes(
+                                    pathName
+                                )
+                                    ? "none"
+                                    : "block",
 
                                 alignItems: "center",
                                 padding: "0 20px",
@@ -373,7 +376,6 @@ export default function RootLayout({
                                 collapsed={collapsed}
                                 style={{
                                     top: 80,
-                                    display: "none",
                                     overflow: "hidden",
                                     height: "90vh",
                                     position: "sticky",
@@ -382,6 +384,11 @@ export default function RootLayout({
                                     boxShadow:
                                         "0 2px 4px -1px rgba(0,0,0,.3), 0 4px 5px 0 rgba(0,0,0,.24), 0 1px 10px 0 rgba(0,0,0,.22)",
                                     borderRadius: 5,
+                                    display: ["/signup", "/login"].includes(
+                                        pathName
+                                    )
+                                        ? "none"
+                                        : "block",
                                 }}
                             >
                                 <Menu
