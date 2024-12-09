@@ -8,9 +8,11 @@ interface Props {
 export const AbsoluteImage = ({ src, zIndex, children }: Props) => {
     return (
         <Flex
+            className="background-poster"
             align={"flex-end"}
             justify={"end"}
             style={{
+                pointerEvents: "none",
                 flexDirection: "column",
                 backgroundImage: `url(${src})`,
                 backgroundSize: "cover",

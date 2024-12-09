@@ -11,11 +11,15 @@ import {
     Space,
     Typography,
     Divider,
+    ConfigProvider,
 } from "antd";
 import { login, LoginRequest } from "../services/user";
 import Link from "next/link";
 import { IsAuth } from "../api/coockie";
 import { EmptyView } from "../components/EmptyView";
+import { LongRightArrow } from "../img/LongRightArrow";
+import { LogoIcon } from "../img/LogoIcon";
+import "./style.css";
 
 const LoginPage = () => {
     const router = useRouter();
@@ -52,114 +56,203 @@ const LoginPage = () => {
     };
     return auth === false ? (
         <Flex
+            className="bg flex-column"
             style={{
-                flex: "auto",
                 alignItems: "center",
-                justifyContent: "center",
+                padding: 24,
             }}
         >
             <Flex
-                style={{
-                    flex: "auto",
-                    paddingTop: "128px",
-                    justifyContent: "center",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    width: "450px",
-                    maxWidth: "450px",
-                    gap: 30,
-                }}
+                className="width-100 head"
+                align="center"
+                justify="space-around"
             >
-                <Typography.Title level={4}>
-                    Войти на @SeriesTracker
-                </Typography.Title>
-                <Typography.Text type="danger">{errorMessage}</Typography.Text>
-                <Card
-                    hoverable
-                    style={{ width: "100%", padding: 24, cursor: "default" }}
-                >
-                    <Form
-                        onFinishFailed={finishFailed}
-                        scrollToFirstError
-                        onFinish={loginUser}
-                        layout="vertical"
-                        form={form}
-                        name="requiredForm"
-                        style={{ width: "100%" }}
-                        initialValues={{ items: [{}] }}
-                    >
-                        <Form.Item
-                            name={["email"]}
-                            label="Эл. почта"
-                            rules={[
-                                {
-                                    required: true,
-                                    message: "Вы не можете войти без эл. почты",
-                                },
-                                {
-                                    type: "email",
-                                    message: "Эл. почта неккоректна",
-                                },
-                            ]}
-                        >
-                            <Input
-                                addonBefore={<MailOutlined />}
-                                onChange={(e: {
-                                    target: {
-                                        value: any;
-                                    };
-                                }) => {
-                                    setEmail(e.target.value);
-                                }}
-                                autoFocus
-                                spellCheck={false}
-                            />
-                        </Form.Item>
+                <Button
+                    style={{ cursor: "pointer" }}
+                    href="/shikimori"
+                    type="link"
+                    icon={
+                        <LogoIcon
+                            width={50}
+                            height={50}
+                            firstColor="white"
+                            secondColor="#DE1EB2"
+                        />
+                    }
+                />
 
-                        <Form.Item
-                            rules={[
-                                {
-                                    required: true,
-                                    message: "Вы не можете войти без пароля",
-                                },
-                            ]}
-                            name={["password"]}
-                            label="Пароль"
-                        >
-                            <Input.Password
-                                addonBefore={<KeyOutlined />}
-                                onChange={(e: {
-                                    target: {
-                                        value: any;
-                                    };
-                                }) => {
-                                    setPassword(e.target.value);
-                                }}
-                                autoFocus
-                                spellCheck={false}
-                            />
-                        </Form.Item>
-                        <Divider />
-                        <Form.Item>
-                            <Button block type="primary" htmlType="submit">
-                                Войти в систему
-                            </Button>
-                        </Form.Item>
-                    </Form>
-                </Card>
-                <Space wrap size={[5, 5]}>
-                    <Typography.Text>Еще нет акканута?</Typography.Text>
+                <Space size={[5, 5]}>
+                    <Typography.Text style={{ fontSize: 16 }}>
+                        Еще нет акканута?
+                    </Typography.Text>
                     <Link
                         target="_top"
-                        href={"./signup"}
+                        href={"/signup"}
                         style={{
+                            fontSize: 16,
                             fontWeight: 700,
                         }}
                     >
-                        Регистрация
+                        <Flex gap={5} justify="center" align="center">
+                            Регистрация
+                            <LongRightArrow />
+                        </Flex>
                     </Link>
                 </Space>
             </Flex>
+            <ConfigProvider
+                theme={{
+                    components: {
+                        Collapse: {
+                            contentPadding: 0,
+                            headerPadding: "0 0 24px 0",
+                            boxShadow: "none !important",
+                        },
+                        Typography: {
+                            colorLink: "#DE1EB2",
+                            colorLinkHover: "#8b2675",
+                        },
+                        Card: {
+                            colorBgContainer: "#3e0d2b61",
+                            colorBorderSecondary: "#3e0d2b61",
+                        },
+                        Input: {
+                            activeBg: "transparent",
+                            colorBgContainer: "transparent",
+                            fontSize: 16,
+                        },
+                        Form: {
+                            labelFontSize: 16,
+                            labelColor: "#DE1EB2",
+                            labelRequiredMarkColor: "#DE1EB2",
+                        },
+                        DatePicker: {
+                            colorBgElevated: "#3e0d2b",
+                            fontSize: 16,
+                        },
+                    },
+                }}
+            >
+                <Flex
+                    className="flex-column width-100"
+                    style={{
+                        alignItems: "center",
+                        maxWidth: "460px",
+                        paddingTop: 128,
+                        gap: 30,
+                    }}
+                >
+                    <Typography.Title level={4}>
+                        Вход на{" "}
+                        <Typography.Link style={{ fontSize: 20 }}>
+                            @SeriesTracker
+                        </Typography.Link>
+                    </Typography.Title>
+
+                    <Card
+                        hoverable
+                        className="width-100"
+                        style={{
+                            padding: 24,
+                            textAlign: "center",
+                        }}
+                    >
+                        <Form
+                            onFinishFailed={finishFailed}
+                            scrollToFirstError
+                            onFinish={loginUser}
+                            layout="vertical"
+                            form={form}
+                            name="requiredForm"
+                            style={{ width: "100%" }}
+                            initialValues={{ items: [{}] }}
+                        >
+                            <Form.Item
+                                name={["email"]}
+                                label="Эл. почта"
+                                rules={[
+                                    {
+                                        required: true,
+                                        message:
+                                            "Вы не можете войти без эл. почты",
+                                    },
+                                    {
+                                        type: "email",
+                                        message: "Эл. почта неккоректна",
+                                    },
+                                ]}
+                            >
+                                <Input
+                                    addonBefore={<MailOutlined />}
+                                    onChange={(e: {
+                                        target: {
+                                            value: any;
+                                        };
+                                    }) => {
+                                        setEmail(e.target.value);
+                                    }}
+                                    autoFocus
+                                    spellCheck={false}
+                                />
+                            </Form.Item>
+
+                            <Form.Item
+                                rules={[
+                                    {
+                                        required: true,
+                                        message:
+                                            "Вы не можете войти без пароля",
+                                    },
+                                ]}
+                                name={["password"]}
+                                label="Пароль"
+                            >
+                                <Input.Password
+                                    addonBefore={<KeyOutlined />}
+                                    onChange={(e: {
+                                        target: {
+                                            value: any;
+                                        };
+                                    }) => {
+                                        setPassword(e.target.value);
+                                    }}
+                                    autoFocus
+                                    spellCheck={false}
+                                />
+                            </Form.Item>
+                            <Form.Item
+                                style={{ marginTop: -5, marginBottom: -10 }}
+                                shouldUpdate
+                            >
+                                {() => (
+                                    <Typography.Text
+                                        strong
+                                        type="danger"
+                                        style={{
+                                            fontSize: 16,
+                                            opacity: 0.8,
+                                        }}
+                                    >
+                                        {errorMessage}
+                                    </Typography.Text>
+                                )}
+                            </Form.Item>
+
+                            <Divider />
+                            <Form.Item>
+                                <Button
+                                    ghost
+                                    block
+                                    type="primary"
+                                    htmlType="submit"
+                                >
+                                    Войти
+                                </Button>
+                            </Form.Item>
+                        </Form>
+                    </Card>
+                </Flex>
+            </ConfigProvider>
         </Flex>
     ) : (
         <Flex

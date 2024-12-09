@@ -199,6 +199,7 @@ const SignupPage = () => {
                                 labelFontSize: 16,
                                 labelColor: "#DE1EB2",
                                 labelRequiredMarkColor: "#DE1EB2",
+                                colorSuccess: "#DE1EB2",
                             },
                             DatePicker: {
                                 colorBgElevated: "#3e0d2b",
@@ -207,7 +208,6 @@ const SignupPage = () => {
                         },
                     }}
                 >
-                    {" "}
                     <Typography.Title level={4}>
                         Регистрация на{" "}
                         <Typography.Link style={{ fontSize: 20 }}>

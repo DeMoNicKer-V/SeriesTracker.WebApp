@@ -161,7 +161,7 @@ export default function CalendarPage() {
             <title>Series Tracker - Расписание</title>
             <Row gutter={[20, 20]} align={"middle"} justify={"center"}>
                 <Col span={22}>
-                    {filter.length > 0 && (
+                    {aa.length > 0 && (
                         <Tabs
                             animated
                             size="large"

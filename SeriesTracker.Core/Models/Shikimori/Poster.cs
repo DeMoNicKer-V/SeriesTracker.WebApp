@@ -14,9 +14,14 @@ namespace SeriesTracker.Core.Models.Shikimori
         {
             get
             {
+               
                 if (MainUrl != null)
                 {
                     return MainUrl;
+                }
+                if (MainAltUrl != null)
+                {
+                    return MainAltUrl;
                 }
                 if (OriginalUrl != null)
                 {
@@ -29,6 +34,7 @@ namespace SeriesTracker.Core.Models.Shikimori
 
         [JsonProperty("mainUrl")] private string? MainUrl { get; set; }
         [JsonProperty("miniUrl")] private string? MiniUrl { get; set; }
+        [JsonProperty("mainAltUrl")] private string? MainAltUrl { get; set; }
         [JsonProperty("originalUrl")] private string? OriginalUrl { get; set; }
     }
 }

@@ -224,8 +224,8 @@ namespace SeriesTracker.Application.Services
                                         date
                                     }
                                     poster {
-                                        
                                         mainUrl
+                                        mainAltUrl
                                     }
                                 }
                             }",

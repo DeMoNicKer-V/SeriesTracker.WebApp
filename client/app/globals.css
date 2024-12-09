@@ -294,6 +294,10 @@ input,
         text-align: center;
         flex-direction: column;
     }
+    .footer {
+        text-align: center;
+        align-items: center;
+    }
 }
 @media (max-width: 1200px) {
     .related-anime {
@@ -471,10 +475,10 @@ div.ant-upload-list-item {
     right: 0;
     z-index: 1;
 }
-/*.ant-form-item-explain {
+.ant-form-item-explain {
     display: none;
 }
-*/
+
 .ant-list-header {
     margin-bottom: 10px;
 }

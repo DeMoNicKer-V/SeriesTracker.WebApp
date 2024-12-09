@@ -204,7 +204,7 @@ export default function RootLayout({
             footerBg: "transparent",
             siderBg: "#101010",
             bodyBg: ["/signup", "/login"].includes(pathName)
-                ? "radial-gradient(ellipse at bottom, #de1eb12c 0%, #0f0f0f 100%)"
+                ? "radial-gradient(ellipse at bottom, #ff1eb12c 0%, #0f0f0f 100%)"
                 : "#0f0f0f",
         },
         Menu: {
@@ -331,7 +331,7 @@ export default function RootLayout({
                                                 >
                                                     <Avatar
                                                         size={40}
-                                                        shape="square"
+                                                        shape="circle"
                                                         src={user?.avatar}
                                                     ></Avatar>
                                                     <Typography.Title level={5}>
@@ -416,12 +416,21 @@ export default function RootLayout({
                                     icon={<InfoCircleOutlined />}
                                 />
                             </Sider>
-                            <Layout>
+                            <Layout className="main-content-layout">
                                 <Content>{children}</Content>
 
                                 <Footer>
                                     <Divider style={{ margin: 0 }} />
-                                    <Flex style={{ flexDirection: "column" }}>
+                                    <Flex
+                                        className="flex-column footer"
+                                        align={
+                                            ["/login", "/signup"].includes(
+                                                pathName
+                                            )
+                                                ? "center"
+                                                : "start"
+                                        }
+                                    >
                                         <Title level={4}>Соц. сети</Title>
                                         <Space size={[10, 10]}>
                                             <Button
