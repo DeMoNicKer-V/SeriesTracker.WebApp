@@ -131,7 +131,7 @@ namespace SeriesTracker.Application.Services
             return new GraphQLRequest
             {
                 Query = @"query GetByName($name: String) {
-                                animes(search: $name, kind: ""!music,!pv,!cm"", status: ""!anons"", limit: 5) {
+                                animes(search: $name, kind: ""!music,!pv,!cm"", status: ""!anons"", censored: true, limit: 5) {
                                     id
                                     russian
                                     name

@@ -7,6 +7,7 @@ import {
     UploadProps,
     Image,
     Form,
+    ConfigProvider,
 } from "antd";
 import ImgCrop from "antd-img-crop";
 import { Dispatch, SetStateAction, useState } from "react";
@@ -39,9 +40,9 @@ const AvatarPicker = ({ onChange, preloadFile }: Props) => {
                 message.error("Только JPG/PNG файлы!");
                 return;
             }
-            const isLt2M = Number(newFileList[0].size) / 1024 / 1024 < 0.5;
+            const isLt2M = Number(newFileList[0].size) / 1024 / 1024 < 0.25;
             if (!isLt2M) {
-                message.error("Размер файла не должен превышать 512КБ!");
+                message.error("Размер файла не должен превышать 256КБ!");
                 return;
             }
 
@@ -76,54 +77,75 @@ const AvatarPicker = ({ onChange, preloadFile }: Props) => {
     };
 
     return (
-        <Flex>
-            <ImgCrop
-                maxZoom={2}
-                showReset
-                resetText="Сбросить"
-                modalOk="Выбрать"
-                modalCancel="Отмена"
-                fillColor={"transparent"}
-                modalTitle="Выбор изображения профиля"
-            >
-                <Upload
-                    listType="picture-card"
-                    maxCount={1}
-                    fileList={fileList}
-                    onChange={onUploadChange}
-                    onPreview={handlePreview}
+        <ConfigProvider
+            theme={{
+                components: {
+                    Modal: {
+                        headerBg: "#084949",
+                        footerBg: "#084949",
+                        contentBg: "#084949",
+                    },
+                    Button: {
+                        colorBgContainer: "transparent",
+                        defaultShadow: "none",
+                    },
+                    Tooltip: {
+                        colorBgSpotlight: "#084949",
+                    },
+                },
+            }}
+        >
+            <Flex>
+                <ImgCrop
+                    maxZoom={2}
+                    showReset
+                    resetText="Сбросить"
+                    modalOk="Выбрать"
+                    modalCancel="Отмена"
+                    fillColor={"transparent"}
+                    modalTitle="Выбор изображения профиля"
                 >
-                    {fileList.length < 1 && (
-                        <Flex
-                            style={{
-                                flexDirection: "column",
-                                justifyContent: "center",
-                            }}
-                        >
-                            <UserOutlined
+                    <Upload
+                        className="avatar-picker"
+                        listType="picture-card"
+                        maxCount={1}
+                        fileList={fileList}
+                        onChange={onUploadChange}
+                        onPreview={handlePreview}
+                    >
+                        {fileList.length < 1 && (
+                            <Flex
                                 style={{
-                                    fontSize: 30,
+                                    flexDirection: "column",
+                                    justifyContent: "center",
                                 }}
-                            />
-                        </Flex>
-                    )}
-                </Upload>
-            </ImgCrop>
-            {previewImage && (
-                <Image
-                    wrapperStyle={{
-                        display: "none",
-                    }}
-                    preview={{
-                        visible: previewOpen,
-                        onVisibleChange: (visible) => setPreviewOpen(visible),
-                        afterOpenChange: (visible) =>
-                            !visible && setPreviewImage(""),
-                    }}
-                    src={previewImage}
-                />
-            )}
-        </Flex>
+                            >
+                                <UserOutlined
+                                    style={{
+                                        fontSize: 30,
+                                    }}
+                                />
+                            </Flex>
+                        )}
+                    </Upload>
+                </ImgCrop>
+                {previewImage && (
+                    <Image
+                        wrapperStyle={{
+                            display: "none",
+                        }}
+                        preview={{
+                            visible: previewOpen,
+                            onVisibleChange: (visible) =>
+                                setPreviewOpen(visible),
+                            afterOpenChange: (visible) =>
+                                !visible && setPreviewImage(""),
+                        }}
+                        src={previewImage}
+                    />
+                )}
+            </Flex>
+        </ConfigProvider>
     );
 };
 

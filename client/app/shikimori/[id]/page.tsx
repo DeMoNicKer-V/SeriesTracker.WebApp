@@ -288,13 +288,14 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                                     />
                                     <Link href={"./"}>
                                         <Button
+                                            type="primary"
+                                            ghost
                                             icon={<LongLeftArrow />}
                                             style={{
                                                 margin: 20,
                                                 padding: 10,
                                                 position: "absolute",
                                             }}
-                                            size="large"
                                         ></Button>
                                     </Link>
                                     <div className="overlay-background">

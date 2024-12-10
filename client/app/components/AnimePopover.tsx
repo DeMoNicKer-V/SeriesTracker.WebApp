@@ -1,31 +1,10 @@
-"use client";
+import { Button, Col, Flex, Row, Tag, Image, Typography, Space } from "antd";
 import {
-    Button,
-    Card,
-    Carousel,
-    Col,
-    Empty,
-    Flex,
-    Row,
-    Tag,
-    Tooltip,
-    Image,
-    Typography,
-    Space,
-    Slider,
-} from "antd";
-import {
-    FileImageOutlined,
     CalendarOutlined,
-    EditOutlined,
     YoutubeOutlined,
-    LeftOutlined,
-    RightOutlined,
-    DeleteOutlined,
     InfoCircleOutlined,
     StarOutlined,
 } from "@ant-design/icons";
-import { useEffect, useState } from "react";
 import Title from "antd/es/typography/Title";
 import Meta from "antd/es/card/Meta";
 interface Props {
@@ -35,9 +14,8 @@ interface Props {
 
 export const AnimePopover = ({ animes }: Props) => {
     const { Text } = Typography;
-    const [genres, setGenres] = useState<JSX.Element[]>([]);
     return (
-        <Row style={{ maxWidth: 600 }} justify={"start"}>
+        <Row style={{ maxWidth: 600, minHeight: 250 }} justify={"start"}>
             <Col span={7}>
                 <Image preview={false} src={animes.pictureUrl} />
             </Col>
@@ -119,9 +97,9 @@ export const AnimePopover = ({ animes }: Props) => {
                     </Col>
                     <Col style={{ marginTop: "auto" }} span={24}>
                         <Button
-                            href={`/shikimori/${animes.id}`}
                             type="primary"
-                            style={{ width: "100%" }}
+                            href={`/shikimori/${animes.id}`}
+                            className="width-100"
                         >
                             Посмотреть подробнее
                         </Button>

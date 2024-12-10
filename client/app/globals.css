@@ -5,7 +5,7 @@
 
 html,
 body {
-    background: #0f0f0f;
+    background: #151515;
 }
 body {
     overflow-x: hidden;
@@ -184,7 +184,7 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-    background: #de1eb2;
+    background: #44a5a6;
     border-radius: 10px;
 }
 
@@ -201,7 +201,7 @@ input,
     content: "";
     height: 3px; /* толщина линии */
     width: 100%;
-    background-image: linear-gradient(to right, #de1eb2 50%, transparent 50%);
+    background-image: linear-gradient(to right, #44a5a6 50%, transparent 50%);
     background-size: 200% 50%;
     position: absolute;
     bottom: 0;
@@ -222,11 +222,8 @@ input,
 }
 
 .container {
-    padding: 20px 20px 0px 20px;
+    padding: 20px;
     min-height: 100%;
-}
-.container.detail {
-    padding: 0px 0px 30px 0px !important;
 }
 
 .ant-flex {
@@ -252,16 +249,16 @@ input,
 }
 .searchpage-input .input-label {
     color: hsla(0, 0%, 100%, 0.7) !important;
-    background-color: #0f0f0f !important;
+    background-color: #151515 !important;
 }
 .searchpage-input .input-label.focus {
-    color: #de1eb2 !important;
+    color: #44a5a6 !important;
 }
 
 .darkTheme .emptyview {
     padding: 20px;
     border-radius: 5px;
-    border: 1px solid #de1eb2;
+    border: 1px solid #44a5a6;
 }
 
 .lightTheme .emptyview {

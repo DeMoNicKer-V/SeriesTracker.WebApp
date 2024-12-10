@@ -96,7 +96,7 @@ const SignupPage = () => {
     const [surName, setSurname] = useState<string>("");
     const [dateBirth, setDateBirth] = useState<string>("");
 
-    const [current, setCurrent] = useState(0);
+    const [current, setCurrent] = useState(1);
 
     const router = useRouter();
     const createNewAccount = async () => {
@@ -141,7 +141,7 @@ const SignupPage = () => {
                             width={50}
                             height={50}
                             firstColor="white"
-                            secondColor="#DE1EB2"
+                            secondColor="#44a5a6"
                         />
                     }
                 />
@@ -183,28 +183,30 @@ const SignupPage = () => {
                                 boxShadow: "none !important",
                             },
                             Typography: {
-                                colorLink: "#DE1EB2",
-                                colorLinkHover: "#8b2675",
+                                colorLink: "#44a5a6",
+                                colorLinkHover: "#44a5a661",
                             },
                             Card: {
-                                colorBgContainer: "#3e0d2b61",
-                                colorBorderSecondary: "#3e0d2b61",
+                                colorBgContainer: "#0b3c3c61",
+                                colorBorderSecondary: "#0b3c3c",
                             },
                             Input: {
                                 activeBg: "transparent",
                                 colorBgContainer: "transparent",
                                 fontSize: 16,
+                                colorBorder: "#084949",
                             },
                             Form: {
                                 labelFontSize: 16,
-                                labelColor: "#DE1EB2",
-                                labelRequiredMarkColor: "#DE1EB2",
-                                colorSuccess: "#DE1EB2",
+                                labelColor: "#44a5a6",
+                                labelRequiredMarkColor: "#44a5a6",
+                                colorSuccess: "#44a5a6",
                             },
                             DatePicker: {
-                                colorBgElevated: "#3e0d2b",
+                                colorBgElevated: "#084949",
                                 fontSize: 16,
                             },
+                            Button: { colorBorder: "#084949" },
                         },
                     }}
                 >
@@ -972,7 +974,7 @@ const SignupPage = () => {
             className="bg flex-column"
         >
             <EmptyView text="Вы уже вошли в свой аккаунт" />
-            <Link href={"/shikimori"}>Венрнуться на главную</Link>
+            <Link href={"/shikimori"}>Вернуться на главную</Link>
         </Flex>
     );
 };

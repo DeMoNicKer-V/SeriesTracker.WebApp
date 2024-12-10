@@ -45,7 +45,7 @@ const LoginPage = () => {
             password: password,
         };
         const response = await login(user);
-        if (response) {
+        if (response === false) {
             setErrorMessage(response);
         } else {
             router.back();
@@ -109,26 +109,24 @@ const LoginPage = () => {
                             boxShadow: "none !important",
                         },
                         Typography: {
-                            colorLink: "#DE1EB2",
-                            colorLinkHover: "#8b2675",
+                            colorLink: "#44a5a6",
+                            colorLinkHover: "#44a5a661",
                         },
                         Card: {
-                            colorBgContainer: "#3e0d2b61",
-                            colorBorderSecondary: "#3e0d2b61",
+                            colorBgContainer: "#0b3c3c61",
+                            colorBorderSecondary: "#0b3c3c",
                         },
                         Input: {
                             activeBg: "transparent",
                             colorBgContainer: "transparent",
                             fontSize: 16,
+                            colorBorder: "#084949",
                         },
                         Form: {
                             labelFontSize: 16,
-                            labelColor: "#DE1EB2",
-                            labelRequiredMarkColor: "#DE1EB2",
-                        },
-                        DatePicker: {
-                            colorBgElevated: "#3e0d2b",
-                            fontSize: 16,
+                            labelColor: "#44a5a6",
+                            labelRequiredMarkColor: "#44a5a6",
+                            colorSuccess: "#44a5a6",
                         },
                     },
                 }}
@@ -155,6 +153,7 @@ const LoginPage = () => {
                         style={{
                             padding: 24,
                             textAlign: "center",
+                            cursor: "default",
                         }}
                     >
                         <Form
@@ -263,7 +262,7 @@ const LoginPage = () => {
             style={{ height: "100%" }}
         >
             <EmptyView text="Вы уже вошли в свой аккаунт" />
-            <Link href={"/shikimori"}>Венрнуться на главную</Link>
+            <Link href={"/shikimori"}>Вернуться на главную</Link>
         </Flex>
     );
 };

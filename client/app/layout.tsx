@@ -193,19 +193,19 @@ export default function RootLayout({
     }, [collapsed]);
 
     const darkTheme = {
-        colorPrimary: "#DE1EB2",
-        colorInfo: "#DE1EB2",
+        colorPrimary: "#44a5a6",
+        colorInfo: "#44a5a6",
         colorLink: "#fff",
     };
 
     const darkThemeLayout = {
         Layout: {
-            headerBg: "#101010",
+            headerBg: "#151515",
             footerBg: "transparent",
-            siderBg: "#101010",
+            siderBg: "#151515",
             bodyBg: ["/signup", "/login"].includes(pathName)
-                ? "radial-gradient(ellipse at bottom, #ff1eb12c 0%, #0f0f0f 100%)"
-                : "#0f0f0f",
+                ? "radial-gradient(ellipse at bottom, #08494961 0%, #151515 100%)"
+                : "#151515",
         },
         Menu: {
             activeBarBorderWidth: 0,
@@ -221,11 +221,11 @@ export default function RootLayout({
                 "0 1px 2px 0 rgba(0, 0, 0, 0.3), 0 1px 6px -1px rgba(0, 0, 0, 0.2), 0 2px 4px 0 rgba(0, 0, 0, 0.2)",
         },
         Segmented: {
-            itemSelectedBg: "#DE1EB2",
+            itemSelectedBg: "#44a5a6",
             colorBg: "transparent",
         },
         Drawer: {
-            colorBgElevated: "#101010",
+            colorBgElevated: "#151515",
         },
         Input: {
             colorPrimaryHover: "#fff",
@@ -300,7 +300,7 @@ export default function RootLayout({
                                                     width={50}
                                                     height={50}
                                                     firstColor="white"
-                                                    secondColor="#DE1EB2"
+                                                    secondColor="#44a5a6"
                                                 />
                                             }
                                         />
@@ -380,7 +380,8 @@ export default function RootLayout({
                                     height: "90vh",
                                     position: "sticky",
                                     transform: "translateX(0%)",
-                                    padding: "4px",
+                                    padding: 5,
+                                    margin: 5,
                                     boxShadow:
                                         "0 2px 4px -1px rgba(0,0,0,.3), 0 4px 5px 0 rgba(0,0,0,.24), 0 1px 10px 0 rgba(0,0,0,.22)",
                                     borderRadius: 5,
@@ -475,7 +476,7 @@ export default function RootLayout({
                                             <Typography.Link
                                                 style={{
                                                     fontSize: 15,
-                                                    color: "#DE1EB2",
+                                                    color: "#44a5a6",
                                                 }}
                                                 className="info"
                                                 strong

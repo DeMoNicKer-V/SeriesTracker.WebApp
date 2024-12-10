@@ -297,7 +297,7 @@ export const Animes = ({ userPath }: Props) => {
                                         title={"В избранном"}
                                         trigger={"hover"}
                                     >
-                                        <Tag color="magenta">
+                                        <Tag color="cyan">
                                             <HeartFilled />
                                         </Tag>
                                     </Tooltip>
