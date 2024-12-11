@@ -29,6 +29,7 @@ interface customDate {
     key: string;
 }
 export default function CalendarPage() {
+    const [loading, setLoading] = useState<boolean>(true);
     function getDatesArray(): customDate[] {
         const datesArray = [];
         const currentDate = new Date();
@@ -140,7 +141,6 @@ export default function CalendarPage() {
     };
     const [value, setValue] = useState<Date>(new Date());
 
-    const [loading, setLoading] = useState<boolean>(true);
     useEffect(() => {
         return () => {
             const b = getDatesArray();
@@ -211,6 +211,7 @@ export default function CalendarPage() {
                                                         preview={false}
                                                         width={100}
                                                         src={`https://desu.shikimori.one${item.anime.image.preview}`}
+                                                        fallback={`https://desu.shikimori.one${item.anime.image.original}`}
                                                     ></Image>
                                                 </Col>
                                                 <Col

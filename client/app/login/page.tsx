@@ -76,7 +76,7 @@ const LoginPage = () => {
                             width={50}
                             height={50}
                             firstColor="white"
-                            secondColor="#DE1EB2"
+                            secondColor="#44a5a6"
                         />
                     }
                 />

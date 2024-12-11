@@ -360,13 +360,7 @@ export const Animes = ({ userPath }: Props) => {
                 setRequest={setRequest}
                 setPage={setPage}
             />
-            <FloatButton.Group
-                style={
-                    data.length < 5
-                        ? { display: "none" }
-                        : { right: 0, margin: 10, bottom: 32 }
-                }
-            >
+            <FloatButton.Group style={{ right: 0, margin: 10, bottom: 32 }}>
                 <FloatButton
                     type="primary"
                     icon={<SearchOutlined />}

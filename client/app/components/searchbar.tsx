@@ -49,15 +49,7 @@ import noFoundImage from "../img/empty.png";
 export const SearchBar = ({}) => {
     const ref = useRef<HTMLDivElement>(null);
     const [query, setQuery] = useState<string>("");
-
-    useEffect(() => {
-        const handleOutSideClick = (event: any) => {
-            if (!ref.current?.contains(event.target)) {
-                setIsShown(false);
-            }
-        };
-        window.addEventListener("mousedown", handleOutSideClick);
-    }, [ref]);
+    const [form] = Form.useForm();
 
     useEffect(() => {
         if (!query) {
@@ -94,193 +86,170 @@ export const SearchBar = ({}) => {
     const customizeRenderEmpty = () => <></>;
     const { Link } = Typography;
     const { Text, Title } = Typography;
-    const [form] = Form.useForm();
-    const router = useRouter();
-    const onFinish = (values: any) => {
-        setIsShown(false);
-        form.resetFields();
-        router.push(`/search?query=${values.query}`);
-    };
+
     return (
         <ConfigProvider
             theme={{
                 components: {
                     Input: {
-                        borderRadius: 8,
+                        fontSize: 16,
+                        colorFillTertiary: "#1e1e1e",
+                        activeBorderColor: "#1e1e1e",
                     },
                 },
             }}
             renderEmpty={customizeRenderEmpty}
         >
-            <div ref={ref} style={{ position: "relative" }}>
-                <Form
-                    form={form}
-                    onFinish={onFinish}
-                    noValidate={true}
-                    autoComplete="off"
-                    style={{ width: "100%", marginBottom: 3 }}
+            <Form
+                form={form}
+                noValidate={true}
+                autoComplete="off"
+                style={{ marginBottom: 5 }}
+            >
+                <Form.Item
+                    name={"query"}
+                    style={{
+                        margin: 0,
+                    }}
                 >
-                    <Form.Item
-                        name={"query"}
-                        style={{
-                            margin: 0,
-                            background: "#1e1e1e",
-                            borderRadius: 5,
+                    <Input
+                        //onBlur={() => setIsShown(false)}
+                        onClick={handleClick}
+                        id="searchbar"
+                        size="small"
+                        className={loading === true ? "loading" : ""}
+                        spellCheck={"false"}
+                        variant="filled"
+                        placeholder="Найти аниме"
+                        onChange={(e: { target: { value: any } }) => {
+                            setIsShown(true);
+                            setQuery(String(e.target.value));
                         }}
-                    >
-                        <Input
-                            size="small"
-                            style={{ background: "none" }}
-                            className={loading === true ? "loading" : ""}
-                            spellCheck={"false"}
-                            variant="borderless"
-                            onClick={handleClick}
-                            placeholder="Найти аниме"
-                            onChange={(e: { target: { value: any } }) => {
-                                setIsShown(true);
-                                setQuery(String(e.target.value));
-                            }}
-                            name="query"
-                            suffix={
-                                <Button type="link" htmlType="submit">
-                                    <SearchOutlined />
-                                </Button>
-                            }
-                        />
-                    </Form.Item>
-                </Form>
-
-                {isShown && !loading && (
-                    <List
-                        style={{ background: "#1e1e1e" }}
-                        className="search_result"
-                        header={
-                            nullString && (
-                                <Flex gap={10} justify="center">
-                                    <InfoCircleFilled
-                                        style={{ fontSize: 20, color: "#fff" }}
-                                    />
-                                    <Text style={{ fontSize: 16 }} strong>
-                                        {nullString}
-                                    </Text>
-                                </Flex>
-                            )
+                        name="query"
+                        suffix={
+                            <Button type="link" htmlType="submit">
+                                <SearchOutlined />
+                            </Button>
                         }
-                        footer={
-                            <Flex justify="end">
-                                <Button type="text" href={"/search"}>
-                                    <Text
-                                        strong
-                                        style={{ color: "#DE1EB2" }}
-                                        italic
-                                    >
-                                        Расширенный поиск
-                                    </Text>
-                                </Button>
-                            </Flex>
-                        }
-                        dataSource={animes}
-                        renderItem={(item: SeriesAnime) => (
-                            <Link href={`/shikimori/${item.id}`}>
-                                <Card
-                                    style={{
-                                        padding: 12,
-                                        marginBottom: 8,
-                                        backgroundColor: "transparent",
-                                    }}
-                                    hoverable
-                                >
-                                    <Row
-                                        style={{ flexFlow: "row" }}
-                                        align={"middle"}
-                                        justify={"start"}
-                                    >
-                                        <Col>
-                                            <Image
-                                                preview={false}
-                                                height={90}
-                                                width={60}
-                                                src={item.pictureUrl}
-                                                fallback={noFoundImage.src}
-                                            />
-                                        </Col>
-                                        <Col offset={1}>
-                                            <Meta
-                                                style={{
-                                                    padding: 0,
-                                                    marginBottom: 8,
-                                                    whiteSpace: "break-spaces",
-                                                }}
-                                                title={item.title}
-                                                description={item.subTitle}
-                                            />
-                                            <Space wrap size={[5, 5]}>
-                                                <Tag
-                                                    style={{
-                                                        cursor: "default",
-                                                    }}
-                                                >
-                                                    <Flex gap={4}>
-                                                        <InfoCircleOutlined />
-                                                        {item.kind}
-                                                    </Flex>
-                                                </Tag>
-                                                <Tag
-                                                    style={{
-                                                        cursor: "default",
-                                                    }}
-                                                >
-                                                    <Flex gap={4}>
-                                                        <CalendarOutlined />
-                                                        {new Date(
-                                                            item.startDate
-                                                        ).toLocaleString(
-                                                            "ru-Ru",
-                                                            {
-                                                                year: "numeric",
-                                                            }
-                                                        )}
-                                                    </Flex>
-                                                </Tag>
-                                                <Tag
-                                                    style={{
-                                                        cursor: "default",
-                                                    }}
-                                                >
-                                                    <Flex gap={4}>
-                                                        <FireOutlined />
-                                                        {item.status}
-                                                    </Flex>
-                                                </Tag>
-                                                <Tag
-                                                    style={{
-                                                        cursor: "default",
-                                                    }}
-                                                >
-                                                    <Flex gap={4}>
-                                                        <YoutubeOutlined />
-                                                        {item.status === "Вышло"
-                                                            ? `${item.episodes} эп.`
-                                                            : `${item.episodesAired} из ${item.episodes} эп.`}
-                                                    </Flex>
-                                                </Tag>
-                                            </Space>
-                                        </Col>
-                                    </Row>
-                                </Card>
-                                <Divider
-                                    style={{
-                                        minWidth: 0,
-                                        width: "auto",
-                                        margin: "10px",
-                                    }}
-                                    dashed
-                                />
-                            </Link>
-                        )}
                     />
-                )}
-            </div>
+                </Form.Item>
+            </Form>
+
+            {isShown && !loading && (
+                <List
+                    style={{ background: "#1e1e1e" }}
+                    className="search_result"
+                    header={
+                        nullString && (
+                            <Flex gap={10} justify="center">
+                                <InfoCircleFilled
+                                    style={{ fontSize: 20, color: "#fff" }}
+                                />
+                                <Text style={{ fontSize: 16 }} strong>
+                                    {nullString}
+                                </Text>
+                            </Flex>
+                        )
+                    }
+                    dataSource={animes}
+                    renderItem={(item: SeriesAnime) => (
+                        <Link href={`/shikimori/${item.id}`}>
+                            <Card
+                                style={{
+                                    padding: 12,
+                                    marginBottom: 8,
+                                    backgroundColor: "transparent",
+                                }}
+                                hoverable
+                            >
+                                <Row
+                                    style={{ flexFlow: "row" }}
+                                    align={"middle"}
+                                    justify={"start"}
+                                >
+                                    <Col>
+                                        <Image
+                                            preview={false}
+                                            height={90}
+                                            width={60}
+                                            src={item.pictureUrl}
+                                            fallback={noFoundImage.src}
+                                        />
+                                    </Col>
+                                    <Col offset={1}>
+                                        <Meta
+                                            style={{
+                                                padding: 0,
+                                                marginBottom: 8,
+                                                whiteSpace: "break-spaces",
+                                            }}
+                                            title={item.title}
+                                            description={item.subTitle}
+                                        />
+                                        <Space wrap size={[5, 5]}>
+                                            <Tag
+                                                style={{
+                                                    cursor: "default",
+                                                }}
+                                            >
+                                                <Flex gap={4}>
+                                                    <InfoCircleOutlined />
+                                                    {item.kind}
+                                                </Flex>
+                                            </Tag>
+                                            <Tag
+                                                style={{
+                                                    cursor: "default",
+                                                }}
+                                            >
+                                                <Flex gap={4}>
+                                                    <CalendarOutlined />
+                                                    {new Date(
+                                                        item.startDate
+                                                    ).toLocaleString("ru-Ru", {
+                                                        year: "numeric",
+                                                    })}
+                                                </Flex>
+                                            </Tag>
+                                            {item.status.length > 6 ? (
+                                                <Tag
+                                                    color="orange"
+                                                    icon={<FireOutlined />}
+                                                >
+                                                    {item.status}
+                                                </Tag>
+                                            ) : (
+                                                <Tag icon={<FireOutlined />}>
+                                                    {item.status}
+                                                </Tag>
+                                            )}
+                                            <Tag
+                                                style={{
+                                                    cursor: "default",
+                                                }}
+                                            >
+                                                <Flex gap={4}>
+                                                    <YoutubeOutlined />
+                                                    {item.status === "Вышло"
+                                                        ? `${item.episodes} эп.`
+                                                        : `${item.episodesAired} из ${item.episodes} эп.`}
+                                                </Flex>
+                                            </Tag>
+                                        </Space>
+                                    </Col>
+                                </Row>
+                            </Card>
+                            <Divider
+                                style={{
+                                    minWidth: 0,
+                                    width: "auto",
+                                    margin: "10px",
+                                }}
+                            />
+                        </Link>
+                    )}
+                />
+            )}
         </ConfigProvider>
     );
 };
