@@ -167,6 +167,20 @@ export const SearchBar = ({}) => {
                                                 description={item.subTitle}
                                             />
                                             <Space wrap size={[5, 5]}>
+                                                {item.status.length > 6 ? (
+                                                    <Tag
+                                                        color="orange"
+                                                        icon={<FireOutlined />}
+                                                    >
+                                                        {item.status}
+                                                    </Tag>
+                                                ) : (
+                                                    <Tag
+                                                        icon={<FireOutlined />}
+                                                    >
+                                                        {item.status}
+                                                    </Tag>
+                                                )}
                                                 <Tag
                                                     style={{
                                                         cursor: "default",
@@ -194,20 +208,7 @@ export const SearchBar = ({}) => {
                                                         )}
                                                     </Flex>
                                                 </Tag>
-                                                {item.status.length > 6 ? (
-                                                    <Tag
-                                                        color="orange"
-                                                        icon={<FireOutlined />}
-                                                    >
-                                                        {item.status}
-                                                    </Tag>
-                                                ) : (
-                                                    <Tag
-                                                        icon={<FireOutlined />}
-                                                    >
-                                                        {item.status}
-                                                    </Tag>
-                                                )}
+
                                                 <Tag
                                                     style={{
                                                         cursor: "default",

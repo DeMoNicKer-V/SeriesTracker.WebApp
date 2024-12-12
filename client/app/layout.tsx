@@ -396,8 +396,8 @@ export default function RootLayout({
                                     className="sider-menu"
                                     onSelect={({ key }) => {
                                         setCurrentKey(key);
-                                        setCollapsed(true);
                                     }}
+                                    onClick={() => setCollapsed(true)}
                                     selectedKeys={[currentKey]}
                                     style={{
                                         background: "transparent",
