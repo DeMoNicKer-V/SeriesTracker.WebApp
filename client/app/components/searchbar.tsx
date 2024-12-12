@@ -182,44 +182,26 @@ export const SearchBar = ({}) => {
                                                     </Tag>
                                                 )}
                                                 <Tag
-                                                    style={{
-                                                        cursor: "default",
-                                                    }}
-                                                >
-                                                    <Flex gap={4}>
+                                                    icon={
                                                         <InfoCircleOutlined />
-                                                        {item.kind}
-                                                    </Flex>
+                                                    }
+                                                >
+                                                    {item.kind}
                                                 </Tag>
                                                 <Tag
-                                                    style={{
-                                                        cursor: "default",
-                                                    }}
+                                                    icon={<CalendarOutlined />}
                                                 >
-                                                    <Flex gap={4}>
-                                                        <CalendarOutlined />
-                                                        {new Date(
-                                                            item.startDate
-                                                        ).toLocaleString(
-                                                            "ru-Ru",
-                                                            {
-                                                                year: "numeric",
-                                                            }
-                                                        )}
-                                                    </Flex>
+                                                    {new Date(
+                                                        item.startDate
+                                                    ).toLocaleString("ru-Ru", {
+                                                        year: "numeric",
+                                                    })}
                                                 </Tag>
 
-                                                <Tag
-                                                    style={{
-                                                        cursor: "default",
-                                                    }}
-                                                >
-                                                    <Flex gap={4}>
-                                                        <YoutubeOutlined />
-                                                        {item.status === "Вышло"
-                                                            ? `${item.episodes} эп.`
-                                                            : `${item.episodesAired} из ${item.episodes} эп.`}
-                                                    </Flex>
+                                                <Tag icon={<YoutubeOutlined />}>
+                                                    {item.status === "Вышло"
+                                                        ? `${item.episodes} эп.`
+                                                        : `${item.episodesAired} из ${item.episodes} эп.`}
                                                 </Tag>
                                             </Space>
                                         </Col>
