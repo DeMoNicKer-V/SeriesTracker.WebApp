@@ -17,8 +17,9 @@ import {
     Tag,
     Tooltip,
     Typography,
+    Popover,
 } from "antd";
-import Input, { SearchProps } from "antd/es/input";
+import Input, { InputRef, SearchProps } from "antd/es/input";
 import notFound from "../img/notFound.webp";
 import Search from "antd/es/transfer/search";
 import { useEffect, useRef, useState } from "react";
@@ -47,13 +48,13 @@ import Meta from "antd/es/card/Meta";
 import noFoundImage from "../img/empty.png";
 
 export const SearchBar = ({}) => {
-    const ref = useRef<HTMLDivElement>(null);
+    const inputRef = useRef<InputRef>(null);
     const [query, setQuery] = useState<string>("");
     const [form] = Form.useForm();
 
     useEffect(() => {
         if (!query) {
-            setIsShown(false);
+            setAnimes([]);
             setNullString("Введите для поиска");
             setLoading(false);
             return;
@@ -62,6 +63,7 @@ export const SearchBar = ({}) => {
         setNullString("");
         const timer = setTimeout(() => {
             fakeApi();
+            setIsShown(true);
         }, 1000);
 
         return () => clearTimeout(timer);
@@ -100,156 +102,174 @@ export const SearchBar = ({}) => {
             }}
             renderEmpty={customizeRenderEmpty}
         >
-            <Form
-                form={form}
-                noValidate={true}
-                autoComplete="off"
-                style={{ marginBottom: 5 }}
-            >
-                <Form.Item
-                    name={"query"}
-                    style={{
-                        margin: 0,
-                    }}
-                >
-                    <Input
-                        //onBlur={() => setIsShown(false)}
-                        onClick={handleClick}
-                        id="searchbar"
-                        size="small"
-                        className={loading === true ? "loading" : ""}
-                        spellCheck={"false"}
-                        variant="filled"
-                        placeholder="Найти аниме"
-                        onChange={(e: { target: { value: any } }) => {
-                            setIsShown(true);
-                            setQuery(String(e.target.value));
-                        }}
-                        name="query"
-                        suffix={
-                            <Button type="link" htmlType="submit">
-                                <SearchOutlined />
-                            </Button>
+            <Popover
+                mouseLeaveDelay={1}
+                trigger={"hover"}
+                overlayStyle={{
+                    width: "calc(40% + 10px)",
+                    maxWidth: "calc(40% + 10px)",
+                }}
+                overlayInnerStyle={{ backgroundColor: "#1e1e1e" }}
+                arrow={false}
+                open={isShown && !loading}
+                onOpenChange={() => {
+                    setIsShown(false);
+                    inputRef.current?.blur();
+                }}
+                content={
+                    <List
+                        style={{ backgroundColor: "#1e1e1e" }}
+                        header={
+                            nullString && (
+                                <Flex gap={10} justify="center">
+                                    <InfoCircleFilled
+                                        style={{ fontSize: 20, color: "#fff" }}
+                                    />
+                                    <Text style={{ fontSize: 16 }} strong>
+                                        {nullString}
+                                    </Text>
+                                </Flex>
+                            )
                         }
-                    />
-                </Form.Item>
-            </Form>
-
-            {isShown && !loading && (
-                <List
-                    style={{ background: "#1e1e1e" }}
-                    className="search_result"
-                    header={
-                        nullString && (
-                            <Flex gap={10} justify="center">
-                                <InfoCircleFilled
-                                    style={{ fontSize: 20, color: "#fff" }}
-                                />
-                                <Text style={{ fontSize: 16 }} strong>
-                                    {nullString}
-                                </Text>
-                            </Flex>
-                        )
-                    }
-                    dataSource={animes}
-                    renderItem={(item: SeriesAnime) => (
-                        <Link href={`/shikimori/${item.id}`}>
-                            <Card
-                                style={{
-                                    padding: 12,
-                                    marginBottom: 8,
-                                    backgroundColor: "transparent",
-                                }}
-                                hoverable
-                            >
-                                <Row
-                                    style={{ flexFlow: "row" }}
-                                    align={"middle"}
-                                    justify={"start"}
+                        dataSource={animes}
+                        renderItem={(item: SeriesAnime) => (
+                            <Link href={`/shikimori/${item.id}`}>
+                                <Card
+                                    style={{
+                                        padding: 12,
+                                        marginBottom: 8,
+                                        backgroundColor: "transparent",
+                                    }}
+                                    hoverable
                                 >
-                                    <Col>
-                                        <Image
-                                            preview={false}
-                                            height={90}
-                                            width={60}
-                                            src={item.pictureUrl}
-                                            fallback={noFoundImage.src}
-                                        />
-                                    </Col>
-                                    <Col offset={1}>
-                                        <Meta
-                                            style={{
-                                                padding: 0,
-                                                marginBottom: 8,
-                                                whiteSpace: "break-spaces",
-                                            }}
-                                            title={item.title}
-                                            description={item.subTitle}
-                                        />
-                                        <Space wrap size={[5, 5]}>
-                                            <Tag
+                                    <Row
+                                        style={{ flexFlow: "row" }}
+                                        align={"middle"}
+                                        justify={"start"}
+                                    >
+                                        <Col>
+                                            <Image
+                                                preview={false}
+                                                height={90}
+                                                width={60}
+                                                src={item.pictureUrl}
+                                                fallback={noFoundImage.src}
+                                            />
+                                        </Col>
+                                        <Col offset={1}>
+                                            <Meta
                                                 style={{
-                                                    cursor: "default",
+                                                    padding: 0,
+                                                    marginBottom: 8,
+                                                    whiteSpace: "break-spaces",
                                                 }}
-                                            >
-                                                <Flex gap={4}>
-                                                    <InfoCircleOutlined />
-                                                    {item.kind}
-                                                </Flex>
-                                            </Tag>
-                                            <Tag
-                                                style={{
-                                                    cursor: "default",
-                                                }}
-                                            >
-                                                <Flex gap={4}>
-                                                    <CalendarOutlined />
-                                                    {new Date(
-                                                        item.startDate
-                                                    ).toLocaleString("ru-Ru", {
-                                                        year: "numeric",
-                                                    })}
-                                                </Flex>
-                                            </Tag>
-                                            {item.status.length > 6 ? (
+                                                title={item.title}
+                                                description={item.subTitle}
+                                            />
+                                            <Space wrap size={[5, 5]}>
                                                 <Tag
-                                                    color="orange"
-                                                    icon={<FireOutlined />}
+                                                    style={{
+                                                        cursor: "default",
+                                                    }}
                                                 >
-                                                    {item.status}
+                                                    <Flex gap={4}>
+                                                        <InfoCircleOutlined />
+                                                        {item.kind}
+                                                    </Flex>
                                                 </Tag>
-                                            ) : (
-                                                <Tag icon={<FireOutlined />}>
-                                                    {item.status}
+                                                <Tag
+                                                    style={{
+                                                        cursor: "default",
+                                                    }}
+                                                >
+                                                    <Flex gap={4}>
+                                                        <CalendarOutlined />
+                                                        {new Date(
+                                                            item.startDate
+                                                        ).toLocaleString(
+                                                            "ru-Ru",
+                                                            {
+                                                                year: "numeric",
+                                                            }
+                                                        )}
+                                                    </Flex>
                                                 </Tag>
-                                            )}
-                                            <Tag
-                                                style={{
-                                                    cursor: "default",
-                                                }}
-                                            >
-                                                <Flex gap={4}>
-                                                    <YoutubeOutlined />
-                                                    {item.status === "Вышло"
-                                                        ? `${item.episodes} эп.`
-                                                        : `${item.episodesAired} из ${item.episodes} эп.`}
-                                                </Flex>
-                                            </Tag>
-                                        </Space>
-                                    </Col>
-                                </Row>
-                            </Card>
-                            <Divider
-                                style={{
-                                    minWidth: 0,
-                                    width: "auto",
-                                    margin: "10px",
-                                }}
-                            />
-                        </Link>
-                    )}
-                />
-            )}
+                                                {item.status.length > 6 ? (
+                                                    <Tag
+                                                        color="orange"
+                                                        icon={<FireOutlined />}
+                                                    >
+                                                        {item.status}
+                                                    </Tag>
+                                                ) : (
+                                                    <Tag
+                                                        icon={<FireOutlined />}
+                                                    >
+                                                        {item.status}
+                                                    </Tag>
+                                                )}
+                                                <Tag
+                                                    style={{
+                                                        cursor: "default",
+                                                    }}
+                                                >
+                                                    <Flex gap={4}>
+                                                        <YoutubeOutlined />
+                                                        {item.status === "Вышло"
+                                                            ? `${item.episodes} эп.`
+                                                            : `${item.episodesAired} из ${item.episodes} эп.`}
+                                                    </Flex>
+                                                </Tag>
+                                            </Space>
+                                        </Col>
+                                    </Row>
+                                </Card>
+                                <Divider
+                                    style={{
+                                        minWidth: 0,
+                                        width: "auto",
+                                        margin: "10px",
+                                    }}
+                                />
+                            </Link>
+                        )}
+                    />
+                }
+            >
+                <Form
+                    form={form}
+                    noValidate={true}
+                    autoComplete="off"
+                    style={{ marginBottom: 5 }}
+                >
+                    <Form.Item
+                        name={"query"}
+                        style={{
+                            margin: 0,
+                        }}
+                    >
+                        <Input
+                            ref={inputRef}
+                            onClick={handleClick}
+                            id="searchbar"
+                            size="small"
+                            className={loading === true ? "loading" : ""}
+                            spellCheck={"false"}
+                            variant="filled"
+                            placeholder="Найти аниме"
+                            onChange={(e: { target: { value: any } }) => {
+                                setQuery(String(e.target.value));
+                            }}
+                            name="query"
+                            suffix={
+                                <Button type="link" htmlType="submit">
+                                    <SearchOutlined />
+                                </Button>
+                            }
+                        />
+                    </Form.Item>
+                </Form>
+            </Popover>
         </ConfigProvider>
     );
 };

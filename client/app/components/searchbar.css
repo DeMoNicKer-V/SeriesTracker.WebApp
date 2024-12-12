@@ -27,27 +27,3 @@
 .item_content {
     color: inherit;
 }
-
-.search_result {
-    word-wrap: break-word;
-    border-width: thin;
-    display: block;
-    max-width: 100%;
-    outline: none;
-    position: relative;
-    -webkit-text-decoration: none;
-    text-decoration: none;
-    transition-property: box-shadow, opacity;
-    white-space: normal;
-    border-radius: 4px;
-    box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
-        0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12);
-    contain: content;
-    display: inline-block;
-    overflow-x: hidden;
-    overflow-y: auto;
-    position: absolute !important;
-    left: 0px;
-    right: 0px;
-    padding: 16px 16px 0px 16px;
-}
