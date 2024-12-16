@@ -237,6 +237,10 @@ export default function RootLayout({
         Form: {
             verticalLabelPadding: "8px 0",
         },
+        Typography: {
+            colorLink: "#44a5a6",
+            colorLinkHover: "#44a5a661",
+        },
     };
 
     return (
@@ -474,10 +478,7 @@ export default function RootLayout({
                                         <Text strong style={{ fontSize: 15 }}>
                                             Copyright ©
                                             <Typography.Link
-                                                style={{
-                                                    fontSize: 15,
-                                                    color: "#44a5a6",
-                                                }}
+                                                style={{ fontSize: 15 }}
                                                 className="info"
                                                 strong
                                                 href={"/shikimori"}
