@@ -80,18 +80,6 @@ body {
     box-orient: vertical;
 }
 
-.calendar-card-text {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: -moz-box;
-    -moz-box-orient: vertical;
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    line-clamp: 3;
-    box-orient: vertical;
-}
-
 .calendar-card-text-drawer {
     overflow: hidden;
     text-overflow: ellipsis;
@@ -379,6 +367,9 @@ input,
     }
     .ant-popover {
         display: none;
+    }
+    .calendar-card-title {
+        font-size: 16px !important;
     }
 }
 .ant-collapse:hover {
