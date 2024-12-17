@@ -228,13 +228,6 @@ input,
     padding: 0 !important;
 }
 
-.lightTheme .searchpage-input .input-label {
-    background-color: #ffffff !important;
-}
-
-.lightTheme .searchpage-input .input-label.focus {
-    color: red !important;
-}
 .searchpage-input .input-label {
     color: hsla(0, 0%, 100%, 0.7) !important;
     background-color: #151515 !important;
@@ -249,11 +242,6 @@ input,
     border: 1px solid #44a5a6;
 }
 
-.lightTheme .emptyview {
-    padding: 20px;
-    border-radius: 5px;
-    border: 1px solid yellow;
-}
 .ant-image-img {
     border-radius: 5px;
 }
@@ -506,4 +494,8 @@ div.ant-upload-list-item {
 
 #searchbar {
     font-weight: 500;
+}
+
+.transparent {
+    background-color: transparent;
 }

@@ -10,6 +10,8 @@ import {
     ConfigProvider,
     Tabs,
     Descriptions,
+    Badge,
+    Tag,
 } from "antd";
 import { useEffect, useState } from "react";
 import { CalendarItem, getAiredAnimes } from "../services/shikimori";
@@ -20,40 +22,37 @@ import {
     ClockCircleOutlined,
     InfoCircleOutlined,
     LoadingOutlined,
+    FireFilled,
 } from "@ant-design/icons";
 import Link from "next/link";
 import dayjs from "dayjs";
 import "dayjs/locale/ru";
+import styles from "./page.module.css";
 dayjs.locale("ru");
-interface customDate {
+interface CalendarDateLabel {
     label: JSX.Element;
     key: string;
 }
-const months: string[] = [
-    "января",
-    "февраля",
-    "марта",
-    "апреля",
-    "мая",
-    "июня",
-    "июля",
-    "августа",
-    "сентября",
-    "октября",
-    "ноября",
-    "декабря",
-];
-
-const days = [
-    "Воскресенье",
-    "Понедельник",
-    "Вторник",
-    "Среда",
-    "Четверг",
-    "Пятница",
-    "Суббота",
-];
 const { Text, Title } = Typography;
+
+function isDateEqual(date1: Date, date2: Date) {
+    return (
+        date1.getMonth() === date2.getMonth() &&
+        date1.getDate() === date2.getDate()
+    );
+}
+
+function capitalizeFirstLetter(str: string): string {
+    if (!str) return "";
+    return str[0].toUpperCase() + str.slice(1);
+}
+
+function dateComparer(date1: Date, date2: Date): JSX.Element {
+    if (date1.getTime() > date2.getTime()) {
+        return <CheckCircleOutlined style={{ color: "#52c41a" }} />;
+    } else return <ClockCircleOutlined style={{ color: "#faad14" }} />;
+}
+const dateNow = new Date();
 
 const customizeRenderEmpty = () => (
     <Flex className="emptyview" justify="center" align="middle" gap={10}>
@@ -63,7 +62,8 @@ const customizeRenderEmpty = () => (
         </Text>
     </Flex>
 );
-function getDatesArray(): customDate[] {
+
+const getDatesArray = () => {
     const datesArray = [];
     const currentDate = new Date();
 
@@ -80,7 +80,9 @@ function getDatesArray(): customDate[] {
                         padding: 4,
                     }}
                 >
-                    <Title level={5}>{days[newDate.getDay()]}</Title>
+                    <Title level={5}>
+                        {capitalizeFirstLetter(dayjs(newDate).format("dddd"))}
+                    </Title>
                     <Text italic type="secondary">
                         {dayjs(newDate).format("DD MMMM")}
                     </Text>
@@ -90,24 +92,11 @@ function getDatesArray(): customDate[] {
     }
 
     return datesArray;
-}
+};
 
-function isDateEqual(date1: Date, date2: Date) {
-    return (
-        date1.getMonth() === date2.getMonth() &&
-        date1.getDate() === date2.getDate()
-    );
-}
-
-function dateComparer(date1: Date, date2: Date): JSX.Element {
-    if (date1.getTime() > date2.getTime()) {
-        return <CheckCircleOutlined style={{ color: "#52c41a" }} />;
-    } else return <ClockCircleOutlined style={{ color: "#faad14" }} />;
-}
-const dateNow = new Date();
 export default function CalendarPage() {
     const [loading, setLoading] = useState<boolean>(true);
-    const [weekDays] = useState<customDate[]>(getDatesArray());
+    const [weekDays] = useState<CalendarDateLabel[]>(getDatesArray());
     const [airedAnimes, setAiredAnimes] = useState<CalendarItem[]>([]);
     const [filteredAnimes, setFilterAnimes] = useState<CalendarItem[]>([]);
 
@@ -166,122 +155,143 @@ export default function CalendarPage() {
                             renderItem={(item: CalendarItem) => (
                                 <List.Item style={{ border: "none" }}>
                                     <Link href={`/shikimori/${item.anime.id}`}>
-                                        <Card
-                                            hoverable
-                                            style={{
-                                                paddingInline: 20,
-                                                paddingBlock: 10,
-                                            }}
-                                        >
-                                            <Row align={"middle"}>
-                                                <Col>
-                                                    <Image
-                                                        placeholder={true}
-                                                        loading={"lazy"}
-                                                        preview={false}
-                                                        width={100}
-                                                        src={`https://desu.shikimori.one${item.anime.image.preview}`}
-                                                    ></Image>
-                                                </Col>
-                                                <Col
-                                                    offset={1}
-                                                    xs={14}
-                                                    sm={14}
-                                                    md={16}
-                                                    lg={16}
-                                                    xl={16}
-                                                    xxl={16}
+                                        <Badge.Ribbon
+                                            color="volcano"
+                                            style={
+                                                item.next_episode ===
+                                                item.anime.episodes
+                                                    ? {}
+                                                    : { display: "none" }
+                                            }
+                                            text={
+                                                <Tag
+                                                    className="transparent"
+                                                    bordered={false}
+                                                    icon={<FireFilled />}
                                                 >
-                                                    <Title
-                                                        className="calendar-card-title"
-                                                        ellipsis={{ rows: 4 }}
-                                                        level={4}
+                                                    Финальный эп.
+                                                </Tag>
+                                            }
+                                        >
+                                            <Card
+                                                hoverable
+                                                className={styles.card}
+                                            >
+                                                <Row align={"middle"}>
+                                                    <Col>
+                                                        <Image
+                                                            placeholder={true}
+                                                            loading={"lazy"}
+                                                            preview={false}
+                                                            width={100}
+                                                            src={`https://desu.shikimori.one${item.anime.image.preview}`}
+                                                        ></Image>
+                                                    </Col>
+                                                    <Col
+                                                        offset={1}
+                                                        xs={14}
+                                                        sm={14}
+                                                        md={16}
+                                                        lg={16}
+                                                        xl={16}
+                                                        xxl={16}
                                                     >
-                                                        {item.anime.russian
-                                                            ? item.anime.russian
-                                                            : item.anime.name}
-                                                    </Title>
-                                                    <Descriptions
-                                                        items={[
-                                                            {
-                                                                key: "1",
-                                                                label: "Вышло",
-                                                                children: (
-                                                                    <Flex
-                                                                        gap={5}
-                                                                    >
-                                                                        <Text>
-                                                                            {
-                                                                                item
-                                                                                    .anime
-                                                                                    .episodes_aired
+                                                        <Text
+                                                            className={
+                                                                styles.title
+                                                            }
+                                                            strong
+                                                        >
+                                                            {item.anime.russian
+                                                                ? item.anime
+                                                                      .russian
+                                                                : item.anime
+                                                                      .name}
+                                                        </Text>
+                                                        <Descriptions
+                                                            items={[
+                                                                {
+                                                                    key: "1",
+                                                                    label: "Вышло",
+                                                                    children: (
+                                                                        <Flex
+                                                                            gap={
+                                                                                5
                                                                             }
-                                                                        </Text>
-                                                                        <Text>
-                                                                            {
-                                                                                "из"
-                                                                            }
-                                                                        </Text>
-                                                                        {item
-                                                                            .anime
-                                                                            .episodes >
-                                                                        0 ? (
+                                                                        >
                                                                             <Text>
                                                                                 {
                                                                                     item
                                                                                         .anime
-                                                                                        .episodes
+                                                                                        .episodes_aired
                                                                                 }
                                                                             </Text>
-                                                                        ) : (
-                                                                            <QuestionCircleOutlined />
-                                                                        )}
-                                                                        <Text>
-                                                                            {
-                                                                                "эп."
-                                                                            }
-                                                                        </Text>
-                                                                    </Flex>
-                                                                ),
-                                                            },
-                                                        ]}
-                                                    />
-                                                </Col>
-                                                <Col
-                                                    offset={1}
-                                                    style={{
-                                                        marginLeft: "auto",
-                                                    }}
-                                                    lg={2}
-                                                    xl={2}
-                                                    xxl={2}
-                                                >
-                                                    <Title level={4}>
-                                                        {`${item.next_episode} эп.`}
-                                                    </Title>
-                                                    <Flex gap={5}>
-                                                        <Text>
-                                                            {new Date(
-                                                                item.next_episode_at
-                                                            ).toLocaleTimeString(
-                                                                "ru-RU",
-                                                                {
-                                                                    hour: "numeric",
-                                                                    minute: "numeric",
-                                                                }
-                                                            )}
-                                                        </Text>
+                                                                            <Text>
+                                                                                {
+                                                                                    "из"
+                                                                                }
+                                                                            </Text>
+                                                                            {item
+                                                                                .anime
+                                                                                .episodes >
+                                                                            0 ? (
+                                                                                <Text>
+                                                                                    {
+                                                                                        item
+                                                                                            .anime
+                                                                                            .episodes
+                                                                                    }
+                                                                                </Text>
+                                                                            ) : (
+                                                                                <QuestionCircleOutlined />
+                                                                            )}
+                                                                            <Text>
+                                                                                {
+                                                                                    "эп."
+                                                                                }
+                                                                            </Text>
+                                                                        </Flex>
+                                                                    ),
+                                                                },
+                                                            ]}
+                                                        />
+                                                    </Col>
+                                                    <Col
+                                                        offset={1}
+                                                        style={{
+                                                            marginLeft: "auto",
+                                                        }}
+                                                        lg={2}
+                                                        xl={2}
+                                                        xxl={2}
+                                                    >
+                                                        <Title level={4}>
+                                                            {`${item.next_episode} эп.`}
+                                                        </Title>
+                                                        <Flex gap={5}>
+                                                            <Text>
+                                                                {new Date(
+                                                                    item.next_episode_at
+                                                                ).toLocaleTimeString(
+                                                                    "ru-RU",
+                                                                    {
+                                                                        hour: "numeric",
+                                                                        minute: "numeric",
+                                                                    }
+                                                                )}
+                                                            </Text>
 
-                                                        {dateComparer(
-                                                            new Date(),
-                                                            new Date(
-                                                                item.next_episode_at
-                                                            )
-                                                        )}
-                                                    </Flex>
-                                                </Col>
-                                            </Row>
-                                        </Card>
+                                                            {dateComparer(
+                                                                new Date(),
+                                                                new Date(
+                                                                    item.next_episode_at
+                                                                )
+                                                            )}
+                                                        </Flex>
+                                                    </Col>
+                                                </Row>
+                                            </Card>
+                                        </Badge.Ribbon>
                                     </Link>
                                 </List.Item>
                             )}

@@ -218,7 +218,7 @@ export default function RootLayout({
             colorBorderSecondary: "transparent",
 
             boxShadowCard:
-                "0 1px 2px 0 rgba(0, 0, 0, 0.3), 0 1px 6px -1px rgba(0, 0, 0, 0.2), 0 2px 4px 0 rgba(0, 0, 0, 0.2)",
+                "0 1px 2px 0 rgba(0, 0, 0, 0.5), 0 3px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px 0 rgba(0, 0, 0, 0.4)",
         },
         Segmented: {
             itemSelectedBg: "#44a5a6",
