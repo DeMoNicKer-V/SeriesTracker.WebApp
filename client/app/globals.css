@@ -499,3 +499,6 @@ div.ant-upload-list-item {
 .transparent {
     background-color: transparent;
 }
+button[aria-hidden="true"] {
+    display: none !important;
+}
