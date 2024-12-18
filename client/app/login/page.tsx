@@ -14,13 +14,14 @@ import {
     ConfigProvider,
 } from "antd";
 import { login, LoginRequest } from "../services/user";
-import Link from "next/link";
+
 import { IsAuth } from "../api/coockie";
 import { EmptyView } from "../components/EmptyView";
 import { LongRightArrow } from "../img/LongRightArrow";
 import { LogoIcon } from "../img/LogoIcon";
 import "./style.css";
 
+const { Text, Title, Link } = Typography;
 const LoginPage = () => {
     const router = useRouter();
     const [form] = Form.useForm();
@@ -108,7 +109,9 @@ const LoginPage = () => {
                     />
 
                     <Space size={[5, 5]}>
-                        <Typography.Text>Еще нет акканута?</Typography.Text>
+                        <Text type="secondary" italic>
+                            Еще нет акканута?
+                        </Text>
                         <Link
                             target="_top"
                             href={"/signup"}
@@ -125,12 +128,10 @@ const LoginPage = () => {
                 </Flex>
 
                 <Flex align="center" className="flex-column width-100 headline">
-                    <Typography.Title level={4}>
+                    <Title level={4}>
                         Вход на{" "}
-                        <Typography.Link style={{ fontSize: 20 }}>
-                            @SeriesTracker
-                        </Typography.Link>
-                    </Typography.Title>
+                        <Link style={{ fontSize: 20 }}>@SeriesTracker</Link>
+                    </Title>
 
                     <Card
                         className="width-100"
@@ -195,7 +196,7 @@ const LoginPage = () => {
                                 shouldUpdate
                             >
                                 {() => (
-                                    <Typography.Text
+                                    <Text
                                         strong
                                         type="danger"
                                         style={{
@@ -203,7 +204,7 @@ const LoginPage = () => {
                                         }}
                                     >
                                         {errorMessage}
-                                    </Typography.Text>
+                                    </Text>
                                 )}
                             </Form.Item>
 

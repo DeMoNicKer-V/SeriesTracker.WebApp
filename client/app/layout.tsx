@@ -49,6 +49,7 @@ import { VKLogo } from "./img/socials/vk";
 import { GithubLogo } from "./img/socials/github";
 import { TelegramLogo } from "./img/socials/telegram";
 import { RandomIcon } from "./img/RandomIcon";
+import { StarsBackground } from "./components/StarsBackground";
 type CustomIconComponentProps = GetProps<typeof Icon>;
 const { Header, Content, Sider } = Layout;
 
@@ -246,6 +247,8 @@ export default function RootLayout({
     return (
         <html lang="en">
             <body>
+                <StarsBackground />
+
                 <ConfigProvider
                     theme={{
                         token: darkTheme,
