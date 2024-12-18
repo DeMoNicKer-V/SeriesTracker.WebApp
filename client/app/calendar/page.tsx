@@ -118,6 +118,7 @@ export default function CalendarPage() {
         filterDate.setDate(dateNow.getDate() + Number(key));
         filterItems(airedAnimes, filterDate);
     };
+
     useEffect(() => {
         return () => {
             getGenresList();

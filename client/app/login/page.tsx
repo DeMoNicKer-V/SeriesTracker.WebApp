@@ -24,10 +24,7 @@ import "./style.css";
 const LoginPage = () => {
     const router = useRouter();
     const [form] = Form.useForm();
-    const [email, setEmail] = useState<string>("");
-    const [password, setPassword] = useState<string>("");
     const [errorMessage, setErrorMessage] = useState<string>("");
-
     const [auth, setAuth] = useState<boolean>(false);
 
     const getIsAuth = async () => {
@@ -38,68 +35,27 @@ const LoginPage = () => {
         getIsAuth();
     }, []);
 
-    const loginUser = async () => {
+    const loginUser = async (values: LoginRequest) => {
         setErrorMessage("");
-        let user: LoginRequest = {
-            email: email,
-            password: password,
-        };
-        const response = await login(user);
-        if (response === false) {
+        const response = await login(values);
+        if (response) {
             setErrorMessage(response);
         } else {
             router.back();
         }
     };
-    const finishFailed = async () => {
+    const loginFailed = async () => {
         setErrorMessage("Эл. почта и пароль обязательны для входа");
     };
+
     return auth === false ? (
         <Flex
-            className="bg flex-column"
+            className="flex-column width-height-100"
+            align="center"
             style={{
-                alignItems: "center",
                 padding: 24,
             }}
         >
-            <Flex
-                className="width-100 head"
-                align="center"
-                justify="space-around"
-            >
-                <Button
-                    style={{ cursor: "pointer" }}
-                    href="/shikimori"
-                    type="link"
-                    icon={
-                        <LogoIcon
-                            width={50}
-                            height={50}
-                            firstColor="white"
-                            secondColor="#44a5a6"
-                        />
-                    }
-                />
-
-                <Space size={[5, 5]}>
-                    <Typography.Text style={{ fontSize: 16 }}>
-                        Еще нет акканута?
-                    </Typography.Text>
-                    <Link
-                        target="_top"
-                        href={"/signup"}
-                        style={{
-                            fontSize: 16,
-                            fontWeight: 700,
-                        }}
-                    >
-                        <Flex gap={5} justify="center" align="center">
-                            Регистрация
-                            <LongRightArrow />
-                        </Flex>
-                    </Link>
-                </Space>
-            </Flex>
             <ConfigProvider
                 theme={{
                     components: {
@@ -111,6 +67,7 @@ const LoginPage = () => {
                         Typography: {
                             colorLink: "#44a5a6",
                             colorLinkHover: "#44a5a661",
+                            fontSize: 16,
                         },
                         Card: {
                             colorBgContainer: "#0b3c3c61",
@@ -132,14 +89,42 @@ const LoginPage = () => {
                 }}
             >
                 <Flex
-                    className="flex-column width-100"
-                    style={{
-                        alignItems: "center",
-                        maxWidth: "460px",
-                        paddingTop: 128,
-                        gap: 30,
-                    }}
+                    className="width-100 head"
+                    align="center"
+                    justify="space-around"
                 >
+                    <Button
+                        style={{ cursor: "pointer" }}
+                        href="/shikimori"
+                        type="link"
+                        icon={
+                            <LogoIcon
+                                width={50}
+                                height={50}
+                                firstColor="white"
+                                secondColor="#44a5a6"
+                            />
+                        }
+                    />
+
+                    <Space size={[5, 5]}>
+                        <Typography.Text>Еще нет акканута?</Typography.Text>
+                        <Link
+                            target="_top"
+                            href={"/signup"}
+                            style={{
+                                fontWeight: 700,
+                            }}
+                        >
+                            <Flex gap={5} justify="center" align="center">
+                                Регистрация
+                                <LongRightArrow />
+                            </Flex>
+                        </Link>
+                    </Space>
+                </Flex>
+
+                <Flex align="center" className="flex-column width-100 headline">
                     <Typography.Title level={4}>
                         Вход на{" "}
                         <Typography.Link style={{ fontSize: 20 }}>
@@ -148,7 +133,6 @@ const LoginPage = () => {
                     </Typography.Title>
 
                     <Card
-                        hoverable
                         className="width-100"
                         style={{
                             padding: 24,
@@ -157,12 +141,11 @@ const LoginPage = () => {
                         }}
                     >
                         <Form
-                            onFinishFailed={finishFailed}
-                            scrollToFirstError
+                            onFinishFailed={loginFailed}
                             onFinish={loginUser}
                             layout="vertical"
                             form={form}
-                            name="requiredForm"
+                            name="loginForm"
                             style={{ width: "100%" }}
                             initialValues={{ items: [{}] }}
                         >
@@ -182,14 +165,8 @@ const LoginPage = () => {
                                 ]}
                             >
                                 <Input
+                                    autoComplete={"email"}
                                     addonBefore={<MailOutlined />}
-                                    onChange={(e: {
-                                        target: {
-                                            value: any;
-                                        };
-                                    }) => {
-                                        setEmail(e.target.value);
-                                    }}
                                     autoFocus
                                     spellCheck={false}
                                 />
@@ -207,14 +184,8 @@ const LoginPage = () => {
                                 label="Пароль"
                             >
                                 <Input.Password
+                                    autoComplete={"current-password"}
                                     addonBefore={<KeyOutlined />}
-                                    onChange={(e: {
-                                        target: {
-                                            value: any;
-                                        };
-                                    }) => {
-                                        setPassword(e.target.value);
-                                    }}
                                     autoFocus
                                     spellCheck={false}
                                 />
@@ -228,7 +199,6 @@ const LoginPage = () => {
                                         strong
                                         type="danger"
                                         style={{
-                                            fontSize: 16,
                                             opacity: 0.8,
                                         }}
                                     >
@@ -258,8 +228,7 @@ const LoginPage = () => {
             gap={10}
             justify="center"
             align="center"
-            className="flex-column"
-            style={{ height: "100%" }}
+            className="flex-column height-100"
         >
             <EmptyView text="Вы уже вошли в свой аккаунт" />
             <Link href={"/shikimori"}>Вернуться на главную</Link>

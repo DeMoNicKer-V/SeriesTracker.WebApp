@@ -6,7 +6,7 @@ export default function IndexPage() {
     const router = useRouter();
 
     useEffect(() => {
-        router.push("/shikimori"); // Замените 123 на нужный ID
+        router.push("/shikimori"); // Перенаправление на гланую страницу
     }, []);
 
     return null; // Можно вернуть пустой компонент

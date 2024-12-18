@@ -232,9 +232,6 @@ input,
     color: hsla(0, 0%, 100%, 0.7) !important;
     background-color: #151515 !important;
 }
-.searchpage-input .input-label.focus {
-    color: #44a5a6 !important;
-}
 
 .darkTheme .emptyview {
     padding: 20px;
@@ -486,6 +483,15 @@ div.ant-upload-list-item {
 
 .width-100 {
     width: 100%;
+}
+
+.height-100 {
+    height: 100%;
+}
+
+.width-height-100 {
+    width: 100%;
+    height: 100%;
 }
 
 .flex-column {
