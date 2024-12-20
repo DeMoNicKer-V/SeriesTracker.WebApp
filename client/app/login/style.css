@@ -20,8 +20,7 @@ label {
 }
 
 .main-content-layout {
-    background-size: 400% 400%;
-    animation: gradient 15s ease infinite;
+    animation: gradient 15s;
 }
 
 .headline {
