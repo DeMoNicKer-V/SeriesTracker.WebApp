@@ -60,6 +60,7 @@ export default function RootLayout({
 }>) {
     const pathName = usePathname();
     const [collapsed, setCollapsed] = useState(true);
+    const [controlEntered, setControlEntered] = useState(false);
     const [isUser, setIsUser] = useState<boolean>(false);
     const [user, setUser] = useState<UserResponse>();
     const [currentKey, setCurrentKey] = useState<string>("shikimori");
@@ -164,6 +165,15 @@ export default function RootLayout({
     const menuProps = {
         items,
     };
+
+    const mouseControlEnter = () => {
+        setControlEntered(true);
+    };
+
+    const mouseControlLeave = () => {
+        setControlEntered(false);
+    };
+
     const GetUser = async () => {
         var code = await GetCoockie();
         if (code) {
@@ -265,6 +275,8 @@ export default function RootLayout({
                     >
                         <title>Series Tracker</title>
                         <Header
+                            onMouseEnter={mouseControlEnter}
+                            onMouseLeave={mouseControlLeave}
                             style={{
                                 position: "sticky",
                                 top: 0,
@@ -279,6 +291,8 @@ export default function RootLayout({
                                 padding: "0 20px",
                                 boxShadow:
                                     "0 2px 4px -1px rgba(0,0,0,.3), 0 4px 5px 0 rgba(0,0,0,.24), 0 1px 10px 0 rgba(0,0,0,.22)",
+                                opacity: controlEntered ? 1 : 0.65,
+                                transition: "all 0.2s,background 0s",
                             }}
                         >
                             <Row align="middle" justify={"space-between"}>
@@ -376,6 +390,8 @@ export default function RootLayout({
                         </Header>
                         <Layout hasSider>
                             <Sider
+                                onMouseEnter={mouseControlEnter}
+                                onMouseLeave={mouseControlLeave}
                                 width={230}
                                 breakpoint="xl"
                                 trigger={null}
@@ -397,6 +413,7 @@ export default function RootLayout({
                                     )
                                         ? "none"
                                         : "block",
+                                    opacity: controlEntered ? 1 : 0.65,
                                 }}
                             >
                                 <Menu
