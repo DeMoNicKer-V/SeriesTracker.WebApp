@@ -1,21 +1,6 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
-import {
-    UserOutlined,
-    RightOutlined,
-    LoginOutlined,
-    ProfileOutlined,
-    CheckSquareOutlined,
-    EditOutlined,
-    KeyOutlined,
-    MinusCircleOutlined,
-    QuestionCircleOutlined,
-    SolutionOutlined,
-    LoadingOutlined,
-    SmileOutlined,
-    CheckOutlined,
-} from "@ant-design/icons";
-import Typewriter from "typewriter-effect";
+import { CheckOutlined } from "@ant-design/icons";
 import {
     Avatar,
     Button,
@@ -24,28 +9,16 @@ import {
     DatePicker,
     Flex,
     Form,
-    GetProp,
     Input,
     Row,
     Space,
-    Image,
-    Steps,
     Typography,
-    Upload,
-    UploadFile,
-    UploadProps,
-    message,
     Divider,
-    Result,
     ConfigProvider,
     InputRef,
-    Descriptions,
-    DescriptionsProps,
-    Tooltip,
     Checkbox,
     Collapse,
 } from "antd";
-import ImgCrop from "antd-img-crop";
 import Meta from "antd/es/card/Meta";
 import {
     checkExistEmail,
@@ -58,7 +31,6 @@ import locale from "antd/es/date-picker/locale/ru_RU";
 import dayjs from "dayjs";
 import "dayjs/locale/ru";
 import AvatarPicker from "../components/AvatarPicker";
-import Title from "antd/es/typography/Title";
 import "./style.css";
 import { LongLeftArrow } from "../img/LongLeftArrow";
 import { LongRightArrow } from "../img/LongRightArrow";
@@ -85,9 +57,9 @@ const SignupPage = () => {
     const handleFocus = (name: string) => {
         setIsActive({ [name]: true });
     };
-    const { getFieldError, isFieldTouched } = form;
-    const inputRef = useRef<InputRef>(null);
-    const inputRef2 = useRef<InputRef>(null);
+    const { getFieldError } = form;
+    const inputPasswordRef = useRef<InputRef>(null);
+    const inputUsernameRef = useRef<InputRef>(null);
     const [email, setEmail] = useState<string>("");
     const [password, setPassword] = useState<string>("");
     const [userName, setUserName] = useState<string>("");
@@ -96,7 +68,7 @@ const SignupPage = () => {
     const [surName, setSurname] = useState<string>("");
     const [dateBirth, setDateBirth] = useState<string>("");
 
-    const [current, setCurrent] = useState(1);
+    const [current, setCurrent] = useState(0);
 
     const router = useRouter();
     const createNewAccount = async () => {
@@ -127,87 +99,88 @@ const SignupPage = () => {
                 padding: 24,
             }}
         >
-            <Flex
-                className="width-100 head"
-                align="center"
-                justify="space-around"
-            >
-                <Button
-                    style={{ cursor: "pointer" }}
-                    href="/shikimori"
-                    type="link"
-                    icon={
-                        <LogoIcon
-                            width={50}
-                            height={50}
-                            firstColor="white"
-                            secondColor="#44a5a6"
-                        />
-                    }
-                />
-
-                <Space size={[5, 5]}>
-                    <Typography.Text style={{ fontSize: 16 }}>
-                        Уже есть аккаунт?
-                    </Typography.Text>
-                    <Link
-                        target="_top"
-                        href={"/login"}
-                        style={{
+            <ConfigProvider
+                theme={{
+                    components: {
+                        Collapse: {
+                            contentPadding: 0,
+                            headerPadding: "0 0 24px 0",
+                            boxShadow: "none !important",
+                        },
+                        Typography: {
+                            colorLink: "#44a5a6",
+                            colorLinkHover: "#44a5a661",
                             fontSize: 16,
-                            fontWeight: 700,
-                        }}
-                    >
-                        <Flex gap={5} justify="center" align="center">
-                            Войти
-                            <LongRightArrow />
-                        </Flex>
-                    </Link>
-                </Space>
-            </Flex>
-            <Flex
-                className="flex-column width-100"
-                style={{
-                    alignItems: "center",
-                    maxWidth: "660px",
-                    paddingTop: 128,
-                    gap: 30,
+                        },
+                        Card: {
+                            colorBgContainer: "#0b3c3c61",
+                            colorBorderSecondary: "#0b3c3c",
+                        },
+                        Input: {
+                            activeBg: "transparent",
+                            colorBgContainer: "transparent",
+                            fontSize: 16,
+                            colorBorder: "#084949",
+                        },
+                        Form: {
+                            labelFontSize: 16,
+                            labelColor: "#44a5a6",
+                            labelRequiredMarkColor: "#44a5a6",
+                            colorSuccess: "#44a5a6",
+                        },
+                        DatePicker: {
+                            colorBgElevated: "#084949",
+                            fontSize: 16,
+                        },
+                        Button: { colorBorder: "#084949" },
+                    },
                 }}
             >
-                <ConfigProvider
-                    theme={{
-                        components: {
-                            Collapse: {
-                                contentPadding: 0,
-                                headerPadding: "0 0 24px 0",
-                                boxShadow: "none !important",
-                            },
-                            Typography: {
-                                colorLink: "#44a5a6",
-                                colorLinkHover: "#44a5a661",
-                            },
-                            Card: {
-                                colorBgContainer: "#0b3c3c61",
-                                colorBorderSecondary: "#0b3c3c",
-                            },
-                            Input: {
-                                activeBg: "transparent",
-                                colorBgContainer: "transparent",
+                <Flex
+                    className="width-100 head"
+                    align="center"
+                    justify="space-around"
+                >
+                    <Button
+                        style={{ cursor: "pointer" }}
+                        href="/shikimori"
+                        type="link"
+                        icon={
+                            <LogoIcon
+                                width={50}
+                                height={50}
+                                firstColor="white"
+                                secondColor="#44a5a6"
+                            />
+                        }
+                    />
+
+                    <Space size={[5, 5]}>
+                        <Typography.Text type="secondary" italic>
+                            Уже есть аккаунт?
+                        </Typography.Text>
+                        <Link
+                            target="_top"
+                            href={"/login"}
+                            style={{
                                 fontSize: 16,
-                                colorBorder: "#084949",
-                            },
-                            Form: {
-                                labelFontSize: 16,
-                                labelColor: "#44a5a6",
-                                labelRequiredMarkColor: "#44a5a6",
-                                colorSuccess: "#44a5a6",
-                            },
-                            DatePicker: {
-                                colorBgElevated: "#084949",
-                                fontSize: 16,
-                            },
-                            Button: { colorBorder: "#084949" },
-                        },
+                                fontWeight: 700,
+                            }}
+                        >
+                            <Flex gap={5} justify="center" align="center">
+                                Войти
+                                <LongRightArrow />
+                            </Flex>
+                        </Link>
+                    </Space>
+                </Flex>
+                <Flex
+                    className="flex-column width-100"
+                    style={{
+                        alignItems: "center",
+                        maxWidth: "660px",
+                        paddingTop: 128,
+                        gap: 30,
                     }}
                 >
                     <Typography.Title level={4}>
@@ -370,9 +343,9 @@ const SignupPage = () => {
                                                                                 }
 
                                                                                 if (
-                                                                                    inputRef.current
+                                                                                    inputPasswordRef.current
                                                                                 ) {
-                                                                                    inputRef.current!.focus(
+                                                                                    inputPasswordRef.current!.focus(
                                                                                         {
                                                                                             cursor: "start",
                                                                                         }
@@ -439,7 +412,7 @@ const SignupPage = () => {
                                                                     }}
                                                                     autoFocus
                                                                     ref={
-                                                                        inputRef
+                                                                        inputPasswordRef
                                                                     }
                                                                     spellCheck={
                                                                         false
@@ -492,9 +465,9 @@ const SignupPage = () => {
                                                                                 }
 
                                                                                 if (
-                                                                                    inputRef2.current
+                                                                                    inputUsernameRef.current
                                                                                 ) {
-                                                                                    inputRef2.current!.focus(
+                                                                                    inputUsernameRef.current!.focus(
                                                                                         {
                                                                                             cursor: "start",
                                                                                         }
@@ -579,7 +552,7 @@ const SignupPage = () => {
                                                                     }}
                                                                     autoFocus
                                                                     ref={
-                                                                        inputRef2
+                                                                        inputUsernameRef
                                                                     }
                                                                     spellCheck={
                                                                         false
@@ -963,8 +936,8 @@ const SignupPage = () => {
                             </Form>
                         )}
                     </Card>
-                </ConfigProvider>
-            </Flex>
+                </Flex>
+            </ConfigProvider>
         </Flex>
     ) : (
         <Flex
