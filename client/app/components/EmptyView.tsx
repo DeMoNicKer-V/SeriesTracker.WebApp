@@ -7,7 +7,13 @@ interface Props {
 }
 export const EmptyView = ({ text }: Props) => {
     return (
-        <Flex className="emptyview" justify="center" align="middle" gap={10}>
+        <Flex
+            className="emptyview"
+            justify="center"
+            align="start"
+            gap={10}
+            style={{ textAlign: "center" }}
+        >
             <InfoCircleOutlined style={{ fontSize: 32 }} />
             <span style={{ fontSize: 22 }}>{text}</span>
         </Flex>

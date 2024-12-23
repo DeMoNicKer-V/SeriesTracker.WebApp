@@ -72,18 +72,23 @@ export default function UserPage({ params }: { params: { username: string } }) {
             <title>{`${params.username} / Профиль`}</title>
             <Row gutter={[15, 15]} align={"top"} justify={"center"}>
                 <Col xs={24} sm={24} md={24} lg={16} xl={16} xxl={16}>
-                    <Row gutter={[15, 15]} align={"middle"}>
-                        <Card
-                            className="profile-header"
-                            style={{
-                                display: "flex",
-                                width: "100%",
-                                alignItems: "center",
-                                padding: 12,
-                                gap: 10,
-                            }}
-                            bordered
-                            cover={
+                    <Card
+                        className="profile-header"
+                        style={{
+                            display: "flex",
+                            width: "100%",
+                            alignItems: "center",
+                            padding: 12,
+                            gap: 10,
+                        }}
+                        bordered
+                    >
+                        <Row
+                            gutter={[15, 15]}
+                            align={"middle"}
+                            justify={"center"}
+                        >
+                            <Col>
                                 <Avatar
                                     style={{
                                         backgroundColor: "transparent",
@@ -95,80 +100,84 @@ export default function UserPage({ params }: { params: { username: string } }) {
                                             ? userInfo?.userInfo?.avatar
                                             : null
                                     }
-                                    shape="square"
+                                    shape="circle"
                                 ></Avatar>
-                            }
-                        >
-                            <Meta
-                                style={{
-                                    marginBottom: 0,
-                                    fontSize: 17,
-                                }}
-                                title={
-                                    <Title
-                                        style={{
-                                            margin: 0,
-                                        }}
-                                        level={3}
-                                    >
-                                        {userInfo?.userInfo.userName}
-                                    </Title>
-                                }
-                                description={
-                                    <Flex
-                                        gap={5}
-                                        justify="center"
-                                        align="center"
-                                    >
-                                        <Text>{userInfo?.userInfo.name}</Text>
-                                        <Text>
-                                            {userInfo?.userInfo.surName}
-                                        </Text>
-
-                                        <Divider type="vertical" />
-                                        {userInfo?.userInfo.yearsOld && (
+                            </Col>
+                            <Col>
+                                <Meta
+                                    style={{
+                                        marginBottom: 0,
+                                        fontSize: 17,
+                                    }}
+                                    title={
+                                        <Title
+                                            style={{
+                                                margin: 0,
+                                            }}
+                                            level={3}
+                                        >
+                                            {userInfo?.userInfo.userName}
+                                        </Title>
+                                    }
+                                    description={
+                                        <Flex
+                                            gap={5}
+                                            justify="center"
+                                            align="center"
+                                        >
                                             <Text>
-                                                {getFormatedAge(
-                                                    userInfo?.userInfo.yearsOld
-                                                )}
+                                                {userInfo?.userInfo.name}
                                             </Text>
-                                        )}
-                                        <Divider type="vertical" />
-                                        {userInfo?.userInfo.regDate && (
-                                            <Flex gap={5}>
-                                                <Text>{`на сайте с`}</Text>
-                                                <Text
-                                                    underline
-                                                    style={{
-                                                        cursor: "help",
-                                                        textDecorationStyle:
-                                                            "dashed",
-                                                    }}
-                                                >
-                                                    <Tooltip
-                                                        title={new Date(
-                                                            userInfo?.userInfo?.regDate
-                                                        ).toLocaleDateString(
-                                                            "ru-RU",
-                                                            {
-                                                                day: "numeric",
-                                                                month: "long",
-                                                                year: "numeric",
-                                                            }
-                                                        )}
-                                                    >
-                                                        {`${new Date(
-                                                            userInfo?.userInfo?.regDate
-                                                        ).getFullYear()} г.`}{" "}
-                                                    </Tooltip>
+                                            <Text>
+                                                {userInfo?.userInfo.surName}
+                                            </Text>
+
+                                            <Divider type="vertical" />
+                                            {userInfo?.userInfo.yearsOld && (
+                                                <Text>
+                                                    {getFormatedAge(
+                                                        userInfo?.userInfo
+                                                            .yearsOld
+                                                    )}
                                                 </Text>
-                                            </Flex>
-                                        )}
-                                    </Flex>
-                                }
-                            />
-                        </Card>
-                    </Row>
+                                            )}
+                                            <Divider type="vertical" />
+                                            {userInfo?.userInfo.regDate && (
+                                                <Flex gap={5}>
+                                                    <Text>{`на сайте с`}</Text>
+                                                    <Text
+                                                        underline
+                                                        style={{
+                                                            cursor: "help",
+                                                            textDecorationStyle:
+                                                                "dashed",
+                                                        }}
+                                                    >
+                                                        <Tooltip
+                                                            title={new Date(
+                                                                userInfo?.userInfo?.regDate
+                                                            ).toLocaleDateString(
+                                                                "ru-RU",
+                                                                {
+                                                                    day: "numeric",
+                                                                    month: "long",
+                                                                    year: "numeric",
+                                                                }
+                                                            )}
+                                                        >
+                                                            {`${new Date(
+                                                                userInfo?.userInfo?.regDate
+                                                            ).getFullYear()} г.`}{" "}
+                                                        </Tooltip>
+                                                    </Text>
+                                                </Flex>
+                                            )}
+                                        </Flex>
+                                    }
+                                />
+                            </Col>
+                        </Row>
+                    </Card>
                 </Col>
                 {userInfo?.seriesInfo.length ? (
                     <Col xs={24} sm={24} md={24} lg={16} xl={16}>
