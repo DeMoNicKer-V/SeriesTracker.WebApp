@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { CheckOutlined } from "@ant-design/icons";
 import {
     Avatar,
@@ -14,10 +14,9 @@ import {
     Space,
     Typography,
     Divider,
-    ConfigProvider,
-    InputRef,
     Checkbox,
     Collapse,
+    CheckboxProps,
 } from "antd";
 import Meta from "antd/es/card/Meta";
 import {
@@ -26,9 +25,7 @@ import {
     registerUser,
     UserRequest,
 } from "../services/user";
-import Link from "next/link";
 import locale from "antd/es/date-picker/locale/ru_RU";
-import dayjs from "dayjs";
 import "dayjs/locale/ru";
 import AvatarPicker from "../components/AvatarPicker";
 import "./style.css";
@@ -38,37 +35,44 @@ import { LogoIcon } from "../img/LogoIcon";
 import { useRouter } from "next/navigation";
 import { IsAuth } from "../api/coockie";
 import { EmptyView } from "../components/EmptyView";
+import dayjs from "dayjs";
+import SignPageConfigProvider from "../components/SignPageConfigProvider";
+
 dayjs.locale("ru");
+const { Text, Title, Link } = Typography;
+
 const SignupPage = () => {
-    const [auth, setAuth] = useState<boolean>(false);
-    const [visibleFields, setVisibleFields] = useState([true]);
-    const getIsAuth = async () => {
-        const a = await IsAuth();
-        setAuth(a);
-    };
-
-    const [form] = Form.useForm();
-    const [isActive, setIsActive] = useState<Record<string, boolean>>({
-        email: true,
-        password: false,
-        userName: false,
-    });
-
-    const handleFocus = (name: string) => {
-        setIsActive({ [name]: true });
-    };
-    const { getFieldError } = form;
-
+    const router = useRouter();
     const [avatar, setAvatar] = useState<string>("");
-
     const [current, setCurrent] = useState(0);
     const [formData, setFormData] = useState<UserRequest>({
         email: "",
         password: "",
         userName: "",
     });
+    const [auth, setAuth] = useState<boolean>(false);
+    const [visibleFields, setVisibleFields] = useState([true]);
+    const [checked, setChecked] = useState(false);
 
-    const router = useRouter();
+    const [isActive, setIsActive] = useState<Record<string, boolean>>({
+        email: true,
+        password: false,
+        userName: false,
+    });
+
+    const [form] = Form.useForm();
+    const {
+        getFieldError,
+        getFieldValue,
+        getFieldsValue,
+        isFieldsValidating,
+        focusField,
+    } = form;
+
+    const handleFocus = (name: string) => {
+        setIsActive({ [name]: true });
+    };
+
     const createNewAccount = async () => {
         formData.dateBirth = dayjs(formData.dateBirth)
             .format("YYYY-MM-DD")
@@ -79,9 +83,9 @@ const SignupPage = () => {
         }
     };
 
-    useEffect(() => {
-        getIsAuth();
-    }, []);
+    const onChangeAgreeRules: CheckboxProps["onChange"] = (e) => {
+        setChecked(e.target.checked);
+    };
 
     const handleNextField = (index: number) => {
         setVisibleFields((prevVisibleFields) => {
@@ -92,13 +96,22 @@ const SignupPage = () => {
     };
 
     const handleNext = () => {
-        const values = form.getFieldsValue();
+        const values = getFieldsValue();
         setFormData((prevFormData) => ({
             ...prevFormData,
             ...values,
         }));
         setCurrent(current + 1);
     };
+
+    const getIsAuth = async () => {
+        const a = await IsAuth();
+        setAuth(a);
+    };
+
+    useEffect(() => {
+        getIsAuth();
+    }, []);
 
     return auth === false ? (
         <Flex
@@ -108,43 +121,8 @@ const SignupPage = () => {
                 padding: 24,
             }}
         >
-            <ConfigProvider
-                theme={{
-                    components: {
-                        Collapse: {
-                            contentPadding: 0,
-                            headerPadding: "0 0 24px 0",
-                            boxShadow: "none !important",
-                        },
-                        Typography: {
-                            colorLink: "#44a5a6",
-                            colorLinkHover: "#44a5a661",
-                            fontSize: 16,
-                        },
-                        Card: {
-                            colorBgContainer: "#0b3c3c61",
-                            colorBorderSecondary: "#0b3c3c",
-                        },
-                        Input: {
-                            activeBg: "transparent",
-                            colorBgContainer: "transparent",
-                            fontSize: 16,
-                            colorBorder: "#084949",
-                        },
-                        Form: {
-                            labelFontSize: 16,
-                            labelColor: "#44a5a6",
-                            labelRequiredMarkColor: "#44a5a6",
-                            colorSuccess: "#44a5a6",
-                        },
-                        DatePicker: {
-                            colorBgElevated: "#084949",
-                            fontSize: 16,
-                        },
-                        Button: { colorBorder: "#084949" },
-                    },
-                }}
-            >
+            <title>Series Tracker - Регистрация</title>
+            <SignPageConfigProvider>
                 <Flex
                     className="width-100 head"
                     align="center"
@@ -165,10 +143,10 @@ const SignupPage = () => {
                     />
 
                     <Space size={[5, 5]}>
-                        <Typography.Text type="secondary" italic>
+                        <Text type="secondary" italic>
                             Уже есть аккаунт?
-                        </Typography.Text>
-                        <Typography.Link
+                        </Text>
+                        <Link
                             target="_top"
                             href={"/login"}
                             style={{
@@ -179,7 +157,7 @@ const SignupPage = () => {
                                 Войти
                                 <LongRightArrow />
                             </Flex>
-                        </Typography.Link>
+                        </Link>
                     </Space>
                 </Flex>
                 <Flex
@@ -191,12 +169,10 @@ const SignupPage = () => {
                         gap: 30,
                     }}
                 >
-                    <Typography.Title level={4}>
+                    <Title level={4}>
                         Регистрация на{" "}
-                        <Typography.Link style={{ fontSize: 20 }}>
-                            @SeriesTracker
-                        </Typography.Link>
-                    </Typography.Title>
+                        <Link style={{ fontSize: 20 }}>@SeriesTracker</Link>
+                    </Title>
                     <Card
                         hoverable
                         style={{
@@ -284,8 +260,8 @@ const SignupPage = () => {
                                                             ghost
                                                             className="width-100"
                                                             disabled={
-                                                                form.isFieldsValidating() ||
-                                                                !form.getFieldValue(
+                                                                isFieldsValidating() ||
+                                                                !getFieldValue(
                                                                     "email"
                                                                 ) ||
                                                                 getFieldError(
@@ -297,7 +273,7 @@ const SignupPage = () => {
                                                                     0
                                                                 );
 
-                                                                form.focusField(
+                                                                focusField(
                                                                     "password"
                                                                 );
                                                             }}
@@ -340,7 +316,7 @@ const SignupPage = () => {
                                                                 "^(?=.*[A-Z]|[А-Я])(?=.*).{8,}$|.{15,}$"
                                                             ),
                                                             message:
-                                                                "Убедитесь, что пароль содержит не менее 15 символов или не менее 8 символов, включая цифру и строчную букву.",
+                                                                "Убедитесь, что пароль содержит не менее 15 символов или не менее 8 символов, включая цифру и большую букву.",
                                                         },
                                                     ]}
                                                 >
@@ -364,8 +340,8 @@ const SignupPage = () => {
                                                                 type="primary"
                                                                 ghost
                                                                 disabled={
-                                                                    form.isFieldsValidating() ||
-                                                                    !form.getFieldValue(
+                                                                    isFieldsValidating() ||
+                                                                    !getFieldValue(
                                                                         "password"
                                                                     ) ||
                                                                     getFieldError(
@@ -377,7 +353,7 @@ const SignupPage = () => {
                                                                         1
                                                                     );
 
-                                                                    form.focusField(
+                                                                    focusField(
                                                                         "userName"
                                                                     );
                                                                 }}
@@ -410,6 +386,18 @@ const SignupPage = () => {
                                                             required: true,
                                                             message:
                                                                 "Логин обязателен для регистрации",
+                                                        },
+                                                        {
+                                                            min: 3,
+                                                            message:
+                                                                "Длина логина должны быть не менее 3 символов",
+                                                        },
+                                                        {
+                                                            pattern: new RegExp(
+                                                                "^[a-zA-Zа-яА-Я0-9]+$"
+                                                            ),
+                                                            message:
+                                                                "Логин не должен включать в себя спец. символы и пробел",
                                                         },
                                                         {
                                                             validator: async (
@@ -457,16 +445,15 @@ const SignupPage = () => {
                                                                 type="primary"
                                                                 ghost
                                                                 className="width-100"
-                                                                htmlType="submit"
                                                                 disabled={
-                                                                    !form.getFieldValue(
+                                                                    !getFieldValue(
                                                                         "userName"
                                                                     ) ||
                                                                     getFieldError(
                                                                         "userName"
                                                                     ).length >
                                                                         0 ||
-                                                                    form.isFieldsValidating()
+                                                                    isFieldsValidating()
                                                                 }
                                                             >
                                                                 Продолжить
@@ -484,19 +471,19 @@ const SignupPage = () => {
                                 shouldUpdate
                             >
                                 {() => (
-                                    <Typography.Text
+                                    <Text
                                         strong
                                         style={{
                                             opacity: 0.8,
                                         }}
                                     >
                                         {isActive.email &&
-                                            form.getFieldError("email")}
+                                            getFieldError("email")}
                                         {isActive.password &&
-                                            form.getFieldError("password")}
+                                            getFieldError("password")}
                                         {isActive.userName &&
-                                            form.getFieldError("userName")}
-                                    </Typography.Text>
+                                            getFieldError("userName")}
+                                    </Text>
                                 )}
                             </Form.Item>
 
@@ -519,19 +506,19 @@ const SignupPage = () => {
                                         </Form.Item>
                                         <Meta
                                             title={
-                                                <Typography.Title level={5}>
+                                                <Title level={5}>
                                                     {"Выберите ваш аватар"}
-                                                </Typography.Title>
+                                                </Title>
                                             }
                                             description={
-                                                <Typography.Text
+                                                <Text
                                                     italic
                                                     style={{ fontSize: 12 }}
                                                 >
                                                     {
                                                         "допускаются только файлы формата JPG/PNG, размером не превышающие 512 КБ"
                                                     }
-                                                </Typography.Text>
+                                                </Text>
                                             }
                                         ></Meta>
                                     </Space>
@@ -735,17 +722,14 @@ const SignupPage = () => {
                                     ]}
                                 />
 
-                                <Checkbox>
-                                    <Typography.Paragraph>
+                                <Checkbox onChange={onChangeAgreeRules}>
+                                    <Text>
                                         Я ознакомлен (а) с{" "}
-                                        <Typography.Link
-                                            href="/about"
-                                            target="_blank"
-                                        >
+                                        <Link href="/about" target="_blank">
                                             правилами
-                                        </Typography.Link>{" "}
+                                        </Link>{" "}
                                         сайта и соглашаюсь с ними.
-                                    </Typography.Paragraph>
+                                    </Text>
                                 </Checkbox>
 
                                 <Divider />
@@ -765,6 +749,7 @@ const SignupPage = () => {
                                     </Form.Item>
                                     <Form.Item>
                                         <Button
+                                            disabled={!checked}
                                             onClick={() => createNewAccount()}
                                             type="primary"
                                             shape="circle"
@@ -776,7 +761,7 @@ const SignupPage = () => {
                         )}
                     </Card>
                 </Flex>
-            </ConfigProvider>
+            </SignPageConfigProvider>
         </Flex>
     ) : (
         <Flex

@@ -20,6 +20,7 @@ import { EmptyView } from "../components/EmptyView";
 import { LongRightArrow } from "../img/LongRightArrow";
 import { LogoIcon } from "../img/LogoIcon";
 import "./style.css";
+import SignPageConfigProvider from "../components/SignPageConfigProvider";
 
 const { Text, Title, Link } = Typography;
 const LoginPage = () => {
@@ -42,7 +43,7 @@ const LoginPage = () => {
         if (response) {
             setErrorMessage(response);
         } else {
-            router.back();
+            router.push("/shikimori");
         }
     };
     const loginFailed = async () => {
@@ -57,38 +58,8 @@ const LoginPage = () => {
                 padding: 24,
             }}
         >
-            <ConfigProvider
-                theme={{
-                    components: {
-                        Collapse: {
-                            contentPadding: 0,
-                            headerPadding: "0 0 24px 0",
-                            boxShadow: "none !important",
-                        },
-                        Typography: {
-                            colorLink: "#44a5a6",
-                            colorLinkHover: "#44a5a661",
-                            fontSize: 16,
-                        },
-                        Card: {
-                            colorBgContainer: "#0b3c3c61",
-                            colorBorderSecondary: "#0b3c3c",
-                        },
-                        Input: {
-                            activeBg: "transparent",
-                            colorBgContainer: "transparent",
-                            fontSize: 16,
-                            colorBorder: "#084949",
-                        },
-                        Form: {
-                            labelFontSize: 16,
-                            labelColor: "#44a5a6",
-                            labelRequiredMarkColor: "#44a5a6",
-                            colorSuccess: "#44a5a6",
-                        },
-                    },
-                }}
-            >
+            <title>Series Tracker - Вход</title>
+            <SignPageConfigProvider>
                 <Flex
                     className="width-100 head"
                     align="center"
@@ -222,7 +193,7 @@ const LoginPage = () => {
                         </Form>
                     </Card>
                 </Flex>
-            </ConfigProvider>
+            </SignPageConfigProvider>
         </Flex>
     ) : (
         <Flex
