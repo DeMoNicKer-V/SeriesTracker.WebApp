@@ -49,7 +49,7 @@ const { Text, Title, Link } = Typography;
 const SignupPage = () => {
     const router = useRouter();
     const [avatar, setAvatar] = useState<string>("");
-    const [current, setCurrent] = useState(1);
+    const [current, setCurrent] = useState<number>(0);
     const [formData, setFormData] = useState<UserRequest>({
         email: "",
         password: "",
@@ -88,6 +88,35 @@ const SignupPage = () => {
         }
     };
 
+    const DefaultFormInput = ({
+        name,
+        label,
+    }: {
+        name: string;
+        label: string;
+    }) => {
+        return (
+            <Form.Item
+                rules={[
+                    {
+                        min: 3,
+                        message: "Длина слишком короткая",
+                    },
+                    {
+                        pattern: new RegExp("^[a-zA-Zа-яА-Я]+$"),
+                        message: `${label} не может включать в себя спец. символы и пробел`,
+                    },
+                ]}
+                name={name}
+            >
+                <Input
+                    autoComplete="off"
+                    variant="filled"
+                    placeholder={label}
+                ></Input>
+            </Form.Item>
+        );
+    };
     const onChangeAgreeRules: CheckboxProps["onChange"] = (e) => {
         setChecked(e.target.checked);
     };
@@ -188,7 +217,6 @@ const SignupPage = () => {
                         <Form
                             layout="vertical"
                             form={form}
-                            onFinish={() => createNewAccount()}
                             name="registration-form"
                             className="width-100"
                             initialValues={{ formData }}
@@ -223,10 +251,6 @@ const SignupPage = () => {
                                                             _,
                                                             value
                                                         ) => {
-                                                            if (!value) {
-                                                                // Проверка на пустоту
-                                                                return Promise.resolve(); // Возвращаем Promise.resolve(), если поле пустое
-                                                            }
                                                             // Проверка на стороне сервера
                                                             const exists =
                                                                 await checkExistEmail(
@@ -247,7 +271,6 @@ const SignupPage = () => {
                                             >
                                                 <Input
                                                     autoComplete="off"
-                                                    autoFocus
                                                     spellCheck={false}
                                                     onFocus={() =>
                                                         handleFocus("email")
@@ -420,7 +443,7 @@ const SignupPage = () => {
                                                                         )
                                                                     );
                                                                 }
-                                                                // Разрешить регистрацию, если email уникален
+                                                                // Разрешить регистрацию, если userName уникален
                                                                 return Promise.resolve();
                                                             },
                                                         },
@@ -539,52 +562,14 @@ const SignupPage = () => {
                                         wrap
                                         size={[10, 10]}
                                     >
-                                        <Form.Item
-                                            rules={[
-                                                {
-                                                    min: 3,
-                                                    message:
-                                                        "Длина слишком короткая",
-                                                },
-                                                {
-                                                    pattern: new RegExp(
-                                                        "^[a-zA-Zа-яА-Я0-9]+$"
-                                                    ),
-                                                    message:
-                                                        "Логин не должен включать в себя спец. символы и пробел",
-                                                },
-                                            ]}
+                                        <DefaultFormInput
                                             name={"name"}
-                                        >
-                                            <Input
-                                                autoComplete="off"
-                                                variant="filled"
-                                                placeholder="Имя"
-                                            ></Input>
-                                        </Form.Item>
-                                        <Form.Item
-                                            rules={[
-                                                {
-                                                    min: 3,
-                                                    message:
-                                                        "Длина слишком короткая",
-                                                },
-                                                {
-                                                    pattern: new RegExp(
-                                                        "^[a-zA-Zа-яА-Я0-9]+$"
-                                                    ),
-                                                    message:
-                                                        "Логин не должен включать в себя спец. символы и пробел",
-                                                },
-                                            ]}
+                                            label={"Имя"}
+                                        />
+                                        <DefaultFormInput
                                             name={"surName"}
-                                        >
-                                            <Input
-                                                autoComplete="off"
-                                                variant="filled"
-                                                placeholder="Фамилия "
-                                            ></Input>
-                                        </Form.Item>
+                                            label={"Фамилия"}
+                                        />
                                     </Space>
 
                                     <Form.Item
@@ -592,6 +577,15 @@ const SignupPage = () => {
                                         label={<Divider>Дата рождения</Divider>}
                                         name={"dateBirth"}
                                         style={{ width: "100%" }}
+                                        getValueProps={(value) => ({
+                                            value: value && dayjs(value),
+                                        })}
+                                        normalize={(value) =>
+                                            value &&
+                                            `${dayjs(value).format(
+                                                "YYYY-MM-DD"
+                                            )}`
+                                        }
                                     >
                                         <DatePicker
                                             variant="borderless"
@@ -651,6 +645,7 @@ const SignupPage = () => {
                         </Form>
                         {current === 2 && (
                             <Form
+                                onFinish={() => createNewAccount()}
                                 className="review-form"
                                 spellCheck={false}
                                 layout="horizontal"
@@ -744,6 +739,13 @@ const SignupPage = () => {
                                                         label={"Дата рождения"}
                                                     >
                                                         <DatePicker
+                                                            value={
+                                                                formData.dateBirth
+                                                                    ? dayjs(
+                                                                          formData.dateBirth
+                                                                      )
+                                                                    : null
+                                                            }
                                                             locale={locale}
                                                             format={
                                                                 "D MMMM, YYYY"
@@ -753,13 +755,6 @@ const SignupPage = () => {
                                                                 width: "100%",
                                                             }}
                                                             allowClear={false}
-                                                            value={
-                                                                formData.dateBirth
-                                                                    ? dayjs(
-                                                                          formData.dateBirth
-                                                                      )
-                                                                    : null
-                                                            }
                                                             placeholder="не указано"
                                                             inputReadOnly
                                                             popupStyle={{
@@ -802,7 +797,7 @@ const SignupPage = () => {
                                     <Form.Item>
                                         <Button
                                             disabled={!checked}
-                                            onClick={() => createNewAccount()}
+                                            htmlType="submit"
                                             type="primary"
                                             shape="circle"
                                             icon={<CheckOutlined />}
@@ -823,7 +818,17 @@ const SignupPage = () => {
             className="bg flex-column"
         >
             <EmptyView text="Вы уже вошли в свой аккаунт" />
-            <Link href={"/shikimori"}>Вернуться на главную</Link>
+            <Link
+                href={"/shikimori"}
+                style={{
+                    fontWeight: 700,
+                }}
+            >
+                <Flex gap={5} justify="center" align="center">
+                    Вернуться на главную
+                    <LongRightArrow />
+                </Flex>
+            </Link>
         </Flex>
     );
 };

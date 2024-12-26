@@ -1,49 +1,31 @@
 import {
-    Avatar,
     Button,
     Card,
     Col,
     ConfigProvider,
     Divider,
-    Empty,
     Flex,
     Form,
     List,
     Image,
     Row,
-    Skeleton,
     Space,
-    Spin,
     Tag,
-    Tooltip,
     Typography,
     Popover,
 } from "antd";
-import Input, { InputRef, SearchProps } from "antd/es/input";
-import notFound from "../img/notFound.webp";
-import Search from "antd/es/transfer/search";
+import Input, { InputRef } from "antd/es/input";
 import { useEffect, useRef, useState } from "react";
-import { getAllSeries, getAllSeriesSearch } from "../services/series";
-import { SearchResult } from "./searchResult";
 import {
-    MenuFoldOutlined,
-    MenuUnfoldOutlined,
     SearchOutlined,
-    FrownOutlined,
     InfoCircleOutlined,
     InfoCircleFilled,
-    LoadingOutlined,
     FireOutlined,
     YoutubeOutlined,
     CalendarOutlined,
-    FileImageOutlined,
 } from "@ant-design/icons";
-import Link from "next/link";
 import "./searchbar.css";
-import { redirect, useRouter } from "next/navigation";
-import { useForm } from "antd/es/form/Form";
-import Title from "antd/es/skeleton/Title";
-import { AnimeInfo, getAnimesByName } from "../services/shikimori";
+import { getAnimesByName } from "../services/shikimori";
 import Meta from "antd/es/card/Meta";
 import noFoundImage from "../img/empty.png";
 

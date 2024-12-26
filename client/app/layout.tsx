@@ -351,6 +351,10 @@ export default function RootLayout({
                                                     size={[20, 20]}
                                                 >
                                                     <Avatar
+                                                        style={{
+                                                            borderColor:
+                                                                "#313131",
+                                                        }}
                                                         size={40}
                                                         shape="circle"
                                                         src={user?.avatar}

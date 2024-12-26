@@ -43,6 +43,10 @@ body {
     white-space: normal;
 }
 
+.ant-flex {
+    display: flex !important;
+}
+
 .textTitle {
     overflow: hidden;
     text-overflow: ellipsis;
@@ -424,9 +428,6 @@ div.ant-upload-list-item {
     position: absolute;
     right: 0;
     z-index: 1;
-}
-.ant-form-item-explain {
-    display: none;
 }
 
 .ant-list-header {

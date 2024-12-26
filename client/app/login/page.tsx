@@ -1,7 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { MailOutlined, KeyOutlined } from "@ant-design/icons";
-import { useRouter } from "next/navigation";
 import {
     Button,
     Card,
@@ -11,7 +10,6 @@ import {
     Space,
     Typography,
     Divider,
-    ConfigProvider,
 } from "antd";
 import { login, LoginRequest } from "../services/user";
 
@@ -24,7 +22,6 @@ import SignPageConfigProvider from "../components/SignPageConfigProvider";
 
 const { Text, Title, Link } = Typography;
 const LoginPage = () => {
-    const router = useRouter();
     const [form] = Form.useForm();
     const [errorMessage, setErrorMessage] = useState<string>("");
     const [auth, setAuth] = useState<boolean>(false);
@@ -43,7 +40,7 @@ const LoginPage = () => {
         if (response) {
             setErrorMessage(response);
         } else {
-            router.push("/shikimori");
+            window.location.href = "/shikimori";
         }
     };
     const loginFailed = async () => {
