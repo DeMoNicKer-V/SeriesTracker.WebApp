@@ -36,10 +36,13 @@ const SignPageConfigProvider = ({ children }: Props) => {
                         colorSuccess: "#44a5a6",
                     },
                     DatePicker: {
-                        colorBgElevated: "#084949",
+                        colorBgElevated: "#123535",
                         fontSize: 16,
                     },
                     Button: { colorBorder: "#084949" },
+                    Tooltip: {
+                        colorBgSpotlight: "#123535",
+                    },
                 },
             }}
         >

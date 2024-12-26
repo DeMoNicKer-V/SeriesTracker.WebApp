@@ -81,16 +81,16 @@ const AvatarPicker = ({ onChange, preloadFile }: Props) => {
             theme={{
                 components: {
                     Modal: {
-                        headerBg: "#084949",
-                        footerBg: "#084949",
-                        contentBg: "#084949",
+                        headerBg: "#123535",
+                        footerBg: "#123535",
+                        contentBg: "#123535",
                     },
                     Button: {
                         colorBgContainer: "transparent",
                         defaultShadow: "none",
                     },
                     Tooltip: {
-                        colorBgSpotlight: "#084949",
+                        colorBgSpotlight: "#123535",
                     },
                 },
             }}

@@ -20,9 +20,13 @@
 label {
     font-weight: 600;
 }
+
 @media (max-width: 992px) {
     .head {
         justify-content: space-between;
+    }
+    .wrap-title {
+        text-align: center;
     }
 }
 

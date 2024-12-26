@@ -1,6 +1,10 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { CheckOutlined } from "@ant-design/icons";
+import {
+    CheckOutlined,
+    QuestionCircleOutlined,
+    UserOutlined,
+} from "@ant-design/icons";
 import {
     Avatar,
     Button,
@@ -17,6 +21,7 @@ import {
     Checkbox,
     Collapse,
     CheckboxProps,
+    Tooltip,
 } from "antd";
 import Meta from "antd/es/card/Meta";
 import {
@@ -44,7 +49,7 @@ const { Text, Title, Link } = Typography;
 const SignupPage = () => {
     const router = useRouter();
     const [avatar, setAvatar] = useState<string>("");
-    const [current, setCurrent] = useState(0);
+    const [current, setCurrent] = useState(1);
     const [formData, setFormData] = useState<UserRequest>({
         email: "",
         password: "",
@@ -174,7 +179,6 @@ const SignupPage = () => {
                         <Link style={{ fontSize: 20 }}>@SeriesTracker</Link>
                     </Title>
                     <Card
-                        hoverable
                         style={{
                             width: "100%",
                             padding: 24,
@@ -488,14 +492,15 @@ const SignupPage = () => {
                             </Form.Item>
 
                             {current === 1 && (
-                                <Flex style={{ flexDirection: "column" }}>
+                                <Flex className="flex-column">
                                     <Space
-                                        className="anime-title"
+                                        className="wrap-title"
                                         style={{ justifyContent: "center" }}
                                         wrap
                                         size={[10, 10]}
                                     >
                                         <Form.Item
+                                            noStyle
                                             valuePropName="fileList"
                                             name={"avatar"}
                                         >
@@ -512,7 +517,7 @@ const SignupPage = () => {
                                             }
                                             description={
                                                 <Text
-                                                    italic
+                                                    type="secondary"
                                                     style={{ fontSize: 12 }}
                                                 >
                                                     {
@@ -534,14 +539,46 @@ const SignupPage = () => {
                                         wrap
                                         size={[10, 10]}
                                     >
-                                        <Form.Item name={"name"}>
+                                        <Form.Item
+                                            rules={[
+                                                {
+                                                    min: 3,
+                                                    message:
+                                                        "Длина слишком короткая",
+                                                },
+                                                {
+                                                    pattern: new RegExp(
+                                                        "^[a-zA-Zа-яА-Я0-9]+$"
+                                                    ),
+                                                    message:
+                                                        "Логин не должен включать в себя спец. символы и пробел",
+                                                },
+                                            ]}
+                                            name={"name"}
+                                        >
                                             <Input
                                                 autoComplete="off"
                                                 variant="filled"
                                                 placeholder="Имя"
                                             ></Input>
                                         </Form.Item>
-                                        <Form.Item name={"surName"}>
+                                        <Form.Item
+                                            rules={[
+                                                {
+                                                    min: 3,
+                                                    message:
+                                                        "Длина слишком короткая",
+                                                },
+                                                {
+                                                    pattern: new RegExp(
+                                                        "^[a-zA-Zа-яА-Я0-9]+$"
+                                                    ),
+                                                    message:
+                                                        "Логин не должен включать в себя спец. символы и пробел",
+                                                },
+                                            ]}
+                                            name={"surName"}
+                                        >
                                             <Input
                                                 autoComplete="off"
                                                 variant="filled"
@@ -597,6 +634,18 @@ const SignupPage = () => {
                                             Перейти к завершению
                                         </Button>
                                     </Flex>
+                                    <Divider className="zero-margin" dashed>
+                                        <Text type="secondary">
+                                            Необязательные данные{" "}
+                                            <Tooltip
+                                                title={
+                                                    "Вы можете не заполнять вышеприведенные поля"
+                                                }
+                                            >
+                                                <QuestionCircleOutlined />
+                                            </Tooltip>
+                                        </Text>
+                                    </Divider>
                                 </Flex>
                             )}
                         </Form>
@@ -610,11 +659,14 @@ const SignupPage = () => {
                                     style={{ marginBottom: 10 }}
                                     justify="center"
                                 >
-                                    <Avatar
-                                        shape="circle"
-                                        src={avatar}
-                                        size={120}
-                                    />
+                                    <Form.Item noStyle>
+                                        <Avatar
+                                            icon={<UserOutlined />}
+                                            shape="circle"
+                                            src={avatar}
+                                            size={120}
+                                        />
+                                    </Form.Item>
                                 </Flex>
 
                                 <Form.Item label={"Никнейм"}>

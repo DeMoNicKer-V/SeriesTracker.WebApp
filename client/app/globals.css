@@ -108,22 +108,6 @@ body {
     left: 0px;
     right: 0px;
 }
-.v-toolbar__content {
-    align-items: center;
-    display: flex;
-    position: relative;
-    z-index: 0;
-    height: 64px;
-    padding: 4px 16px;
-}
-
-.v-application .d-flex {
-    display: flex !important;
-}
-
-.v-application .align-center {
-    align-items: center !important;
-}
 
 .grow,
 .spacer {
@@ -214,10 +198,6 @@ input,
     min-height: 100%;
 }
 
-.ant-flex {
-    display: flex !important;
-}
-
 .ant-menu-horizontal,
 .ant-menu-item::after,
 .ant-menu-submenu::after {
@@ -284,9 +264,6 @@ input,
     }
     .related-anime > .ant-col > .ant-space {
         justify-content: center;
-    }
-    .anime-title {
-        text-align: center;
     }
     .anime-detail-row {
         padding: 20% 5px 5px !important;
