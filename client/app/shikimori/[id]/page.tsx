@@ -657,24 +657,26 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                                                         align="center"
                                                         gap={10}
                                                     >
-                                                        {animes.screenshots
-                                                            .slice(0, 3)
-                                                            .map(
-                                                                (
-                                                                    animes: Screenshot
-                                                                ) => (
-                                                                    <Image
-                                                                        style={{
-                                                                            maxWidth: 300,
-                                                                            width: 300,
-                                                                        }}
-                                                                        preview
-                                                                        src={
-                                                                            animes.originalUrl
-                                                                        }
-                                                                    ></Image>
-                                                                )
-                                                            )}
+                                                        <Image.PreviewGroup>
+                                                            {animes.screenshots
+                                                                .slice(0, 3)
+                                                                .map(
+                                                                    (
+                                                                        animes: Screenshot
+                                                                    ) => (
+                                                                        <Image
+                                                                            style={{
+                                                                                maxWidth: 300,
+                                                                                width: 300,
+                                                                            }}
+                                                                            preview
+                                                                            src={
+                                                                                animes.originalUrl
+                                                                            }
+                                                                        ></Image>
+                                                                    )
+                                                                )}
+                                                        </Image.PreviewGroup>
                                                     </Flex>
                                                 </Col>
                                                 <Col style={{ padding: 12 }}>
