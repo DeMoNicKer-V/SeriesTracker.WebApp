@@ -28,6 +28,7 @@ import "./searchbar.css";
 import { getAnimesByName } from "../services/shikimori";
 import Meta from "antd/es/card/Meta";
 import noFoundImage from "../img/empty.png";
+import { EmptyView } from "./EmptyView";
 
 export const SearchBar = ({}) => {
     const inputRef = useRef<InputRef>(null);
@@ -42,7 +43,6 @@ export const SearchBar = ({}) => {
             return;
         }
         setLoading(true);
-        setNullString("");
         const timer = setTimeout(() => {
             fakeApi();
             setIsShown(true);
@@ -67,7 +67,14 @@ export const SearchBar = ({}) => {
             return;
         }
     };
-    const customizeRenderEmpty = () => <></>;
+    const customizeRenderEmpty = () => (
+        <EmptyView
+            text={nullString}
+            iconSize={20}
+            fontSize={16}
+            align={"center"}
+        />
+    );
     const { Link } = Typography;
     const { Text, Title } = Typography;
 
@@ -100,18 +107,6 @@ export const SearchBar = ({}) => {
                 content={
                     <List
                         style={{ backgroundColor: "#1e1e1e" }}
-                        header={
-                            nullString && (
-                                <Flex gap={10} justify="center">
-                                    <InfoCircleFilled
-                                        style={{ fontSize: 20, color: "#fff" }}
-                                    />
-                                    <Text style={{ fontSize: 16 }} strong>
-                                        {nullString}
-                                    </Text>
-                                </Flex>
-                            )
-                        }
                         dataSource={animes}
                         renderItem={(item: SeriesAnime) => (
                             <Link href={`/shikimori/${item.id}`}>

@@ -186,7 +186,9 @@ export const getUserByUserName = async (username: string) => {
     const response = await fetch(
         `http://localhost:5125/user/username/${username}`
     );
+    if (!response.ok) {
+        return null;
+    }
     const user: MainUserInfo = await response.json();
-
     return user;
 };

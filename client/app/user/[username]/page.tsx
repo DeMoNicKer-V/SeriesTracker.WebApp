@@ -25,27 +25,31 @@ import { getAnimesById, LastActivityAnime } from "@/app/services/shikimori";
 import { IsCurrentUser } from "@/app/api/coockie";
 import { EmptyView } from "@/app/components/EmptyView";
 import useSWR from "swr";
+import { LongRightArrow } from "@/app/img/LongRightArrow";
 export default function UserPage({ params }: { params: { username: string } }) {
     const router = useRouter();
     const [error, setError] = useState<boolean>(false);
+    const [currentUser, setCurrentUser] = useState<boolean>(false);
     const pathname = usePathname();
-    const [userInfo, setUserInfo] = useState<MainUserInfo>();
+    const [userInfo, setUserInfo] = useState<MainUserInfo | null>(null);
     const [animes, setAnimes] = useState<LastActivityAnime[]>();
     const { Text, Title } = Typography;
 
     const getCurrentUser = async (username: string) => {
-        setError(await IsCurrentUser(username));
-        const currentUser = await getUserByUserName(username);
-        setUserInfo(currentUser);
-        if (currentUser.activityInfo.length > 0) {
-            const animes = await getAnimesById(
-                currentUser.activityInfo.join(",")
-            );
+        const user = await getUserByUserName(username);
+        if (!user) {
+            setError(true);
+            return;
+        }
+        setCurrentUser(await IsCurrentUser(username));
+        setUserInfo(user);
+        if (user.activityInfo.length > 0) {
+            const animes = await getAnimesById(user.activityInfo.join(","));
             setAnimes(animes);
         }
     };
 
-    const { data = [], isLoading } = useSWR(params.username, getCurrentUser, {
+    const { isLoading } = useSWR(params.username, getCurrentUser, {
         // Опции для useSWR
         revalidateOnFocus: false, // Отключить обновление при фокусе
         revalidateOnReconnect: false, // Отключить обновление при восстановлении соединения
@@ -67,7 +71,7 @@ export default function UserPage({ params }: { params: { username: string } }) {
     const customizeRenderEmpty = () => (
         <EmptyView text="Пользователь еще ничего не добавил" />
     );
-    return (
+    return error === false ? (
         <div className="container">
             <title>{`${params.username} / Профиль`}</title>
             <Row gutter={[15, 15]} align={"top"} justify={"center"}>
@@ -296,7 +300,7 @@ export default function UserPage({ params }: { params: { username: string } }) {
                 )}
             </Row>
 
-            {error && (
+            {currentUser && (
                 <FloatButton.Group style={{ right: 32 }}>
                     <FloatButton
                         onClick={() => router.push(`${pathname}/edit`)}
@@ -306,5 +310,23 @@ export default function UserPage({ params }: { params: { username: string } }) {
                 </FloatButton.Group>
             )}
         </div>
+    ) : (
+        <Flex
+            gap={10}
+            justify="center"
+            align="center"
+            className="flex-column height-100"
+        >
+            <EmptyView text="Такого пользователя не существует" />
+
+            <Button
+                style={{ fontWeight: 700 }}
+                type="link"
+                icon={<LongRightArrow />}
+                iconPosition="end"
+            >
+                Вернуться на главную
+            </Button>
+        </Flex>
     );
 }
