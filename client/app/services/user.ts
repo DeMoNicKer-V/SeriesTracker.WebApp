@@ -1,10 +1,10 @@
 export interface UserRequest {
-    userName: string;
-    name?: string;
-    surName?: string;
     email: string;
     password: string;
+    userName: string;
     avatar?: string;
+    name?: string;
+    surName?: string;
     dateBirth?: string;
 }
 
