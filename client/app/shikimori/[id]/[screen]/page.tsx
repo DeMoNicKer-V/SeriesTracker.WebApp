@@ -10,6 +10,7 @@ import {
     Button,
     Row,
     Col,
+    Tooltip,
 } from "antd";
 import Title from "antd/es/typography/Title";
 import Text from "antd/es/typography/Text";
@@ -41,7 +42,7 @@ export default function ScreenshotPage({ params }: { params: { id: string } }) {
             <title>
                 {!animes.title
                     ? "Series Tracker"
-                    : `Series Tracker / ${animes.subTitle} / Кадры`}
+                    : `Series Tracker - ${animes.subTitle} / Кадры`}
             </title>
             <Spin
                 size="large"
@@ -65,16 +66,18 @@ export default function ScreenshotPage({ params }: { params: { id: string } }) {
                             items={[
                                 {
                                     title: (
-                                        <Link
-                                            style={{
-                                                display: "flex",
-                                                alignItems: "center",
-                                                justifyContent: "center",
-                                            }}
-                                            href="/shikimori"
-                                        >
-                                            <ShikimoriLogo />
-                                        </Link>
+                                        <Tooltip title="На главную">
+                                            <Link
+                                                style={{
+                                                    display: "flex",
+                                                    alignItems: "center",
+                                                    justifyContent: "center",
+                                                }}
+                                                href="/shikimori"
+                                            >
+                                                <ShikimoriLogo />
+                                            </Link>
+                                        </Tooltip>
                                     ),
                                 },
                                 {
@@ -96,18 +99,11 @@ export default function ScreenshotPage({ params }: { params: { id: string } }) {
                                             href={"./"}
                                         >
                                             <LongLeftArrow />
-                                            Назад
+                                            Назад к аниме
                                         </Link>
                                     ),
                                 },
-                                {
-                                    type: "separator",
-                                },
-                                {
-                                    title: (
-                                        <Link href={"./"}>{animes.title}</Link>
-                                    ),
-                                },
+
                                 {
                                     type: "separator",
                                 },
@@ -123,6 +119,7 @@ export default function ScreenshotPage({ params }: { params: { id: string } }) {
                 <Card>
                     <Image.PreviewGroup>
                         <List
+                            className="animes-list"
                             style={{ padding: 10 }}
                             grid={{
                                 gutter: 16,

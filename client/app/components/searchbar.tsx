@@ -85,7 +85,6 @@ export const SearchBar = ({}) => {
             renderEmpty={customizeRenderEmpty}
         >
             <Popover
-                mouseLeaveDelay={0.75}
                 trigger={"hover"}
                 overlayStyle={{
                     width: "calc(40% + 10px)",
