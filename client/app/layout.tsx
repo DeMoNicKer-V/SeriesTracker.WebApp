@@ -270,7 +270,6 @@ export default function RootLayout({
                         style={{
                             visibility: !mounted ? "hidden" : "visible",
                             minHeight: "100vh",
-                            minWidth: "100vw",
                         }}
                     >
                         <title>Series Tracker</title>

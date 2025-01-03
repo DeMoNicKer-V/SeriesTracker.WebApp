@@ -9,6 +9,7 @@ body {
 }
 body {
     overflow-x: hidden;
+    overflow-y: scroll;
 }
 .cards {
     display: grid;
@@ -200,6 +201,7 @@ input,
 .container {
     padding: 20px;
     min-height: 100%;
+    min-width: 100%;
 }
 
 .ant-menu-horizontal,

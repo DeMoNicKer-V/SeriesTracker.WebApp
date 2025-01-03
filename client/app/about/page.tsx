@@ -1,10 +1,14 @@
 "use client";
 import { ConfigProvider, Descriptions, Divider, Typography } from "antd";
 import styles from "./page.module.css";
+import { useEffect } from "react";
 
 const { Title, Paragraph, Text } = Typography;
 
 export default function AboutPage() {
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
     return (
         <div className="container">
             <ConfigProvider
@@ -12,14 +16,13 @@ export default function AboutPage() {
                     components: {
                         Typography: {
                             fontSize: 15,
-
                             colorTextHeading: "#44a5a6",
                         },
                     },
                 }}
             >
                 <Divider orientation="left">
-                    <Title level={3}>Общие положения</Title>
+                    <Title level={3}>1. Общие положения</Title>
                 </Divider>
                 <ul className={styles["second-level"]}>
                     <li>
@@ -56,7 +59,7 @@ export default function AboutPage() {
                 </ul>
 
                 <Divider orientation="left">
-                    <Title level={3}>Регистрация и учетные записи</Title>
+                    <Title level={3}>2. Регистрация и учетные записи</Title>
                 </Divider>
 
                 <ul className={styles["second-level"]}>
@@ -127,7 +130,7 @@ export default function AboutPage() {
                 </ul>
 
                 <Divider orientation="left">
-                    <Title level={3}>Контент и поведение</Title>
+                    <Title level={3}>3. Контент и поведение</Title>
                 </Divider>
 
                 <ul className={styles["second-level"]}>
@@ -242,7 +245,7 @@ export default function AboutPage() {
                 </ul>
 
                 <Divider orientation="left">
-                    <Title level={3}>Ответственность и санкции</Title>
+                    <Title level={3}>4. Ответственность и санкции</Title>
                 </Divider>
 
                 <ul className={styles["second-level"]}>
@@ -297,13 +300,12 @@ export default function AboutPage() {
                 </ul>
 
                 <Divider orientation="left">
-                    <Title level={3}>Авторские права и контент</Title>
+                    <Title level={3}>5. Авторские права и контент</Title>
                 </Divider>
 
                 <ul className={styles["second-level"]}>
                     <li>
                         <Paragraph strong className={styles["subtitle"]}>
-                            {" "}
                             Авторский контент
                         </Paragraph>
                         <Paragraph type="secondary">
@@ -325,7 +327,7 @@ export default function AboutPage() {
                 </ul>
 
                 <Divider orientation="left">
-                    <Title level={3}> Прочие положения</Title>
+                    <Title level={3}>6. Прочие положения</Title>
                 </Divider>
 
                 <ul className={styles["second-level"]}>
