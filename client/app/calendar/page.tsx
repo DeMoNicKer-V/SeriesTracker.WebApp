@@ -84,7 +84,7 @@ const getDatesArray = () => {
                         {capitalizeFirstLetter(dayjs(newDate).format("dddd"))}
                     </Title>
                     <Text italic type="secondary">
-                        {dayjs(newDate).format("DD MMMM")}
+                        {dayjs(newDate).format("D MMMM")}
                     </Text>
                 </Flex>
             ),
@@ -181,8 +181,6 @@ export default function CalendarPage() {
                                                 <Row align={"middle"}>
                                                     <Col>
                                                         <Image
-                                                            placeholder={true}
-                                                            loading={"lazy"}
                                                             preview={false}
                                                             width={100}
                                                             src={`https://desu.shikimori.one${item.anime.image.preview}`}

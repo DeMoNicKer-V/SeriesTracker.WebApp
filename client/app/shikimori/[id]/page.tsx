@@ -62,7 +62,7 @@ import { LongLeftArrow } from "@/app/img/LongLeftArrow";
 import { getCategoryById, getCategoryList } from "@/app/services/category";
 import { skip } from "node:test";
 import CheckableTag from "antd/es/tag/CheckableTag";
-import noFoundImage from ".//..//../img/empty.png";
+import noFoundImage from ".//..//../img/img-error.jpg";
 import { IsAuth } from "@/app/api/coockie";
 
 export default function AnimePage({ params }: { params: { id: string } }) {

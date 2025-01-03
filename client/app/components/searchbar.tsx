@@ -27,7 +27,7 @@ import {
 import "./searchbar.css";
 import { getAnimesByName } from "../services/shikimori";
 import Meta from "antd/es/card/Meta";
-import noFoundImage from "../img/empty.png";
+import noFoundImage from "../img/img-error.jpg";
 import { EmptyView } from "./EmptyView";
 
 export const SearchBar = ({}) => {
