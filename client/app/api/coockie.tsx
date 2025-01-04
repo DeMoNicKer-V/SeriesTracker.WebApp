@@ -29,7 +29,7 @@ export async function GetPermissions(permission: number) {
         const decodedToken = jwtDecode(a); // Декодируем токен
         const user = await getUserById(decodedToken.userId);
         if (user?.permissions.includes(permission)) {
-            return true;
+            return { userId: decodedToken.userId, roleId: decodedToken.roleId };
         }
     }
     return false;

@@ -43,27 +43,27 @@ namespace SeriesTracker.DataAccess.Repositories
 
         public async Task<User> GetUserById(Guid id)
         {
-            var userEntity = await _context.UserEntities.AsNoTracking().Where(c => c.Id == id).FirstAsync();
+            var userEntity = await _context.UserEntities.AsNoTracking().Include(u => u.Roles).Where(c => c.Id == id).FirstAsync();
 
-            var user = User.Create(userEntity.Id, userEntity.UserName, userEntity.Name, userEntity.Surname, userEntity.Email, userEntity.PasswordHash, userEntity.Avatar, userEntity.DateOfBirth, userEntity.RegistrationDate).User;
+            var user = User.Create(userEntity.Id, userEntity.UserName, userEntity.Name, userEntity.Surname, userEntity.Email, userEntity.PasswordHash, userEntity.Avatar, userEntity.DateOfBirth, userEntity.RegistrationDate, userEntity.Roles.FirstOrDefault().Id).User;
 
             return user;
         }
 
         public async Task<User> GetUserByEmail(string email)
         {
-            var userEntity = await _context.UserEntities.AsNoTracking().Where(c => c.Email == email).FirstAsync();
+            var userEntity = await _context.UserEntities.AsNoTracking().Include(u => u.Roles).Where(c => c.Email == email).FirstAsync();
 
-            var user = User.Create(userEntity.Id, userEntity.UserName, userEntity.Name, userEntity.Surname, userEntity.Email, userEntity.PasswordHash, userEntity.Avatar, userEntity.DateOfBirth, userEntity.RegistrationDate).User;
+            var user = User.Create(userEntity.Id, userEntity.UserName, userEntity.Name, userEntity.Surname, userEntity.Email, userEntity.PasswordHash, userEntity.Avatar, userEntity.DateOfBirth, userEntity.RegistrationDate, userEntity.Roles.FirstOrDefault().Id).User;
 
             return user;
         }
 
         public async Task<User> GetUserByUserName(string username)
         {
-            var userEntity = await _context.UserEntities.AsNoTracking().Where(c => c.UserName == username).FirstAsync();
+            var userEntity = await _context.UserEntities.AsNoTracking().Include(u => u.Roles).Where(c => c.UserName == username).FirstAsync();
 
-            var user = User.Create(userEntity.Id, userEntity.UserName, userEntity.Name, userEntity.Surname, userEntity.Email, userEntity.PasswordHash, userEntity.Avatar, userEntity.DateOfBirth, userEntity.RegistrationDate).User;
+            var user = User.Create(userEntity.Id, userEntity.UserName, userEntity.Name, userEntity.Surname, userEntity.Email, userEntity.PasswordHash, userEntity.Avatar, userEntity.DateOfBirth, userEntity.RegistrationDate, userEntity.Roles.FirstOrDefault().Id).User;
 
             return user;
         }

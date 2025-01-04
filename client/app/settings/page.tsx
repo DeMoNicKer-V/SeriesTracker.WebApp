@@ -5,6 +5,7 @@ import {
     Carousel,
     Col,
     ColorPicker,
+    ConfigProvider,
     Flex,
     Input,
     Modal,
@@ -44,26 +45,26 @@ export default function SettingsPage() {
 
     const userRoles = [
         {
-            value: 1,
-            label: "Админ",
+            value: 2,
+            label: "Модер",
         },
-        { value: 2, label: "Пользователь" },
+        { value: 3, label: "Юзер" },
     ];
     const [api, contextHolder] = notification.useNotification();
     const [categories, setCategories] = useState<Category[]>([]);
     const [users, setUsers] = useState<User[]>([]);
-    const [currentUserId, setCurrentUserId] = useState<string>("");
+    const [currentUser, setCurrentUser] = useState<User | any>({
+        id: "",
+        roleId: 0,
+    });
     const [deleteUserUsername, setDeleteUserUsername] = useState<string>("");
     const [deleteStr, setDeleteStr] = useState<string>("");
     const [openDeleteUser, setOpenDeleteUser] = useState<boolean>(false);
     const getCategories = async () => {
-        const currentUser = await GetPermissions(1);
-        if (currentUser === false) {
-            return null;
-        }
+        const currentUser = await GetPermissions(2);
+        console.log(currentUser);
         setError(true);
-        const uu = await GetCoockie();
-        setCurrentUserId(uu);
+        setCurrentUser(currentUser);
         const category = await getCategoryList();
         const users = await getUserList();
 
@@ -104,8 +105,8 @@ export default function SettingsPage() {
         getCategories();
     }, []);
 
-    const onChange = async (userId: string, e: RadioChangeEvent) => {
-        await changeUserRole(userId, e.target.value);
+    const onChange = async (userId: string, value: number) => {
+        await changeUserRole(userId, value);
         window.location.reload();
     };
 
@@ -267,13 +268,25 @@ export default function SettingsPage() {
             showSorterTooltip: false,
             sorter: (a, b) => a.roleId - b.roleId,
             render: (roleId, record) => (
-                <Radio.Group
-                    onChange={(e) => onChange(record.id, e)}
-                    disabled={record.id === currentUserId ? true : false}
-                    size="small"
-                    options={userRoles}
-                    defaultValue={roleId}
-                    optionType={"button"}
+                <Segmented
+                    onChange={(value) => onChange(record.id, value)}
+                    defaultValue={record.roleId}
+                    options={
+                        record.roleId === 1
+                            ? [{ value: 1, label: "Админ" }]
+                            : [
+                                  {
+                                      value: 2,
+                                      label: "Модер",
+                                      disabled: currentUser.roleId != 1,
+                                  },
+                                  {
+                                      value: 3,
+                                      label: "Юзер",
+                                      disabled: currentUser.roleId != 1,
+                                  },
+                              ]
+                    }
                 />
             ),
         },
@@ -305,13 +318,15 @@ export default function SettingsPage() {
                         size="small"
                         icon={<EyeOutlined />}
                     />
-                    <Button
-                        disabled={record.id === currentUserId ? true : false}
-                        danger
-                        onClick={() => openDeleteModal(record.userName)}
-                        size="small"
-                        icon={<DeleteOutlined />}
-                    />
+                    {record.id !== currentUser.userId &&
+                        record.roleId > currentUser.roleId && (
+                            <Button
+                                danger
+                                onClick={() => openDeleteModal(record.userName)}
+                                size="small"
+                                icon={<DeleteOutlined />}
+                            />
+                        )}
                 </Space>
             ),
         },
@@ -319,95 +334,106 @@ export default function SettingsPage() {
 
     return error === true ? (
         <div className="container">
-            <title>Series Tracker - Настройки</title>
-            <Row gutter={[20, 20]} align={"middle"} justify={"center"}>
-                <Col span={23}>
-                    <Tabs
-                        animated
-                        defaultActiveKey="category"
-                        centered
-                        items={[
-                            {
-                                label: "Список категорий",
-                                key: "category",
-                                icon: <EyeOutlined />,
-                                children: (
-                                    <Table
-                                        scroll={{ x: "max-content" }}
-                                        pagination={false}
-                                        columns={categoryColumns}
-                                        dataSource={categories}
-                                    />
-                                ),
-                            },
-                            {
-                                label: "Список пользователей",
-                                key: "user",
-                                icon: <TeamOutlined />,
-                                children: (
-                                    <Table
-                                        scroll={{ x: "max-content" }}
-                                        pagination={false}
-                                        columns={userColumn}
-                                        dataSource={users}
-                                    />
-                                ),
-                            },
-                        ]}
-                    />
-                </Col>
-            </Row>
-            <Modal
-                centered
-                onOk={deleteUser}
-                onCancel={onClose}
-                closeIcon={false}
-                open={openDeleteUser}
-                cancelText="Нет"
-                okText="Удалить"
-                okButtonProps={{
-                    danger: true,
-                    disabled: deleteStr !== "УДАЛИТЬ",
+            <ConfigProvider
+                theme={{
+                    components: {
+                        Segmented: { colorTextDisabled: "#ffffffd9" },
+                    },
                 }}
-                title={
-                    <Flex gap={10}>
-                        <QuestionCircleOutlined style={{ color: "orange" }} />
-                        <Typography.Title level={5}>
-                            Удалить {deleteUserUsername}?
-                        </Typography.Title>
-                    </Flex>
-                }
-                footer={(_, { OkBtn, CancelBtn }) => (
-                    <>
-                        <CancelBtn />
-                        <OkBtn />
-                    </>
-                )}
             >
-                <Flex style={{ flexDirection: "column" }} gap={10}>
-                    <Typography.Paragraph>
-                        Будьте внимательны, это необратимое действие! <br />
-                        Для того, чтобы удалить аккаунт, введите в поле ниже - (
-                        <Typography.Text type="danger" code strong>
-                            УДАЛИТЬ
-                        </Typography.Text>
-                        ) .
-                    </Typography.Paragraph>
+                <title>Series Tracker - Настройки</title>
+                <Row gutter={[20, 20]} align={"middle"} justify={"center"}>
+                    <Col span={23}>
+                        <Tabs
+                            animated
+                            defaultActiveKey="category"
+                            centered
+                            items={[
+                                {
+                                    label: "Список категорий",
+                                    key: "category",
+                                    icon: <EyeOutlined />,
+                                    children: (
+                                        <Table
+                                            scroll={{ x: "max-content" }}
+                                            pagination={false}
+                                            columns={categoryColumns}
+                                            dataSource={categories}
+                                        />
+                                    ),
+                                },
+                                {
+                                    label: "Список пользователей",
+                                    key: "user",
+                                    icon: <TeamOutlined />,
+                                    children: (
+                                        <Table
+                                            scroll={{ x: "max-content" }}
+                                            pagination={false}
+                                            columns={userColumn}
+                                            dataSource={users}
+                                        />
+                                    ),
+                                },
+                            ]}
+                        />
+                    </Col>
+                </Row>
+                <Modal
+                    centered
+                    onOk={deleteUser}
+                    onCancel={onClose}
+                    closeIcon={false}
+                    open={openDeleteUser}
+                    cancelText="Нет"
+                    okText="Удалить"
+                    okButtonProps={{
+                        danger: true,
+                        disabled: deleteStr !== "УДАЛИТЬ",
+                    }}
+                    title={
+                        <Flex gap={10}>
+                            <QuestionCircleOutlined
+                                style={{ color: "orange" }}
+                            />
+                            <Typography.Title level={5}>
+                                Удалить {deleteUserUsername}?
+                            </Typography.Title>
+                        </Flex>
+                    }
+                    footer={(_, { OkBtn, CancelBtn }) => (
+                        <>
+                            <CancelBtn />
+                            <OkBtn />
+                        </>
+                    )}
+                >
+                    <Flex style={{ flexDirection: "column" }} gap={10}>
+                        <Typography.Paragraph>
+                            Будьте внимательны, это необратимое действие! <br />
+                            Для того, чтобы удалить аккаунт, введите в поле ниже
+                            - (
+                            <Typography.Text type="danger" code strong>
+                                УДАЛИТЬ
+                            </Typography.Text>
+                            ) .
+                        </Typography.Paragraph>
 
-                    <Input
-                        onChange={(e) => setDeleteStr(e.target.value)}
-                        value={deleteStr}
-                        spellCheck={false}
-                        status="error"
-                        size="small"
-                        style={{
-                            textAlign: "center",
-                            fontSize: 16,
-                            fontWeight: 500,
-                        }}
-                    />
-                </Flex>
-            </Modal>
+                        <Input
+                            onChange={(e) => setDeleteStr(e.target.value)}
+                            value={deleteStr}
+                            spellCheck={false}
+                            status="error"
+                            size="small"
+                            style={{
+                                textAlign: "center",
+                                fontSize: 16,
+                                fontWeight: 500,
+                            }}
+                        />
+                    </Flex>
+                </Modal>
+            </ConfigProvider>
         </div>
     ) : (
         <p>У вас нет доступа к данной странице</p>

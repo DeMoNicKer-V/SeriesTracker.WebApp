@@ -73,7 +73,7 @@ namespace SeriesTracker.Core.Models
         }
 
 
-        public static (User User, string Error) Create(Guid id, string userName, string name, string surName, string email, string password, string avatar, string dateBirth, string regDate, int roleId = 2)
+        public static (User User, string Error) Create(Guid id, string userName, string name, string surName, string email, string password, string avatar, string dateBirth, string regDate, int roleId = 3)
         {
             string error = string.Empty;
             if (string.IsNullOrEmpty(userName))

@@ -106,7 +106,7 @@ export default function RootLayout({
                 label: "Случайное аниме",
             },
         ];
-        if (user?.permissions.includes(1)) {
+        if (user?.permissions.includes(2)) {
             items2.push({
                 key: "settings",
                 icon: <SettingOutlined />,
@@ -178,7 +178,6 @@ export default function RootLayout({
     const GetUser = async () => {
         var code = await GetCoockie();
         if (code) {
-            localStorage.setItem("userId", code);
             setIsUser(true);
             const currentUser = await getUserById(code);
             updateMenu(currentUser);
