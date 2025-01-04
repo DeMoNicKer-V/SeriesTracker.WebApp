@@ -10,6 +10,8 @@ namespace SeriesTracker.Core.Enums
     {
         Admin = 1,
 
-        User = 2
+        Moder = 2,
+
+        User = 3
     }
 }
