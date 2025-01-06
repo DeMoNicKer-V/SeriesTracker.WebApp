@@ -174,7 +174,10 @@ export default function UserPage({ params }: { params: { username: string } }) {
             <Row gutter={[15, 15]} align={"middle"} justify={"center"}>
                 <Col span={22}>
                     <Menu
-                        style={{ justifyContent: "center" }}
+                        style={{
+                            justifyContent: "center",
+                            backgroundColor: "transparent",
+                        }}
                         onSelect={onClick}
                         selectedKeys={[mylist]}
                         items={sortMenuItems}

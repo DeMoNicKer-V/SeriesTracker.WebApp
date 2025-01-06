@@ -339,7 +339,7 @@ export default function SettingsPage() {
             <ConfigProvider
                 theme={{
                     components: {
-                        Segmented: { colorTextDisabled: "#ffffffd9" },
+                        Tabs: { fontSize: 16 },
                     },
                 }}
             >

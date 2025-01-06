@@ -299,7 +299,7 @@ export default function RootLayout({
                         >
                             <Row align="middle" justify={"space-between"}>
                                 <Col>
-                                    <Flex gap={20}>
+                                    <Flex>
                                         <Button
                                             type="text"
                                             icon={
@@ -318,15 +318,14 @@ export default function RootLayout({
                                             disabled={pathName === "/shikimori"}
                                             href="/shikimori"
                                             type="link"
-                                            icon={
-                                                <LogoIcon
-                                                    width={50}
-                                                    height={50}
-                                                    firstColor="white"
-                                                    secondColor="#44a5a6"
-                                                />
-                                            }
-                                        />
+                                        >
+                                            <LogoIcon
+                                                width={40}
+                                                height={40}
+                                                firstColor="white"
+                                                secondColor="#44a5a6"
+                                            />
+                                        </Button>
                                     </Flex>
                                 </Col>
 
@@ -398,7 +397,7 @@ export default function RootLayout({
                             <Sider
                                 onMouseEnter={mouseControlEnter}
                                 onMouseLeave={mouseControlLeave}
-                                width={230}
+                                width={235}
                                 breakpoint="xl"
                                 trigger={null}
                                 collapsible
