@@ -254,6 +254,13 @@ input,
         align-items: center;
     }
 }
+@media (max-width: 576px) {
+    .responsive-text-align {
+        justify-content: center;
+        text-align: center;
+    }
+}
+
 @media (max-width: 1200px) {
     .related-anime {
         flex-direction: column;

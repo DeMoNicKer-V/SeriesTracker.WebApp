@@ -78,18 +78,14 @@ export default function UserPage({ params }: { params: { username: string } }) {
                 <Col xs={24} sm={24} md={24} lg={16} xl={16} xxl={16}>
                     <Card
                         style={{
-                            display: "flex",
-                            width: "100%",
-                            alignItems: "center",
                             padding: 12,
-                            gap: 10,
                         }}
                         bordered
                     >
                         <Row
+                            className="responsive-text-align"
                             gutter={[15, 15]}
                             align={"middle"}
-                            justify={"center"}
                         >
                             <Col>
                                 <Avatar
@@ -115,7 +111,7 @@ export default function UserPage({ params }: { params: { username: string } }) {
                                     title={
                                         <Flex
                                             align="center"
-                                            className="profile-header"
+                                            className="responsive-text-align"
                                         >
                                             <Title
                                                 style={{
@@ -274,36 +270,47 @@ export default function UserPage({ params }: { params: { username: string } }) {
                                     <List.Item style={{ display: "block" }}>
                                         <Link href={`/shikimori/${item.id}`}>
                                             <Card
-                                                className="related-anime"
-                                                cover={
-                                                    <Image
-                                                        preview={false}
-                                                        height={90}
-                                                        src={item.image}
-                                                    />
-                                                }
-                                                style={{
-                                                    alignItems: "center",
-                                                    gap: 10,
-                                                    display: "flex",
-                                                    padding: 12,
-                                                    marginBottom: 8,
-                                                }}
+                                                style={{ padding: 12 }}
                                                 hoverable
                                             >
-                                                <Meta
-                                                    title={item.title}
-                                                    description={new Date(
-                                                        item.date
-                                                    ).toLocaleDateString(
-                                                        "ru-RU",
-                                                        {
-                                                            day: "numeric",
-                                                            month: "long",
-                                                            year: "numeric",
-                                                        }
-                                                    )}
-                                                />
+                                                <Row
+                                                    className="responsive-text-align"
+                                                    gutter={[20, 20]}
+                                                    align={"middle"}
+                                                >
+                                                    <Col
+                                                        xs={24}
+                                                        sm={4}
+                                                        lg={4}
+                                                        xxl={2}
+                                                    >
+                                                        <Image
+                                                            preview={false}
+                                                            height={90}
+                                                            src={item.image}
+                                                        />
+                                                    </Col>
+                                                    <Col
+                                                        xs={24}
+                                                        sm={20}
+                                                        lg={20}
+                                                        xxl={20}
+                                                    >
+                                                        <Meta
+                                                            title={item.title}
+                                                            description={new Date(
+                                                                item.date
+                                                            ).toLocaleDateString(
+                                                                "ru-RU",
+                                                                {
+                                                                    day: "numeric",
+                                                                    month: "long",
+                                                                    year: "numeric",
+                                                                }
+                                                            )}
+                                                        />
+                                                    </Col>
+                                                </Row>
                                             </Card>
                                         </Link>
                                     </List.Item>
