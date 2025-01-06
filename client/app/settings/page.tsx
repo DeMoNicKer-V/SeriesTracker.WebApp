@@ -62,7 +62,6 @@ export default function SettingsPage() {
     const [openDeleteUser, setOpenDeleteUser] = useState<boolean>(false);
     const getCategories = async () => {
         const currentUser = await GetPermissions(2);
-        console.log(currentUser);
         setError(true);
         setCurrentUser(currentUser);
         const category = await getCategoryList();
@@ -105,8 +104,8 @@ export default function SettingsPage() {
         getCategories();
     }, []);
 
-    const onChange = async (userId: string, value: number) => {
-        await changeUserRole(userId, value);
+    const onChange = async (userId: string, e: RadioChangeEvent) => {
+        await changeUserRole(userId, e.target.value);
         window.location.reload();
     };
 
@@ -266,13 +265,15 @@ export default function SettingsPage() {
             dataIndex: "roleId",
             key: "roleId",
             showSorterTooltip: false,
-            sorter: (a, b) => a.roleId - b.roleId,
+            sorter: (a, b) => b.roleId - a.roleId,
             render: (roleId, record) => (
-                <Segmented
-                    onChange={(value) => onChange(record.id, value)}
-                    defaultValue={record.roleId}
+                <Radio.Group
+                    key={record.id}
+                    optionType="button"
+                    onChange={(e) => onChange(record.id, e)}
+                    defaultValue={roleId}
                     options={
-                        record.roleId === 1
+                        roleId === 1
                             ? [{ value: 1, label: "Админ" }]
                             : [
                                   {
@@ -314,6 +315,7 @@ export default function SettingsPage() {
             render: (_, record) => (
                 <Space size={"small"}>
                     <Button
+                        target="_blank"
                         href={`user/${record.userName}`}
                         size="small"
                         icon={<EyeOutlined />}
@@ -355,6 +357,7 @@ export default function SettingsPage() {
                                     icon: <EyeOutlined />,
                                     children: (
                                         <Table
+                                            rowKey="name"
                                             scroll={{ x: "max-content" }}
                                             pagination={false}
                                             columns={categoryColumns}
@@ -368,6 +371,7 @@ export default function SettingsPage() {
                                     icon: <TeamOutlined />,
                                     children: (
                                         <Table
+                                            rowKey="userName"
                                             scroll={{ x: "max-content" }}
                                             pagination={false}
                                             columns={userColumn}

@@ -15,10 +15,13 @@ import {
     Tooltip,
     Typography,
 } from "antd";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { getUserByUserName, MainUserInfo } from "../../services/user";
-import Meta from "antd/es/card/Meta";
-import { SettingOutlined, UserOutlined } from "@ant-design/icons";
+import {
+    CrownOutlined,
+    SettingOutlined,
+    UserOutlined,
+} from "@ant-design/icons";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import { getAnimesById, LastActivityAnime } from "@/app/services/shikimori";
@@ -26,6 +29,13 @@ import { IsCurrentUser } from "@/app/api/coockie";
 import { EmptyView } from "@/app/components/EmptyView";
 import useSWR from "swr";
 import { LongRightArrow } from "@/app/img/LongRightArrow";
+
+import dayjs from "dayjs";
+import "dayjs/locale/ru";
+import relativeTime from "dayjs/plugin/relativeTime";
+dayjs.locale("ru");
+dayjs.extend(relativeTime);
+
 export default function UserPage({ params }: { params: { username: string } }) {
     const router = useRouter();
     const [error, setError] = useState<boolean>(false);
@@ -54,18 +64,8 @@ export default function UserPage({ params }: { params: { username: string } }) {
         revalidateOnFocus: false, // Отключить обновление при фокусе
         revalidateOnReconnect: false, // Отключить обновление при восстановлении соединения
     });
-    const getFormatedAge = (age: number) => {
-        if (age % 10 === 1 && age % 100 !== 11) {
-            return `${age} год`;
-        } else if (
-            age % 10 >= 2 &&
-            age % 10 <= 4 &&
-            (age % 100 < 12 || age % 100 > 14)
-        ) {
-            return `${age} года`;
-        } else {
-            return `${age} лет`;
-        }
+    const getFormatedAge = (dateBirth: string) => {
+        return dayjs(dateBirth).fromNow(true);
     };
     const { Meta } = Card;
     const customizeRenderEmpty = () => (
@@ -77,7 +77,6 @@ export default function UserPage({ params }: { params: { username: string } }) {
             <Row gutter={[15, 15]} align={"top"} justify={"center"}>
                 <Col xs={24} sm={24} md={24} lg={16} xl={16} xxl={16}>
                     <Card
-                        className="profile-header"
                         style={{
                             display: "flex",
                             width: "100%",
@@ -114,14 +113,29 @@ export default function UserPage({ params }: { params: { username: string } }) {
                                         fontSize: 17,
                                     }}
                                     title={
-                                        <Title
-                                            style={{
-                                                margin: 0,
-                                            }}
-                                            level={3}
+                                        <Flex
+                                            align="center"
+                                            className="profile-header"
                                         >
-                                            {userInfo?.userInfo.userName}
-                                        </Title>
+                                            <Title
+                                                style={{
+                                                    margin: 0,
+                                                }}
+                                                level={3}
+                                            >
+                                                {userInfo?.userInfo.userName}
+                                            </Title>
+                                            {userInfo?.userInfo.roleId ===
+                                                1 && (
+                                                <Tooltip title="Админ">
+                                                    <Button
+                                                        color="gold"
+                                                        variant="link"
+                                                        icon={<CrownOutlined />}
+                                                    />
+                                                </Tooltip>
+                                            )}
+                                        </Flex>
                                     }
                                     description={
                                         <Flex
@@ -137,11 +151,11 @@ export default function UserPage({ params }: { params: { username: string } }) {
                                             </Text>
 
                                             <Divider type="vertical" />
-                                            {userInfo?.userInfo.yearsOld && (
+                                            {userInfo?.userInfo.dateBirth && (
                                                 <Text>
                                                     {getFormatedAge(
                                                         userInfo?.userInfo
-                                                            .yearsOld
+                                                            .dateBirth
                                                     )}
                                                 </Text>
                                             )}

@@ -114,26 +114,10 @@ namespace SeriesTracker.DataAccess.Repositories
 
         public async Task<List<User>> GetUserList()
         {
-            var result = await _context.UserEntities
-                .AsNoTracking()
-                .Include(u => u.Roles)
-                .Select(u => new
-                {
-                    Id = u.Id,
-                    UserName = u.UserName,
-                    Name = u.Name,
-                    Surname = u.Surname,
-                    Email = u.Email,
-                    PasswordHash = u.PasswordHash,
-                    Avatar = u.Avatar,
-                    DateOfBirth = u.DateOfBirth,
-                    RegistrationDate = u.RegistrationDate,
-                    RoleId = u.Roles.Select(r => r.Id).First()
-                })
-                .ToListAsync();
+            var users = await _context.UserEntities.AsNoTracking().Include(u => u.Roles).ToListAsync();
 
-            var userList = result.Select(s => User.Create(s.Id, s.UserName, s.Name, s.Surname, s.Email, s.PasswordHash, s.Avatar, s.DateOfBirth, s.RegistrationDate, s.RoleId).User).ToList();
-
+            var userList = users.Select(s => User.Create(s.Id, s.UserName, s.Name, s.Surname, s.Email, s.PasswordHash, s.Avatar, s.DateOfBirth, s.RegistrationDate, s.Roles.FirstOrDefault().Id).User).ToList();
+            
             return userList;
         }
 

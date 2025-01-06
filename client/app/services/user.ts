@@ -21,14 +21,13 @@ export interface UserResponse {
 
 export interface UserInfo {
     email: string;
-    password: string;
     userName: string;
     avatar: string;
     name: string;
     surName: string;
     dateBirth: string;
     regDate: string;
-    yearsOld: number;
+    roleId: number;
 }
 
 export interface SeriesInfo {
@@ -179,7 +178,6 @@ export const checkExistUserName = async (username: string) => {
 export const getUserList = async () => {
     const response = await fetch(`http://localhost:5125/user`);
     const user: User[] = await response.json();
-    console.log(user);
     return user;
 };
 export const getUserByUserName = async (username: string) => {
