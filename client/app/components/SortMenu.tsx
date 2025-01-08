@@ -12,7 +12,7 @@ import {
 } from "@ant-design/icons";
 type MenuItem = Required<MenuProps>["items"][number];
 // Создаем custom компонент
-export const SortMenu = ({ value }) => {
+export const SortMenu = ({ value }: Props) => {
     const [selectedKeys, setSelectedKeys] = useState(["ranked"]);
 
     const sortMenuItems: MenuItem[] = [

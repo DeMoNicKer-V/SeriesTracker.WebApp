@@ -31,8 +31,8 @@ namespace SeriesTracker.DataAccess.Repositories
                 Email = user.Email,
                 PasswordHash = user.PasswordHash,
                 Avatar = user.Avatar,
-                DateOfBirth = user.DateOfBirth,
-                RegistrationDate = user.RegistrationDate,
+                DateBirth = user.DateBirth,
+                RegDate = user.RegDate,
             };
 
             await _context.UserEntities.AddAsync(userEntity);
@@ -45,7 +45,7 @@ namespace SeriesTracker.DataAccess.Repositories
         {
             var userEntity = await _context.UserEntities.AsNoTracking().Include(u => u.Roles).Where(c => c.Id == id).FirstAsync();
 
-            var user = User.Create(userEntity.Id, userEntity.UserName, userEntity.Name, userEntity.Surname, userEntity.Email, userEntity.PasswordHash, userEntity.Avatar, userEntity.DateOfBirth, userEntity.RegistrationDate, userEntity.Roles.FirstOrDefault().Id).User;
+            var user = User.Create(userEntity.Id, userEntity.UserName, userEntity.Name, userEntity.Surname, userEntity.Email, userEntity.PasswordHash, userEntity.Avatar, userEntity.DateBirth, userEntity.RegDate, userEntity.Roles.FirstOrDefault().Id).User;
 
             return user;
         }
@@ -54,7 +54,7 @@ namespace SeriesTracker.DataAccess.Repositories
         {
             var userEntity = await _context.UserEntities.AsNoTracking().Include(u => u.Roles).Where(c => c.Email == email).FirstAsync();
 
-            var user = User.Create(userEntity.Id, userEntity.UserName, userEntity.Name, userEntity.Surname, userEntity.Email, userEntity.PasswordHash, userEntity.Avatar, userEntity.DateOfBirth, userEntity.RegistrationDate, userEntity.Roles.FirstOrDefault().Id).User;
+            var user = User.Create(userEntity.Id, userEntity.UserName, userEntity.Name, userEntity.Surname, userEntity.Email, userEntity.PasswordHash, userEntity.Avatar, userEntity.DateBirth, userEntity.RegDate, userEntity.Roles.FirstOrDefault().Id).User;
 
             return user;
         }
@@ -63,7 +63,7 @@ namespace SeriesTracker.DataAccess.Repositories
         {
             var userEntity = await _context.UserEntities.AsNoTracking().Include(u => u.Roles).Where(c => c.UserName == username).FirstAsync();
 
-            var user = User.Create(userEntity.Id, userEntity.UserName, userEntity.Name, userEntity.Surname, userEntity.Email, userEntity.PasswordHash, userEntity.Avatar, userEntity.DateOfBirth, userEntity.RegistrationDate, userEntity.Roles.FirstOrDefault().Id).User;
+            var user = User.Create(userEntity.Id, userEntity.UserName, userEntity.Name, userEntity.Surname, userEntity.Email, userEntity.PasswordHash, userEntity.Avatar, userEntity.DateBirth, userEntity.RegDate, userEntity.Roles.FirstOrDefault().Id).User;
 
             return user;
         }
@@ -93,7 +93,7 @@ namespace SeriesTracker.DataAccess.Repositories
                 .SetProperty(s => s.Surname, s => surname)
                 .SetProperty(s => s.Email, s => string.IsNullOrEmpty(email) ? s.Email : email)
                 .SetProperty(s => s.PasswordHash, s => string.IsNullOrEmpty(passwordHash) ? s.PasswordHash : passwordHash)
-                .SetProperty(s => s.DateOfBirth, s => dateBirth).SetProperty(s => s.Avatar, s => avatar)); ;
+                .SetProperty(s => s.DateBirth, s => dateBirth).SetProperty(s => s.Avatar, s => avatar)); ;
 
             return id;
         }
@@ -116,7 +116,7 @@ namespace SeriesTracker.DataAccess.Repositories
         {
             var users = await _context.UserEntities.AsNoTracking().Include(u => u.Roles).ToListAsync();
 
-            var userList = users.Select(s => User.Create(s.Id, s.UserName, s.Name, s.Surname, s.Email, s.PasswordHash, s.Avatar, s.DateOfBirth, s.RegistrationDate, s.Roles.FirstOrDefault().Id).User).ToList();
+            var userList = users.Select(s => User.Create(s.Id, s.UserName, s.Name, s.Surname, s.Email, s.PasswordHash, s.Avatar, s.DateBirth, s.RegDate, s.Roles.FirstOrDefault().Id).User).ToList();
             
             return userList;
         }

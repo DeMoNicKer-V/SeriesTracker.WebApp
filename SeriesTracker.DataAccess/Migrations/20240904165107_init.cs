@@ -62,11 +62,11 @@ namespace SeriesTracker.DataAccess.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Avatar = table.Column<string>(type: "text", nullable: true),
-                    DateOfBirth = table.Column<string>(type: "text", nullable: true),
+                    DateBirth = table.Column<string>(type: "text", nullable: true),
                     Email = table.Column<string>(type: "text", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: true),
                     PasswordHash = table.Column<string>(type: "text", nullable: false),
-                    RegistrationDate = table.Column<string>(type: "text", nullable: false),
+                    RegDate = table.Column<string>(type: "text", nullable: false),
                     Surname = table.Column<string>(type: "text", nullable: true),
                     UserName = table.Column<string>(type: "text", nullable: false)
                 },

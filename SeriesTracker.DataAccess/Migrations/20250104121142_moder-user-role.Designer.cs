@@ -289,7 +289,7 @@ namespace SeriesTracker.DataAccess.Migrations
                     b.Property<string>("Avatar")
                         .HasColumnType("text");
 
-                    b.Property<string>("DateOfBirth")
+                    b.Property<string>("DateBirth")
                         .HasColumnType("text");
 
                     b.Property<string>("Email")
@@ -303,7 +303,7 @@ namespace SeriesTracker.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("RegistrationDate")
+                    b.Property<string>("RegDate")
                         .IsRequired()
                         .HasColumnType("text");
 

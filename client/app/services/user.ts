@@ -133,12 +133,23 @@ export const changeUserRole = async (userId: string, roleId: number) => {
 };
 
 export const deleteUserByUsername = async (username: string) => {
-    const response = await fetch(
-        `http://localhost:5125/user/username/${username}`
-    );
-    const user: MainUserInfo = await response.json();
+    await fetch(`http://localhost:5125/user/deleteUser/${username}`, {
+        method: "DELETE",
+        headers: {
+            "content-type": "application/json",
+        },
+        credentials: "include",
+    });
+};
 
-    return user;
+export const deleteSelfAccount = async (username: string) => {
+    await fetch(`http://localhost:5125/user/deleteSelf/${username}`, {
+        method: "DELETE",
+        headers: {
+            "content-type": "application/json",
+        },
+        credentials: "include",
+    });
 };
 
 export const deleteSeriesByUsername = async (username: string) => {

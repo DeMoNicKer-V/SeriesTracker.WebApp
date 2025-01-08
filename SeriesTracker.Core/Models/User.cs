@@ -17,8 +17,8 @@ namespace SeriesTracker.Core.Models
             this.Email = email;
             this.PasswordHash = password;
             this.Avatar = avatar;
-            this.DateOfBirth = dateBirth;
-            this.RegistrationDate = regDate;
+            this.DateBirth = dateBirth;
+            this.RegDate = regDate;
             this.RoleId = roleId;
         }
 
@@ -27,7 +27,7 @@ namespace SeriesTracker.Core.Models
             get; private set;
         }
 
-        public string DateOfBirth
+        public string DateBirth
         {
             get; private set;
         }
@@ -52,7 +52,7 @@ namespace SeriesTracker.Core.Models
             get; private set;
         }
 
-        public string RegistrationDate
+        public string RegDate
         {
             get; private set;
         }

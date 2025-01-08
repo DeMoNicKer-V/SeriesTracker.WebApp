@@ -13,7 +13,7 @@ namespace SeriesTracker.DataAccess.Entities
             get; set;
         }
 
-        public string? DateOfBirth
+        public string? DateBirth
         {
             get; set;
         }
@@ -37,7 +37,7 @@ namespace SeriesTracker.DataAccess.Entities
             get; set;
         }
 
-        public required string RegistrationDate
+        public required string RegDate
         {
             get; set;
         }

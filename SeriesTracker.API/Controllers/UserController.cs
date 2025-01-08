@@ -24,9 +24,8 @@ namespace SeriesTracker.API.Controllers
         {
             var permissions = await _userService.GetUserPermissions(id);
             var user = await _userService.GetUserById(id);
-            var userResponse = new UserResponse(user.Email, user.PasswordHash,
-                user.UserName, user.Avatar, user.Name, user.Surname, user.DateOfBirth, permissions);
-            return Results.Ok(userResponse);
+           
+            return Results.Ok(user);
         }
 
         [HttpGet]
@@ -51,7 +50,7 @@ namespace SeriesTracker.API.Controllers
               .ToList();
             var lastActivityList = seriesList.OrderByDescending(s => s.ChangedDate).Take(4).Select(s => s.AnimeId).ToList();
             var userResponse = new DefaultUserResponse(user.Email,
-                user.UserName, user.Avatar, user.Name, user.Surname, user.RegistrationDate, user.DateOfBirth, user.RoleId);
+                user.UserName, user.Avatar, user.Name, user.Surname, user.RegDate, user.DateBirth, user.RoleId);
             
             return Results.Ok(new {UserInfo = userResponse, SeriesInfo = categoryGroup, ActivityInfo = lastActivityList});
         }
@@ -146,6 +145,19 @@ namespace SeriesTracker.API.Controllers
         [RequirePermission(Permission.Read)]
         [HttpDelete("deleteUser/{username}")]
         public async Task<IResult> DeleteUserByUsername(string username)
+        {
+            var checkUser = await _userService.CheckUsersUserName(username);
+            if (checkUser == true)
+            {
+                var user = await _userService.GetUserByUserName(username);
+                await _userService.DeleteUser(user.Id);
+            }
+
+            return Results.Ok();
+        }
+
+        [HttpDelete("deleteSelf/{username}")]
+        public async Task<IResult> DeleteSelfAccount(string username)
         {
             var checkUser = await _userService.CheckUsersUserName(username);
             if (checkUser == true)

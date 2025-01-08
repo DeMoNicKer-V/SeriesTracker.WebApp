@@ -2,7 +2,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import {
     Button,
-    Carousel,
     Col,
     ColorPicker,
     ConfigProvider,
@@ -13,8 +12,6 @@ import {
     Popconfirm,
     Radio,
     Row,
-    Segmented,
-    Select,
     Space,
     Table,
     Tabs,
@@ -22,34 +19,30 @@ import {
     Tooltip,
     Typography,
 } from "antd";
-import type { RadioChangeEvent, TableProps } from "antd";
+import type { RadioChangeEvent, TableColumnType, TableProps } from "antd";
 import { getCategoryList, updateCategoryById } from "../services/category";
 import { LongLeftArrow } from "../img/LongLeftArrow";
 import {
+    BorderlessTableOutlined,
+    CloseOutlined,
     DeleteOutlined,
     EyeOutlined,
-    LinkOutlined,
     QuestionCircleOutlined,
+    SearchOutlined,
     TeamOutlined,
 } from "@ant-design/icons";
-import { CarouselRef } from "antd/es/carousel";
 import {
     changeUserRole,
     deleteUserByUsername,
     getUserList,
 } from "../services/user";
-import { GetCoockie, GetPermissions } from "../api/coockie";
+import { GetPermissions } from "../api/coockie";
+import { FilterDropdownProps } from "antd/es/table/interface";
+import { EmptyView } from "../components/EmptyView";
 
 export default function SettingsPage() {
     const [error, setError] = useState<boolean>(false);
 
-    const userRoles = [
-        {
-            value: 2,
-            label: "Модер",
-        },
-        { value: 3, label: "Юзер" },
-    ];
     const [api, contextHolder] = notification.useNotification();
     const [categories, setCategories] = useState<Category[]>([]);
     const [users, setUsers] = useState<User[]>([]);
@@ -69,6 +62,18 @@ export default function SettingsPage() {
 
         setCategories(category);
         setUsers(users);
+    };
+
+    const handleSearch = (confirm: FilterDropdownProps["confirm"]) => {
+        confirm();
+    };
+
+    const handleReset = (
+        clearFilters: () => void,
+        confirm: FilterDropdownProps["confirm"]
+    ) => {
+        clearFilters();
+        confirm();
     };
 
     const updateCategory = async (record: Category, color: string) => {
@@ -247,12 +252,56 @@ export default function SettingsPage() {
         // Обработка изменения роли
         // Например, обновление данных в базе данных
     };
+
+    const getColumnSearchProps = (): TableColumnType<User> => ({
+        filterDropdown: ({
+            setSelectedKeys,
+            selectedKeys,
+            confirm,
+            clearFilters,
+        }) => (
+            <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
+                <Input
+                    placeholder={"Введите для поиска"}
+                    value={selectedKeys[0]}
+                    onChange={(e) =>
+                        setSelectedKeys(e.target.value ? [e.target.value] : [])
+                    }
+                    onPressEnter={() => handleSearch(confirm)}
+                    style={{ marginBottom: 10 }}
+                />
+                <Flex justify="space-between">
+                    <Button
+                        onClick={() => handleSearch(confirm)}
+                        icon={<SearchOutlined />}
+                        size="small"
+                    >
+                        Поиск
+                    </Button>
+                    <Button
+                        icon={<CloseOutlined />}
+                        onClick={() =>
+                            clearFilters && handleReset(clearFilters, confirm)
+                        }
+                        size="small"
+                    ></Button>
+                </Flex>
+            </div>
+        ),
+        filterIcon: <SearchOutlined />,
+        onFilter: (value, record) =>
+            record.userName
+                .toString()
+                .toLowerCase()
+                .includes((value as string).toLowerCase()),
+    });
     const userColumn: TableProps<User>["columns"] = [
         {
             fixed: "left",
             title: "Никнейм",
             dataIndex: "userName",
             key: "userName",
+            ...getColumnSearchProps(),
         },
 
         {
@@ -293,14 +342,13 @@ export default function SettingsPage() {
         },
         {
             title: "Дата регистрации",
-            dataIndex: "registrationDate",
-            key: "registrationDate",
+            dataIndex: "regDate",
+            key: "regDate",
             showSorterTooltip: false,
             sorter: (a, b) =>
-                new Date(a.registrationDate).getTime() -
-                new Date(b.registrationDate).getTime(),
+                new Date(a.regDate).getTime() - new Date(b.regDate).getTime(),
             render: (_, record) =>
-                new Date(record.registrationDate).toLocaleString("ru-Ru", {
+                new Date(record.regDate).toLocaleString("ru-Ru", {
                     year: "numeric",
                     month: "short",
                     day: "numeric",
@@ -334,9 +382,19 @@ export default function SettingsPage() {
         },
     ];
 
+    const customizeRenderEmpty = () => (
+        <EmptyView
+            text={"Ничего не найдено"}
+            iconSize={20}
+            fontSize={16}
+            align={"center"}
+        />
+    );
+
     return error === true ? (
         <div className="container">
             <ConfigProvider
+                renderEmpty={customizeRenderEmpty}
                 theme={{
                     components: {
                         Tabs: { fontSize: 16 },
@@ -354,7 +412,7 @@ export default function SettingsPage() {
                                 {
                                     label: "Список категорий",
                                     key: "category",
-                                    icon: <EyeOutlined />,
+                                    icon: <BorderlessTableOutlined />,
                                     children: (
                                         <Table
                                             rowKey="name"
@@ -371,9 +429,12 @@ export default function SettingsPage() {
                                     icon: <TeamOutlined />,
                                     children: (
                                         <Table
+                                            pagination={{
+                                                defaultPageSize: 10,
+                                                position: ["bottomCenter"],
+                                            }}
                                             rowKey="userName"
                                             scroll={{ x: "max-content" }}
-                                            pagination={false}
                                             columns={userColumn}
                                             dataSource={users}
                                         />
