@@ -8,6 +8,10 @@ namespace SeriesTracker.Core.Models
 {
     public class User
     {
+        public User()
+        {
+            
+        }
         private User(Guid id, string userName, string name, string surName, string email, string password, string avatar, string dateBirth, string regDate, int roleId)
         {
             this.Id = id;

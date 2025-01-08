@@ -95,7 +95,7 @@ export const verify = async (request: LoginRequest) => {
 
 export const getUserById = async (id: string) => {
     const response = await fetch(`http://localhost:5125/user/id/${id}`);
-    const user: UserInfo = await response.json();
+    const user: User = await response.json();
     return user;
 };
 

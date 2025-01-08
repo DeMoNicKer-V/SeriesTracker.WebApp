@@ -17,8 +17,8 @@ namespace SeriesTracker.Core.Abstractions.UserAbastractions
         Task<User> GetUserById(Guid id);
         Task<List<User>> GetUserList();
         Task<User> GetUserByEmail(string email);
-        Task<bool> CheckUsersEmail(string email);
-        Task<bool> CheckUsersUserName(string userName);
+        Task<Guid?> GetUserIdByEmail(string email);
+        Task<Guid?> GetUserIdByUserName(string userName);
         Task<User> GetUserByUserName(string username);
         Task<Guid> UpdateUser(Guid id, string username, string name, string surname, string email, string passwordHash, string avatar, string dateBirth);
         Task<Guid> ChangeUserRole(Guid id, int roleId);

@@ -40,7 +40,7 @@ import SearchBar from "./components/searchbar";
 import type { GetProp, GetProps, MenuProps } from "antd";
 import { getRandomAnime } from "./services/shikimori";
 import { usePathname, useRouter } from "next/navigation";
-import { GetCoockie, LogOut } from "./api/coockie";
+import { GetCoockie, GetDecodedUserToken, LogOut } from "./api/coockie";
 import { getUserById, UserResponse } from "./services/user";
 import { LogoIcon } from "./img/LogoIcon";
 import { Footer } from "antd/es/layout/layout";
@@ -63,7 +63,7 @@ export default function RootLayout({
     const [collapsed, setCollapsed] = useState(true);
     const [controlEntered, setControlEntered] = useState(false);
     const [isUser, setIsUser] = useState<boolean>(false);
-    const [user, setUser] = useState<UserResponse>();
+    const [user, setUser] = useState<User>();
     const [currentKey, setCurrentKey] = useState<string>("shikimori");
     const [menuItems, setMenuItems] = useState<MenuProps["items"]>([]);
 
@@ -82,7 +82,7 @@ export default function RootLayout({
         }
     };
     type MenuItem = GetProp<MenuProps, "items">[number];
-    const updateMenu = (user?: UserResponse) => {
+    const updateMenu = (user?: User) => {
         const items2: MenuItem[] = [
             {
                 key: "shikimori",
@@ -106,7 +106,7 @@ export default function RootLayout({
                 label: "Случайное аниме",
             },
         ];
-        if (user?.permissions.includes(2)) {
+        if (user?.roleId < 3) {
             items2.push({
                 key: "settings",
                 icon: <SettingOutlined />,
@@ -176,10 +176,10 @@ export default function RootLayout({
     };
 
     const GetUser = async () => {
-        var code = await GetCoockie();
+        var code = await GetDecodedUserToken();
         if (code) {
             setIsUser(true);
-            const currentUser = await getUserById(code);
+            const currentUser = await getUserById(code.userId);
             updateMenu(currentUser);
             setUser(currentUser);
         } else {

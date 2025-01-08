@@ -99,14 +99,14 @@ namespace SeriesTracker.Application.Services
             return await _userRepository.GetUserByUserName(username);
         }
 
-        public async Task<bool> CheckUsersEmail(string email)
+        public async Task<Guid?> GetUserIdByEmail(string email)
         {
-            return await _userRepository.CheckUsersEmail(email);
+            return await _userRepository.GetUserIdByEmail(email);
         }
 
-        public async Task<bool> CheckUsersUserName(string userName)
+        public async Task<Guid?> GetUserIdByUserName(string userName)
         {
-            return await _userRepository.CheckUsersUserName(userName);
+            return await _userRepository.GetUserIdByUserName(userName);
         }
 
         public async Task<Guid> UpdateUser(Guid id, string username, string name, string surname, string email, string passwordHash, string avatar, string dateBirth)

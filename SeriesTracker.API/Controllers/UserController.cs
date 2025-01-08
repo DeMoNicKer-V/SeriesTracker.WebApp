@@ -85,8 +85,8 @@ namespace SeriesTracker.API.Controllers
         [HttpGet("email")]
         public async Task<IResult> CheckEmail(string email)
         {
-            var user = await _userService.CheckUsersEmail(email);
-            if (user == true)
+            var userId = await _userService.GetUserIdByEmail(email);
+            if (userId != null)
             {
                 return Results.BadRequest("Адрес эл. почты уже занят");
             }
@@ -94,10 +94,10 @@ namespace SeriesTracker.API.Controllers
         }
 
         [HttpGet("username")]
-        public async Task<IResult> CheckUserName(string userName)
+        public async Task<IResult> CheckUserName(string username)
         {
-            var user = await _userService.CheckUsersUserName(userName);
-            if (user == true)
+            var userId = await _userService.GetUserIdByUserName(username);
+            if (userId != null)
             {
                 return Results.BadRequest("Данный никнейм уже занят");
             }
@@ -108,8 +108,8 @@ namespace SeriesTracker.API.Controllers
         [HttpDelete("deleteSeries/{username}")]
         public async Task<IResult> DeleteAllSeriesByUsername(string username)
         {
-            var checkUser = await _userService.CheckUsersUserName(username);
-            if (checkUser == true)
+            var userId = await _userService.GetUserIdByUserName(username);
+            if (userId != null)
             {
                 var user = await _userService.GetUserByUserName(username);
                 await _userSeriesService.DeleteAllSeriesByUserId(user.Id);
@@ -122,8 +122,8 @@ namespace SeriesTracker.API.Controllers
         [HttpPut("update/{username}")]
         public async Task<IResult> UpdateUser(string username, [FromBody] UserRequest request)
         {
-            var checkUser = await _userService.CheckUsersUserName(username);
-            if (checkUser == true)
+            var userId = await _userService.GetUserIdByUserName(username);
+            if (userId != null)
             {
                 var user = await _userService.GetUserByUserName(username);
                 string passwordHash = string.IsNullOrEmpty(request.Password) ? string.Empty : _userService.HashPassword(request.Password);
@@ -142,31 +142,31 @@ namespace SeriesTracker.API.Controllers
             return Results.Ok();
         }
 
-        [RequirePermission(Permission.Read)]
+        [RequirePermission(Permission.Delete)]
         [HttpDelete("deleteUser/{username}")]
         public async Task<IResult> DeleteUserByUsername(string username)
         {
-            var checkUser = await _userService.CheckUsersUserName(username);
-            if (checkUser == true)
+            var userId = await _userService.GetUserIdByEmail(username);
+            if (userId == null)
             {
-                var user = await _userService.GetUserByUserName(username);
-                await _userService.DeleteUser(user.Id);
+                return Results.NotFound($"User with username '{username}' not found.");
             }
 
+            await _userService.DeleteUser(userId.Value);
             return Results.Ok();
         }
 
+        [RequirePermission(Permission.Read)]
         [HttpDelete("deleteSelf/{username}")]
         public async Task<IResult> DeleteSelfAccount(string username)
         {
-            var checkUser = await _userService.CheckUsersUserName(username);
-            if (checkUser == true)
+            var userId = await _userService.GetUserIdByEmail(username);
+            if (userId == null)
             {
-                var user = await _userService.GetUserByUserName(username);
-                await _userService.DeleteUser(user.Id);
-                Response.Cookies.Delete("secretCookie");
+                return Results.NotFound($"User with username '{username}' not found.");
             }
 
+            await _userService.DeleteUser(userId.Value);
             return Results.Ok();
         }
 

@@ -36,9 +36,14 @@ import {
     deleteUserByUsername,
     getUserList,
 } from "../services/user";
-import { GetPermissions } from "../api/coockie";
+
 import { FilterDropdownProps } from "antd/es/table/interface";
 import { EmptyView } from "../components/EmptyView";
+import {
+    GetCurrentUserRole,
+    GetDecodedUserToken,
+    UserHasAccess,
+} from "../api/coockie";
 
 export default function SettingsPage() {
     const [error, setError] = useState<boolean>(false);
@@ -54,9 +59,12 @@ export default function SettingsPage() {
     const [deleteStr, setDeleteStr] = useState<string>("");
     const [openDeleteUser, setOpenDeleteUser] = useState<boolean>(false);
     const getCategories = async () => {
-        const currentUser = await GetPermissions(2);
+        const token = await GetDecodedUserToken();
+        if (!["1", "2"].includes(token.roleId)) {
+            return;
+        }
         setError(true);
-        setCurrentUser(currentUser);
+        setCurrentUser(token);
         const category = await getCategoryList();
         const users = await getUserList();
 

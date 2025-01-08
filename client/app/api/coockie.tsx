@@ -3,6 +3,10 @@ import { cookies } from "next/headers";
 import { jwtDecode } from "jwt-decode";
 import { getUserById } from "../services/user";
 
+interface UserToken {
+    userId: string;
+    roleId: string;
+}
 export async function GetCoockie() {
     const cookieStore = cookies();
     const hasCookie = cookieStore.has("secretCookie");
@@ -44,6 +48,19 @@ export async function IsCurrentUser(username: string) {
         return decodedToken.userName === username;
     }
     return hasCookie;
+}
+
+export async function GetDecodedUserToken() {
+    const cookieStore = cookies();
+    const hasCookie = cookieStore.has("secretCookie");
+    if (hasCookie) {
+        const jwt = cookieStore.get("secretCookie")?.value.toString();
+        const decodedToken: UserToken =
+            (jwt && jwtDecode(jwt)) ||
+            ({ userId: "", roleId: "" } as UserToken);
+        return decodedToken;
+    }
+    return { userId: "", roleId: "" } as UserToken;
 }
 
 export async function LogOut() {

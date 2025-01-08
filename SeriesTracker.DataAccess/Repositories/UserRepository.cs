@@ -68,14 +68,22 @@ namespace SeriesTracker.DataAccess.Repositories
             return user;
         }
 
-        public async Task<bool> CheckUsersUserName(string userName)
+        public async Task<Guid?> GetUserIdByUserName(string userName)
         {
-            return await _context.UserEntities.AsNoTracking().Where(c => c.UserName == userName).FirstOrDefaultAsync() != null;
+            return await _context.UserEntities
+                .AsNoTracking()
+                .Where(c => c.UserName == userName)
+                .Select(s => s.Id)
+                .FirstOrDefaultAsync();
         }
 
-        public async Task<bool> CheckUsersEmail(string email)
+        public async Task<Guid?> GetUserIdByEmail(string email)
         {
-            return await _context.UserEntities.AsNoTracking().Where(c => c.Email == email).FirstOrDefaultAsync() != null;
+            return await _context.UserEntities
+                .AsNoTracking()
+                .Where(c => c.Email == email)
+                .Select(s => s.Id)
+                .FirstOrDefaultAsync();
         }
 
         public async Task<Guid> DeleteUser(Guid id)

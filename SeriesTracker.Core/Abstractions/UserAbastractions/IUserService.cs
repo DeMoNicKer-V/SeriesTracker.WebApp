@@ -18,8 +18,8 @@ namespace SeriesTracker.Core.Abstractions.UserAbastractions
         Task<Guid> DeleteUser(Guid id);
         Task<List<User>> GetUserList();
         Task<User> GetUserById(Guid id);
-        Task<bool> CheckUsersEmail(string email);
-        Task<bool> CheckUsersUserName(string userName);
+        Task<Guid?> GetUserIdByEmail(string email);
+        Task<Guid?> GetUserIdByUserName(string userName);
         Task<ICollection<Permission>> GetUserPermissions(Guid id);
         Task<ICollection<Role>> GetUserRoles(Guid userId);
         Task<User> GetUserByUserName(string username);

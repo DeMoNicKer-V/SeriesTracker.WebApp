@@ -1,6 +1,5 @@
 interface User {
     id: string;
-    userRoleId: number;
     userName: string;
     name: string;
     surName: string;
