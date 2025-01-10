@@ -1,14 +1,7 @@
 ﻿using SeriesTracker.Application.Interfaces.Auth;
-using SeriesTracker.Core.Abstractions;
 using SeriesTracker.Core.Abstractions.UserAbastractions;
 using SeriesTracker.Core.Enums;
 using SeriesTracker.Core.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace SeriesTracker.Application.Services
 {
@@ -25,11 +18,15 @@ namespace SeriesTracker.Application.Services
             _jwtProvider = jwtProvider;
         }
 
-        public async Task Register(string email, string password, string nickname, string avatar, string name, string surname, string dateBirth)
+        public async Task Register(string email, string password, string username, string avatar, string name, string surname, string dateBirth)
         {
+            if (string.IsNullOrEmpty(username)) throw new ArgumentException("Username is required.");
+            if (string.IsNullOrEmpty(email)) throw new ArgumentException("Email is required.");
+            if (string.IsNullOrEmpty(password)) throw new ArgumentException("Password is required.");
+
             var hashedPassword = _passwordHasher.Generate(password);
-            var user = User.Create(Guid.NewGuid(), nickname, name, surname, email, hashedPassword, avatar, dateBirth, DateTime.Now.ToString("s"));
-            await _userRepository.CreateUser(user.User);
+            var user = User.Create(Guid.NewGuid(), username, name, surname, email, hashedPassword, avatar, dateBirth, DateTime.Now.ToString("s"));
+            await _userRepository.CreateUser(user);
         }
         public string HashPassword(string password)
         {

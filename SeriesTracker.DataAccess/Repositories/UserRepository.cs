@@ -15,6 +15,20 @@ namespace SeriesTracker.DataAccess.Repositories
             _context = context;
         }
 
+        public async Task<Guid> ChangeUserRole(Guid userId, int roleId)
+        {
+            var roleEntity = await _context.RoleEntities.AsNoTracking().Where(r => r.Id == roleId).FirstAsync();
+            var userEntity = await _context.UserEntities
+                   .Include(u => u.Roles)
+                   .FirstAsync(u => u.Id == userId);
+
+            userEntity.Roles.Clear();
+            userEntity.Roles.Add(roleEntity);
+
+            await _context.SaveChangesAsync();
+            return userId;
+        }
+
         public async Task<Guid> CreateUser(User user)
         {
             var roleEntity = await _context.RoleEntities
@@ -41,40 +55,29 @@ namespace SeriesTracker.DataAccess.Repositories
             return userEntity.Id;
         }
 
-        public async Task<User> GetUserById(Guid id)
+        public async Task<Guid> DeleteUser(Guid id)
         {
-            var userEntity = await _context.UserEntities.AsNoTracking().Include(u => u.Roles).Where(c => c.Id == id).FirstAsync();
+            await _context.UserEntities.Where(c => c.Id == id).ExecuteDeleteAsync();
 
-            var user = User.Create(userEntity.Id, userEntity.UserName, userEntity.Name, userEntity.Surname, userEntity.Email, userEntity.PasswordHash, userEntity.Avatar, userEntity.DateBirth, userEntity.RegDate, userEntity.Roles.FirstOrDefault().Id).User;
-
-            return user;
+            return id;
         }
 
         public async Task<User> GetUserByEmail(string email)
         {
             var userEntity = await _context.UserEntities.AsNoTracking().Include(u => u.Roles).Where(c => c.Email == email).FirstAsync();
+            return CreateUser(userEntity);
+        }
 
-            var user = User.Create(userEntity.Id, userEntity.UserName, userEntity.Name, userEntity.Surname, userEntity.Email, userEntity.PasswordHash, userEntity.Avatar, userEntity.DateBirth, userEntity.RegDate, userEntity.Roles.FirstOrDefault().Id).User;
-
-            return user;
+        public async Task<User> GetUserById(Guid id)
+        {
+            var userEntity = await _context.UserEntities.AsNoTracking().Include(u => u.Roles).Where(c => c.Id == id).FirstAsync();
+            return CreateUser(userEntity);
         }
 
         public async Task<User> GetUserByUserName(string username)
         {
             var userEntity = await _context.UserEntities.AsNoTracking().Include(u => u.Roles).Where(c => c.UserName == username).FirstAsync();
-
-            var user = User.Create(userEntity.Id, userEntity.UserName, userEntity.Name, userEntity.Surname, userEntity.Email, userEntity.PasswordHash, userEntity.Avatar, userEntity.DateBirth, userEntity.RegDate, userEntity.Roles.FirstOrDefault().Id).User;
-
-            return user;
-        }
-
-        public async Task<Guid?> GetUserIdByUserName(string userName)
-        {
-            return await _context.UserEntities
-                .AsNoTracking()
-                .Where(c => c.UserName == userName)
-                .Select(s => s.Id)
-                .FirstOrDefaultAsync();
+            return CreateUser(userEntity);
         }
 
         public async Task<Guid?> GetUserIdByEmail(string email)
@@ -86,62 +89,22 @@ namespace SeriesTracker.DataAccess.Repositories
                 .FirstOrDefaultAsync();
         }
 
-        public async Task<Guid> DeleteUser(Guid id)
+        public async Task<Guid?> GetUserIdByUserName(string userName)
         {
-            await _context.UserEntities.Where(c => c.Id == id).ExecuteDeleteAsync();
-
-            return id;
-        }
-
-        public async Task<Guid> UpdateUser(Guid id, string username, string name, string surname, string email, string passwordHash, string avatar, string dateBirth)
-        {
-            await _context.UserEntities.Where(s => s.Id == id)
-                .ExecuteUpdateAsync(s => s.SetProperty(s => s.UserName, s => username)
-                .SetProperty(s => s.Name, s => name)
-                .SetProperty(s => s.Surname, s => surname)
-                .SetProperty(s => s.Email, s => string.IsNullOrEmpty(email) ? s.Email : email)
-                .SetProperty(s => s.PasswordHash, s => string.IsNullOrEmpty(passwordHash) ? s.PasswordHash : passwordHash)
-                .SetProperty(s => s.DateBirth, s => dateBirth).SetProperty(s => s.Avatar, s => avatar)); ;
-
-            return id;
-        }
-
-        public async Task<Guid> ChangeUserRole(Guid userId, int roleId)
-        {
-            var roleEntity = await _context.RoleEntities.AsNoTracking().Where(r => r.Id == roleId).FirstAsync();
-            var userEntity = await _context.UserEntities
-                   .Include(u => u.Roles)
-                   .FirstAsync(u => u.Id == userId);
-
-            userEntity.Roles.Clear();
-            userEntity.Roles.Add(roleEntity);
-
-            await _context.SaveChangesAsync();
-            return userId;
+            return await _context.UserEntities
+                .AsNoTracking()
+                .Where(c => c.UserName == userName)
+                .Select(s => s.Id)
+                .FirstOrDefaultAsync();
         }
 
         public async Task<List<User>> GetUserList()
         {
             var users = await _context.UserEntities.AsNoTracking().Include(u => u.Roles).ToListAsync();
 
-            var userList = users.Select(s => User.Create(s.Id, s.UserName, s.Name, s.Surname, s.Email, s.PasswordHash, s.Avatar, s.DateBirth, s.RegDate, s.Roles.FirstOrDefault().Id).User).ToList();
-            
+            var userList = users.Select(s => CreateUser(s)).ToList();
+
             return userList;
-        }
-
-        public async Task<HashSet<Role>> GetUserRoles(Guid userId)
-        {
-            var roles = await _context.UserEntities
-                .AsNoTracking()
-                .Include(u => u.Roles)
-                .Where(u => u.Id == userId)
-                .Select(u => u.Roles)
-                .ToArrayAsync();
-
-            return roles
-                .SelectMany(r => r)
-                .Select(p => (Role)p.Id)
-                .ToHashSet();
         }
 
         public async Task<HashSet<Permission>> GetUserPermissions(Guid userId)
@@ -159,6 +122,40 @@ namespace SeriesTracker.DataAccess.Repositories
                 .SelectMany(r => r.Permissions)
                 .Select(p => (Permission)p.Id)
                 .ToHashSet();
+        }
+
+        public async Task<HashSet<Role>> GetUserRoles(Guid userId)
+        {
+            var roles = await _context.UserEntities
+                .AsNoTracking()
+                .Include(u => u.Roles)
+                .Where(u => u.Id == userId)
+                .Select(u => u.Roles)
+                .ToArrayAsync();
+
+            return roles
+                .SelectMany(r => r)
+                .Select(p => (Role)p.Id)
+                .ToHashSet();
+        }
+
+        public async Task<Guid> UpdateUser(Guid id, string username, string name, string surname, string email, string passwordHash, string avatar, string dateBirth)
+        {
+            await _context.UserEntities.Where(s => s.Id == id)
+                .ExecuteUpdateAsync(s => s.SetProperty(s => s.UserName, s => username)
+                .SetProperty(s => s.Name, s => name)
+                .SetProperty(s => s.Surname, s => surname)
+                .SetProperty(s => s.Email, s => string.IsNullOrEmpty(email) ? s.Email : email)
+                .SetProperty(s => s.PasswordHash, s => string.IsNullOrEmpty(passwordHash) ? s.PasswordHash : passwordHash)
+                .SetProperty(s => s.DateBirth, s => dateBirth).SetProperty(s => s.Avatar, s => avatar)); ;
+
+            return id;
+        }
+
+        private User CreateUser(UserEntity userEntity)
+        {
+            var user = User.Create(userEntity.Id, userEntity.UserName, userEntity.Name, userEntity.Surname, userEntity.Email, userEntity.PasswordHash, userEntity.Avatar, userEntity.DateBirth, userEntity.RegDate, userEntity.Roles.FirstOrDefault().Id);
+            return user;
         }
     }
 }

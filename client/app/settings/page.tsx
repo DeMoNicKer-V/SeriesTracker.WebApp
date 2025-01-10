@@ -39,11 +39,7 @@ import {
 
 import { FilterDropdownProps } from "antd/es/table/interface";
 import { EmptyView } from "../components/EmptyView";
-import {
-    GetCurrentUserRole,
-    GetDecodedUserToken,
-    UserHasAccess,
-} from "../api/coockie";
+import { GetDecodedUserToken } from "../api/coockie";
 
 export default function SettingsPage() {
     const [error, setError] = useState<boolean>(false);
@@ -68,6 +64,7 @@ export default function SettingsPage() {
         const category = await getCategoryList();
         const users = await getUserList();
 
+        console.log(users);
         setCategories(category);
         setUsers(users);
     };

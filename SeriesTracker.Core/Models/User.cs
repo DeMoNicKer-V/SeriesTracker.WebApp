@@ -1,17 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace SeriesTracker.Core.Models
 {
     public class User
     {
-        public User()
-        {
-            
-        }
         private User(Guid id, string userName, string name, string surName, string email, string password, string avatar, string dateBirth, string regDate, int roleId)
         {
             this.Id = id;
@@ -26,79 +18,65 @@ namespace SeriesTracker.Core.Models
             this.RoleId = roleId;
         }
 
-        public string Avatar
-        {
-            get; private set;
-        }
-
-        public string DateBirth
-        {
-            get; private set;
-        }
-
-        public string Email
-        {
-            get; private set;
-        }
-
+        [Required]
         public Guid Id
         {
             get; set;
         }
 
-        public string Name
+        [Required]
+        public string Email
         {
             get; private set;
         }
 
-        public string PasswordHash
-        {
-            get; private set;
-        }
-
-        public string RegDate
-        {
-            get; private set;
-        }
-
-        public string Surname
-        {
-            get; private set;
-        }
-
+        [Required]
         public string UserName
         {
             get; private set;
         }
 
+        [Required]
+        public string PasswordHash
+        {
+            get; private set;
+        }
+
+        [Required]
+        public string RegDate
+        {
+            get; private set;
+        }
+
+        [Required]
         public int RoleId
         {
             get; private set;
         }
 
-
-        public static (User User, string Error) Create(Guid id, string userName, string name, string surName, string email, string password, string avatar, string dateBirth, string regDate, int roleId = 3)
+        public string? Avatar
         {
-            string error = string.Empty;
-            if (string.IsNullOrEmpty(userName))
-            {
-                error = "Никнейм это обязательное поле";
-            }
-            if (string.IsNullOrEmpty(email))
-            {
-                error = "Email это обязательное поле";
-            }
-            if (string.IsNullOrEmpty(password))
-            {
-                error = "Пароль это обязательное поле";
-            }
-            if (string.IsNullOrEmpty(dateBirth))
-            {
-                error = "Дата рождения это обязательное поле";
-            }
-            User user = new User(id, userName, name, surName, email, password, avatar, dateBirth, regDate, roleId);
+            get; private set;
+        }
 
-            return (user, error);
+        public string? DateBirth
+        {
+            get; private set;
+        }
+
+        public string? Surname
+        {
+            get; private set;
+        }
+
+        public string? Name
+        {
+            get; private set;
+        }
+
+        public static User Create(Guid id, string userName, string name, string surName, string email, string password, string avatar, string dateBirth, string regDate, int roleId = 3)
+        {
+            return new User(id, userName, name, surName, email, password, avatar, dateBirth, regDate, roleId);
         }
     }
 }

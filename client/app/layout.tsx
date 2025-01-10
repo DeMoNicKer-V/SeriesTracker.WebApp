@@ -177,7 +177,7 @@ export default function RootLayout({
 
     const GetUser = async () => {
         var code = await GetDecodedUserToken();
-        if (code) {
+        if (code.userId) {
             setIsUser(true);
             const currentUser = await getUserById(code.userId);
             updateMenu(currentUser);

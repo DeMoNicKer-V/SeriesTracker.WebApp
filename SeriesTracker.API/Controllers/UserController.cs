@@ -7,6 +7,7 @@ using SeriesTracker.Application.Services;
 using SeriesTracker.Core.Abstractions;
 using SeriesTracker.Core.Abstractions.UserAbastractions;
 using SeriesTracker.Core.Enums;
+using SeriesTracker.Core.Mappers;
 using SeriesTracker.Core.Models;
 
 namespace SeriesTracker.API.Controllers
@@ -22,17 +23,15 @@ namespace SeriesTracker.API.Controllers
         [HttpGet("id/{id}")]
         public async Task<IResult> GetUserById(Guid id)
         {
-            var permissions = await _userService.GetUserPermissions(id);
             var user = await _userService.GetUserById(id);
-           
-            return Results.Ok(user);
+            return Results.Ok(user.ToDetailDTO());
         }
 
         [HttpGet]
         public async Task<IResult> GetUserList()
         {
             var userList = await _userService.GetUserList();
-            return Results.Ok(userList);
+            return Results.Ok(userList.Select(user => user.ToDTO()));
         }
 
         [HttpGet("username/{username}")]
@@ -86,7 +85,7 @@ namespace SeriesTracker.API.Controllers
         public async Task<IResult> CheckEmail(string email)
         {
             var userId = await _userService.GetUserIdByEmail(email);
-            if (userId != null)
+            if (userId != Guid.Empty)
             {
                 return Results.BadRequest("Адрес эл. почты уже занят");
             }
@@ -97,7 +96,7 @@ namespace SeriesTracker.API.Controllers
         public async Task<IResult> CheckUserName(string username)
         {
             var userId = await _userService.GetUserIdByUserName(username);
-            if (userId != null)
+            if (userId != Guid.Empty)
             {
                 return Results.BadRequest("Данный никнейм уже занят");
             }
@@ -109,7 +108,7 @@ namespace SeriesTracker.API.Controllers
         public async Task<IResult> DeleteAllSeriesByUsername(string username)
         {
             var userId = await _userService.GetUserIdByUserName(username);
-            if (userId != null)
+            if (userId != Guid.Empty)
             {
                 var user = await _userService.GetUserByUserName(username);
                 await _userSeriesService.DeleteAllSeriesByUserId(user.Id);
