@@ -2,15 +2,11 @@
 using Microsoft.IdentityModel.Tokens;
 using SeriesTracker.Application.Interfaces.Auth;
 using SeriesTracker.Core.Models;
-using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
 using System.Text;
-using System.Threading.Tasks;
 
-namespace SeriesTracker.Infrastructure
+namespace SeriesTracker.Infrastructure.Authentication
 {
     public class JwtProvider(IOptions<JwtOptions> jwtOptions) : IJwtProvider
     {

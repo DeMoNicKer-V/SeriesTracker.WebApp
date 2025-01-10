@@ -2,7 +2,6 @@
 using Microsoft.Extensions.Options;
 using SeriesTracker.DataAccess.Configurations;
 using SeriesTracker.DataAccess.Entities;
-using System.Reflection.Metadata;
 
 namespace SeriesTracker.DataAccess
 {

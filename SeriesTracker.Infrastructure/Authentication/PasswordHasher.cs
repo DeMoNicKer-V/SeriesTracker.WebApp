@@ -1,6 +1,6 @@
 ﻿using SeriesTracker.Application.Interfaces.Auth;
 
-namespace SeriesTracker.Infrastructure
+namespace SeriesTracker.Infrastructure.Authentication
 {
     public class PasswordHasher : IPasswordHasher
     {

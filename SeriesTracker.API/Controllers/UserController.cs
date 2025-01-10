@@ -1,14 +1,10 @@
-﻿using GraphQL;
-using GraphQLParser;
-using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json.Linq;
+﻿using Microsoft.AspNetCore.Mvc;
 using SeriesTracker.API.Contracts;
-using SeriesTracker.Application.Services;
 using SeriesTracker.Core.Abstractions;
 using SeriesTracker.Core.Abstractions.UserAbastractions;
 using SeriesTracker.Core.Enums;
 using SeriesTracker.Core.Mappers;
-using SeriesTracker.Core.Models;
+using SeriesTracker.Infrastructure.Authentication;
 
 namespace SeriesTracker.API.Controllers
 {

@@ -1,16 +1,15 @@
 using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using SeriesTracker.API.Extensions;
 using SeriesTracker.Application.Interfaces.Auth;
 using SeriesTracker.Application.Services;
 using SeriesTracker.Core.Abstractions;
 using SeriesTracker.Core.Abstractions.UserAbastractions;
 using SeriesTracker.Core.Enums;
-using SeriesTracker.Core.Models;
 using SeriesTracker.DataAccess;
 using SeriesTracker.DataAccess.Repositories;
-using SeriesTracker.Infrastructure;
+using SeriesTracker.Infrastructure.Authentication;
+using SeriesTracker.Infrastructure.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddApiAuthentication(builder.Configuration);
@@ -65,17 +64,6 @@ app.UseAuthentication();
 
 app.UseAuthorization();
 
-app.MapGet("get", () =>
-{
-    return Results.Ok("ok");
-}).RequirePermissions(Permission.Read);
-
-app.MapPost("post", () =>
-{
-    return Results.Ok("ok");
-}).RequirePermissions(Permission.Create);
-
-app.MapControllers();
 
 app.UseCors(x =>
 {

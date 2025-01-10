@@ -1,13 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.DependencyInjection;
 using SeriesTracker.Core.Abstractions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace SeriesTracker.Infrastructure
+namespace SeriesTracker.Infrastructure.Authentication
 {
     public class PermissionAuthorizationHandler : AuthorizationHandler<PermissionRequirement>
     {

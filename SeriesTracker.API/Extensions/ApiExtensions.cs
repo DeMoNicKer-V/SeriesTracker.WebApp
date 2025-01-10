@@ -6,6 +6,7 @@ using SeriesTracker.Application.Services;
 using SeriesTracker.Core.Abstractions;
 using SeriesTracker.Core.Enums;
 using SeriesTracker.Infrastructure;
+using SeriesTracker.Infrastructure.Authentication;
 using System.Text;
 
 namespace SeriesTracker.API.Extensions
