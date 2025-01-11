@@ -2,13 +2,6 @@
 using SeriesTracker.Core.Abstractions;
 using SeriesTracker.Core.Models;
 using SeriesTracker.DataAccess.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Channels;
-using System.Threading.Tasks;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace SeriesTracker.DataAccess.Repositories
 {

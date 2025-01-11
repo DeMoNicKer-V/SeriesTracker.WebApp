@@ -10,7 +10,7 @@ namespace SeriesTracker.Core.Mappers
             return new UserDto
             {
                 Id = user.Id,
-                Username = user.UserName,
+                UserName = user.UserName,
                 Email = user.Email,
                 RoleId = user.RoleId,
                 RegDate = user.RegDate,
@@ -21,7 +21,7 @@ namespace SeriesTracker.Core.Mappers
             return new UserDetailDto
             {
                 Id = user.Id,
-                Username = user.UserName,
+                UserName = user.UserName,
                 Email = user.Email,
                 RoleId = user.RoleId,
                 RegDate = user.RegDate,

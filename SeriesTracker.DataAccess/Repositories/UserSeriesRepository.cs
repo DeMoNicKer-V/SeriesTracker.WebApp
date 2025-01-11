@@ -1,7 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using SeriesTracker.Core.Abstractions;
+using SeriesTracker.Core.Dtos.Series;
 using SeriesTracker.Core.Models;
 using SeriesTracker.DataAccess.Entities;
-using SeriesTracker.Core.Abstractions;
 
 namespace SeriesTracker.DataAccess.Repositories
 {
@@ -34,6 +35,12 @@ namespace SeriesTracker.DataAccess.Repositories
             return userSeriesEntity.Id;
         }
 
+        public async Task<Guid> DeleteAllSeriesByUserId(Guid userId)
+        {
+            await _context.UserSeriesEntities.Where(s => s.UserId == userId).ExecuteDeleteAsync();
+            return userId;
+        }
+
         public async Task<Guid> DeleteSeries(Guid id)
         {
             await _context.UserSeriesEntities.Where(s => s.Id == id).ExecuteDeleteAsync();
@@ -41,15 +48,66 @@ namespace SeriesTracker.DataAccess.Repositories
             return id;
         }
 
-        public async Task<Guid> DeleteAllSeriesByUserId(Guid userId)
-        {
-            await _context.UserSeriesEntities.Where(s => s.UserId == userId).ExecuteDeleteAsync();
-            return userId;
-        }
-
         public async Task<int> GetAllSeriesCount()
         {
             return await _context.UserSeriesEntities.CountAsync();
+        }
+
+        public async Task<string> GetRecentSeriesString(Guid userId)
+        {
+            var userSeriesList = await _context.UserSeriesEntities.AsNoTracking().Where(s => s.UserId == userId).OrderByDescending(s => s.ChangedDate).Take(5).Select(s => s.AnimeId).ToListAsync();
+            return userSeriesList.Any()
+         ? string.Join(",", userSeriesList)
+         : "";
+        }
+
+        public async Task<List<SeriesGroupShortDto>> GetGroupShortSeries(Guid id)
+        {
+            var userSeriesList = await _context.UserSeriesEntities.AsNoTracking().Where(s => s.UserId == id).Include(user => user.Category).ToListAsync();
+
+            var categoryGroup = userSeriesList
+     .GroupBy(s => s.Category)
+     .Select(g => new SeriesGroupShortDto
+     {
+         Key = g.Key?.Id.ToString() ?? default(int).ToString(), // Обращаемся к Id через Category, делая null-safe
+         Value = g.Count()
+     })
+     .ToList();
+            categoryGroup.Insert(0, new SeriesGroupShortDto { Key = 0.ToString(), Value = userSeriesList.Count });
+            return categoryGroup;
+        }
+
+        public async Task<List<SeriesGroupDto>> GetGroupSeries(Guid id)
+        {
+            var userSeriesList = await _context.UserSeriesEntities.AsNoTracking().Where(s => s.UserId == id).Include(user => user.Category).ToListAsync();
+
+            var categoryGroup = userSeriesList
+     .GroupBy(s => s.Category)
+     .Select(g => new SeriesGroupDto
+     {
+         Id = g.Key?.Id ?? default(int), // Обращаемся к Id через Category, делая null-safe
+         Name = g.Key?.Name ?? "", //Обработка null
+         Color = g.Key?.Color ?? "", //Обработка null
+         SeriesCount = g.Count(),
+     })
+     .ToList();
+
+            return categoryGroup;
+        }
+        public async Task<List<int>> GetSeriesAnimeIdsList(string username, int categoryId)
+        {
+            List<int> seriesAnimeIdsList = new List<int>();
+            if (string.IsNullOrEmpty(username) == false)
+            {
+                var user = await _context.UserEntities.AsNoTracking().Where(u => u.UserName == username).FirstAsync();
+                seriesAnimeIdsList = await _context.UserSeriesEntities.AsNoTracking().Where(s => s.UserId == user.Id && categoryId != 0 ? s.CategoryId == categoryId : true).Select(s => s.AnimeId).ToListAsync();
+            }
+            else
+            {
+                return [];
+            }
+
+            return seriesAnimeIdsList;
         }
 
         public async Task<UserSeries?> GetSeriesByAnimeIdAsync(int id)
@@ -64,6 +122,7 @@ namespace SeriesTracker.DataAccess.Repositories
 
             return userSeries;
         }
+
         public async Task<UserSeries> GetSeriesById(Guid id)
         {
             var s = await _context.UserSeriesEntities.AsNoTracking().Where(s => s.Id == id).FirstAsync();
@@ -72,24 +131,6 @@ namespace SeriesTracker.DataAccess.Repositories
 
             return userSeries;
         }
-
-        public async Task<List<int>> GetSeriesAnimeIdsList(string username, int categoryId)
-        {
-            List<int> seriesAnimeIdsList = new List<int>();
-            if (string.IsNullOrEmpty(username) == false)
-            {
-                var user = await _context.UserEntities.AsNoTracking().Where(u => u.UserName == username).FirstAsync();  
-                seriesAnimeIdsList = await _context.UserSeriesEntities.AsNoTracking().Where(s => s.UserId == user.Id && categoryId != 0 ? s.CategoryId == categoryId : true).Select(s => s.AnimeId).ToListAsync();
-            }
-            else
-            {
-                return [];
-            }
-
-            return seriesAnimeIdsList;
-        }
-
-
         public async Task<List<UserSeries>> GetSeriesList(string id)
         {
             List<UserSeriesEntity> userSeriesEntities = new List<UserSeriesEntity>();

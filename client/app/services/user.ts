@@ -40,7 +40,7 @@ export interface SeriesInfo {
 export interface MainUserInfo {
     userInfo: UserInfo;
     seriesInfo: SeriesInfo[];
-    activityInfo: number[];
+    activityInfo: string;
 }
 export interface LoginRequest {
     email: string;

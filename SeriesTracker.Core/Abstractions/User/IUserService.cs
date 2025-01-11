@@ -14,7 +14,6 @@ namespace SeriesTracker.Core.Abstractions.UserAbastractions
         Task<string> Login(string email, string password);
         Task<bool> Verify(string email, string password);
         string HashPassword(string password);
-        Task<Guid> CreateUser(User user);
         Task<Guid> DeleteUser(Guid id);
         Task<List<User>> GetUserList();
         Task<User> GetUserById(Guid id);

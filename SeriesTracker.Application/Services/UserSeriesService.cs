@@ -1,4 +1,5 @@
 ﻿using SeriesTracker.Core.Abstractions;
+using SeriesTracker.Core.Dtos.Series;
 using SeriesTracker.Core.Models;
 using System;
 using System.Collections.Generic;
@@ -57,6 +58,20 @@ namespace SeriesTracker.Application.Services
         public async Task<Guid> DeleteAllSeriesByUserId(Guid userId)
         {
             return await _userSeriesRepository.DeleteAllSeriesByUserId(userId);
+        }
+
+        public async Task<List<SeriesGroupDto>> GetGroupSeries(Guid userId)
+        {
+            return await _userSeriesRepository.GetGroupSeries(userId);
+        }
+        public async Task<List<SeriesGroupShortDto>> GetGroupShortSeries(Guid userId)
+        {
+            return await _userSeriesRepository.GetGroupShortSeries(userId);
+        }
+
+        public async Task<string> GetRecentSeriesString(Guid userId)
+        {
+            return await _userSeriesRepository.GetRecentSeriesString(userId);
         }
     }
 }

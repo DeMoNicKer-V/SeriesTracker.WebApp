@@ -1,9 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using SeriesTracker.API.Contracts;
-using SeriesTracker.Application.Services;
+﻿using Microsoft.AspNetCore.Mvc;
 using SeriesTracker.Core.Abstractions;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace SeriesTracker.API.Controllers
 {

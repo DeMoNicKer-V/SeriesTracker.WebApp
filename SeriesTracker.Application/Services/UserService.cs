@@ -20,7 +20,7 @@ namespace SeriesTracker.Application.Services
 
         public async Task Register(string email, string password, string username, string avatar, string name, string surname, string dateBirth)
         {
-            if (string.IsNullOrEmpty(username)) throw new ArgumentException("Username is required.");
+            if (string.IsNullOrEmpty(username)) throw new ArgumentException("UserName is required.");
             if (string.IsNullOrEmpty(email)) throw new ArgumentException("Email is required.");
             if (string.IsNullOrEmpty(password)) throw new ArgumentException("Password is required.");
 
@@ -69,11 +69,6 @@ namespace SeriesTracker.Application.Services
         public async Task<ICollection<Role>> GetUserRoles(Guid id)
         {
             return await _userRepository.GetUserRoles(id);
-        }
-
-        public async Task<Guid> CreateUser(User user)
-        {
-            return await _userRepository.CreateUser(user);
         }
 
         public async Task<Guid> DeleteUser(Guid id)

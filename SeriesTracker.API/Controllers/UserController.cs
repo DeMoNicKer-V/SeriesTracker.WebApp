@@ -33,40 +33,22 @@ namespace SeriesTracker.API.Controllers
         [HttpGet("username/{username}")]
         public async Task<IResult> GetUserInfoByUserName(string username)
         {
-            var categoryList = await _categoryService.GetCategoryList();
             var user = await _userService.GetUserByUserName(username);
-            var seriesList = await _userSeriesService.GetSeriesList(user.Id.ToString());
-            var categoryGroup = seriesList
-              .GroupBy(s => s.CategoryId)
-              .Join(categoryList,
-                  g => g.Key,
-                  c => c.Id,
-                  (g, c) => new { Id = c.Id, Name = c.Name, Color = c.Color, SeriesCount = g.Count() })
-              .ToList();
-            var lastActivityList = seriesList.OrderByDescending(s => s.ChangedDate).Take(4).Select(s => s.AnimeId).ToList();
-            var userResponse = new DefaultUserResponse(user.Email,
-                user.UserName, user.Avatar, user.Name, user.Surname, user.RegDate, user.DateBirth, user.RoleId);
+
+            var categoryGroup = await _userSeriesService.GetGroupSeries(user.Id);
+
+            var lastActivityList = await _userSeriesService.GetRecentSeriesString(user.Id);
             
-            return Results.Ok(new {UserInfo = userResponse, SeriesInfo = categoryGroup, ActivityInfo = lastActivityList});
+
+            return Results.Ok(new {UserInfo = user.ToDetailDTO(), SeriesInfo = categoryGroup, ActivityInfo = lastActivityList});
         }
 
         [HttpGet("categoryCount")]
         public async Task<IResult> GetCategoriesSeriesCount(string username)
         {
-            var categoryList = await _categoryService.GetCategoryList();
-            var user = await _userService.GetUserByUserName(username);
-            var seriesList = await _userSeriesService.GetSeriesList(user.Id.ToString());
 
-            var categoryGroup = seriesList
-              .GroupBy(s => s.CategoryId)
-              .Join(categoryList,
-                  g => g.Key,
-                  c => c.Id,
-                  (g, c) => new { Key = c.Id.ToString(), Value = g.Count() })
-              .ToList();
-            var allSeries = new { Key = 0.ToString(), Value = seriesList.Count };
-            categoryGroup.Insert(0,allSeries);
-
+            var userId = await _userService.GetUserIdByUserName(username);
+            var categoryGroup = await _userSeriesService.GetGroupShortSeries(userId.Value);
             return Results.Ok(categoryGroup);
         }
 
@@ -101,7 +83,7 @@ namespace SeriesTracker.API.Controllers
 
         [RequirePermission(Permission.Read)]
         [HttpDelete("deleteSeries/{username}")]
-        public async Task<IResult> DeleteAllSeriesByUsername(string username)
+        public async Task<IResult> DeleteAllSeriesByUserName(string username)
         {
             var userId = await _userService.GetUserIdByUserName(username);
             if (userId != Guid.Empty)
@@ -139,7 +121,7 @@ namespace SeriesTracker.API.Controllers
 
         [RequirePermission(Permission.Delete)]
         [HttpDelete("deleteUser/{username}")]
-        public async Task<IResult> DeleteUserByUsername(string username)
+        public async Task<IResult> DeleteUserByUserName(string username)
         {
             var userId = await _userService.GetUserIdByEmail(username);
             if (userId == null)

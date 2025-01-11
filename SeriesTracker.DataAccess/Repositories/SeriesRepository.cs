@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using SeriesTracker.Core.Models;
 using SeriesTracker.Core.Abstractions;
+using SeriesTracker.Core.Models;
 using SeriesTracker.DataAccess.Entities;
 
 namespace SeriesTracker.DataAccess.Repositories

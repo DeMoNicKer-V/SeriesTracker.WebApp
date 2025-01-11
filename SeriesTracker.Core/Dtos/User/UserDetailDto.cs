@@ -16,6 +16,6 @@ namespace SeriesTracker.Core.Dtos.UserDtos
         public string RegDate { get; set; }
         public int RoleId { get; set; }
         public string? Surname { get; set; }
-        public string Username { get; set; }
+        public string UserName { get; set; }
     }
 }

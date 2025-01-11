@@ -1,4 +1,5 @@
-﻿using SeriesTracker.Core.Models;
+﻿using SeriesTracker.Core.Dtos.Series;
+using SeriesTracker.Core.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +18,9 @@ namespace SeriesTracker.Core.Abstractions
         Task<UserSeries> GetSeriesById(Guid id);
         Task<List<UserSeries>> GetSeriesList(string id);
         Task<Guid> UpdateSeries(Guid id, int watched, string changed, int categoryId, bool favorite);
+        Task<List<SeriesGroupDto>> GetGroupSeries(Guid userId);
+        Task<List<SeriesGroupShortDto>> GetGroupShortSeries(Guid id);
+        Task<string> GetRecentSeriesString(Guid userId);
         Task<string> GetSeriesAnimeIdsList(string username, int categoryId);
     }
 }

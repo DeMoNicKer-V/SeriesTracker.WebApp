@@ -47,14 +47,15 @@ export default function UserPage({ params }: { params: { username: string } }) {
 
     const getCurrentUser = async (username: string) => {
         const user = await getUserByUserName(username);
+        console.log(username);
         if (!user) {
-            setError(true);
             return;
         }
+        setError(true);
         setCurrentUser(await IsCurrentUser(username));
         setUserInfo(user);
         if (user.activityInfo.length > 0) {
-            const animes = await getAnimesById(user.activityInfo.join(","));
+            const animes = await getAnimesById(user.activityInfo);
             setAnimes(animes);
         }
     };
@@ -71,7 +72,7 @@ export default function UserPage({ params }: { params: { username: string } }) {
     const customizeRenderEmpty = () => (
         <EmptyView text="Пользователь еще ничего не добавил" />
     );
-    return error === false ? (
+    return error === true ? (
         <div className="container">
             <title>{`${params.username} / Профиль`}</title>
             <Row gutter={[15, 15]} align={"top"} justify={"center"}>
