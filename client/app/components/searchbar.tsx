@@ -4,7 +4,6 @@ import {
     Col,
     ConfigProvider,
     Divider,
-    Flex,
     Form,
     List,
     Image,
@@ -19,45 +18,25 @@ import { useEffect, useRef, useState } from "react";
 import {
     SearchOutlined,
     InfoCircleOutlined,
-    InfoCircleFilled,
     FireOutlined,
     YoutubeOutlined,
     CalendarOutlined,
 } from "@ant-design/icons";
-import "./searchbar.css";
 import { getAnimesByName } from "../services/shikimori";
 import Meta from "antd/es/card/Meta";
 import noFoundImage from "../img/img-error.jpg";
 import { EmptyView } from "./EmptyView";
+import Link from "next/link";
 
-export const SearchBar = ({}) => {
+const SearchBar = ({}) => {
     const inputRef = useRef<InputRef>(null);
-    const [query, setQuery] = useState<string>("");
-    const [form] = Form.useForm();
-
-    useEffect(() => {
-        if (!query) {
-            setAnimes([]);
-            setNullString("Введите для поиска");
-            setLoading(false);
-            return;
-        }
-        setLoading(true);
-        const timer = setTimeout(() => {
-            fakeApi();
-            setIsShown(true);
-        }, 1000);
-
-        return () => clearTimeout(timer);
-    }, [query]);
-    const handleClick = () => {
-        setIsShown((current) => !current);
-    };
+    const [query, setQuery] = useState("");
     const [isShown, setIsShown] = useState(false);
     const [loading, setLoading] = useState(false);
     const [nullString, setNullString] = useState("Введите для поиска");
     const [animes, setAnimes] = useState<SeriesAnime[] | any>([]);
-    const fakeApi = async () => {
+
+    const searchAnimes = async (query: string) => {
         const series: SeriesAnime[] | any = await getAnimesByName(query);
         setAnimes(series);
         setLoading(false);
@@ -67,6 +46,28 @@ export const SearchBar = ({}) => {
             return;
         }
     };
+    const handleClick = () => {
+        setIsShown((current) => !current);
+    };
+    useEffect(() => {
+        if (!query) {
+            setAnimes([]);
+            setNullString("Введите для поиска");
+            setLoading(false);
+            return;
+        }
+        setLoading(true);
+        // Выполняем поиск, когда значение меняется (с задержкой)
+        const timeoutId = setTimeout(() => {
+            searchAnimes(query);
+        }, 1000); // Задержка в 1000 миллисекунд (для debounce)
+        return () => clearTimeout(timeoutId); // Убираем timeout
+    }, [query]);
+
+    const handleChange = (e: any) => {
+        setQuery(e.target.value);
+    };
+
     const customizeRenderEmpty = () => (
         <EmptyView
             text={nullString}
@@ -75,8 +76,6 @@ export const SearchBar = ({}) => {
             align={"center"}
         />
     );
-    const { Link } = Typography;
-    const { Text, Title } = Typography;
 
     return (
         <ConfigProvider
@@ -87,17 +86,21 @@ export const SearchBar = ({}) => {
                         colorFillTertiary: "#1e1e1e",
                         activeBorderColor: "#1e1e1e",
                     },
+                    Divider: {
+                        marginLG: 0,
+                    },
                 },
             }}
             renderEmpty={customizeRenderEmpty}
         >
             <Popover
                 trigger={"hover"}
-                overlayStyle={{
-                    width: "calc(40% + 10px)",
-                    maxWidth: "calc(40% + 10px)",
+                styles={{
+                    root: {
+                        width: "calc(40% + 10px)",
+                        maxWidth: "calc(40% + 10px)",
+                    },
                 }}
-                overlayInnerStyle={{ backgroundColor: "#1e1e1e" }}
                 arrow={false}
                 open={isShown && !loading}
                 onOpenChange={() => {
@@ -106,10 +109,9 @@ export const SearchBar = ({}) => {
                 }}
                 content={
                     <List
-                        style={{ backgroundColor: "#1e1e1e" }}
                         dataSource={animes}
                         renderItem={(item: SeriesAnime) => (
-                            <Link href={`/shikimori/${item.id}`}>
+                            <Link target="_top" href={`/shikimori/${item.id}`}>
                                 <Card
                                     style={{
                                         padding: 12,
@@ -126,8 +128,8 @@ export const SearchBar = ({}) => {
                                         <Col>
                                             <Image
                                                 preview={false}
-                                                height={90}
-                                                width={60}
+                                                height={100}
+                                                width={70}
                                                 src={item.pictureUrl}
                                                 fallback={noFoundImage.src}
                                             />
@@ -183,51 +185,32 @@ export const SearchBar = ({}) => {
                                         </Col>
                                     </Row>
                                 </Card>
-                                <Divider
-                                    style={{
-                                        minWidth: 0,
-                                        width: "auto",
-                                        margin: "10px",
-                                    }}
-                                />
+                                <Divider />
                             </Link>
                         )}
                     />
                 }
             >
-                <Form
-                    form={form}
-                    noValidate={true}
-                    autoComplete="off"
-                    style={{ marginBottom: 5 }}
-                >
-                    <Form.Item
-                        name={"query"}
-                        style={{
-                            margin: 0,
-                        }}
-                    >
-                        <Input
-                            ref={inputRef}
-                            onClick={handleClick}
-                            id="searchbar"
-                            size="small"
-                            className={loading === true ? "loading" : ""}
-                            spellCheck={"false"}
-                            variant="filled"
-                            placeholder="Найти аниме"
-                            onChange={(e: { target: { value: any } }) => {
-                                setQuery(String(e.target.value));
-                            }}
-                            name="query"
-                            suffix={
-                                <Button type="link" htmlType="submit">
-                                    <SearchOutlined />
-                                </Button>
-                            }
-                        />
-                    </Form.Item>
-                </Form>
+                <Form.Item noStyle>
+                    <Input
+                        autoComplete="off"
+                        ref={inputRef}
+                        onClick={handleClick}
+                        id="searchbar"
+                        size="small"
+                        className={loading === true ? "loading" : ""}
+                        spellCheck={"false"}
+                        variant="filled"
+                        value={query}
+                        onChange={handleChange}
+                        placeholder="Найти аниме"
+                        suffix={
+                            <Button type="link" htmlType="submit">
+                                <SearchOutlined />
+                            </Button>
+                        }
+                    />
+                </Form.Item>
             </Popover>
         </ConfigProvider>
     );
