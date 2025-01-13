@@ -136,12 +136,11 @@ namespace SeriesTracker.Application.Services
                                     russian
                                     name
                                     kind
-                                    rating
                                     episodes
-                                    episodesAired
-                                    genres{ id kind russian }
+episodesAired
                                     status
-                                    score
+                                
+                                 
                                     airedOn {
                                         date
                                     }

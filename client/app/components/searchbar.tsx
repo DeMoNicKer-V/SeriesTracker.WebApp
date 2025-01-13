@@ -21,6 +21,7 @@ import {
     FireOutlined,
     YoutubeOutlined,
     CalendarOutlined,
+    StarOutlined,
 } from "@ant-design/icons";
 import { getAnimesByName } from "../services/shikimori";
 import Meta from "antd/es/card/Meta";
@@ -123,7 +124,6 @@ const SearchBar = ({}) => {
                                     <Row
                                         style={{ flexFlow: "row" }}
                                         align={"middle"}
-                                        justify={"start"}
                                     >
                                         <Col>
                                             <Image
@@ -179,7 +179,10 @@ const SearchBar = ({}) => {
                                                 <Tag icon={<YoutubeOutlined />}>
                                                     {item.status === "Вышло"
                                                         ? `${item.episodes} эп.`
-                                                        : `${item.episodesAired} из ${item.episodes} эп.`}
+                                                        : `${item.episodesAired} эп.`}
+                                                </Tag>
+                                                <Tag icon={<StarOutlined />}>
+                                                    {item.score}
                                                 </Tag>
                                             </Space>
                                         </Col>

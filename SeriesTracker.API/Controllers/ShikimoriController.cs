@@ -103,33 +103,14 @@ namespace SeriesTracker.API.Controllers
         }
 
         [HttpGet("{query}")]
-        public async Task<ActionResult<List<AnimeSeriesResponseSearch>>> GetAnimesByName(string query)
+        public async Task<ActionResult<ShikimoriAnimeList>> GetAnimesByName(string query)
         {
-            var seriesList = await _seriesService.GetSeriesList();
-            var categoryList = await _categoryService.GetCategoryList();
-            var idsRequest = seriesList.Select(s => s.AnimeId);
-            var graphQLResponse = await ShikimoriService.GetAnimesByName(query);
-            var response2 = graphQLResponse.Data.Animes.Select(s => new ShikimoriResponse(s.Id, s.Description, s.Episodes, s.StartDate, s.Score, s.Title, s.SubTitle, s.PictureUrl, s.Rating, s.Kind, s.Status));
-            List<AnimeSeriesResponseSearch> animeResponses = [];
-            foreach (var item in graphQLResponse.Data.Animes)
-            {
-                if (idsRequest.Contains(item.Id))
-                {
-                    var that = seriesList.FirstOrDefault(s => s.AnimeId == item.Id);
-                    string category = string.Empty;
-                    if (that.CategoryId != 0)
-                    {
-                        category = categoryList.FirstOrDefault(s => s.Id == that.CategoryId).Name;
-                    }
-                    animeResponses.Add(new AnimeSeriesResponseSearch(item.Id, that.CategoryId, category, that.IsFavorite, item.Description, item.Episodes, item.EpisodesAired, item.StartDate, item.Score, item.Title, item.SubTitle, item.PictureUrl, item.Rating, item.Kind, item.Status));
-                }
-                else
-                {
-                    animeResponses.Add(new AnimeSeriesResponseSearch(item.Id, 0, string.Empty, false, item.Description, item.Episodes, item.EpisodesAired, item.StartDate, item.Score, item.Title, item.SubTitle, item.PictureUrl, item.Rating, item.Kind, item.Status));
-                }
-            }
 
-            return Ok(animeResponses);
+            var graphQLResponse = await ShikimoriService.GetAnimesByName(query);
+
+            
+
+            return Ok(graphQLResponse.Data.Animes);
         }
 
         [HttpGet("genres")]

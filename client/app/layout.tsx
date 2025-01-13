@@ -437,7 +437,6 @@ export default function RootLayout({
                                 <FloatButton
                                     href="/about"
                                     tooltip={"Правила сайта"}
-                                    badge={{ dot: true }}
                                     style={
                                         collapsed
                                             ? { right: "25%", bottom: 20 }
