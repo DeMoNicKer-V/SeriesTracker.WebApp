@@ -10,7 +10,7 @@ export const StarsBackground = ({}) => {
     }*/
 
     return (
-        <div className="background">
+        <div className="background" style={{ zIndex: 1 }}>
             <div className="stars"></div>
             <div className="stars"></div>
             <div className="stars"></div>
