@@ -90,6 +90,7 @@ const SearchBar = ({}) => {
                     Divider: {
                         marginLG: 0,
                     },
+                    Card: { bodyPadding: 14 },
                 },
             }}
             renderEmpty={customizeRenderEmpty}
@@ -115,7 +116,6 @@ const SearchBar = ({}) => {
                             <Link target="_top" href={`/shikimori/${item.id}`}>
                                 <Card
                                     style={{
-                                        padding: 12,
                                         marginBottom: 8,
                                         backgroundColor: "transparent",
                                     }}
@@ -180,9 +180,6 @@ const SearchBar = ({}) => {
                                                     {item.status === "Вышло"
                                                         ? `${item.episodes} эп.`
                                                         : `${item.episodesAired} эп.`}
-                                                </Tag>
-                                                <Tag icon={<StarOutlined />}>
-                                                    {item.score}
                                                 </Tag>
                                             </Space>
                                         </Col>

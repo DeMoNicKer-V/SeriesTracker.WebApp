@@ -31,6 +31,7 @@ import Icon, {
     InfoCircleTwoTone,
     InfoCircleFilled,
     InfoCircleOutlined,
+    BookOutlined,
 } from "@ant-design/icons";
 import Link from "next/link";
 
@@ -141,11 +142,20 @@ export default function RootLayout({
         },
         {
             label: (
+                <Link href={`/user/${user?.userName}/list`} target="_top">
+                    Мои аниме
+                </Link>
+            ),
+            key: "2",
+            icon: <BookOutlined />,
+        },
+        {
+            label: (
                 <Link href={`/user/${user?.userName}/edit`} target="_top">
                     Настройки
                 </Link>
             ),
-            key: "2",
+            key: "3",
             icon: <SettingOutlined />,
         },
         {
@@ -154,7 +164,7 @@ export default function RootLayout({
                     Выйти
                 </Link>
             ),
-            key: "3",
+            key: "4",
             onClick: async () => {
                 await LogOut();
                 router;

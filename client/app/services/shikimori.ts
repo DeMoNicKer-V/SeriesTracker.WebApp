@@ -17,7 +17,7 @@ export interface ShikimoriRequest {
 }
 
 export interface AnimeInfo {
-    series: SeriesInfo;
+    series: Series;
     anime: Anime;
 }
 

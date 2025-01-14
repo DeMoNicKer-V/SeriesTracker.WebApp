@@ -1,0 +1,17 @@
+.related-title {
+    padding: 0;
+    margin-bottom: 8px !important;
+    white-space: break-spaces;
+}
+
+.related-item-card {
+    background-color: transparent;
+}
+@media (max-width: 768px) {
+    .related-item-row {
+        text-align: center;
+    }
+    .related-info {
+        justify-content: center;
+    }
+}

@@ -1,7 +1,6 @@
 import Card from "antd/es/card/Card";
 import {
     Badge,
-    Button,
     Col,
     ConfigProvider,
     Divider,
@@ -10,19 +9,14 @@ import {
     List,
     Popover,
     Row,
-    Space,
     Tag,
     Tooltip,
     Typography,
 } from "antd";
 import Link from "next/link";
 import {
-    CalendarOutlined,
-    DoubleLeftOutlined,
     FireOutlined,
     HeartFilled,
-    LeftOutlined,
-    RightOutlined,
     SearchOutlined,
     StarOutlined,
 } from "@ant-design/icons";
@@ -34,11 +28,9 @@ import {
     getGenres,
     ShikimoriRequest,
 } from "../services/shikimori";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import useSWR from "swr";
-import { LongLeftArrow } from "../img/LongLeftArrow";
-import { LongRightArrow } from "../img/LongRightArrow";
 import { EmptyView } from "./EmptyView";
 import PageNavigator from "./PageNavigator";
 
@@ -306,6 +298,7 @@ export const Animes = ({ userPath }: Props) => {
                             <Col>
                                 {animes.status.length > 6 ? (
                                     <Tag
+                                        className="tag"
                                         color="orange"
                                         icon={<FireOutlined />}
                                         style={{
@@ -317,6 +310,7 @@ export const Animes = ({ userPath }: Props) => {
                                     </Tag>
                                 ) : (
                                     <Tag
+                                        className="tag"
                                         style={{
                                             fontSize: 11,
                                             fontWeight: 500,
@@ -327,13 +321,17 @@ export const Animes = ({ userPath }: Props) => {
                                 )}
                             </Col>
                             <Col>
-                                <Tag style={{ fontSize: 11, fontWeight: 500 }}>
+                                <Tag
+                                    className="tag"
+                                    style={{ fontSize: 11, fontWeight: 500 }}
+                                >
                                     {animes.kind}
                                 </Tag>
                             </Col>
                             <Col>
                                 {animes.kind === "Фильм" && (
                                     <Tag
+                                        className="tag"
                                         style={{
                                             fontSize: 11,
                                             fontWeight: 500,
@@ -342,6 +340,7 @@ export const Animes = ({ userPath }: Props) => {
                                 )}
                                 {animes.kind !== "Фильм" && (
                                     <Tag
+                                        className="tag"
                                         style={{
                                             fontSize: 11,
                                             fontWeight: 500,

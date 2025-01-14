@@ -48,8 +48,8 @@ import { LongLeftArrow } from "@/app/img/LongLeftArrow";
 import { getCategoryById, getCategoryList } from "@/app/services/category";
 import noFoundImage from ".//..//../img/img-error.jpg";
 import { IsAuth } from "@/app/api/coockie";
-import { StarsBackground } from "@/app/components/StarsBackground";
 import { LongRightArrow } from "@/app/img/LongRightArrow";
+import RelatedAnimes from "@/app/components/RelatedAnimes/RelatedAnimes";
 
 export default function AnimePage({ params }: { params: { id: string } }) {
     const defaultValues = {
@@ -245,8 +245,8 @@ export default function AnimePage({ params }: { params: { id: string } }) {
             />
             {!loading && (
                 <Row align={"middle"} justify={"center"}>
-                    <Col xxl={20} md={22}>
-                        <Card style={{ opacity: 0.85 }}>
+                    <Col xxl={19} md={21}>
+                        <Card style={{ opacity: 0.9, padding: 0 }}>
                             <Flex style={{ zIndex: 0, position: "relative" }}>
                                 <AbsoluteImage
                                     src={animes.pictureUrl}
@@ -312,7 +312,7 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                                             />
                                             <Space
                                                 align={"center"}
-                                                size={[8, 8]}
+                                                size={[0, 0]}
                                                 wrap
                                             >
                                                 {genres.map((genre: string) => (
@@ -629,138 +629,11 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                                                 Связанное с этим аниме
                                             </Button>
                                         ),
-                                        children:
-                                            animes.relateds &&
-                                            animes.relateds.map(
-                                                (a: Related) => (
-                                                    <Link
-                                                        href={`/shikimori/${a.anime.id}`}
-                                                    >
-                                                        <Card
-                                                            style={{
-                                                                padding: 12,
-                                                                marginBottom: 8,
-                                                            }}
-                                                            hoverable
-                                                        >
-                                                            <Row
-                                                                gutter={[
-                                                                    15, 15,
-                                                                ]}
-                                                                className="related-anime"
-                                                                align={"middle"}
-                                                                justify={
-                                                                    "start"
-                                                                }
-                                                            >
-                                                                <Col>
-                                                                    <Image
-                                                                        preview={
-                                                                            false
-                                                                        }
-                                                                        height={
-                                                                            90
-                                                                        }
-                                                                        src={
-                                                                            a
-                                                                                .anime
-                                                                                .pictureUrl
-                                                                        }
-                                                                    />
-                                                                </Col>
-                                                                <Col>
-                                                                    <Meta
-                                                                        style={{
-                                                                            padding: 0,
-                                                                            marginBottom: 8,
-                                                                            whiteSpace:
-                                                                                "break-spaces",
-                                                                        }}
-                                                                        title={
-                                                                            a
-                                                                                .anime
-                                                                                .title
-                                                                        }
-                                                                        description={
-                                                                            a
-                                                                                .anime
-                                                                                .subTitle
-                                                                        }
-                                                                    />
-                                                                    <Space
-                                                                        wrap
-                                                                        size={[
-                                                                            5,
-                                                                            5,
-                                                                        ]}
-                                                                    >
-                                                                        <Tag
-                                                                            style={{
-                                                                                cursor: "default",
-                                                                            }}
-                                                                        >
-                                                                            <Flex
-                                                                                gap={
-                                                                                    4
-                                                                                }
-                                                                            >
-                                                                                <InfoCircleOutlined />
-                                                                                {
-                                                                                    a
-                                                                                        .anime
-                                                                                        .kind
-                                                                                }
-                                                                            </Flex>
-                                                                        </Tag>
-                                                                        <Tag
-                                                                            style={{
-                                                                                cursor: "default",
-                                                                            }}
-                                                                        >
-                                                                            <Flex
-                                                                                gap={
-                                                                                    4
-                                                                                }
-                                                                            >
-                                                                                <CalendarOutlined />
-                                                                                {
-                                                                                    a
-                                                                                        .anime
-                                                                                        .startDate
-                                                                                }
-                                                                            </Flex>
-                                                                        </Tag>
-                                                                        <Tag
-                                                                            style={{
-                                                                                cursor: "default",
-                                                                            }}
-                                                                        >
-                                                                            <Flex
-                                                                                gap={
-                                                                                    4
-                                                                                }
-                                                                            >
-                                                                                <ReadOutlined />
-                                                                                {
-                                                                                    a.relationText
-                                                                                }
-                                                                            </Flex>
-                                                                        </Tag>
-                                                                    </Space>
-                                                                </Col>
-                                                            </Row>
-                                                        </Card>
-                                                        <Divider
-                                                            style={{
-                                                                minWidth: 0,
-                                                                width: "auto",
-                                                                margin: "0px 15px",
-                                                            }}
-                                                            dashed
-                                                        />
-                                                    </Link>
-                                                )
-                                            ),
+                                        children: (
+                                            <RelatedAnimes
+                                                animes={animes.relateds}
+                                            />
+                                        ),
                                     },
                                 ]}
                                 bordered={false}

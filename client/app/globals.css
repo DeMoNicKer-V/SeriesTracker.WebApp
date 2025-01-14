@@ -142,15 +142,6 @@ body {
 .ant-tag {
     cursor: default;
 }
-.tag {
-    margin: 0;
-    -webkit-touch-callout: none; /* iOS Safari */
-    -webkit-user-select: none; /* Safari */
-    -khtml-user-select: none; /* Konqueror HTML */
-    -moz-user-select: none; /* Old versions of Firefox */
-    -ms-user-select: none; /* Internet Explorer/Edge */
-    user-select: none;
-}
 .tag:hover {
     background-color: rgba(0, 0, 0, 0.3) !important;
 }
@@ -209,10 +200,6 @@ input,
 .ant-menu-submenu::after {
     border: none !important;
 }
-.ant-card-body {
-    height: 100%;
-    padding: 0 !important;
-}
 
 .searchpage-input .input-label {
     color: hsla(0, 0%, 100%, 0.7) !important;
@@ -262,21 +249,6 @@ input,
 }
 
 @media (max-width: 1200px) {
-    .related-anime {
-        flex-direction: column;
-        gap: 5px;
-        justify-content: center;
-        text-align: center;
-    }
-    .related-anime .ant-card-meta-title {
-        font-size: 14px;
-    }
-    .related-anime .ant-card-meta-description {
-        font-size: 12px;
-    }
-    .related-anime > .ant-col > .ant-space {
-        justify-content: center;
-    }
     .anime-detail-row {
         padding: 20% 5px 5px !important;
     }
