@@ -16,10 +16,10 @@ namespace SeriesTracker.Core.Abstractions
          Task<GraphQLResponse<ShikimoriAnimeBaseList>> GetAnimes(int page, string order);
 
 
-         Task<GraphQLResponse<ShikimoriAnimeList>> GetAnimesByName(string name);
+         Task<GraphQLResponse<ShikimoriAnimeBaseList>> GetAnimesByName(string name);
 
 
-         Task<GraphQLResponse<ShikimoriAnimeList>> GetAnimeById(string Id);
+         Task<GraphQLResponse<ShikimoriAnimeBaseList>> GetAnimeById(string Id);
 
 
          Task<GraphQLResponse<ShikimoriAnimeBaseList>> GetAnimeListByIds(string Id);
@@ -34,7 +34,7 @@ namespace SeriesTracker.Core.Abstractions
          Task<GraphQLResponse<GenreList>> GetGenres();
   
 
-         Task<GraphQLResponse<ShikimoriAnimeList>> GetRandomAnime();
+         Task<GraphQLResponse<ShikimoriAnimeBaseList>> GetRandomAnime();
     
     }
 }

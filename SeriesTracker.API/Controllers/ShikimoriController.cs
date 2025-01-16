@@ -47,7 +47,7 @@ namespace SeriesTracker.API.Controllers
         public async Task<ActionResult> GetAnimeById(int id)
         {
             UserSeries? userSeries = await _userSeriesService.GetSeriesByAnimeIdAsync(id);
-            GraphQLResponse<ShikimoriAnimeList> graphQLResponse = await _shikimoriService.GetAnimeById(id.ToString());
+            GraphQLResponse<ShikimoriAnimeBaseList> graphQLResponse = await _shikimoriService.GetAnimeById(id.ToString());
             var anime = graphQLResponse.Data.Animes[0];
             var response = new { Series = userSeries, Anime = anime };
             return new OkObjectResult(response);
@@ -106,7 +106,7 @@ namespace SeriesTracker.API.Controllers
         }
 
         [HttpGet("{query}")]
-        public async Task<ActionResult<ShikimoriAnimeList>> GetAnimesByName(string query)
+        public async Task<ActionResult<ShikimoriAnimeBaseList>> GetAnimesByName(string query)
         {
 
             var graphQLResponse = await _shikimoriService.GetAnimesByName(query);
@@ -146,7 +146,7 @@ namespace SeriesTracker.API.Controllers
         [HttpGet("random")]
         public async Task<ActionResult> GetRandomAnime()
         {
-            GraphQLResponse<ShikimoriAnimeList> graphQLResponse = await _shikimoriService.GetRandomAnime();
+            GraphQLResponse<ShikimoriAnimeBaseList> graphQLResponse = await _shikimoriService.GetRandomAnime();
             return Ok(graphQLResponse.Data.Animes[0].Id);
         }
     }

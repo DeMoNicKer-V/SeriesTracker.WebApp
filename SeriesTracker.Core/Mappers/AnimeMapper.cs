@@ -1,5 +1,6 @@
 ﻿using SeriesTracker.Core.Dtos.Anime;
 using SeriesTracker.Core.Models;
+using SeriesTracker.Core.Models.Shikimori;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +12,7 @@ namespace SeriesTracker.Core.Mappers
     public static class AnimeMapper
 
     {
-        public static AnimeShortDto ToShortDTO(this AnimeBase animeBase)
+        public static AnimeShortDto ToShortDTO(this ShikimoriAnimeBase animeBase)
         {
             return new AnimeShortDto
             {

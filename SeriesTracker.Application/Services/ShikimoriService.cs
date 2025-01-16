@@ -24,14 +24,14 @@ namespace SeriesTracker.Application.Services
             return await graphQLClient.SendQueryAsync<ShikimoriAnimeBaseList>(GetAnimesRequest(page, order));
         }
 
-        public async Task<GraphQLResponse<ShikimoriAnimeList>> GetAnimesByName(string name)
+        public async Task<GraphQLResponse<ShikimoriAnimeBaseList>> GetAnimesByName(string name)
         {
-            return await graphQLClient.SendQueryAsync<ShikimoriAnimeList>(GetAnimeByNameRequest(name));
+            return await graphQLClient.SendQueryAsync<ShikimoriAnimeBaseList>(GetAnimeByNameRequest(name));
         }
 
-        public async Task<GraphQLResponse<List<AnimeBase>>> GetAnimeById(string Id)
+        public async Task<GraphQLResponse<ShikimoriAnimeBaseList>> GetAnimeById(string Id)
         {
-            return await graphQLClient.SendQueryAsync<ShikimoriAnimeList>(GetAnimeByIdRequest(Id));
+            return await graphQLClient.SendQueryAsync<ShikimoriAnimeBaseList>(GetAnimeByIdRequest(Id));
         }
 
         public async Task<GraphQLResponse<ShikimoriAnimeBaseList>> GetAnimeListByIds(string Id)
@@ -54,9 +54,9 @@ namespace SeriesTracker.Application.Services
             return await graphQLClient.SendQueryAsync<GenreList>(GetGenresRequest());
         }
 
-        public async Task<GraphQLResponse<ShikimoriAnimeList>> GetRandomAnime()
+        public async Task<GraphQLResponse<ShikimoriAnimeBaseList>> GetRandomAnime()
         {
-            return await graphQLClient.SendQueryAsync<ShikimoriAnimeList>(GetRandomAnimeRequest());
+            return await graphQLClient.SendQueryAsync<ShikimoriAnimeBaseList>(GetRandomAnimeRequest());
         }
 
         private static GraphQLRequest GetAnimesRequest(int page, string order)
