@@ -23,6 +23,8 @@ namespace SeriesTracker.Core.Dtos.Anime
          string Status,
          string? SubTitle,
          string? Title,
+         double? Score,
+         int? Duration,
          IEnumerable<Related>? Relateds,
          Screenshot[]? Screenshots
     );
