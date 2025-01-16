@@ -6,6 +6,7 @@ using SeriesTracker.Application.Services;
 using SeriesTracker.Core.Abstractions;
 using SeriesTracker.Core.Abstractions.UserAbastractions;
 using SeriesTracker.Core.Enums;
+using SeriesTracker.Core.Mappers;
 using SeriesTracker.DataAccess;
 using SeriesTracker.DataAccess.Repositories;
 using SeriesTracker.Infrastructure.Authentication;
@@ -37,7 +38,7 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserSeriesService, UserSeriesService>();
 builder.Services.AddScoped<IUserSeriesRepository, UserSeriesRepository>();
 
-
+builder.Services.AddAutoMapper(typeof(AnimeMappingProfile));
 builder.Services.AddScoped<IShikimoriService, ShikimoriService>();
 builder.Services.AddScoped<IJwtProvider, JwtProvider>();
 builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();

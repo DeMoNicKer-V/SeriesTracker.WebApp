@@ -6,6 +6,8 @@ using SeriesTracker.Core.Models.Shikimori;
 using SeriesTracker.Core.Abstractions;
 using SeriesTracker.Core.Models;
 using System.Xml.Linq;
+using AutoMapper;
+using SeriesTracker.Core.Dtos.Anime;
 
 namespace SeriesTracker.Application.Services
 {
@@ -14,9 +16,24 @@ namespace SeriesTracker.Application.Services
         private static readonly string apiUrl = "https://shikimori.one/api/graphql";
         private readonly GraphQLHttpClient graphQLClient;
 
-        public ShikimoriService()
+        private readonly IMapper _mapper;
+
+        public ShikimoriService(IMapper mapper)
         {
+            _mapper = mapper;
+        
+        
             graphQLClient = new GraphQLHttpClient(apiUrl, new NewtonsoftJsonSerializer());
+        }
+
+        public AnimeFullDto MapToFullDto(ShikimoriAnimeBase anime)
+        {
+            return _mapper.Map<AnimeFullDto>(anime);
+        }
+
+        public AnimeShortDto MapToShortDto(ShikimoriAnimeBase anime)
+        {
+            return _mapper.Map<AnimeShortDto>(anime);
         }
 
         public async Task<GraphQLResponse<ShikimoriAnimeBaseList>> GetAnimes(int page, string order)

@@ -48,7 +48,7 @@ namespace SeriesTracker.API.Controllers
         {
             UserSeries? userSeries = await _userSeriesService.GetSeriesByAnimeIdAsync(id);
             GraphQLResponse<ShikimoriAnimeBaseList> graphQLResponse = await _shikimoriService.GetAnimeById(id.ToString());
-            var anime = graphQLResponse.Data.Animes[0];
+            var anime = graphQLResponse.Data.Animes.Select(item => _shikimoriService.MapToFullDto(item)).First();
             var response = new { Series = userSeries, Anime = anime };
             return new OkObjectResult(response);
         }
@@ -74,10 +74,7 @@ namespace SeriesTracker.API.Controllers
         {
             var userId = HttpContext.User.FindFirst("userId")?.Value;
 
-            var seriesDictionary = (await _userSeriesService.GetSeriesList(userId))
-                .ToDictionary(s => s.AnimeId, s => s);
-            var categoryDictionary = (await _categoryService.GetCategoryList())
-                .ToDictionary(c => c.Id, c => c);
+
 
             GraphQLResponse<ShikimoriAnimeBaseList> graphQLResponse =
                 await _shikimoriService.GetAnimesByAllParams(request.Page, request.Name, request.Season, request.Status,
@@ -86,19 +83,7 @@ namespace SeriesTracker.API.Controllers
             var animeResponses = graphQLResponse.Data.Animes
                 .Select(item =>
                 {
-                    if (seriesDictionary.ContainsKey(item.Id))
-                    {
-                        var series = seriesDictionary[item.Id];
-
-                        var category = categoryDictionary[series.CategoryId];
-                        return new AnimeSeriesResponse(item.Id, series.CategoryId, category.Name, category.Color, series.IsFavorite,
-                                                     item.Description, item.Episodes, item.Duration, item.StartDate, item.Score, item.Title, item.SubTitle,
-                                                     item.PictureUrl, item.Rating, item.Kind, item.Status);
-                    }
-
-                    return new AnimeSeriesResponse(item.Id, 0, string.Empty, string.Empty, false,
-                                                 item.Description, item.Episodes, item.Duration, item.StartDate, item.Score, item.Title, item.SubTitle,
-                                                 item.PictureUrl, item.Rating, item.Kind, item.Status);
+                    return _shikimoriService.MapToShortDto(item);
                 })
                 .ToList();
 

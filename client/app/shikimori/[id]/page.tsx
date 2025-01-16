@@ -106,6 +106,7 @@ export default function AnimePage({ params }: { params: { id: string } }) {
     };
     const getAnimes = async (id: string) => {
         const response = await getAnimeById(id);
+        console.log(response);
         setAnimes(response.anime);
 
         if (response.series) {

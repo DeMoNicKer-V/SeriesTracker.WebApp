@@ -4,6 +4,7 @@ import {
     YoutubeOutlined,
     InfoCircleOutlined,
     StarOutlined,
+    TeamOutlined,
 } from "@ant-design/icons";
 import Title from "antd/es/typography/Title";
 import Meta from "antd/es/card/Meta";
@@ -52,6 +53,26 @@ export const AnimePopover = ({ animes }: Props) => {
                                     align={"center"}
                                     justify={"center"}
                                 >
+                                    <InfoCircleOutlined />
+                                    {`${animes.kind}`}
+                                </Flex>
+                            </Tag>
+                            <Tag>
+                                <Flex
+                                    gap={3}
+                                    align={"center"}
+                                    justify={"center"}
+                                >
+                                    <TeamOutlined />
+                                    {animes.rating}
+                                </Flex>
+                            </Tag>
+                            <Tag>
+                                <Flex
+                                    gap={3}
+                                    align={"center"}
+                                    justify={"center"}
+                                >
                                     <CalendarOutlined />
                                     {new Date(animes.startDate).toLocaleString(
                                         "ru-Ru",
@@ -61,17 +82,6 @@ export const AnimePopover = ({ animes }: Props) => {
                                     )}
                                 </Flex>
                             </Tag>
-                            <Tag>
-                                <Flex
-                                    gap={3}
-                                    align={"center"}
-                                    justify={"center"}
-                                >
-                                    <InfoCircleOutlined />
-                                    {`${animes.kind}`}
-                                </Flex>
-                            </Tag>
-
                             <Tag>
                                 <Flex
                                     gap={3}
