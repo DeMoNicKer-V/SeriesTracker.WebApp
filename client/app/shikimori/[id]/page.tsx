@@ -54,6 +54,8 @@ import RelatedAnimes from "@/app/components/RelatedAnimes/RelatedAnimes";
 import TextIcon from "@/app/components/TextIcon";
 
 import styles from "./page.module.css";
+import AnimeDetailDescription from "@/app/components/AnimeDetailDescription/InfoDescription";
+import GenreDescription from "@/app/components/AnimeDetailDescription/GenreDescription";
 
 export default function AnimePage({ params }: { params: { id: string } }) {
     const defaultValues = {
@@ -66,7 +68,6 @@ export default function AnimePage({ params }: { params: { id: string } }) {
     const [animes, setAnimes] = useState<Anime[] | any>([]);
     const [series, setSeries] = useState<Series | any>(defaultValues);
     const [loading, setLoading] = useState<boolean>(true);
-    const [genres, setGenres] = useState<string[]>([]);
     const [categories, setCategories] = useState<MenuProps["items"]>([]);
     const [category, setCategory] = useState<Category | any>();
     const [isSeries, setIsSeries] = useState<boolean>(false);
@@ -119,8 +120,7 @@ export default function AnimePage({ params }: { params: { id: string } }) {
             series.animeId = response.anime.id;
             getCategories(series, response.anime);
         }
-        const gg = response.anime.genres.split(",");
-        setGenres(gg);
+
         setLoading(false);
     };
     useEffect(() => {
@@ -318,12 +318,7 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                                                         fontSize: 17,
                                                     }}
                                                     title={
-                                                        <Title
-                                                            style={{
-                                                                margin: 0,
-                                                            }}
-                                                            level={3}
-                                                        >
+                                                        <Title level={3}>
                                                             {animes.title}
                                                         </Title>
                                                     }
@@ -331,124 +326,65 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                                                         animes.subTitle
                                                     }
                                                 />
-                                                <Space
-                                                    align={"center"}
-                                                    size={[0, 0]}
-                                                    wrap
-                                                >
-                                                    {genres.map(
-                                                        (genre: string) => (
-                                                            <Tag
-                                                                className="tag"
-                                                                style={{
-                                                                    cursor: "default",
-                                                                    backgroundColor:
-                                                                        "transparent",
-                                                                }}
-                                                            >
-                                                                {genre}
-                                                            </Tag>
-                                                        )
-                                                    )}
-                                                </Space>
-                                                <Space
-                                                    align={"center"}
-                                                    size={[8, 8]}
-                                                    wrap
-                                                >
-                                                    <TextIcon
-                                                        strong
-                                                        icon={
-                                                            <InfoCircleOutlined />
-                                                        }
-                                                        text={animes.kind}
-                                                    />
+                                                <GenreDescription
+                                                    genresString={animes.genres}
+                                                />
+                                                <AnimeDetailDescription
+                                                    items={[
+                                                        {
+                                                            text: animes.kind,
+                                                            icon: (
+                                                                <InfoCircleOutlined />
+                                                            ),
+                                                        },
+                                                        {
+                                                            text: animes.rating,
+                                                            icon: (
+                                                                <TeamOutlined />
+                                                            ),
+                                                        },
+                                                        {
+                                                            text: animes.status,
+                                                            icon: (
+                                                                <FireOutlined />
+                                                            ),
+                                                        },
 
-                                                    <Divider
-                                                        className={
-                                                            styles["separator"]
-                                                        }
-                                                        type="vertical"
-                                                    />
-                                                    <TextIcon
-                                                        strong
-                                                        icon={<TeamOutlined />}
-                                                        text={animes.rating}
-                                                    />
-                                                    <Divider
-                                                        className={
-                                                            styles["separator"]
-                                                        }
-                                                        type="vertical"
-                                                    />
-                                                    <TextIcon
-                                                        strong
-                                                        icon={<FireOutlined />}
-                                                        text={animes.status}
-                                                    />
-                                                    <Divider
-                                                        className={
-                                                            styles["separator"]
-                                                        }
-                                                        type="vertical"
-                                                    />
-                                                    <TextIcon
-                                                        strong
-                                                        text={new Date(
-                                                            animes.startDate
-                                                        ).toLocaleString(
-                                                            "ru-Ru",
-                                                            {
-                                                                year: "numeric",
-                                                                month: "short",
-                                                                day: "numeric",
-                                                            }
-                                                        )}
-                                                        icon={
-                                                            <CalendarOutlined />
-                                                        }
-                                                    />
-                                                    <Divider
-                                                        className={
-                                                            styles["separator"]
-                                                        }
-                                                        type="vertical"
-                                                    />
-                                                    <TextIcon
-                                                        strong
-                                                        text={`${animes.episodes} эп.`}
-                                                        icon={
-                                                            <YoutubeOutlined />
-                                                        }
-                                                    />
-
-                                                    <Divider
-                                                        className={
-                                                            styles["separator"]
-                                                        }
-                                                        type="vertical"
-                                                    />
-                                                    <TextIcon
-                                                        strong
-                                                        text={`${animes.duration} мин.`}
-                                                        icon={
-                                                            <ClockCircleOutlined />
-                                                        }
-                                                    />
-
-                                                    <Divider
-                                                        className={
-                                                            styles["separator"]
-                                                        }
-                                                        type="vertical"
-                                                    />
-
-                                                    <TextIcon
-                                                        strong
-                                                        text={`${animes.score} из 10`}
-                                                        icon={<StarOutlined />}
-                                                    />
-                                                </Space>
+                                                        {
+                                                            text: new Date(
+                                                                animes.startDate
+                                                            ).toLocaleString(
+                                                                "ru-Ru",
+                                                                {
+                                                                    year: "numeric",
+                                                                    month: "short",
+                                                                    day: "numeric",
+                                                                }
+                                                            ),
+                                                            icon: (
+                                                                <CalendarOutlined />
+                                                            ),
+                                                        },
+                                                        {
+                                                            text: `${animes.episodes} эп.`,
+                                                            icon: (
+                                                                <YoutubeOutlined />
+                                                            ),
+                                                        },
+                                                        {
+                                                            text: `${animes.duration} мин.`,
+                                                            icon: (
+                                                                <ClockCircleOutlined />
+                                                            ),
+                                                        },
+                                                        {
+                                                            text: `${animes.score} из 10`,
+                                                            icon: (
+                                                                <StarOutlined />
+                                                            ),
+                                                        },
+                                                    ]}
+                                                />
                                                 {isAuth ? (
                                                     <Space
                                                         wrap
