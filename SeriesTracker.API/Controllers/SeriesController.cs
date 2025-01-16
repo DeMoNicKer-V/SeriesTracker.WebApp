@@ -47,7 +47,7 @@ namespace SeriesTracker.API.Controllers
 
             return Ok(response);
         }
-        private readonly ShikimoriService ShikimoriService = new();
+
 
 
         [Authorize]

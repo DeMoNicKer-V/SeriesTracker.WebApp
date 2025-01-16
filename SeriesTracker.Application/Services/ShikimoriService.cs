@@ -29,7 +29,7 @@ namespace SeriesTracker.Application.Services
             return await graphQLClient.SendQueryAsync<ShikimoriAnimeList>(GetAnimeByNameRequest(name));
         }
 
-        public async Task<GraphQLResponse<ShikimoriAnimeList>> GetAnimeById(string Id)
+        public async Task<GraphQLResponse<List<AnimeBase>>> GetAnimeById(string Id)
         {
             return await graphQLClient.SendQueryAsync<ShikimoriAnimeList>(GetAnimeByIdRequest(Id));
         }
