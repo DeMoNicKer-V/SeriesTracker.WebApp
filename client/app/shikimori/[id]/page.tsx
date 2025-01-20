@@ -65,7 +65,7 @@ export default function AnimePage({ params }: { params: { id: string } }) {
         isFavorite: false,
     } as Series;
     const [isAuth, setIsAuth] = useState<boolean>(false);
-    const [animes, setAnimes] = useState<Anime[] | any>([]);
+    const [animes, setAnimes] = useState<Anime | any>();
     const [series, setSeries] = useState<Series | any>(defaultValues);
     const [loading, setLoading] = useState<boolean>(true);
     const [categories, setCategories] = useState<MenuProps["items"]>([]);
@@ -133,7 +133,7 @@ export default function AnimePage({ params }: { params: { id: string } }) {
     const updateFavoriteSeries = async () => {
         if (isSeries === false) {
             const seriesRequest = {
-                animeId: animes.id,
+                animeId: Number(animes.id),
                 watchedEpisode: 0,
                 categoryId: 1,
                 isFavorite: true,
@@ -547,60 +547,71 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                                 />
                                 <Collapse
                                     items={[
-                                        {
-                                            key: "1",
-                                            label: "Посмотреть кадры",
-                                            children: (
-                                                <Row
-                                                    gutter={[0, 15]}
-                                                    justify={"center"}
-                                                >
-                                                    <Col span={24}>
-                                                        <Image.PreviewGroup>
-                                                            <Flex
-                                                                justify="center"
-                                                                wrap
-                                                                align="center"
-                                                                gap={10}
-                                                            >
-                                                                {animes.screenshots
-                                                                    .slice(0, 4)
-                                                                    .map(
-                                                                        (
-                                                                            animes: Screenshot
-                                                                        ) => (
-                                                                            <Image
-                                                                                style={{
-                                                                                    maxWidth: 280,
-                                                                                }}
-                                                                                preview={{
-                                                                                    mask: "Посмотреть",
-                                                                                }}
-                                                                                src={
-                                                                                    animes.originalUrl
-                                                                                }
-                                                                            ></Image>
-                                                                        )
-                                                                    )}
-                                                            </Flex>
-                                                        </Image.PreviewGroup>
-                                                    </Col>
-                                                    <Col>
-                                                        <Button
-                                                            type="link"
-                                                            href={`${params.id}/screen`}
-                                                            icon={
-                                                                <LongRightArrow />
-                                                            }
-                                                            iconPosition="end"
-                                                        >
-                                                            Посмотреть больше
-                                                            кадров
-                                                        </Button>
-                                                    </Col>
-                                                </Row>
-                                            ),
-                                        },
+                                        ...(animes.screenshots.length <= 0
+                                            ? [
+                                                  {
+                                                      key: "1",
+                                                      label: "Посмотреть кадры",
+                                                      children: (
+                                                          <Row
+                                                              gutter={[0, 15]}
+                                                              justify={"center"}
+                                                          >
+                                                              <Col span={24}>
+                                                                  <Image.PreviewGroup>
+                                                                      <Flex
+                                                                          justify="center"
+                                                                          wrap
+                                                                          align="center"
+                                                                          gap={
+                                                                              10
+                                                                          }
+                                                                      >
+                                                                          {animes.screenshots
+                                                                              .slice(
+                                                                                  0,
+                                                                                  4
+                                                                              )
+                                                                              .map(
+                                                                                  (
+                                                                                      animes: Screenshot
+                                                                                  ) => (
+                                                                                      <Image
+                                                                                          style={{
+                                                                                              maxWidth: 280,
+                                                                                          }}
+                                                                                          preview={{
+                                                                                              mask: "Посмотреть",
+                                                                                          }}
+                                                                                          src={
+                                                                                              animes.originalUrl
+                                                                                          }
+                                                                                      ></Image>
+                                                                                  )
+                                                                              )}
+                                                                      </Flex>
+                                                                  </Image.PreviewGroup>
+                                                              </Col>
+                                                              <Col>
+                                                                  <Button
+                                                                      type="link"
+                                                                      href={`${params.id}/screen`}
+                                                                      icon={
+                                                                          <LongRightArrow />
+                                                                      }
+                                                                      iconPosition="end"
+                                                                  >
+                                                                      Посмотреть
+                                                                      больше
+                                                                      кадров
+                                                                  </Button>
+                                                              </Col>
+                                                          </Row>
+                                                      ),
+                                                  },
+                                              ]
+                                            : []),
+
                                         {
                                             key: "2",
                                             label: "Связанное с этим аниме",
