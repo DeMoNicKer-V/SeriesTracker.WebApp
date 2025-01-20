@@ -215,18 +215,7 @@ input,
 .ant-image-img {
     border-radius: 5px;
 }
-
-.overlay-background {
-    background-image: linear-gradient(180deg, transparent -50%, #121212);
-    width: 100%;
-}
-
 @media (max-width: 1200px) {
-    .flex-detail {
-        justify-content: center;
-        font-size: 10px;
-        gap: 5px !important;
-    }
     .subtitle-tags {
         flex-wrap: wrap;
     }
@@ -249,9 +238,6 @@ input,
 }
 
 @media (max-width: 1200px) {
-    .anime-detail-row {
-        padding: 20% 5px 5px !important;
-    }
     .anime-detail-col > .ant-space {
         justify-content: center;
     }
@@ -384,9 +370,6 @@ div.ant-upload-list-item {
 
 .ant-tooltip {
     max-width: max-content;
-}
-.ant-typography {
-    margin-bottom: 0 !important;
 }
 
 .animes-list .ant-row {

@@ -106,10 +106,6 @@ export const Animes = ({ userPath }: Props) => {
         request.page = 1;
         scrollTop();
     };
-    const getGenresList = async () => {
-        const list = await getGenres();
-        setGenres(list);
-    };
 
     const getAnimesPost = async (url: string) => {
         const data: SeriesAnime[] = await getAnimesByParams(url);

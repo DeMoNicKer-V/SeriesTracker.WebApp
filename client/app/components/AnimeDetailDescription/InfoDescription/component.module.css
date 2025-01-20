@@ -1,0 +1,8 @@
+.info-description {
+    align-items: center;
+}
+@media (max-width: 1200px) {
+    .info-description {
+        justify-content: center;
+    }
+}

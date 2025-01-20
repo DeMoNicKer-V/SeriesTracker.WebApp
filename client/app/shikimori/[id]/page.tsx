@@ -6,11 +6,9 @@ import {
     Image,
     Flex,
     Row,
-    Tag,
     Tooltip,
     Typography,
     FloatButton,
-    Divider,
     Collapse,
     Spin,
     Space,
@@ -54,7 +52,7 @@ import RelatedAnimes from "@/app/components/RelatedAnimes/RelatedAnimes";
 import TextIcon from "@/app/components/TextIcon";
 
 import styles from "./page.module.css";
-import AnimeDetailDescription from "@/app/components/AnimeDetailDescription/InfoDescription";
+import InfoDescription from "@/app/components/AnimeDetailDescription/InfoDescription/InfoDescription";
 import GenreDescription from "@/app/components/AnimeDetailDescription/GenreDescription";
 import ScreenshotsPreview from "@/app/components/AnimeDetailDescription/ScreenshotsPreview";
 import LinkButton from "@/app/components/LinkButton";
@@ -218,17 +216,6 @@ export default function AnimePage({ params }: { params: { id: string } }) {
         await getAnimes(params.id);
     };
 
-    const cardStyle: React.CSSProperties = {
-        padding: "20% 20px 20px 20px",
-    };
-
-    const subCol: React.CSSProperties = {
-        display: "flex",
-        flexDirection: "column",
-        gap: "3px",
-        padding: "10px",
-    };
-
     const { Title, Text } = Typography;
     const items: MenuProps["items"] = categories;
     const menuProps = {
@@ -258,6 +245,10 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                             Divider: {
                                 verticalMarginInline: 0,
                             },
+                            Typography: {
+                                fontSize: 17,
+                                titleMarginBottom: 0,
+                            },
                         },
                     }}
                 >
@@ -281,15 +272,16 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                                             }}
                                         ></Button>
                                     </Link>
-                                    <div className="overlay-background">
+                                    <div id={styles["overlay-background"]}>
                                         <Row
-                                            className="anime-detail-row"
+                                            className={
+                                                styles["anime-detail-row"]
+                                            }
                                             align={"bottom"}
                                             justify={"center"}
-                                            style={cardStyle}
                                         >
-                                            <Col lg={24} xl={7} xxl={5}>
-                                                <Flex className="flex-detail">
+                                            <Col lg={24} xl={6} xxl={5}>
+                                                <Flex justify="center">
                                                     <Image
                                                         style={{
                                                             maxHeight: "380px",
@@ -305,239 +297,253 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                                                 </Flex>
                                             </Col>
                                             <Col
-                                                className="anime-detail-col"
-                                                style={subCol}
                                                 xs={24}
                                                 sm={24}
                                                 lg={24}
                                                 md={24}
-                                                xl={17}
+                                                xl={18}
                                                 xxl={19}
                                             >
-                                                <Meta
-                                                    className="anime-detail-title"
-                                                    style={{
-                                                        marginBottom: 0,
-                                                        fontSize: 17,
-                                                    }}
-                                                    title={
-                                                        <Title level={3}>
-                                                            {animes.title}
-                                                        </Title>
+                                                <Flex
+                                                    className={
+                                                        styles[
+                                                            "flex-anime-detail"
+                                                        ]
                                                     }
-                                                    description={
-                                                        animes.subTitle
-                                                    }
-                                                />
-                                                <GenreDescription
-                                                    genresString={animes.genres}
-                                                />
-                                                <AnimeDetailDescription
-                                                    items={[
-                                                        {
-                                                            text: animes.kind,
-                                                            icon: (
-                                                                <InfoCircleOutlined />
-                                                            ),
-                                                        },
-                                                        {
-                                                            text: animes.rating,
-                                                            icon: (
-                                                                <TeamOutlined />
-                                                            ),
-                                                        },
-                                                        {
-                                                            text: animes.status,
-                                                            icon: (
-                                                                <FireOutlined />
-                                                            ),
-                                                        },
-
-                                                        {
-                                                            text: new Date(
-                                                                animes.startDate
-                                                            ).toLocaleString(
-                                                                "ru-Ru",
+                                                >
+                                                    <Meta
+                                                        className={
+                                                            styles[
+                                                                "anime-detail-title"
+                                                            ]
+                                                        }
+                                                        title={
+                                                            <Title level={3}>
+                                                                {animes.title}
+                                                            </Title>
+                                                        }
+                                                        description={
+                                                            <Text
+                                                                italic
+                                                                type="secondary"
+                                                            >
                                                                 {
-                                                                    year: "numeric",
-                                                                    month: "short",
-                                                                    day: "numeric",
+                                                                    animes.subTitle
                                                                 }
-                                                            ),
-                                                            icon: (
-                                                                <CalendarOutlined />
-                                                            ),
-                                                        },
-                                                        {
-                                                            text: `${animes.episodes} эп.`,
-                                                            icon: (
-                                                                <YoutubeOutlined />
-                                                            ),
-                                                        },
-                                                        {
-                                                            text: `${animes.duration} мин.`,
-                                                            icon: (
-                                                                <ClockCircleOutlined />
-                                                            ),
-                                                        },
-                                                        {
-                                                            text: `${animes.score} из 10`,
-                                                            icon: (
-                                                                <StarOutlined />
-                                                            ),
-                                                        },
-                                                    ]}
-                                                />
-                                                {isAuth ? (
-                                                    <Space
-                                                        wrap
-                                                        className="space-buttons"
-                                                        style={{
-                                                            cursor: "default",
-                                                        }}
-                                                    >
-                                                        <Tooltip
-                                                            title={
-                                                                isFavorite
-                                                                    ? "Удалить из избранного"
-                                                                    : "Добавить в избранное"
-                                                            }
-                                                        >
-                                                            <Rate
-                                                                character={
-                                                                    <HeartFilled />
-                                                                }
-                                                                style={{
-                                                                    color: "#ff69b4",
-                                                                }}
-                                                                onChange={
-                                                                    updateFavoriteSeries
-                                                                }
-                                                                defaultValue={
-                                                                    isFavorite
-                                                                        ? 1
-                                                                        : 0
-                                                                }
-                                                                count={1}
-                                                            />
-                                                        </Tooltip>
-                                                        <Dropdown.Button
-                                                            size="small"
-                                                            menu={menuProps}
-                                                            icon={
-                                                                <DownOutlined />
-                                                            }
-                                                            className="manage-button"
-                                                            onClick={
-                                                                AddToMyList
-                                                            }
+                                                            </Text>
+                                                        }
+                                                    />
+                                                    <GenreDescription
+                                                        genresString={
+                                                            animes.genres
+                                                        }
+                                                    />
+                                                    <InfoDescription
+                                                        items={[
+                                                            {
+                                                                text: animes.kind,
+                                                                icon: (
+                                                                    <InfoCircleOutlined />
+                                                                ),
+                                                            },
+                                                            {
+                                                                text: animes.rating,
+                                                                icon: (
+                                                                    <TeamOutlined />
+                                                                ),
+                                                            },
+                                                            {
+                                                                text: animes.status,
+                                                                icon: (
+                                                                    <FireOutlined />
+                                                                ),
+                                                            },
+
+                                                            {
+                                                                text: new Date(
+                                                                    animes.startDate
+                                                                ).toLocaleString(
+                                                                    "ru-Ru",
+                                                                    {
+                                                                        year: "numeric",
+                                                                        month: "short",
+                                                                        day: "numeric",
+                                                                    }
+                                                                ),
+                                                                icon: (
+                                                                    <CalendarOutlined />
+                                                                ),
+                                                            },
+                                                            {
+                                                                text: `${animes.episodes} эп.`,
+                                                                icon: (
+                                                                    <YoutubeOutlined />
+                                                                ),
+                                                            },
+                                                            {
+                                                                text: `${animes.duration} мин.`,
+                                                                icon: (
+                                                                    <ClockCircleOutlined />
+                                                                ),
+                                                            },
+                                                            {
+                                                                text: `${animes.score} из 10`,
+                                                                icon: (
+                                                                    <StarOutlined />
+                                                                ),
+                                                            },
+                                                        ]}
+                                                    />
+                                                    {isAuth ? (
+                                                        <Space
+                                                            wrap
+                                                            className="space-buttons"
                                                             style={{
-                                                                width: "100%",
-                                                                whiteSpace:
-                                                                    "break-spaces",
-                                                                height: "auto",
-                                                                borderRadius: 5,
+                                                                cursor: "default",
                                                             }}
                                                         >
-                                                            {isSeries ? (
-                                                                <BookOutlined />
-                                                            ) : (
-                                                                <PlusOutlined />
-                                                            )}
-                                                            {series.categoryId ===
-                                                                0 &&
-                                                                "Добавить в мой список"}
-                                                            {category &&
-                                                                category.name}
-                                                        </Dropdown.Button>
-
-                                                        {series.categoryId >
-                                                            1 && (
-                                                            <InputNumber
-                                                                readOnly={
-                                                                    series.categoryId ===
-                                                                    3
+                                                            <Tooltip
+                                                                title={
+                                                                    isFavorite
+                                                                        ? "Удалить из избранного"
+                                                                        : "Добавить в избранное"
                                                                 }
-                                                                value={
-                                                                    watchedEpisode
-                                                                }
-                                                                onChange={(
-                                                                    value
-                                                                ) => {
-                                                                    updateEpisodeSeries(
-                                                                        value
-                                                                    );
-                                                                }}
+                                                            >
+                                                                <Rate
+                                                                    character={
+                                                                        <HeartFilled />
+                                                                    }
+                                                                    style={{
+                                                                        color: "#ff69b4",
+                                                                    }}
+                                                                    onChange={
+                                                                        updateFavoriteSeries
+                                                                    }
+                                                                    defaultValue={
+                                                                        isFavorite
+                                                                            ? 1
+                                                                            : 0
+                                                                    }
+                                                                    count={1}
+                                                                />
+                                                            </Tooltip>
+                                                            <Dropdown.Button
                                                                 size="small"
-                                                                maxLength={4}
-                                                                addonBefore={
-                                                                    <Button
-                                                                        disabled={
-                                                                            series.categoryId ===
-                                                                            3
-                                                                        }
-                                                                        type="link"
-                                                                        size="small"
-                                                                        icon={
-                                                                            <MinusOutlined />
-                                                                        }
-                                                                        onClick={
-                                                                            decEpisodeSeries
-                                                                        }
-                                                                    ></Button>
+                                                                menu={menuProps}
+                                                                icon={
+                                                                    <DownOutlined />
                                                                 }
-                                                                addonAfter={
-                                                                    <Button
-                                                                        disabled={
-                                                                            series.categoryId ===
-                                                                            3
-                                                                        }
-                                                                        type="link"
-                                                                        size="small"
-                                                                        icon={
-                                                                            <PlusOutlined />
-                                                                        }
-                                                                        onClick={
-                                                                            incEpisodeSeries
-                                                                        }
-                                                                    ></Button>
+                                                                className="manage-button"
+                                                                onClick={
+                                                                    AddToMyList
                                                                 }
                                                                 style={{
-                                                                    width: "auto",
+                                                                    width: "100%",
+                                                                    whiteSpace:
+                                                                        "break-spaces",
+                                                                    height: "auto",
+                                                                    borderRadius: 5,
                                                                 }}
-                                                                max={
-                                                                    animes.episodes
-                                                                }
-                                                                prefix={
-                                                                    <Text>
-                                                                        {
-                                                                            "Эпизоды:"
-                                                                        }
-                                                                    </Text>
-                                                                }
-                                                                suffix={
-                                                                    <Text>{`из ${animes.episodes} эп.`}</Text>
-                                                                }
-                                                                min={0}
-                                                                defaultValue={
-                                                                    series.watchedEpisode
-                                                                }
-                                                                variant="filled"
-                                                                step={1}
-                                                                controls={false}
-                                                            />
-                                                        )}
-                                                    </Space>
-                                                ) : (
-                                                    <Button
-                                                        ghost
-                                                        type="primary"
-                                                        href="/login"
-                                                    >
-                                                        Войдите, чтобы добавить
-                                                        в свой список
-                                                    </Button>
-                                                )}
+                                                            >
+                                                                {isSeries ? (
+                                                                    <BookOutlined />
+                                                                ) : (
+                                                                    <PlusOutlined />
+                                                                )}
+                                                                {series.categoryId ===
+                                                                    0 &&
+                                                                    "Добавить в мой список"}
+                                                                {category &&
+                                                                    category.name}
+                                                            </Dropdown.Button>
+
+                                                            {series.categoryId >
+                                                                1 && (
+                                                                <InputNumber
+                                                                    readOnly={
+                                                                        series.categoryId ===
+                                                                        3
+                                                                    }
+                                                                    value={
+                                                                        watchedEpisode
+                                                                    }
+                                                                    onChange={(
+                                                                        value
+                                                                    ) => {
+                                                                        updateEpisodeSeries(
+                                                                            value
+                                                                        );
+                                                                    }}
+                                                                    size="small"
+                                                                    maxLength={
+                                                                        4
+                                                                    }
+                                                                    addonBefore={
+                                                                        <Button
+                                                                            disabled={
+                                                                                series.categoryId ===
+                                                                                3
+                                                                            }
+                                                                            type="link"
+                                                                            size="small"
+                                                                            icon={
+                                                                                <MinusOutlined />
+                                                                            }
+                                                                            onClick={
+                                                                                decEpisodeSeries
+                                                                            }
+                                                                        ></Button>
+                                                                    }
+                                                                    addonAfter={
+                                                                        <Button
+                                                                            disabled={
+                                                                                series.categoryId ===
+                                                                                3
+                                                                            }
+                                                                            type="link"
+                                                                            size="small"
+                                                                            icon={
+                                                                                <PlusOutlined />
+                                                                            }
+                                                                            onClick={
+                                                                                incEpisodeSeries
+                                                                            }
+                                                                        ></Button>
+                                                                    }
+                                                                    style={{
+                                                                        width: "auto",
+                                                                    }}
+                                                                    max={
+                                                                        animes.episodes
+                                                                    }
+                                                                    prefix={
+                                                                        "Эпизоды:"
+                                                                    }
+                                                                    suffix={`из ${animes.episodes} эп.`}
+                                                                    min={0}
+                                                                    defaultValue={
+                                                                        series.watchedEpisode
+                                                                    }
+                                                                    variant="filled"
+                                                                    step={1}
+                                                                    controls={
+                                                                        false
+                                                                    }
+                                                                />
+                                                            )}
+                                                        </Space>
+                                                    ) : (
+                                                        <Button
+                                                            ghost
+                                                            type="primary"
+                                                            href="/login"
+                                                        >
+                                                            Войдите, чтобы
+                                                            добавить в свой
+                                                            список
+                                                        </Button>
+                                                    )}
+                                                </Flex>
                                             </Col>
                                         </Row>
                                     </div>
