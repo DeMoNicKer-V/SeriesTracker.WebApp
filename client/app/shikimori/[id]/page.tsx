@@ -56,6 +56,8 @@ import TextIcon from "@/app/components/TextIcon";
 import styles from "./page.module.css";
 import AnimeDetailDescription from "@/app/components/AnimeDetailDescription/InfoDescription";
 import GenreDescription from "@/app/components/AnimeDetailDescription/GenreDescription";
+import ScreenshotsPreview from "@/app/components/AnimeDetailDescription/ScreenshotsPreview";
+import LinkButton from "@/app/components/LinkButton";
 
 export default function AnimePage({ params }: { params: { id: string } }) {
     const defaultValues = {
@@ -547,7 +549,7 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                                 />
                                 <Collapse
                                     items={[
-                                        ...(animes.screenshots.length <= 0
+                                        ...(animes.screenshots.length > 0
                                             ? [
                                                   {
                                                       key: "1",
@@ -558,53 +560,20 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                                                               justify={"center"}
                                                           >
                                                               <Col span={24}>
-                                                                  <Image.PreviewGroup>
-                                                                      <Flex
-                                                                          justify="center"
-                                                                          wrap
-                                                                          align="center"
-                                                                          gap={
-                                                                              10
-                                                                          }
-                                                                      >
-                                                                          {animes.screenshots
-                                                                              .slice(
-                                                                                  0,
-                                                                                  4
-                                                                              )
-                                                                              .map(
-                                                                                  (
-                                                                                      animes: Screenshot
-                                                                                  ) => (
-                                                                                      <Image
-                                                                                          style={{
-                                                                                              maxWidth: 280,
-                                                                                          }}
-                                                                                          preview={{
-                                                                                              mask: "Посмотреть",
-                                                                                          }}
-                                                                                          src={
-                                                                                              animes.originalUrl
-                                                                                          }
-                                                                                      ></Image>
-                                                                                  )
-                                                                              )}
-                                                                      </Flex>
-                                                                  </Image.PreviewGroup>
+                                                                  <ScreenshotsPreview
+                                                                      screenshots={animes.screenshots.slice(
+                                                                          0,
+                                                                          4
+                                                                      )}
+                                                                  />
                                                               </Col>
                                                               <Col>
-                                                                  <Button
-                                                                      type="link"
+                                                                  <LinkButton
                                                                       href={`${params.id}/screen`}
-                                                                      icon={
-                                                                          <LongRightArrow />
+                                                                      text={
+                                                                          "Посмотреть больше кадров"
                                                                       }
-                                                                      iconPosition="end"
-                                                                  >
-                                                                      Посмотреть
-                                                                      больше
-                                                                      кадров
-                                                                  </Button>
+                                                                  />
                                                               </Col>
                                                           </Row>
                                                       ),
