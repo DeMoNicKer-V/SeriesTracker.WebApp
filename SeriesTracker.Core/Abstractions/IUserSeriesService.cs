@@ -14,7 +14,7 @@ namespace SeriesTracker.Core.Abstractions
         Task<Guid> DeleteSeries(Guid id);
         Task<Guid> DeleteAllSeriesByUserId(Guid userId);
         Task<int> GetAllSeriesCount();
-        Task<UserSeries?> GetSeriesByAnimeIdAsync(int id);
+        Task<UserSeries?> GetSeriesByAnimeIdAsync(int id, Guid userId);
         Task<UserSeries> GetSeriesById(Guid id);
         Task<List<UserSeries>> GetSeriesList(string id);
         Task<Guid> UpdateSeries(Guid id, int watched, string changed, int categoryId, bool favorite);
@@ -22,5 +22,6 @@ namespace SeriesTracker.Core.Abstractions
         Task<List<SeriesGroupShortDto>> GetGroupShortSeries(Guid id);
         Task<string> GetRecentSeriesString(Guid userId);
         Task<string> GetSeriesAnimeIdsList(string username, int categoryId);
+        Task<Category?> GetCategoryByAnimeSeries(int id, Guid userId);
     }
 }

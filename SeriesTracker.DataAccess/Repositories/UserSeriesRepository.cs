@@ -3,6 +3,7 @@ using SeriesTracker.Core.Abstractions;
 using SeriesTracker.Core.Dtos.Series;
 using SeriesTracker.Core.Models;
 using SeriesTracker.DataAccess.Entities;
+using SeriesTracker.DataAccess.Migrations;
 
 namespace SeriesTracker.DataAccess.Repositories
 {
@@ -17,12 +18,17 @@ namespace SeriesTracker.DataAccess.Repositories
 
         public async Task<Guid> CreateAsync(UserSeries model)
         {
+            var categoryEntity = await _context.CategoryEntities
+    .SingleOrDefaultAsync(r => r.Id == (int)model.CategoryId)
+    ?? throw new InvalidOperationException();
+
             var userSeriesEntity = new UserSeriesEntity
             {
                 Id = model.Id,
                 AnimeId = model.AnimeId,
                 UserId = model.UserId,
                 CategoryId = model.CategoryId,
+                Category = categoryEntity,
                 AddedDate = model.AddedDate,
                 ChangedDate = model.ChangedDate,
                 WatchedEpisode = model.WatchedEpisode,
@@ -110,9 +116,9 @@ namespace SeriesTracker.DataAccess.Repositories
             return seriesAnimeIdsList;
         }
 
-        public async Task<UserSeries?> GetSeriesByAnimeIdAsync(int id)
+        public async Task<UserSeries?> GetSeriesByAnimeIdAsync(int id, Guid userId)
         {
-            var s = await _context.UserSeriesEntities.AsNoTracking().Where(s => s.AnimeId == id).FirstOrDefaultAsync();
+            var s = await _context.UserSeriesEntities.AsNoTracking().Where(s => s.AnimeId == id && s.UserId == userId).FirstOrDefaultAsync();
             if (s == null)
             {
                 return null;

@@ -21,10 +21,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddDbContext<SeriesTrackerDbContext>(
-    options => {
-        options.UseNpgsql(builder.Configuration.GetConnectionString(nameof(SeriesTrackerDbContext)));    
-    });
+builder.Services.AddScoped<IUserSeriesRepository, UserSeriesRepository>();
+builder.Services.AddScoped<IUserSeriesService, UserSeriesService>();
 
 builder.Services.AddScoped<ISeriesService, SeriesService>();
 builder.Services.AddScoped<ISeriesRepository, SeriesRepository>();
@@ -35,15 +33,18 @@ builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 
-builder.Services.AddScoped<IUserSeriesService, UserSeriesService>();
-builder.Services.AddScoped<IUserSeriesRepository, UserSeriesRepository>();
+builder.Services.AddScoped<ICategorySeriesRepository, CategorySeriesRepository>();
+builder.Services.AddScoped<ICategorySeriesService, CategorySeriesService>();
+
 
 builder.Services.AddAutoMapper(typeof(AnimeMappingProfile));
 builder.Services.AddScoped<IShikimoriService, ShikimoriService>();
 builder.Services.AddScoped<IJwtProvider, JwtProvider>();
 builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
 
-
+builder.Services.AddDbContextFactory<SeriesTrackerDbContext>(options => {
+    options.UseNpgsql(builder.Configuration.GetConnectionString(nameof(SeriesTrackerDbContext)));
+});
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())

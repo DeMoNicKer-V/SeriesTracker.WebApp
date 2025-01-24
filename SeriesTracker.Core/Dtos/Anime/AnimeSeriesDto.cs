@@ -2,7 +2,7 @@
 namespace SeriesTracker.Core.Dtos.Anime
 {
     public class AnimeSeriesDto
-    { public int Id{get; set;}
+    {   public int Id{get; set;}
         public string? Description{get; set;}
         public double Duration{get; set;}
         public int Episodes{get; set;}
@@ -14,8 +14,9 @@ namespace SeriesTracker.Core.Dtos.Anime
         public string Kind{get; set;}
         public string Status{get; set;}
         public string? Rating{get; set;}
-        public int CategoryId { get; set; } = 0;
-        public string CategoryColor {get; set;} = string.Empty;
+        public int? CategoryId { get; set; } = 0;
+        public string? CategoryName { get; set; } = string.Empty;
+        public string? CategoryColor {get; set;} = string.Empty;
         }
     
 }

@@ -86,14 +86,27 @@ export const getAnimesByParams = async (fullUrl: string) => {
 };
 
 export const getAnimeById = async (id: string) => {
-    const response = await fetch(`http://localhost:5125/shikimori/id/${id}`);
+    const response = await fetch(`http://localhost:5125/shikimori/id/${id}`, {
+        method: "GET",
+        headers: {
+            "content-type": "application/json",
+        },
+        credentials: "include",
+    });
     const animes: AnimeInfo = await response.json();
     return animes;
 };
 
 export const getAnimesById = async (id: string) => {
     const response = await fetch(
-        `http://localhost:5125/shikimori/activity/?id=${id}`
+        `http://localhost:5125/shikimori/activity/?id=${id}`,
+        {
+            method: "GET",
+            headers: {
+                "content-type": "application/json",
+            },
+            credentials: "include",
+        }
     );
     const animes: LastActivityAnime[] = await response.json();
     return animes;

@@ -36,6 +36,16 @@ namespace SeriesTracker.Application.Services
             return _mapper.Map<AnimeShortDto>(anime);
         }
 
+        public AnimeSeriesDto MapToAnimeSeriesDto(ShikimoriAnimeBase anime, int categoryId = 0, string categoryName = "", string categoryColor = "")
+        {
+            return _mapper.Map<AnimeSeriesDto>(anime, opt =>
+            {
+                opt.Items["CategoryId"] = categoryId;
+                opt.Items["CategoryName"] = categoryName;
+                opt.Items["CategoryColor"] = categoryColor;
+            });
+        }
+
         public async Task<GraphQLResponse<ShikimoriAnimeBaseList>> GetAnimes(int page, string order)
         {
             return await graphQLClient.SendQueryAsync<ShikimoriAnimeBaseList>(GetAnimesRequest(page, order));

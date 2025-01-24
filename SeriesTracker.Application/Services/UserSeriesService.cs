@@ -1,6 +1,9 @@
-﻿using SeriesTracker.Core.Abstractions;
+﻿using Microsoft.EntityFrameworkCore;
+using SeriesTracker.Core.Abstractions;
 using SeriesTracker.Core.Dtos.Series;
 using SeriesTracker.Core.Models;
+using SeriesTracker.DataAccess;
+using SeriesTracker.DataAccess.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,15 +15,33 @@ namespace SeriesTracker.Application.Services
     public class UserSeriesService : IUserSeriesService
     {
         private readonly IUserSeriesRepository _userSeriesRepository;
+        private readonly IDbContextFactory<SeriesTrackerDbContext> _contextFactory;
+        private readonly ICategoryRepository _categoryRepository;
 
-        public UserSeriesService(IUserSeriesRepository userSeriesRepository)
+        public UserSeriesService(IDbContextFactory<SeriesTrackerDbContext> contextFactory, IUserSeriesRepository userSeriesRepository , ICategoryRepository categoryRepository)
         {
+            _contextFactory = contextFactory;
             _userSeriesRepository = userSeriesRepository;
+            _categoryRepository = categoryRepository;
         }
 
-        public async Task<UserSeries?> GetSeriesByAnimeIdAsync(int id)
+        public async Task<UserSeries?> GetSeriesByAnimeIdAsync(int id, Guid userId)
         {
-            return await _userSeriesRepository.GetSeriesByAnimeIdAsync(id);
+                return await _userSeriesRepository.GetSeriesByAnimeIdAsync(id, userId);
+        }
+
+        public async Task<Category?> GetCategoryByAnimeSeries(int id, Guid userId)
+        {
+            using (var context = _contextFactory.CreateDbContext())
+            {
+                var series = await _userSeriesRepository.GetSeriesByAnimeIdAsync(id, userId);
+                if (series == null)
+                {
+                    return null;
+                }
+                var category = await _categoryRepository.GetCategoryById(series.CategoryId);
+                return category;
+            }
         }
 
         public async Task<Guid> CreateAsync(UserSeries model)

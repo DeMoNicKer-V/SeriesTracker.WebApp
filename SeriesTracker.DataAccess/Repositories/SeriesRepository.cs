@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SeriesTracker.Core.Abstractions;
+using SeriesTracker.Core.Enums;
 using SeriesTracker.Core.Models;
 using SeriesTracker.DataAccess.Entities;
 
@@ -34,6 +35,10 @@ namespace SeriesTracker.DataAccess.Repositories
 
         public async Task<Guid> CreateSeries(Series series)
         {
+            var categoryEntity = await _context.CategoryEntities
+                .SingleOrDefaultAsync(r => r.Id == (int)series.CategoryId)
+                ?? throw new InvalidOperationException();
+
             var seriesEntity = new SeriesEntity
             {
                 Id = series.Id,
@@ -42,6 +47,7 @@ namespace SeriesTracker.DataAccess.Repositories
                 AddedDate = series.AddedDate,
                 ChangedDate = series.ChangedDate,
                 CategoryId = series.CategoryId,
+                Category = categoryEntity,
                 IsFavorite = series.IsFavorite,
             };
 

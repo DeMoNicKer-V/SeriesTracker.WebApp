@@ -29,7 +29,7 @@
 
         public int CategoryId { get; set; }
 
-        public CategoryEntity? Category { get; set; }
+        public required CategoryEntity Category { get; set; }
 
         public bool IsFavorite
         {
