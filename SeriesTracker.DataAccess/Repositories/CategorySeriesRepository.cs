@@ -7,18 +7,30 @@ namespace SeriesTracker.DataAccess.Repositories
 {
     public class CategorySeriesRepository : ICategorySeriesRepository
     {
-        private readonly SeriesTrackerDbContext _context;
+        private readonly IDbContextFactory<SeriesTrackerDbContext> _contextFactory;
 
-        public CategorySeriesRepository(SeriesTrackerDbContext context)
+        public CategorySeriesRepository(IDbContextFactory<SeriesTrackerDbContext> contextFactory)
         {
-            _context = context;
+            _contextFactory = contextFactory;
         }
-        public async Task<Category> GetCategoryBySeriesAnimeId(Guid userId, int animeId)
+        public async Task<Category?> GetCategoryBySeriesAnimeId(Guid userId, int animeId)
         {
-            var s = await _context.UserSeriesEntities.AsNoTracking().Include(u => u.Category).Where(s => s.UserId == userId &&  s.AnimeId == animeId).FirstAsync();
+            using (var context = _contextFactory.CreateDbContext())
+            {
+                var s = await context.UserSeriesEntities
+               .AsNoTracking()
+              .Include(c => c.Category)
+             .AsSplitQuery()
+             .Where(s => s.AnimeId == animeId && s.UserId == userId)
+             .FirstOrDefaultAsync();
 
-            var category = Category.Create(s.Category.Id, s.Category.Name, s.Category.Color, s.Category.PrevColor, s.Category.Date).Category;
-            return category;
+                if (s == null)
+                {
+                    return null;
+                }
+                var category = Category.Create(s.Category.Id, s.Category.Name, s.Category.Color, s.Category.PrevColor, s.Category.Date).Category;
+                return category;
+            }
         }
     }
 }

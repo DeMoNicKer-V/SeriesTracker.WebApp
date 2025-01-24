@@ -32,9 +32,6 @@ interface RelatedAnime {
 
 interface SeriesAnime {
     id: number;
-    categoryId: number;
-    categoryName: string;
-    categoryColor: string;
     isFavorite: boolean;
     title: string;
     subTitle: string;
@@ -48,4 +45,7 @@ interface SeriesAnime {
     kind: string;
     status: string;
     pictureUrl: string;
+    categoryId: number;
+    categoryName: string;
+    categoryColor: string;
 }

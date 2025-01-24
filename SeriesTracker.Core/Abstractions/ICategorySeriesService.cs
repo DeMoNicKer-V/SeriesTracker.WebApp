@@ -5,6 +5,6 @@ namespace SeriesTracker.Core.Abstractions
 {
     public interface ICategorySeriesService
     {
-        Task<Category> GetCategoryBySeriesAnimeId(Guid userId, int animeId);
+        Task<Category?> GetCategoryBySeriesAnimeId(Guid userId, int animeId);
     }
 }

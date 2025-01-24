@@ -1,5 +1,8 @@
-﻿using SeriesTracker.Core.Abstractions;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
+using SeriesTracker.Core.Abstractions;
 using SeriesTracker.Core.Models;
+using SeriesTracker.DataAccess;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,13 +15,20 @@ namespace SeriesTracker.Application.Services
     {
         private readonly ICategorySeriesRepository _categorySeriesRepository;
 
-        public CategorySeriesService(ICategorySeriesRepository categorySeriesRepository)
+        private readonly IDbContextFactory<SeriesTrackerDbContext> _contextFactory;
+        public CategorySeriesService(IDbContextFactory<SeriesTrackerDbContext> contextFactory, ICategorySeriesRepository categorySeriesRepository)
         {
+            _contextFactory = contextFactory;
             _categorySeriesRepository = categorySeriesRepository;
         }
-        public async Task<Category> GetCategoryBySeriesAnimeId(Guid userId, int animeId)
+        public async Task<Category?> GetCategoryBySeriesAnimeId(Guid userId, int animeId)
         {
-           return await _categorySeriesRepository.GetCategoryBySeriesAnimeId(userId, animeId);
+            using (var context = _contextFactory.CreateDbContext())
+            {
+                var category = await _categorySeriesRepository.GetCategoryBySeriesAnimeId(userId, animeId);
+
+                return category;
+            }
         }
     }
 }

@@ -73,7 +73,7 @@ namespace SeriesTracker.API.Controllers
         [HttpGet]
         public async Task<ActionResult> GetAnimesByAllParams([FromQuery] ShikimoriParamsRequest request)
         {
-            var userId = Guid.Parse(HttpContext.User.FindFirst("userId")?.Value);
+            var userId = HttpContext.User.FindFirst("userId")?.Value != null ? Guid.Parse(HttpContext.User.FindFirst("userId")?.Value) : Guid.Empty;
             GraphQLResponse<ShikimoriAnimeBaseList> graphQLResponse =
                 await _shikimoriService.GetAnimesByAllParams(request.Page, request.Name, request.Season, request.Status,
                                                            request.Kind, request.Genre, request.Order, request.Censored);
@@ -81,7 +81,7 @@ namespace SeriesTracker.API.Controllers
             var animeTasks = graphQLResponse.Data.Animes
                 .Select(async item =>
                 {
-                    var response = await _userSeriesService.GetCategoryByAnimeSeries(item.Id, userId);
+                    var response = await _categorySeriesService.GetCategoryBySeriesAnimeId(userId, item.Id);
                     if (response != null)
                     {
                         return _shikimoriService.MapToAnimeSeriesDto(item, response.Id, response.Name, response.Color);
@@ -89,8 +89,9 @@ namespace SeriesTracker.API.Controllers
                     return _shikimoriService.MapToAnimeSeriesDto(item);
 
                 });
-          var animeResponses = await Task.WhenAll(animeTasks);
-            return Ok(animeResponses.ToList());
+            var animeResponses = await Task.WhenAll(animeTasks);
+            return Ok(animeResponses);
+            return Ok(animeTasks);
 
         }
 
