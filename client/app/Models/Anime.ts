@@ -11,9 +11,9 @@ interface Anime {
     rating: string;
     kind: string;
     status: string;
-    pictureUrl?: string;
-    screenshots?: Screenshot[];
-    relateds?: Related[];
+    pictureUrl: string;
+    screenshots: Screenshot[];
+    relateds: Related[];
 }
 
 interface Screenshot {

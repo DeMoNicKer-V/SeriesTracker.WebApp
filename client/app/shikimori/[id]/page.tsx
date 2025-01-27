@@ -563,27 +563,15 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                                                       key: "1",
                                                       label: "Посмотреть кадры",
                                                       children: (
-                                                          <Row
-                                                              gutter={[0, 15]}
-                                                              justify={"center"}
-                                                          >
-                                                              <Col span={24}>
-                                                                  <ScreenshotsPreview
-                                                                      screenshots={animes.screenshots.slice(
-                                                                          0,
-                                                                          4
-                                                                      )}
-                                                                  />
-                                                              </Col>
-                                                              <Col>
-                                                                  <LinkButton
-                                                                      href={`${params.id}/screen`}
-                                                                      text={
-                                                                          "Посмотреть больше кадров"
-                                                                      }
-                                                                  />
-                                                              </Col>
-                                                          </Row>
+                                                          <ScreenshotsPreview
+                                                              screenshots={animes.screenshots.slice(
+                                                                  0,
+                                                                  4
+                                                              )}
+                                                              id={Number(
+                                                                  params.id
+                                                              )}
+                                                          />
                                                       ),
                                                   },
                                               ]

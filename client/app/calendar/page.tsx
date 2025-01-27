@@ -28,6 +28,7 @@ import Link from "next/link";
 import dayjs from "dayjs";
 import "dayjs/locale/ru";
 import styles from "./page.module.css";
+import LoadAnimateImage from "../components/LoadAnimateImage";
 dayjs.locale("ru");
 interface CalendarDateLabel {
     label: JSX.Element;
@@ -180,11 +181,11 @@ export default function CalendarPage() {
                                             >
                                                 <Row align={"middle"}>
                                                     <Col>
-                                                        <Image
-                                                            preview={false}
-                                                            width={100}
+                                                        <LoadAnimateImage
+                                                            prev={false}
+                                                            maxWidth={100}
                                                             src={`https://desu.shikimori.one${item.anime.image.preview}`}
-                                                        ></Image>
+                                                        ></LoadAnimateImage>
                                                     </Col>
                                                     <Col
                                                         offset={1}

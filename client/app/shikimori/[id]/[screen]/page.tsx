@@ -1,37 +1,20 @@
 "use client";
 import { getAnimeById } from "@/app/services/shikimori";
-import {
-    Breadcrumb,
-    List,
-    Spin,
-    Image,
-    Card,
-    Flex,
-    Button,
-    Row,
-    Col,
-    Tooltip,
-} from "antd";
+import { Breadcrumb, Spin, Card, Row, Col, Tooltip } from "antd";
 import Title from "antd/es/typography/Title";
-import Text from "antd/es/typography/Text";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { ArrowLeftOutlined } from "@ant-design/icons";
 import { LongLeftArrow } from "@/app/img/LongLeftArrow";
 import { ShikimoriLogo } from "@/app/img/ShikimoriLogo";
 import ScreenshotsPreview from "@/app/components/AnimeDetailDescription/ScreenshotsPreview";
 
 export default function ScreenshotPage({ params }: { params: { id: string } }) {
     const [animes, setAnimes] = useState<Anime[] | any>([]);
-    const [screen, setScreen] = useState<Screenshot[]>([]);
-    const [screenLoading, setScreenLoading] = useState<boolean>(false);
-    const [loading, setLoading] = useState<boolean>(false);
+    const [loading, setLoading] = useState<boolean>(true);
     const getAnimes = async (id: string) => {
         const series = await getAnimeById(id);
         setAnimes(series.anime);
-        setScreen(series.anime.screenshots);
-
-        setLoading(true);
+        setLoading(false);
     };
     useEffect(() => {
         if (params.id) {
@@ -54,7 +37,7 @@ export default function ScreenshotPage({ params }: { params: { id: string } }) {
                     left: "50%",
                 }}
             />
-            {loading && (
+            {loading === false && (
                 <Row>
                     <Col span={24}>
                         <Title italic level={3}>
@@ -114,24 +97,25 @@ export default function ScreenshotPage({ params }: { params: { id: string } }) {
                             ]}
                         />
                     </Col>
+
+                    <Col span={24}>
+                        <Card>
+                            <ScreenshotsPreview
+                                screenshots={animes.screenshots}
+                                maxWidth={300}
+                                grid={{
+                                    gutter: 16,
+                                    xs: 2,
+                                    sm: 3,
+                                    md: 3,
+                                    lg: 4,
+                                    xl: 5,
+                                    xxl: 6,
+                                }}
+                            />
+                        </Card>
+                    </Col>
                 </Row>
-            )}
-            {loading && (
-                <Card>
-                    <ScreenshotsPreview
-                        grid={{
-                            gutter: 15,
-                            xs: 2,
-                            sm: 3,
-                            md: 3,
-                            lg: 4,
-                            xl: 5,
-                            xxl: 6,
-                        }}
-                        screenshots={screen}
-                        maxWidth={300}
-                    />
-                </Card>
             )}
         </div>
     );
