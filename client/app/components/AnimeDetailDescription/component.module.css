@@ -1,0 +1,26 @@
+.info-list {
+    align-items: center;
+}
+
+.genre-list {
+    align-items: center;
+}
+@media (max-width: 1200px) {
+    .info-list {
+        justify-content: center;
+    }
+    .genre-list {
+        justify-content: center;
+    }
+}
+
+.my-centered-list {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.my-centered-item {
+    display: flex !important;
+    justify-content: center !important;
+}

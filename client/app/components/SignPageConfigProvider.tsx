@@ -22,6 +22,7 @@ const SignPageConfigProvider = ({ children }: Props) => {
                     Card: {
                         colorBgContainer: "#0b3c3c61",
                         colorBorderSecondary: "#0b3c3c",
+                        bodyPadding: 0,
                     },
                     Input: {
                         activeBg: "transparent",

@@ -19,6 +19,7 @@ import { useEffect, useState } from "react";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import { LongLeftArrow } from "@/app/img/LongLeftArrow";
 import { ShikimoriLogo } from "@/app/img/ShikimoriLogo";
+import ScreenshotsPreview from "@/app/components/AnimeDetailDescription/ScreenshotsPreview";
 
 export default function ScreenshotPage({ params }: { params: { id: string } }) {
     const [animes, setAnimes] = useState<Anime[] | any>([]);
@@ -117,31 +118,19 @@ export default function ScreenshotPage({ params }: { params: { id: string } }) {
             )}
             {loading && (
                 <Card>
-                    <Image.PreviewGroup>
-                        <List
-                            className="animes-list"
-                            style={{ padding: 10 }}
-                            grid={{
-                                gutter: 16,
-                                xs: 2,
-                                sm: 3,
-                                md: 3,
-                                lg: 4,
-                                xl: 5,
-                                xxl: 6,
-                            }}
-                            dataSource={screen}
-                            renderItem={(item: Screenshot) => (
-                                <List.Item>
-                                    <Image
-                                        style={{ maxWidth: 300 }}
-                                        preview
-                                        src={item.originalUrl}
-                                    ></Image>
-                                </List.Item>
-                            )}
-                        />
-                    </Image.PreviewGroup>
+                    <ScreenshotsPreview
+                        grid={{
+                            gutter: 15,
+                            xs: 2,
+                            sm: 3,
+                            md: 3,
+                            lg: 4,
+                            xl: 5,
+                            xxl: 6,
+                        }}
+                        screenshots={screen}
+                        maxWidth={300}
+                    />
                 </Card>
             )}
         </div>

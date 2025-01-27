@@ -52,7 +52,7 @@ import RelatedAnimes from "@/app/components/RelatedAnimes/RelatedAnimes";
 import TextIcon from "@/app/components/TextIcon";
 
 import styles from "./page.module.css";
-import InfoDescription from "@/app/components/AnimeDetailDescription/InfoDescription/InfoDescription";
+import InfoDescription from "@/app/components/AnimeDetailDescription/InfoDescription";
 import GenreDescription from "@/app/components/AnimeDetailDescription/GenreDescription";
 import ScreenshotsPreview from "@/app/components/AnimeDetailDescription/ScreenshotsPreview";
 import LinkButton from "@/app/components/LinkButton";
@@ -360,16 +360,18 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                                                             },
 
                                                             {
-                                                                text: new Date(
-                                                                    animes.startDate
-                                                                ).toLocaleString(
-                                                                    "ru-Ru",
-                                                                    {
-                                                                        year: "numeric",
-                                                                        month: "short",
-                                                                        day: "numeric",
-                                                                    }
-                                                                ),
+                                                                text: animes.startDate
+                                                                    ? new Date(
+                                                                          animes.startDate
+                                                                      ).toLocaleString(
+                                                                          "ru-Ru",
+                                                                          {
+                                                                              year: "numeric",
+                                                                              month: "short",
+                                                                              day: "numeric",
+                                                                          }
+                                                                      )
+                                                                    : "Неизвестно",
                                                                 icon: (
                                                                     <CalendarOutlined />
                                                                 ),

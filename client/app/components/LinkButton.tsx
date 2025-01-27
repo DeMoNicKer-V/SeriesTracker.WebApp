@@ -18,6 +18,7 @@ const LinkButton = ({
 }: Props) => {
     return (
         <Button
+            style={{ fontWeight: 700 }}
             type="link"
             href={href}
             icon={arrowIcon === "left" ? <LongLeftArrow /> : <LongRightArrow />}

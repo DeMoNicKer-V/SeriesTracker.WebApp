@@ -342,6 +342,7 @@ export default function UserPage({ params }: { params: { username: string } }) {
             <EmptyView text="Такого пользователя не существует" />
 
             <Button
+                href="/shikimori"
                 style={{ fontWeight: 700 }}
                 type="link"
                 icon={<LongRightArrow />}

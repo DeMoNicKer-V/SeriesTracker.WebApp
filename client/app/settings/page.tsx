@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
     Button,
     Col,
@@ -40,6 +40,7 @@ import {
 import { FilterDropdownProps } from "antd/es/table/interface";
 import { EmptyView } from "../components/EmptyView";
 import { GetDecodedUserToken } from "../api/coockie";
+import PageErrorView from "../components/PageErrorVIew";
 
 export default function SettingsPage() {
     const [error, setError] = useState<boolean>(false);
@@ -63,8 +64,6 @@ export default function SettingsPage() {
         setCurrentUser(token);
         const category = await getCategoryList();
         const users = await getUserList();
-
-        console.log(users);
         setCategories(category);
         setUsers(users);
     };
@@ -506,6 +505,6 @@ export default function SettingsPage() {
             </ConfigProvider>
         </div>
     ) : (
-        <p>У вас нет доступа к данной странице</p>
+        <PageErrorView text="У вас нет доступа к данной странице" />
     );
 }

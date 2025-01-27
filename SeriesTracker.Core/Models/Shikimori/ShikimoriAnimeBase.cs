@@ -30,11 +30,11 @@ namespace SeriesTracker.Core.Models.Shikimori
         [JsonIgnore] public string? PictureUrl { get { return Poster?.Url; } }
 
         [JsonIgnore]
-        public string StartDate
+        public string? StartDate
         {
             get
             {
-                return AiredDate.Date != null ? AiredDate.Date : "Неизвестно";
+                return AiredDate.Date != null ? AiredDate.Date : null;
             }
             set { }
         }

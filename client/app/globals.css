@@ -372,9 +372,9 @@ div.ant-upload-list-item {
     max-width: max-content;
 }
 
-.animes-list .ant-row {
+/*.animes-list {
     justify-content: center;
-}
+}*/
 
 .title-link {
     white-space: nowrap;
