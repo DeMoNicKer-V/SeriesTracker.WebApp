@@ -56,6 +56,7 @@ import InfoDescription from "@/app/components/AnimeDetailDescription/InfoDescrip
 import GenreDescription from "@/app/components/AnimeDetailDescription/GenreDescription";
 import ScreenshotsPreview from "@/app/components/AnimeDetailDescription/ScreenshotsPreview";
 import LinkButton from "@/app/components/LinkButton";
+import Loading from "@/app/components/Loading";
 
 export default function AnimePage({ params }: { params: { id: string } }) {
     const defaultValues = {
@@ -228,15 +229,7 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                     ? "Series Tracker"
                     : `Series Tracker - ${animes.subTitle}`}
             </title>
-            <Spin
-                size="large"
-                spinning={loading}
-                style={{
-                    position: "absolute",
-                    top: "50%",
-                    left: "50%",
-                }}
-            />
+            <Loading loading={loading} />
             {!loading && (
                 <ConfigProvider
                     theme={{

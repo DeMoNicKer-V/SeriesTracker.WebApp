@@ -12,6 +12,7 @@ import {
     Tag,
     Typography,
     Popover,
+    Flex,
 } from "antd";
 import Input, { InputRef } from "antd/es/input";
 import { useEffect, useRef, useState } from "react";
@@ -191,26 +192,21 @@ const SearchBar = ({}) => {
                     />
                 }
             >
-                <Form.Item noStyle>
+                <Flex>
                     <Input
                         autoComplete="off"
                         ref={inputRef}
                         onClick={handleClick}
                         id="searchbar"
-                        size="small"
                         className={loading === true ? "loading" : ""}
                         spellCheck={"false"}
                         variant="filled"
                         value={query}
                         onChange={handleChange}
                         placeholder="Найти аниме"
-                        suffix={
-                            <Button type="link" htmlType="submit">
-                                <SearchOutlined />
-                            </Button>
-                        }
+                        suffix={<SearchOutlined />}
                     />
-                </Form.Item>
+                </Flex>
             </Popover>
         </ConfigProvider>
     );

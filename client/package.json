@@ -10,7 +10,7 @@
     },
     "dependencies": {
         "@emotion/styled": "^11.14.0",
-        "antd": "^5.20.0",
+        "antd": "^5.23.3",
         "antd-img-crop": "^4.23.0",
         "cookies-next": "^4.1.1",
         "date-picker-nextjs": "^0.1.29",

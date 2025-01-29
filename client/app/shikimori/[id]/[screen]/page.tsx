@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { LongLeftArrow } from "@/app/img/LongLeftArrow";
 import { ShikimoriLogo } from "@/app/img/ShikimoriLogo";
 import ScreenshotsPreview from "@/app/components/AnimeDetailDescription/ScreenshotsPreview";
+import Loading from "@/app/components/Loading";
 
 export default function ScreenshotPage({ params }: { params: { id: string } }) {
     const [animes, setAnimes] = useState<Anime[] | any>([]);
@@ -28,15 +29,7 @@ export default function ScreenshotPage({ params }: { params: { id: string } }) {
                     ? "Series Tracker"
                     : `Series Tracker - ${animes.subTitle} / Кадры`}
             </title>
-            <Spin
-                size="large"
-                spinning={loading}
-                style={{
-                    position: "absolute",
-                    top: "50%",
-                    left: "50%",
-                }}
-            />
+            <Loading loading={loading} />
             {loading === false && (
                 <Row>
                     <Col span={24}>

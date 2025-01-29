@@ -41,12 +41,11 @@ import { GetDecodedUserToken, LogOut } from "./api/coockie";
 import { getUserById } from "./services/user";
 import { LogoIcon } from "./img/LogoIcon";
 import { Footer } from "antd/es/layout/layout";
-import { VKLogo } from "./img/socials/vk";
-import { GithubLogo } from "./img/socials/github";
-import { TelegramLogo } from "./img/socials/telegram";
 import { RandomIcon } from "./img/RandomIcon";
 import siteLogo from "./img/logo.ico";
 import { StarsBackground } from "./components/StarsBackground";
+import Loading from "./components/Loading";
+import MainFooterContent from "./components/Layout/MainFooterContent";
 type CustomIconComponentProps = GetProps<typeof Icon>;
 const { Header, Content, Sider } = Layout;
 
@@ -60,27 +59,28 @@ export default function RootLayout({
     const [controlEntered, setControlEntered] = useState(false);
     const [user, setUser] = useState<User>();
     const [currentKey, setCurrentKey] = useState<string>("shikimori");
+    const [loading, setLoading] = useState<boolean>(true);
+    const [mounted, setMounted] = useState(false);
 
-    const { Text, Title } = Typography;
-
-    const HeartIcon = (props: Partial<CustomIconComponentProps>) => (
+    const ShikimoriMenuIcon = (props: Partial<CustomIconComponentProps>) => (
         <Icon component={ShikimoriLogo} {...props} />
+    );
+    const RandomMenuIcon = (props: Partial<CustomIconComponentProps>) => (
+        <Icon component={RandomIcon} {...props} />
     );
 
     const router = useRouter();
 
     const getRandomAnimeId = async () => {
         const id = await getRandomAnime();
-        if (id) {
-            router.push(`/shikimori/${id}`);
-        }
+        router.push(`/shikimori/${id}`);
     };
     type MenuItem = Required<MenuProps>["items"][number];
     const siderMenuItems: MenuItem[] = useMemo(() => {
         const baseItems: (MenuItem | false)[] = [
             {
                 key: "shikimori",
-                icon: <HeartIcon />,
+                icon: <ShikimoriMenuIcon />,
                 label: <Link href={"/shikimori"}>Главная</Link>,
             },
             {
@@ -91,11 +91,7 @@ export default function RootLayout({
             {
                 onClick: async () => getRandomAnimeId(),
                 key: "random",
-                icon: (
-                    <span role="img">
-                        <RandomIcon />
-                    </span>
-                ),
+                icon: <RandomMenuIcon />,
                 label: "Случайное аниме",
             },
             user && user.roleId < 3
@@ -108,6 +104,7 @@ export default function RootLayout({
         ];
         return baseItems.filter(Boolean) as MenuItem[];
     }, [user]);
+
     const items: MenuProps["items"] = [
         {
             label: user?.email,
@@ -164,10 +161,6 @@ export default function RootLayout({
         },
     ];
 
-    const menuProps = {
-        items,
-    };
-
     const mouseControlEnter = () => {
         setControlEntered(true);
     };
@@ -185,8 +178,9 @@ export default function RootLayout({
     };
     useEffect(() => {
         setCurrentKey(pathName?.split("/")[1]);
+        setLoading(false);
     }, [pathName]);
-    const [mounted, setMounted] = useState(false);
+
     useEffect(() => {
         GetUser();
         setMounted(true);
@@ -332,7 +326,7 @@ export default function RootLayout({
 
                                 {user ? (
                                     <Col>
-                                        <Dropdown menu={menuProps}>
+                                        <Dropdown menu={{ items }}>
                                             <Button
                                                 type="text"
                                                 style={{
@@ -420,6 +414,7 @@ export default function RootLayout({
                                 <Menu
                                     className="sider-menu"
                                     onSelect={({ key }) => {
+                                        setLoading(true);
                                         setCurrentKey(key);
                                     }}
                                     onClick={() => setCollapsed(true)}
@@ -442,73 +437,22 @@ export default function RootLayout({
                                 />
                             </Sider>
                             <Layout className="main-content-layout">
-                                <Content>{children}</Content>
+                                <Content>
+                                    {loading && <Loading loading={loading} />}
+                                    {!loading && children}
+                                </Content>
 
                                 <Footer>
                                     <Divider style={{ margin: 0 }} />
-                                    <Flex
-                                        className="flex-column footer"
-                                        align={
+                                    <MainFooterContent
+                                        alignItems={
                                             ["/login", "/signup"].includes(
                                                 pathName
                                             )
                                                 ? "center"
                                                 : "start"
                                         }
-                                    >
-                                        <Title level={4}>Соц. сети</Title>
-                                        <Space size={[10, 10]}>
-                                            <Button
-                                                target="_blank"
-                                                href="https://vk.com/v_shakov"
-                                                type="link"
-                                                icon={<VKLogo size={24} />}
-                                            ></Button>
-                                            <Button
-                                                target="_blank"
-                                                href="https://github.com/DeMoNicKer-V"
-                                                type="link"
-                                                icon={<GithubLogo size={24} />}
-                                            ></Button>
-                                            <Button
-                                                target="_blank"
-                                                href="https://t.me/Vitek_Dev"
-                                                type="link"
-                                                icon={
-                                                    <TelegramLogo size={24} />
-                                                }
-                                            ></Button>
-                                        </Space>
-                                        <Text
-                                            style={{ fontSize: 11 }}
-                                            type="secondary"
-                                        >
-                                            Данный сайт не хранит на своем
-                                            сервере никаких данных. Весь контент
-                                            на сайте предоставляется сайтом{" "}
-                                            <Typography.Link
-                                                href="https://shikimori.one"
-                                                target="_blank"
-                                                style={{ fontSize: 11 }}
-                                                type="secondary"
-                                            >
-                                                Shikimori.One.
-                                            </Typography.Link>
-                                        </Text>
-                                        <Text strong style={{ fontSize: 15 }}>
-                                            Copyright ©
-                                            <Typography.Link
-                                                style={{ fontSize: 15 }}
-                                                className="info"
-                                                strong
-                                                href={"/shikimori"}
-                                            >
-                                                Series Tracker
-                                            </Typography.Link>
-                                            {` ${new Date().getFullYear()}. `}
-                                            All Rights Reserved.
-                                        </Text>
-                                    </Flex>
+                                    />
                                 </Footer>
                             </Layout>
                         </Layout>
