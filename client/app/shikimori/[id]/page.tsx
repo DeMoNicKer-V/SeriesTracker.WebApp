@@ -241,7 +241,6 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                 <ConfigProvider
                     theme={{
                         components: {
-                            Card: { bodyPadding: 0 },
                             Divider: {
                                 verticalMarginInline: 0,
                             },

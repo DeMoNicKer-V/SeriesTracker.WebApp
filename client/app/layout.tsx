@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import "./globals.css";
 import {
     Button,
@@ -25,11 +25,7 @@ import Icon, {
     UserOutlined,
     SettingOutlined,
     MenuUnfoldOutlined,
-    QuestionOutlined,
     LogoutOutlined,
-    QuestionCircleOutlined,
-    InfoCircleTwoTone,
-    InfoCircleFilled,
     InfoCircleOutlined,
     BookOutlined,
 } from "@ant-design/icons";
@@ -41,11 +37,10 @@ import SearchBar from "./components/searchbar";
 import type { GetProp, GetProps, MenuProps } from "antd";
 import { getRandomAnime } from "./services/shikimori";
 import { usePathname, useRouter } from "next/navigation";
-import { GetCoockie, GetDecodedUserToken, LogOut } from "./api/coockie";
-import { getUserById, UserResponse } from "./services/user";
+import { GetDecodedUserToken, LogOut } from "./api/coockie";
+import { getUserById } from "./services/user";
 import { LogoIcon } from "./img/LogoIcon";
 import { Footer } from "antd/es/layout/layout";
-import Meta from "antd/es/card/Meta";
 import { VKLogo } from "./img/socials/vk";
 import { GithubLogo } from "./img/socials/github";
 import { TelegramLogo } from "./img/socials/telegram";
@@ -63,10 +58,8 @@ export default function RootLayout({
     const pathName = usePathname();
     const [collapsed, setCollapsed] = useState(true);
     const [controlEntered, setControlEntered] = useState(false);
-    const [isUser, setIsUser] = useState<boolean>(false);
     const [user, setUser] = useState<User>();
     const [currentKey, setCurrentKey] = useState<string>("shikimori");
-    const [menuItems, setMenuItems] = useState<MenuProps["items"]>([]);
 
     const { Text, Title } = Typography;
 
@@ -82,9 +75,9 @@ export default function RootLayout({
             router.push(`/shikimori/${id}`);
         }
     };
-    type MenuItem = GetProp<MenuProps, "items">[number];
-    const updateMenu = (user?: User) => {
-        const items2: MenuItem[] = [
+    type MenuItem = Required<MenuProps>["items"][number];
+    const siderMenuItems: MenuItem[] = useMemo(() => {
+        const baseItems: (MenuItem | false)[] = [
             {
                 key: "shikimori",
                 icon: <HeartIcon />,
@@ -95,10 +88,9 @@ export default function RootLayout({
                 icon: <CalendarOutlined />,
                 label: <Link href={"/calendar"}>Календарь выхода</Link>,
             },
-
             {
-                key: "random",
                 onClick: async () => getRandomAnimeId(),
+                key: "random",
                 icon: (
                     <span role="img">
                         <RandomIcon />
@@ -106,17 +98,16 @@ export default function RootLayout({
                 ),
                 label: "Случайное аниме",
             },
+            user && user.roleId < 3
+                ? {
+                      key: "settings",
+                      icon: <SettingOutlined />,
+                      label: <Link href={"/settings"}>Настройки</Link>,
+                  }
+                : false,
         ];
-        if (user?.roleId < 3) {
-            items2.push({
-                key: "settings",
-                icon: <SettingOutlined />,
-                label: <Link href={"/settings"}>Настройки</Link>,
-            });
-        }
-
-        setMenuItems(items2);
-    };
+        return baseItems.filter(Boolean) as MenuItem[];
+    }, [user]);
     const items: MenuProps["items"] = [
         {
             label: user?.email,
@@ -188,12 +179,8 @@ export default function RootLayout({
     const GetUser = async () => {
         var code = await GetDecodedUserToken();
         if (code.userId) {
-            setIsUser(true);
             const currentUser = await getUserById(code.userId);
-            updateMenu(currentUser);
             setUser(currentUser);
-        } else {
-            updateMenu(undefined);
         }
     };
     useEffect(() => {
@@ -237,7 +224,7 @@ export default function RootLayout({
         Card: {
             colorBgContainer: "#121212",
             colorBorderSecondary: "transparent",
-
+            bodyPadding: 0,
             boxShadowCard:
                 "0 1px 2px 0 rgba(0, 0, 0, 0.5), 0 3px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px 0 rgba(0, 0, 0, 0.4)",
         },
@@ -343,7 +330,7 @@ export default function RootLayout({
                                     <SearchBar />
                                 </Col>
 
-                                {isUser && (
+                                {user ? (
                                     <Col>
                                         <Dropdown menu={menuProps}>
                                             <Button
@@ -377,8 +364,7 @@ export default function RootLayout({
                                             </Button>
                                         </Dropdown>
                                     </Col>
-                                )}
-                                {!isUser && (
+                                ) : (
                                     <Col>
                                         <Space size={[10, 10]}>
                                             <Button
@@ -442,7 +428,7 @@ export default function RootLayout({
                                         background: "transparent",
                                     }}
                                     mode="inline"
-                                    items={menuItems}
+                                    items={siderMenuItems}
                                 />
                                 <FloatButton
                                     href="/about"

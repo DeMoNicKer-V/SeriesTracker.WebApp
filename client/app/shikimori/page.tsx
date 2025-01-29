@@ -5,7 +5,7 @@ export default function MainPage() {
     return (
         <div className="container">
             <title>Series Tracker - Аниме</title>
-            <Typography.Title level={3}>Аниме</Typography.Title>
+
             <Animes />
         </div>
     );

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Flex, Image, Spin } from "antd";
+import { Image, Spin } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
 
 const antIcon = <LoadingOutlined style={{ fontSize: 32 }} spin />;
