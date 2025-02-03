@@ -155,7 +155,7 @@ export const Animes = ({ userPath }: Props) => {
                 loading={{
                     spinning: isLoading,
                     size: "large",
-                    style: { height: "100vh" },
+                    style: { maxHeight: "80vh", height: "80vh" },
                 }}
                 className="animes-list"
                 grid={{

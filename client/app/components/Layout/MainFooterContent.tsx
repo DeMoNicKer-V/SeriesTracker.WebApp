@@ -1,8 +1,7 @@
 import { GithubLogo } from "@/app/img/socials/github";
 import { TelegramLogo } from "@/app/img/socials/telegram";
 import { VKLogo } from "@/app/img/socials/vk";
-import { Button, Divider, Flex, Space, Typography } from "antd";
-import { Footer } from "antd/es/layout/layout";
+import { Button, Flex, Space, Typography } from "antd";
 
 interface Props {
     alignItems?: "start" | "center" | "end";

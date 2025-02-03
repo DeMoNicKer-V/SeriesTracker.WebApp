@@ -1,0 +1,42 @@
+.header {
+    position: sticky;
+    top: 0;
+    z-index: 99;
+    align-items: center;
+    padding: 0 20px;
+    box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.3),
+        0 4px 5px 0 rgba(0, 0, 0, 0.24), 0 1px 10px 0 rgba(0, 0, 0, 0.22);
+    transition: all 0.2s;
+}
+
+.sider {
+    top: 80px;
+    overflow: hidden;
+    max-height: 90vh;
+    position: sticky;
+    transform: translateX(0%);
+    padding: 5px;
+    margin: 10px;
+    box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.3),
+        0 4px 5px 0 rgba(0, 0, 0, 0.24), 0 1px 10px 0 rgba(0, 0, 0, 0.22);
+    border-radius: 5px;
+}
+
+@media (max-width: 1200px) {
+    .sider {
+        max-width: 100% !important;
+        width: 100% !important;
+        height: calc(100% - 64px);
+        max-height: 100%;
+        position: fixed;
+        z-index: 9999;
+        top: 64px;
+        padding: 0;
+        margin: 0;
+    }
+    .collapsed {
+        width: 0 !important;
+        min-width: 0 !important;
+        max-width: 0 !important;
+    }
+}
