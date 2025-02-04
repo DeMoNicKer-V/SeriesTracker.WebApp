@@ -12,7 +12,7 @@ import {
 } from "antd";
 import { Header } from "antd/es/layout/layout";
 
-import Icon, {
+import {
     BookOutlined,
     LogoutOutlined,
     MailOutlined,
@@ -21,8 +21,7 @@ import Icon, {
     SettingOutlined,
     UserOutlined,
 } from "@ant-design/icons";
-import { useState } from "react";
-import SearchBar from "../searchbar";
+import SearchBar from "../Searchbar/searchbar";
 import Link from "next/link";
 import { LogOut } from "@/app/api/coockie";
 import { useRouter } from "next/navigation";

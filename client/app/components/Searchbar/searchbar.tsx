@@ -1,16 +1,13 @@
 import {
-    Button,
     Card,
     Col,
     ConfigProvider,
     Divider,
-    Form,
     List,
     Image,
     Row,
     Space,
     Tag,
-    Typography,
     Popover,
     Flex,
 } from "antd";
@@ -22,13 +19,14 @@ import {
     FireOutlined,
     YoutubeOutlined,
     CalendarOutlined,
-    StarOutlined,
 } from "@ant-design/icons";
-import { getAnimesByName } from "../services/shikimori";
+import { getAnimesByName } from "../../services/shikimori";
 import Meta from "antd/es/card/Meta";
-import noFoundImage from "../img/img-error.jpg";
-import { EmptyView } from "./EmptyView";
+import noFoundImage from "../../img/img-error.jpg";
+import { EmptyView } from "../EmptyView";
 import Link from "next/link";
+
+import styles from "./component.module.css";
 
 const SearchBar = ({}) => {
     const inputRef = useRef<InputRef>(null);
@@ -91,7 +89,11 @@ const SearchBar = ({}) => {
                     Divider: {
                         marginLG: 0,
                     },
-                    Card: { bodyPadding: 14 },
+                    Card: {
+                        bodyPadding: 14,
+                        colorBgContainer: "transparent",
+                        margin: 88,
+                    },
                 },
             }}
             renderEmpty={customizeRenderEmpty}
@@ -115,13 +117,7 @@ const SearchBar = ({}) => {
                         dataSource={animes}
                         renderItem={(item: SeriesAnime) => (
                             <Link target="_top" href={`/shikimori/${item.id}`}>
-                                <Card
-                                    style={{
-                                        marginBottom: 8,
-                                        backgroundColor: "transparent",
-                                    }}
-                                    hoverable
-                                >
+                                <Card className={styles["card"]} hoverable>
                                     <Row
                                         style={{ flexFlow: "row" }}
                                         align={"middle"}
