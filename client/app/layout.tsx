@@ -138,7 +138,6 @@ export default function RootLayout({
                             },
                             Collapse: {
                                 headerBg: "#141414",
-                                colorBorder: "transparent",
                             },
                             Form: {
                                 verticalLabelPadding: "8px 0",

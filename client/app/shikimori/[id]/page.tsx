@@ -241,6 +241,9 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                                 fontSize: 17,
                                 titleMarginBottom: 0,
                             },
+                            Collapse: {
+                                colorBorder: "transparent",
+                            },
                         },
                     }}
                 >
