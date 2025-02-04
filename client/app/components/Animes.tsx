@@ -34,6 +34,7 @@ import useSWR from "swr";
 import { EmptyView } from "./EmptyView";
 import PageNavigator from "./PageNavigator";
 
+const { Text } = Typography;
 interface Props {
     userPath?: string;
 }
@@ -192,7 +193,7 @@ export const Animes = ({ userPath }: Props) => {
                                                 <StarOutlined
                                                     style={{ fontSize: 11 }}
                                                 />
-                                                <Typography.Text
+                                                <Text
                                                     style={{
                                                         textShadow:
                                                             "1px 1px 2px black",
@@ -201,13 +202,13 @@ export const Animes = ({ userPath }: Props) => {
                                                     strong
                                                 >
                                                     {animes.score}
-                                                </Typography.Text>
+                                                </Text>
                                             </Flex>
                                             <Divider
                                                 type="vertical"
                                                 style={{ top: 0 }}
                                             />
-                                            <Typography.Text
+                                            <Text
                                                 style={{
                                                     textShadow:
                                                         "1px 1px 2px black",
@@ -218,7 +219,7 @@ export const Animes = ({ userPath }: Props) => {
                                                 {new Date(
                                                     animes.startDate
                                                 ).getFullYear()}
-                                            </Typography.Text>
+                                            </Text>
                                         </Flex>
                                     }
                                 >
@@ -250,7 +251,7 @@ export const Animes = ({ userPath }: Props) => {
                                                             borderRadius: 0,
                                                         }}
                                                     >
-                                                        <Typography.Text
+                                                        <Text
                                                             style={{
                                                                 textShadow:
                                                                     "1px 1px 2px black",
@@ -260,7 +261,7 @@ export const Animes = ({ userPath }: Props) => {
                                                             {
                                                                 animes.categoryName
                                                             }
-                                                        </Typography.Text>
+                                                        </Text>
                                                     </Tag>
                                                 )}
                                             </AbsoluteImage>

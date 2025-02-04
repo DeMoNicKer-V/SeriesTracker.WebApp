@@ -3,6 +3,7 @@ import {
     Col,
     List,
     Row,
+    Image,
     Card,
     Typography,
     Flex,

@@ -545,7 +545,11 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                                 <Meta
                                     style={{ padding: 24 }}
                                     title={<Title level={3}>Описание</Title>}
-                                    description={animes.description}
+                                    description={
+                                        animes.description
+                                            ? animes.description
+                                            : "Описание отсутствует"
+                                    }
                                 />
                                 <Collapse
                                     items={[
@@ -569,15 +573,21 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                                               ]
                                             : []),
 
-                                        {
-                                            key: "2",
-                                            label: "Связанное с этим аниме",
-                                            children: (
-                                                <RelatedAnimes
-                                                    animes={animes.relateds}
-                                                />
-                                            ),
-                                        },
+                                        ...(animes.relateds.length > 0
+                                            ? [
+                                                  {
+                                                      key: "2",
+                                                      label: "Связанное с этим аниме",
+                                                      children: (
+                                                          <RelatedAnimes
+                                                              animes={
+                                                                  animes.relateds
+                                                              }
+                                                          />
+                                                      ),
+                                                  },
+                                              ]
+                                            : []),
                                     ]}
                                     bordered={false}
                                     style={{ margin: 24 }}

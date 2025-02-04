@@ -405,6 +405,9 @@ div.ant-upload-list-item {
 .height-100 {
     height: 100%;
 }
+.ant-col {
+    height: 100%;
+}
 
 .animes-list .ant-row {
     justify-content: center;

@@ -23,4 +23,5 @@
 .my-centered-item {
     display: flex !important;
     justify-content: center !important;
+    height: 100%;
 }
