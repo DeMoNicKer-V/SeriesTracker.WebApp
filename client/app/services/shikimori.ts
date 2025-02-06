@@ -1,3 +1,6 @@
+import { Anime } from "../Models/Anime/Anime";
+import { SeriesAnime } from "../Models/Anime/SeriesAnime";
+
 export interface AnimeReqruest {
     title: string;
     description: string;

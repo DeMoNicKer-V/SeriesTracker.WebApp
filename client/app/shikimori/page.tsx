@@ -1,12 +1,10 @@
 "use client";
-import { Animes } from "../components/Animes";
-import { Typography } from "antd";
+import AnimeList from "../components/Animes/AnimeList";
 export default function MainPage() {
     return (
         <div className="container">
             <title>Series Tracker - Аниме</title>
-
-            <Animes />
+            <AnimeList />
         </div>
     );
 }

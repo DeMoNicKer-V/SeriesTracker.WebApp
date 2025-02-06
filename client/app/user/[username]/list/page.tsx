@@ -21,7 +21,7 @@ import {
     CheckOutlined,
     UserOutlined,
 } from "@ant-design/icons";
-import { Animes } from "@/app/components/Animes";
+import { Animes } from "@/app/components/Animes/AnimeList";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import useSWR from "swr";

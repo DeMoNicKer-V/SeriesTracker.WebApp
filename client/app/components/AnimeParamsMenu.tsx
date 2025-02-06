@@ -40,22 +40,13 @@ type FieldType = {
     censored: boolean;
 };
 const date = dayjs();
-const defaultRequest = {
-    page: 1,
-    name: "",
-    season: "",
-    status: "",
-    kind: "",
-    genre: "",
-    order: "ranked",
-    censored: true,
-};
+
 interface Props {
     genres: Genre[] | any;
     open: boolean;
     onClose: () => void;
     setRequest: Dispatch<SetStateAction<ShikimoriRequest>>;
-    setPage: Dispatch<SetStateAction<number>>;
+    setPage: (newPage: number) => void;
 }
 function AnimeParamsMenu({
     genres,
@@ -64,7 +55,7 @@ function AnimeParamsMenu({
     onClose,
     setRequest,
 }: Props) {
-    const { Title, Text } = Typography;
+    const { Title } = Typography;
     const [form] = Form.useForm();
     const [censored, setCensored] = useState<boolean>(true);
 
@@ -82,7 +73,6 @@ function AnimeParamsMenu({
         { russian: "TV-Спешл", id: "tv_special" },
     ];
     const resetAllFields = () => {
-        setPage(1);
         setRequest({
             censored: true,
             page: 1,
@@ -121,36 +111,23 @@ function AnimeParamsMenu({
             clearTimeout(timeoutIdRef.current);
         }
         timeoutIdRef.current = setTimeout(() => {
-            if (changedValue["censored"] !== undefined) {
-                setRequest(defaultRequest);
-                form.resetFields([
-                    "name",
-                    "season",
-                    "status",
-                    "kind",
-                    "audience",
-                    "genre",
-                    "theme",
-                ]);
-            } else {
-                const order = allValues.query ? "ranked" : allValues.order;
-                setPage(1);
-                setRequest({
-                    page: 1,
-                    name: allValues.query,
-                    season: allValues.season
-                        ? dayjs(allValues.season).format("YYYY")
-                        : "",
-                    status: allValues.status.toString(),
-                    kind: allValues.kind.toString(),
-                    genre: allValues.genre
-                        .concat(allValues.audience)
-                        .concat(allValues.theme)
-                        .toString(),
-                    order: order,
-                    censored: allValues.censored,
-                });
-            }
+            const order = allValues.query ? "ranked" : allValues.order;
+            setPage(1);
+            setRequest({
+                page: 1,
+                name: allValues.query,
+                season: allValues.season
+                    ? dayjs(allValues.season).format("YYYY")
+                    : "",
+                status: allValues.status.toString(),
+                kind: allValues.kind.toString(),
+                genre: allValues.genre
+                    .concat(allValues.audience)
+                    .concat(allValues.theme)
+                    .toString(),
+                order: order,
+                censored: allValues.censored,
+            });
         }, 1000);
         return () => clearTimeout(timeoutIdRef.current!);
     };

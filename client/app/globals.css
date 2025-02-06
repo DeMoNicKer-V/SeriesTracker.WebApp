@@ -142,6 +142,10 @@ body {
 .ant-tag {
     cursor: default;
 }
+.tag {
+    font-size: 11;
+    font-weight: 500;
+}
 .tag:hover {
     background-color: rgba(0, 0, 0, 0.3) !important;
 }
@@ -347,11 +351,6 @@ div.ant-upload-list-item {
 .ant-tooltip {
     max-width: max-content;
 }
-
-/*.animes-list {
-    justify-content: center;
-}*/
-
 .title-link {
     white-space: nowrap;
     overflow: hidden;
@@ -406,15 +405,13 @@ div.ant-upload-list-item {
     height: 100%;
 }
 
-.animes-list .ant-row {
-    justify-content: center;
-}
 .width-height-100 {
     width: 100%;
     height: 100%;
 }
 
 .flex-column {
+    display: flex;
     flex-direction: column;
 }
 

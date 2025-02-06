@@ -1,0 +1,24 @@
+.cover-text {
+    font-size: 13px;
+    text-shadow: 1px 1px 2px black;
+    font-weight: 600;
+}
+.anime-card {
+    overflow: hidden;
+    min-height: auto;
+    min-width: auto;
+    aspect-ratio: auto 8/11;
+}
+.category-tag {
+    text-align: center;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    border-radius: 0;
+}
+.anime-skeleton-image {
+    aspect-ratio: 8/11;
+    height: auto !important;
+    width: -webkit-fill-available !important;
+    border-radius: 10px;
+}
