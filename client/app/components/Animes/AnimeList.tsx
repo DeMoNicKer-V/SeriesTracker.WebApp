@@ -123,7 +123,7 @@ const AnimeList = ({ userPath }: Props) => {
         updateSearchParams({ page: newPage }); // Обновляем URL
     };
     const {
-        data = Array.from({ length: 28 }).map((_, i) => defaultValues),
+        data = Array.from({ length: 14 }).map((_, i) => defaultValues),
         isLoading,
     } = useSWR(`${path}?${createQueryString(request)}`, getAnimesPost, {
         // Опции для useSWR

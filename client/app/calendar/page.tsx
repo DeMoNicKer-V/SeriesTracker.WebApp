@@ -13,7 +13,7 @@ import {
     Tag,
     Skeleton,
 } from "antd";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { getAiredAnimes } from "../services/shikimori";
 
 import {
@@ -33,6 +33,7 @@ import {
     CalendarAnimeItem,
     defaultValues,
 } from "../Models/Anime/CalendarAnimeItem";
+import useSWR from "swr";
 dayjs.locale("ru");
 
 interface CalendarDateLabel {
@@ -40,13 +41,6 @@ interface CalendarDateLabel {
     key: string;
 }
 const { Text, Title } = Typography;
-
-function isDateEqual(date1: Date, date2: Date) {
-    return (
-        date1.getMonth() === date2.getMonth() &&
-        date1.getDate() === date2.getDate()
-    );
-}
 
 function capitalizeFirstLetter(str: string): string {
     if (!str) return "";
@@ -99,40 +93,70 @@ const getDatesArray = () => {
 
     return datesArray;
 };
-
+const fetcher = async (url: string) => {
+    const response = await fetch(url);
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    return await response.json();
+};
 export default function CalendarPage() {
-    const [loading, setLoading] = useState<boolean>(true);
     const [weekDays] = useState<CalendarDateLabel[]>(getDatesArray());
-    const [airedAnimes, setAiredAnimes] = useState<CalendarAnimeItem[]>([]);
-    const [filteredAnimes, setFilterAnimes] = useState<CalendarAnimeItem[]>(
+
+    const [filterDate, setFilterDate] = useState<Date>(new Date());
+    const [filterAnimes, setFilterAnimes] = useState<CalendarAnimeItem[]>(
         Array.from({ length: 5 }).map((_, i) => defaultValues)
     );
+    const {
+        data: airedAnimes,
+        error,
+        isLoading,
+    } = useSWR<CalendarAnimeItem[]>(
+        "https://shikimori.one/api/calendar/",
+        fetcher,
+        {
+            revalidateOnFocus: false,
+            revalidateOnReconnect: false,
+        }
+    );
 
-    const filterItems = (items: CalendarAnimeItem[], filterDate: Date) => {
-        const filteredData = items.filter((item: CalendarAnimeItem) =>
-            isDateEqual(new Date(item.next_episode_at), filterDate)
+    const isDateEqual = useCallback((date1: Date, date2: Date) => {
+        return (
+            date1.getMonth() === date2.getMonth() &&
+            date1.getDate() === date2.getDate()
         );
-        setFilterAnimes(filteredData);
-    };
-    const getGenresList = async () => {
-        const list = await getAiredAnimes();
-        setAiredAnimes(list);
-        filterItems(list, dateNow);
-        setLoading(false);
-    };
-
-    const onChangeDate = (key: string) => {
-        const filterDate = new Date(dateNow);
-        filterDate.setDate(dateNow.getDate() + Number(key));
-        filterItems(airedAnimes, filterDate);
-    };
-
-    useEffect(() => {
-        return () => {
-            getGenresList();
-        };
     }, []);
 
+    const filterItems = useCallback(
+        (items: CalendarAnimeItem[], filterDate: Date) => {
+            console.log("hui");
+            if (!items) {
+                setFilterAnimes([]);
+                return;
+            }
+
+            const filteredData = items.filter((item: CalendarAnimeItem) => {
+                return isDateEqual(new Date(item.next_episode_at), filterDate);
+            });
+            setFilterAnimes(filteredData);
+        },
+        [isDateEqual, setFilterAnimes] //  ✅ Важно: Добавьте setFilterAnimes в зависимости!
+    );
+
+    const onChangeDate = useCallback(
+        (key: string) => {
+            const newFilterDate = new Date();
+            newFilterDate.setDate(newFilterDate.getDate() + Number(key));
+            setFilterDate(newFilterDate);
+        },
+        [setFilterDate]
+    );
+
+    useEffect(() => {
+        if (airedAnimes) {
+            filterItems(airedAnimes, filterDate);
+        }
+    }, [airedAnimes, filterDate, filterItems]);
     return (
         <div className="container">
             <title>Series Tracker - Календарь выхода</title>
@@ -146,12 +170,15 @@ export default function CalendarPage() {
 
                     <ConfigProvider renderEmpty={customizeRenderEmpty}>
                         <List
-                            dataSource={filteredAnimes}
+                            dataSource={filterAnimes}
                             renderItem={(item: CalendarAnimeItem) => (
-                                <List.Item style={{ border: "none" }}>
+                                <List.Item
+                                    key={item.anime.id}
+                                    style={{ border: "none" }}
+                                >
                                     <Skeleton
                                         className={styles["calendar-skeleton"]}
-                                        loading={true}
+                                        loading={isLoading}
                                         active
                                         style={{
                                             padding: 20,

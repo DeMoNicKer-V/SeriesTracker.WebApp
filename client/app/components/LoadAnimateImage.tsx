@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Image, Spin } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
-
+import noFoundImage from ".//../img/img-error.jpg";
 const antIcon = <LoadingOutlined style={{ fontSize: 32 }} spin />;
 
 interface Props {
@@ -55,7 +55,16 @@ const LoadAnimateImage: React.FC<Props> = ({
     }
 
     if (isError) {
-        return <p>Load Error</p>;
+        return (
+            <Image
+                src={noFoundImage.src}
+                preview={false}
+                style={{
+                    maxWidth: maxWidth,
+                    aspectRatio: aspectRatio,
+                }}
+            />
+        );
     }
 
     return (
