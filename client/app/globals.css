@@ -945,3 +945,7 @@ button[aria-hidden="true"] {
 .main-sider-layout {
     min-width: 100vw;
 }
+
+.gay {
+    vertical-align: middle;
+}

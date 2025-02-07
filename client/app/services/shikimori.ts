@@ -1,4 +1,5 @@
 import { Anime } from "../Models/Anime/Anime";
+import { CalendarAnimeItem } from "../Models/Anime/CalendarAnimeItem";
 import { SeriesAnime } from "../Models/Anime/SeriesAnime";
 
 export interface AnimeReqruest {
@@ -24,37 +25,11 @@ export interface AnimeInfo {
     anime: Anime;
 }
 
-export interface CalendarItem {
-    next_episode: number;
-    next_episode_at: string;
-    duration: number;
-    anime: CalendarAnime;
-}
-
 export interface LastActivityAnime {
     id: number;
     image: string;
     title: string;
     date: string;
-}
-
-export interface AnimeImage {
-    original: string;
-    preview: string;
-}
-export interface CalendarAnime {
-    id: number;
-    name: string;
-    russian: string;
-    image: AnimeImage;
-    url: string;
-    kind: string;
-    score: string;
-    status: string;
-    episodes: number;
-    episodes_aired: number;
-    aired_on: string;
-    released_on: string;
 }
 export const getGenres = async () => {
     const response = await fetch(`http://localhost:5125/shikimori/groupGenres`);
@@ -64,7 +39,7 @@ export const getGenres = async () => {
 
 export const getAiredAnimes = async () => {
     const response = await fetch(`https://shikimori.one/api/calendar/`);
-    const genres: CalendarItem[] = await response.json();
+    const genres: CalendarAnimeItem[] = await response.json();
     return genres;
 };
 
