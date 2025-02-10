@@ -16,12 +16,12 @@ export interface Anime {
     relateds: Related[];
 }
 
-interface Screenshot {
+export interface Screenshot {
     id: number;
     originalUrl: string;
 }
 
-interface Related {
+export interface Related {
     anime: Anime;
     relationText: string;
 }

@@ -1,4 +1,4 @@
-import { ConfigProvider, Image, List } from "antd";
+import { ConfigProvider, Flex, Image, List } from "antd";
 import React from "react";
 
 import styles from "./component.module.css";
@@ -6,6 +6,7 @@ import { ListGridType } from "antd/es/list";
 import LoadAnimateImage from "../LoadAnimateImage";
 import { EmptyView } from "../EmptyView";
 import LinkButton from "../LinkButton";
+import { Screenshot } from "@/app/Models/Anime/Anime";
 
 interface Props {
     grid?: ListGridType;
@@ -14,7 +15,7 @@ interface Props {
     id?: number;
 }
 const customizeRenderEmpty = () => (
-    <EmptyView text={"Других кадров не найдено"} align={"center"} />
+    <EmptyView text={"Других кадров не найдено"} />
 );
 const ScreenshotsPreview = ({
     screenshots,
@@ -31,17 +32,9 @@ const ScreenshotsPreview = ({
     id = 0,
 }: Props) => {
     return (
-        <Image.PreviewGroup>
-            <ConfigProvider renderEmpty={customizeRenderEmpty}>
+        <ConfigProvider renderEmpty={customizeRenderEmpty}>
+            <Image.PreviewGroup>
                 <List
-                    loadMore={
-                        id > 0 && (
-                            <LinkButton
-                                href={`${id}/screen`}
-                                text={"Посмотреть больше кадров"}
-                            />
-                        )
-                    }
                     className={styles["my-centered-list"]}
                     grid={grid}
                     dataSource={screenshots}
@@ -56,8 +49,14 @@ const ScreenshotsPreview = ({
                         </List.Item>
                     )}
                 />
-            </ConfigProvider>
-        </Image.PreviewGroup>
+            </Image.PreviewGroup>
+            {id > 0 && (
+                <LinkButton
+                    href={`${id}/screen`}
+                    text={"Посмотреть больше кадров"}
+                />
+            )}
+        </ConfigProvider>
     );
 };
 export default ScreenshotsPreview;

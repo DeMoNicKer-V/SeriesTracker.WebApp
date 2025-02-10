@@ -27,6 +27,7 @@ import { EmptyView } from "../EmptyView";
 import Link from "next/link";
 
 import styles from "./component.module.css";
+import { SeriesAnime } from "@/app/Models/Anime/SeriesAnime";
 
 const SearchBar = ({}) => {
     const inputRef = useRef<InputRef>(null);
@@ -34,7 +35,7 @@ const SearchBar = ({}) => {
     const [isShown, setIsShown] = useState(false);
     const [loading, setLoading] = useState(false);
     const [nullString, setNullString] = useState("Введите для поиска");
-    const [animes, setAnimes] = useState<SeriesAnime[] | any>([]);
+    const [animes, setAnimes] = useState<SeriesAnime[]>([]);
 
     const searchAnimes = async (query: string) => {
         const series: SeriesAnime[] | any = await getAnimesByName(query);
@@ -69,12 +70,7 @@ const SearchBar = ({}) => {
     };
 
     const customizeRenderEmpty = () => (
-        <EmptyView
-            text={nullString}
-            iconSize={20}
-            fontSize={16}
-            align={"center"}
-        />
+        <EmptyView text={nullString} iconSize={20} fontSize={16} />
     );
 
     return (

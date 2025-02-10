@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Image, Spin } from "antd";
+import { Image, Skeleton, Spin } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
 import noFoundImage from ".//../img/img-error.jpg";
 const antIcon = <LoadingOutlined style={{ fontSize: 32 }} spin />;
@@ -11,12 +11,12 @@ interface Props {
     aspectRatio?: string;
 }
 
-const LoadAnimateImage: React.FC<Props> = ({
+const LoadAnimateImage = ({
     src,
     maxWidth = 280,
     prev = false,
     aspectRatio = "",
-}) => {
+}: Props) => {
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [isError, setIsError] = useState<boolean>(false);
 
@@ -40,18 +40,7 @@ const LoadAnimateImage: React.FC<Props> = ({
     }, [src]);
 
     if (isLoading) {
-        return (
-            <Spin
-                style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    width: maxWidth,
-                    height: "max-content",
-                }}
-                indicator={antIcon}
-            />
-        );
+        return <Skeleton.Image active />;
     }
 
     if (isError) {

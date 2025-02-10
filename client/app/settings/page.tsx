@@ -387,12 +387,7 @@ export default function SettingsPage() {
     ];
 
     const customizeRenderEmpty = () => (
-        <EmptyView
-            text={"Ничего не найдено"}
-            iconSize={20}
-            fontSize={16}
-            align={"center"}
-        />
+        <EmptyView text={"Ничего не найдено"} iconSize={20} fontSize={16} />
     );
 
     return error === true ? (

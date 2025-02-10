@@ -21,7 +21,6 @@ import {
     QuestionCircleOutlined,
     ClockCircleOutlined,
     InfoCircleOutlined,
-    LoadingOutlined,
     FireFilled,
 } from "@ant-design/icons";
 import Link from "next/link";
