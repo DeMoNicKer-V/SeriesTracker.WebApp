@@ -47,9 +47,8 @@ import { LongLeftArrow } from "@/app/img/LongLeftArrow";
 import { getCategoryById, getCategoryList } from "@/app/services/category";
 import noFoundImage from ".//..//../img/img-error.jpg";
 import { IsAuth } from "@/app/api/coockie";
-import { LongRightArrow } from "@/app/img/LongRightArrow";
+
 import RelatedAnimes from "@/app/components/RelatedAnimes/RelatedAnimes";
-import TextIcon from "@/app/components/TextIcon";
 
 import styles from "./page.module.css";
 import InfoDescription from "@/app/components/AnimeDetailDescription/InfoDescription";
@@ -57,6 +56,8 @@ import GenreDescription from "@/app/components/AnimeDetailDescription/GenreDescr
 import ScreenshotsPreview from "@/app/components/AnimeDetailDescription/ScreenshotsPreview";
 import LinkButton from "@/app/components/LinkButton";
 import Loading from "@/app/components/Loading";
+import { Anime } from "@/app/Models/Anime/Anime";
+import useImageDimensions from "@/app/components/ImageDimensions";
 
 export default function AnimePage({ params }: { params: { id: string } }) {
     const defaultValues = {
@@ -222,6 +223,9 @@ export default function AnimePage({ params }: { params: { id: string } }) {
     const menuProps = {
         items,
     };
+    const { width } = useImageDimensions(animes?.pictureUrl);
+    const isLargeEnough = width !== null && width >= 650;
+
     return (
         <div className="container">
             <title>
@@ -253,10 +257,12 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                                 <Flex
                                     style={{ zIndex: 0, position: "relative" }}
                                 >
-                                    <AbsoluteImage
-                                        src={animes.pictureUrl}
-                                        zIndex={-1}
-                                    />
+                                    {isLargeEnough && (
+                                        <AbsoluteImage
+                                            src={animes.pictureUrl}
+                                            zIndex={-1}
+                                        />
+                                    )}
                                     <Link href={"./"}>
                                         <Button
                                             type="primary"
