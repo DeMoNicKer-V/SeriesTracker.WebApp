@@ -20,6 +20,17 @@ namespace SeriesTracker.Core.Mappers
                dest.CategoryName = (string)context.Items["CategoryName"];
                dest.CategoryColor = (string)context.Items["CategoryColor"];
            });
+
+            CreateMap<ShikimoriAnimeBase, AnimeSeriesFullDto>()
+           .AfterMap((src, dest, context) => {
+               dest.SeriesId = (Guid)context.Items["SeriesId"];
+               dest.CategoryId = (int)context.Items["CategoryId"];
+               dest.CategoryName = (string)context.Items["CategoryName"];
+               dest.CategoryColor = (string)context.Items["CategoryColor"];
+               dest.WatchedEpisodes = (int)context.Items["WatchedEpisodes"];
+               dest.AddedDate = (string)context.Items["AddedDate"];
+               dest.IsFavorite = (bool)context.Items["IsFavorite"];
+           });
         }
     }
 }

@@ -71,7 +71,7 @@ export const getAnimeById = async (id: string) => {
         },
         credentials: "include",
     });
-    const animes: AnimeInfo = await response.json();
+    const animes: Anime = await response.json();
     return animes;
 };
 

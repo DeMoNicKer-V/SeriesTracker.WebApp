@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
 using SeriesTracker.Core.Abstractions;
+using SeriesTracker.Core.Dtos.Series;
 using SeriesTracker.Core.Models;
 using SeriesTracker.DataAccess;
 using System;
@@ -25,9 +26,19 @@ namespace SeriesTracker.Application.Services
         {
             using (var context = _contextFactory.CreateDbContext())
             {
-                var category = await _categorySeriesRepository.GetCategoryBySeriesAnimeId(userId, animeId);
+                var seriesCategory = await _categorySeriesRepository.GetCategoryBySeriesAnimeId(userId, animeId);
 
-                return category;
+                return seriesCategory;
+            }
+        }
+
+        public async Task<SeriesCategoryDto?> GetSeriesAnimeId(Guid userId, int animeId)
+        {
+            using (var context = _contextFactory.CreateDbContext())
+            {
+                var seriesCategory = await _categorySeriesRepository.GetSeriesAnimeId(userId, animeId);
+
+                return seriesCategory;
             }
         }
     }

@@ -2,22 +2,31 @@
 {
     public class SeriesCategoryDto
     {
-        public Guid Id
+        public Guid SeriesId
         {
             get; set;
         }
-
         public int CategoryId
         {
             get; set;
         }
 
-        public string CategoryName
+        public required string CategoryName
         {
             get; set;
         }
 
-        public string CategoryColor
+        public required string CategoryColor
+        {
+            get; set;
+        }
+
+        public int WatchedEpisodes
+        {
+            get; set;
+        }
+
+        public required string AddedDate
         {
             get; set;
         }

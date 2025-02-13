@@ -1,5 +1,5 @@
 export interface Anime {
-    id: string;
+    id: number;
     title: string;
     subTitle: string;
     description?: string;
@@ -14,6 +14,13 @@ export interface Anime {
     pictureUrl: string;
     screenshots: Screenshot[];
     relateds: Related[];
+    seriesId: string;
+    categoryId: number;
+    categoryName: string;
+    categoryColor: string;
+    wacthedEpisodes: number;
+    addedDate: string;
+    isFavorite: boolean;
 }
 
 export interface Screenshot {
@@ -25,3 +32,29 @@ export interface Related {
     anime: Anime;
     relationText: string;
 }
+
+export const defaultValues: Anime = {
+    id: 0,
+    title: "",
+    subTitle: "",
+    description: "",
+    genres: "",
+    startDate: "",
+    score: 0,
+    episodes: 0,
+    duration: 0,
+    rating: "",
+    kind: "",
+    status: "",
+    pictureUrl: "",
+    screenshots: [],
+    relateds: [],
+    seriesId: "",
+    categoryId: 0,
+    categoryName: "",
+    categoryColor: "",
+    wacthedEpisodes: 0,
+    addedDate: "",
+    isFavorite: false,
+    //  дефолтные значения для полей SeriesAnime
+};

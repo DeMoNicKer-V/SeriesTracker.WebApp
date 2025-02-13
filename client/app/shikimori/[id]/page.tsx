@@ -10,7 +10,6 @@ import {
     Typography,
     FloatButton,
     Collapse,
-    Spin,
     Space,
     MenuProps,
     Dropdown,
@@ -32,7 +31,6 @@ import {
     TeamOutlined,
     FireOutlined,
     YoutubeOutlined,
-    ReadOutlined,
     PlusOutlined,
     InfoCircleOutlined,
     MinusOutlined,
@@ -48,34 +46,33 @@ import { getCategoryById, getCategoryList } from "@/app/services/category";
 import noFoundImage from ".//..//../img/img-error.jpg";
 import { IsAuth } from "@/app/api/coockie";
 
-import RelatedAnimes from "@/app/components/RelatedAnimes/RelatedAnimes";
+import Relatedanimes from "@/app/components/RelatedAnimes/RelatedAnimes";
 
 import styles from "./page.module.css";
 import InfoDescription from "@/app/components/AnimeDetailDescription/InfoDescription";
 import GenreDescription from "@/app/components/AnimeDetailDescription/GenreDescription";
 import ScreenshotsPreview from "@/app/components/AnimeDetailDescription/ScreenshotsPreview";
-import LinkButton from "@/app/components/LinkButton";
 import Loading from "@/app/components/Loading";
-import { Anime } from "@/app/Models/Anime/Anime";
-import useImageDimensions from "@/app/components/ImageDimensions";
+import { Anime, defaultValues } from "@/app/Models/Anime/Anime";
+import useSWR from "swr";
+import { SeriesAnime } from "@/app/Models/Anime/SeriesAnime";
 
 export default function AnimePage({ params }: { params: { id: string } }) {
-    const defaultValues = {
+    const defaultSeriesValues = {
         animeId: 0,
         watchedEpisode: 0,
         categoryId: 0,
         isFavorite: false,
     } as Series;
     const [isAuth, setIsAuth] = useState<boolean>(false);
-    const [animes, setAnimes] = useState<Anime | any>();
-    const [series, setSeries] = useState<Series | any>(defaultValues);
-    const [loading, setLoading] = useState<boolean>(true);
+
+    const [series, setSeries] = useState<Series | any>(defaultSeriesValues);
     const [categories, setCategories] = useState<MenuProps["items"]>([]);
     const [category, setCategory] = useState<Category | any>();
     const [isSeries, setIsSeries] = useState<boolean>(false);
     const [isFavorite, setisFavorite] = useState<boolean>(false);
     const [watchedEpisode, setWatchedEpisode] = useState<number>(0);
-    const getCategories = async (series: Series, animes: Anime) => {
+    const getCategories = async (series: Series, anime: Anime) => {
         const categories2 = await getCategoryList();
         const array: MenuProps["items"] = [];
         categories2.forEach((element: { id: number; name: string }) => {
@@ -95,7 +92,7 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                             id: element.id,
                             name: element.name,
                         } as Category;
-                        await updateCategorySeries(series, animes, newCategory);
+                        await updateCategorySeries(series, anime, newCategory);
                     },
                 });
             }
@@ -106,43 +103,31 @@ export default function AnimePage({ params }: { params: { id: string } }) {
     const checkAuth = async () => {
         setIsAuth(await IsAuth());
     };
-    const getAnimes = async (id: string) => {
+    const getAnime = async (id: string) => {
         const response = await getAnimeById(id);
         console.log(response);
-        setAnimes(response.anime);
-
-        if (response.series) {
-            setSeries(response.series);
-            const category = await getCategoryById(response.series.categoryId);
-            setCategory(category);
-            setIsSeries(true);
-            setisFavorite(response.series.isFavorite);
-            setWatchedEpisode(response.series.watchedEpisode);
-            getCategories(response.series, response.anime);
-        } else {
-            series.animeId = response.anime.id;
-            getCategories(series, response.anime);
-        }
-
-        setLoading(false);
+        return response;
     };
-    useEffect(() => {
-        checkAuth();
-        if (params.id) {
-            getAnimes(params.id);
-        }
-    }, []);
+
+    const {
+        data: anime = defaultValues,
+        error,
+        isLoading,
+    } = useSWR<Anime>(params.id, getAnime, {
+        revalidateOnFocus: false,
+        revalidateOnReconnect: false,
+    });
     const updateFavoriteSeries = async () => {
         if (isSeries === false) {
             const seriesRequest = {
-                animeId: Number(animes.id),
+                animeId: Number(anime.id),
                 watchedEpisode: 0,
                 categoryId: 1,
                 isFavorite: true,
             };
             await createSeries(seriesRequest);
 
-            await getAnimes(params.id);
+            window.location.reload();
             return;
         }
         series.isFavorite = !isFavorite;
@@ -169,7 +154,7 @@ export default function AnimePage({ params }: { params: { id: string } }) {
     };
 
     const incEpisodeSeries = async () => {
-        if (watchedEpisode === animes.episodes) {
+        if (watchedEpisode === anime.episodes) {
             return;
         }
         const newValue = watchedEpisode + 1;
@@ -180,13 +165,13 @@ export default function AnimePage({ params }: { params: { id: string } }) {
 
     const updateCategorySeries = async (
         series: Series,
-        animes: Anime,
+        anime: Anime,
         category: Category
     ) => {
         setCategory(category);
         if (category.id === 3) {
-            series.watchedEpisode = animes.episodes;
-            setWatchedEpisode(animes.episodes);
+            series.watchedEpisode = anime.episodes;
+            setWatchedEpisode(anime.episodes);
         }
         series.categoryId = category.id;
         if (series.id) {
@@ -195,11 +180,11 @@ export default function AnimePage({ params }: { params: { id: string } }) {
             await createSeries(series);
         }
 
-        await getAnimes(params.id);
+        window.location.reload();
     };
 
     const deleteFromMylist = async (id: number) => {
-        setSeries(defaultValues);
+        setSeries(defaultSeriesValues);
         await deleteSeriesByAnimeId(id);
         setIsSeries(false);
         setCategory({});
@@ -209,13 +194,13 @@ export default function AnimePage({ params }: { params: { id: string } }) {
             return;
         }
         const seriesRequest = {
-            animeId: animes.id,
+            animeId: anime.id,
             watchedEpisode: 0,
             categoryId: 1,
             isFavorite: false,
         };
         await createSeries(seriesRequest);
-        await getAnimes(params.id);
+        window.location.reload();
     };
 
     const { Title, Text } = Typography;
@@ -223,18 +208,29 @@ export default function AnimePage({ params }: { params: { id: string } }) {
     const menuProps = {
         items,
     };
-    const { width } = useImageDimensions(animes?.pictureUrl);
-    const isLargeEnough = width !== null && width >= 650;
+
+    /* const {
+        data: airedanime,
+        error,
+        isLoading,
+    } = useSWR<CalendarAnimeItem[]>(
+        "https://shikimori.one/api/calendar/",
+        fetcher,
+        {
+            revalidateOnFocus: false,
+            revalidateOnReconnect: false,
+        }
+    );*/
 
     return (
         <div className="container">
             <title>
-                {!animes?.title
+                {!anime?.title
                     ? "Series Tracker"
-                    : `Series Tracker - ${animes.subTitle}`}
+                    : `Series Tracker - ${anime.subTitle}`}
             </title>
-            <Loading loading={loading} />
-            {!loading && (
+            <Loading loading={isLoading} />
+            {!isLoading && (
                 <ConfigProvider
                     theme={{
                         components: {
@@ -257,12 +253,12 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                                 <Flex
                                     style={{ zIndex: 0, position: "relative" }}
                                 >
-                                    {isLargeEnough && (
-                                        <AbsoluteImage
-                                            src={animes.pictureUrl}
-                                            zIndex={-1}
-                                        />
-                                    )}
+                                    <AbsoluteImage
+                                        src={anime.pictureUrl}
+                                        zIndex={-1}
+                                        filter="contrast(175%) brightness(75%)"
+                                    />
+
                                     <Link href={"./"}>
                                         <Button
                                             type="primary"
@@ -275,6 +271,7 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                                     </Link>
                                     <div id={styles["overlay-background"]}>
                                         <Row
+                                            gutter={[5, 5]}
                                             className={
                                                 styles["anime-detail-row"]
                                             }
@@ -290,7 +287,7 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                                                                 "none",
                                                         }}
                                                         preview={false}
-                                                        src={animes.pictureUrl}
+                                                        src={anime.pictureUrl}
                                                         fallback={
                                                             noFoundImage.src
                                                         }
@@ -320,7 +317,7 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                                                         }
                                                         title={
                                                             <Title level={3}>
-                                                                {animes.title}
+                                                                {anime.title}
                                                             </Title>
                                                         }
                                                         description={
@@ -328,42 +325,40 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                                                                 italic
                                                                 type="secondary"
                                                             >
-                                                                {
-                                                                    animes.subTitle
-                                                                }
+                                                                {anime.subTitle}
                                                             </Text>
                                                         }
                                                     />
                                                     <GenreDescription
                                                         genresString={
-                                                            animes.genres
+                                                            anime.genres
                                                         }
                                                     />
                                                     <InfoDescription
                                                         items={[
                                                             {
-                                                                text: animes.kind,
+                                                                text: anime.kind,
                                                                 icon: (
                                                                     <InfoCircleOutlined />
                                                                 ),
                                                             },
                                                             {
-                                                                text: animes.rating,
+                                                                text: anime.rating,
                                                                 icon: (
                                                                     <TeamOutlined />
                                                                 ),
                                                             },
                                                             {
-                                                                text: animes.status,
+                                                                text: anime.status,
                                                                 icon: (
                                                                     <FireOutlined />
                                                                 ),
                                                             },
 
                                                             {
-                                                                text: animes.startDate
+                                                                text: anime.startDate
                                                                     ? new Date(
-                                                                          animes.startDate
+                                                                          anime.startDate
                                                                       ).toLocaleString(
                                                                           "ru-Ru",
                                                                           {
@@ -378,19 +373,19 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                                                                 ),
                                                             },
                                                             {
-                                                                text: `${animes.episodes} эп.`,
+                                                                text: `${anime.episodes} эп.`,
                                                                 icon: (
                                                                     <YoutubeOutlined />
                                                                 ),
                                                             },
                                                             {
-                                                                text: `${animes.duration} мин.`,
+                                                                text: `${anime.duration} мин.`,
                                                                 icon: (
                                                                     <ClockCircleOutlined />
                                                                 ),
                                                             },
                                                             {
-                                                                text: `${animes.score} из 10`,
+                                                                text: `${anime.score} из 10`,
                                                                 icon: (
                                                                     <StarOutlined />
                                                                 ),
@@ -517,12 +512,12 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                                                                         width: "auto",
                                                                     }}
                                                                     max={
-                                                                        animes.episodes
+                                                                        anime.episodes
                                                                     }
                                                                     prefix={
                                                                         "Эпизоды:"
                                                                     }
-                                                                    suffix={`из ${animes.episodes} эп.`}
+                                                                    suffix={`из ${anime.episodes} эп.`}
                                                                     min={0}
                                                                     defaultValue={
                                                                         series.watchedEpisode
@@ -555,21 +550,21 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                                     style={{ padding: 24 }}
                                     title={<Title level={3}>Описание</Title>}
                                     description={
-                                        animes.description
-                                            ? animes.description
+                                        anime.description
+                                            ? anime.description
                                             : "Описание отсутствует"
                                     }
                                 />
                                 <Collapse
                                     items={[
-                                        ...(animes.screenshots.length > 0
+                                        ...(anime.screenshots.length > 0
                                             ? [
                                                   {
                                                       key: "1",
                                                       label: "Посмотреть кадры",
                                                       children: (
                                                           <ScreenshotsPreview
-                                                              screenshots={animes.screenshots.slice(
+                                                              screenshots={anime.screenshots.slice(
                                                                   0,
                                                                   4
                                                               )}
@@ -582,15 +577,15 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                                               ]
                                             : []),
 
-                                        ...(animes.relateds.length > 0
+                                        ...(anime.relateds.length > 0
                                             ? [
                                                   {
                                                       key: "2",
                                                       label: "Связанное с этим аниме",
                                                       children: (
-                                                          <RelatedAnimes
+                                                          <Relatedanimes
                                                               animes={
-                                                                  animes.relateds
+                                                                  anime.relateds
                                                               }
                                                           />
                                                       ),

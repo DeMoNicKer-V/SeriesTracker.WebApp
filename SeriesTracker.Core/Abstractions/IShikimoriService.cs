@@ -1,6 +1,7 @@
 ﻿using GraphQL;
 using GraphQL.Client.Abstractions;
 using SeriesTracker.Core.Dtos.Anime;
+using SeriesTracker.Core.Dtos.Series;
 using SeriesTracker.Core.Models;
 using SeriesTracker.Core.Models.Shikimori;
 using System;
@@ -33,6 +34,8 @@ namespace SeriesTracker.Core.Abstractions
 
         AnimeShortDto MapToShortDto(ShikimoriAnimeBase anime);
 
-        AnimeSeriesDto MapToAnimeSeriesDto(ShikimoriAnimeBase anime, int categoryId = 0, string categoryName= "", string categoryColor = "");
+        AnimeSeriesDto MapToAnimeSeriesDto(ShikimoriAnimeBase anime, int categoryId = 0, string categoryName = "", string categoryColor = "");
+
+        AnimeSeriesFullDto MapToAnimeSeriesFullDto(ShikimoriAnimeBase anime, SeriesCategoryDto? series);
     }
 }

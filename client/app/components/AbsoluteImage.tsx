@@ -4,8 +4,14 @@ interface Props {
     src: string;
     zIndex: number;
     children?: React.ReactNode;
+    filter?: string;
 }
-export const AbsoluteImage = ({ src, zIndex, children }: Props) => {
+export const AbsoluteImage = ({
+    src,
+    zIndex,
+    children,
+    filter = "",
+}: Props) => {
     return (
         <Flex
             className="background-poster"
@@ -25,6 +31,7 @@ export const AbsoluteImage = ({ src, zIndex, children }: Props) => {
                 position: "absolute",
                 borderRadius: 10,
                 zIndex: zIndex,
+                filter: filter,
             }}
         >
             {children}

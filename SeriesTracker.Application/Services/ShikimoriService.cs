@@ -8,6 +8,7 @@ using SeriesTracker.Core.Models;
 using System.Xml.Linq;
 using AutoMapper;
 using SeriesTracker.Core.Dtos.Anime;
+using SeriesTracker.Core.Dtos.Series;
 
 namespace SeriesTracker.Application.Services
 {
@@ -36,13 +37,27 @@ namespace SeriesTracker.Application.Services
             return _mapper.Map<AnimeShortDto>(anime);
         }
 
-        public AnimeSeriesDto MapToAnimeSeriesDto(ShikimoriAnimeBase anime, int categoryId = 0, string categoryName = "", string categoryColor = "")
+        public AnimeSeriesDto MapToAnimeSeriesDto(ShikimoriAnimeBase anime, int categoryId, string categoryName, string categoryColor)
         {
             return _mapper.Map<AnimeSeriesDto>(anime, opt =>
             {
                 opt.Items["CategoryId"] = categoryId;
                 opt.Items["CategoryName"] = categoryName;
                 opt.Items["CategoryColor"] = categoryColor;
+            });
+        }
+
+        public AnimeSeriesFullDto MapToAnimeSeriesFullDto(ShikimoriAnimeBase anime, SeriesCategoryDto? series)
+        {
+            return _mapper.Map<AnimeSeriesFullDto>(anime, opt =>
+            {
+                opt.Items["SeriesId"] = series.SeriesId;
+                opt.Items["CategoryId"] = series.CategoryId;
+                opt.Items["CategoryName"] = series.CategoryName;
+                opt.Items["CategoryColor"] = series.CategoryColor;
+                opt.Items["WatchedEpisodes"] = series.WatchedEpisodes;
+                opt.Items["AddedDate"] = series.AddedDate;
+                opt.Items["IsFavorite"] = series.IsFavorite;
             });
         }
 

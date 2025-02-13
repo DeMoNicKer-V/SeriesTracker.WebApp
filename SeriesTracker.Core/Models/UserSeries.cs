@@ -1,4 +1,6 @@
-﻿namespace SeriesTracker.Core.Models
+﻿using SeriesTracker.Core.Dtos.Series;
+
+namespace SeriesTracker.Core.Models
 {
     public class UserSeries
     {
