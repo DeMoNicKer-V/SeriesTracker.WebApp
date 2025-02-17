@@ -128,7 +128,6 @@ export default function CalendarPage() {
 
     const filterItems = useCallback(
         (items: CalendarAnimeItem[], filterDate: Date) => {
-            console.log("hui");
             if (!items) {
                 setFilterAnimes([]);
                 return;

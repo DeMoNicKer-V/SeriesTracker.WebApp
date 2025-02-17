@@ -4,7 +4,9 @@ using SeriesTracker.API.Contracts;
 using SeriesTracker.Application.Interfaces.Auth;
 using SeriesTracker.Application.Services;
 using SeriesTracker.Core.Abstractions;
+using SeriesTracker.Core.Enums;
 using SeriesTracker.Core.Models;
+using SeriesTracker.Infrastructure.Authentication;
 using System.Security.Claims;
 
 
@@ -50,7 +52,7 @@ namespace SeriesTracker.API.Controllers
 
 
 
-        [Authorize]
+        [RequirePermission(Permission.Read)]
         [HttpPost]
         public async Task<ActionResult<Guid>> CreateSeries([FromBody] CreateSeriesRequest request) 
         {
@@ -75,7 +77,9 @@ namespace SeriesTracker.API.Controllers
             return Ok(seriesId);
         }
 
-        [HttpPut("{id:guid}")]
+
+        [RequirePermission(Permission.Read)]
+        [HttpPut("updateSeries/{id:guid}")]
         public async Task<ActionResult<Guid>> UpdateSeries(Guid id, [FromBody] SeriesRequest request)
         {
             var date = DateTime.Now.ToString("s");
@@ -84,7 +88,9 @@ namespace SeriesTracker.API.Controllers
             return Ok(seriesId);
         }
 
-        [HttpDelete("{id:guid}")]
+
+        [RequirePermission(Permission.Read)]
+        [HttpDelete("deleteSeries/{id:guid}")]
         public async Task<ActionResult<Guid>> DeleteSeries(Guid id)
         {
             return Ok(await _userSeriesService.DeleteSeries(id));

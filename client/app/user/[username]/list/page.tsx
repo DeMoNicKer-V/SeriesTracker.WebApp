@@ -4,14 +4,12 @@ import {
     Col,
     ConfigProvider,
     Flex,
-    FloatButton,
     Menu,
     MenuProps,
     Row,
 } from "antd";
 import { useEffect, useState } from "react";
 import {
-    SearchOutlined,
     BookOutlined,
     CloseOutlined,
     NumberOutlined,
@@ -21,12 +19,11 @@ import {
     CheckOutlined,
     UserOutlined,
 } from "@ant-design/icons";
-import { Animes } from "@/app/components/Animes/AnimeList";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import useSWR from "swr";
 import { getUserCategoriesCount } from "@/app/services/user";
-import { EmptyView } from "@/app/components/EmptyView";
+import AnimeList from "@/app/components/Animes/AnimeList";
 
 export default function UserPage({ params }: { params: { username: string } }) {
     const path = usePathname();
@@ -186,7 +183,7 @@ export default function UserPage({ params }: { params: { username: string } }) {
                 </Col>
 
                 <Col span={24}>
-                    <Animes userPath="/shikimori" />
+                    <AnimeList userPath="/shikimori" />
                 </Col>
             </Row>
         </div>

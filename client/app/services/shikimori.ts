@@ -1,6 +1,7 @@
 import { Anime } from "../Models/Anime/Anime";
 import { CalendarAnimeItem } from "../Models/Anime/CalendarAnimeItem";
 import { SeriesAnime } from "../Models/Anime/SeriesAnime";
+import { Series } from "../Models/Series";
 
 export interface AnimeReqruest {
     title: string;

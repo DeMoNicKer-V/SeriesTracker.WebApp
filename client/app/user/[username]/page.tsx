@@ -47,7 +47,6 @@ export default function UserPage({ params }: { params: { username: string } }) {
 
     const getCurrentUser = async (username: string) => {
         const user = await getUserByUserName(username);
-        console.log(username);
         if (!user) {
             return;
         }
