@@ -47,17 +47,23 @@ namespace SeriesTracker.Application.Services
             });
         }
 
-        public AnimeSeriesFullDto MapToAnimeSeriesFullDto(ShikimoriAnimeBase anime, SeriesCategoryDto? series)
+        public object MapToAnimeSeriesFullDto(ShikimoriAnimeBase anime, SeriesCategoryDto? series)
         {
+            if (series == null)
+            {
+                return _mapper.Map<AnimeShortDto>(anime);
+            }
             return _mapper.Map<AnimeSeriesFullDto>(anime, opt =>
             {
-                opt.Items["SeriesId"] = series.SeriesId;
-                opt.Items["CategoryId"] = series.CategoryId;
-                opt.Items["CategoryName"] = series.CategoryName;
-                opt.Items["CategoryColor"] = series.CategoryColor;
-                opt.Items["WatchedEpisodes"] = series.WatchedEpisodes;
-                opt.Items["AddedDate"] = series.AddedDate;
-                opt.Items["IsFavorite"] = series.IsFavorite;
+              
+                    opt.Items["SeriesId"] = series.SeriesId;
+                    opt.Items["CategoryId"] = series.CategoryId;
+                    opt.Items["CategoryName"] = series.CategoryName;
+                    opt.Items["CategoryColor"] = series.CategoryColor;
+                    opt.Items["WatchedEpisodes"] = series.WatchedEpisodes;
+                    opt.Items["AddedDate"] = series.AddedDate;
+                    opt.Items["IsFavorite"] = series.IsFavorite;
+                
             });
         }
 

@@ -36,6 +36,6 @@ namespace SeriesTracker.Core.Abstractions
 
         AnimeSeriesDto MapToAnimeSeriesDto(ShikimoriAnimeBase anime, int categoryId = 0, string categoryName = "", string categoryColor = "");
 
-        AnimeSeriesFullDto MapToAnimeSeriesFullDto(ShikimoriAnimeBase anime, SeriesCategoryDto? series);
+        object MapToAnimeSeriesFullDto(ShikimoriAnimeBase anime, SeriesCategoryDto? series);
     }
 }

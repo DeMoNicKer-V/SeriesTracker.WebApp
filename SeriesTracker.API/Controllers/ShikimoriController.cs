@@ -9,6 +9,7 @@ using SeriesTracker.Core.Models;
 using SeriesTracker.Core.Models.Shikimori;
 using System.Linq;
 using System.Text.Json;
+using System.Xml.Linq;
 
 namespace SeriesTracker.API.Controllers
 {
@@ -83,12 +84,8 @@ namespace SeriesTracker.API.Controllers
             var animeTasks = graphQLResponse.Data.Animes
                 .Select(async item =>
                 {
-                    var response = await _categorySeriesService.GetCategoryBySeriesAnimeId(userId, item.Id);
-
-                    return _shikimoriService.MapToAnimeSeriesDto(item, response?.Id ?? 0,
-        response?.Name ?? string.Empty,
-        response?.Color ?? string.Empty);
-
+                    var response = await _categorySeriesService.GetSeriesAnimeId(userId, item.Id);
+                    return _shikimoriService.MapToAnimeSeriesFullDto(item, response);
                 });
             var animeResponses = await Task.WhenAll(animeTasks);
             return Ok(animeResponses);

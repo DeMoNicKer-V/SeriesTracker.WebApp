@@ -40,10 +40,9 @@ import {
     deleteSeries,
     updateSeries,
 } from "@/app/services/series";
-import Link from "next/link";
+import { IsAuth } from "@/app/api/coockie";
 import { LongLeftArrow } from "@/app/img/LongLeftArrow";
 import noFoundImage from ".//..//../img/img-error.jpg";
-import { IsAuth } from "@/app/api/coockie";
 import Relatedanimes from "@/app/components/RelatedAnimes/RelatedAnimes";
 import styles from "./page.module.css";
 import InfoDescription from "@/app/components/AnimeDetailDescription/InfoDescription";
@@ -55,20 +54,20 @@ import useSWR from "swr";
 
 const { Title, Text } = Typography;
 
+const defaultCategories = [
+    { id: 1, name: "Запланировано" },
+    { id: 2, name: "Смотрю" },
+    { id: 3, name: "Просмотрено" },
+    { id: 4, name: "Пересматриваю" },
+    { id: 5, name: "Отложено" },
+    { id: 6, name: "Брошено" },
+] as Category[];
+
 export default function AnimePage({ params }: { params: { id: string } }) {
     const [isAuth, setIsAuth] = useState<boolean>(false);
     const [categories, setCategories] = useState<MenuProps["items"]>([]);
     const [watchedEpisode, setWatchedEpisode] = useState<number>(0);
     const [isFavorite, setIsFavorite] = useState<boolean>(false);
-
-    const defaultCategories = [
-        { id: 1, name: "Запланировано" },
-        { id: 2, name: "Смотрю" },
-        { id: 3, name: "Просмотрено" },
-        { id: 4, name: "Пересматриваю" },
-        { id: 5, name: "Отложено" },
-        { id: 6, name: "Брошено" },
-    ] as Category[];
 
     const getAnime = async (id: string) => {
         const response = await getAnimeById(id);
@@ -104,7 +103,7 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                         key: -1,
                         label: "Удалить из списка",
                         danger: true,
-                        onClick: async () => deleteFromMylist(info.seriesId),
+                        onClick: async () => deleteSeries(info.seriesId),
                     }
                 );
             } else {
@@ -207,10 +206,6 @@ export default function AnimePage({ params }: { params: { id: string } }) {
         }
     };
 
-    const deleteFromMylist = async (id: string) => {
-        await deleteSeries(id);
-    };
-
     const AddToMyList = async () => {
         if (anime.seriesId !== null) {
             return;
@@ -253,16 +248,16 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                                     filter="contrast(175%) brightness(75%)"
                                 />
 
-                                <Link href={"./"}>
-                                    <Button
-                                        type="primary"
-                                        icon={<LongLeftArrow />}
-                                        style={{
-                                            margin: 20,
-                                            position: "absolute",
-                                        }}
-                                    ></Button>
-                                </Link>
+                                <Button
+                                    href={"./"}
+                                    type="primary"
+                                    icon={<LongLeftArrow />}
+                                    style={{
+                                        margin: 20,
+                                        position: "absolute",
+                                    }}
+                                ></Button>
+
                                 <div id={styles["overlay-background"]}>
                                     <Row
                                         gutter={[5, 5]}
@@ -380,7 +375,11 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                                                 {isAuth ? (
                                                     <Space
                                                         wrap
-                                                        className="space-buttons"
+                                                        className={
+                                                            styles[
+                                                                "manage-buttons"
+                                                            ]
+                                                        }
                                                         style={{
                                                             cursor: "default",
                                                         }}
@@ -414,18 +413,9 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                                                             icon={
                                                                 <DownOutlined />
                                                             }
-                                                            prefixCls="aaa"
-                                                            className="manage-button"
                                                             onClick={
                                                                 AddToMyList
                                                             }
-                                                            style={{
-                                                                width: "100%",
-                                                                whiteSpace:
-                                                                    "break-spaces",
-                                                                height: "auto",
-                                                                borderRadius: 5,
-                                                            }}
                                                         >
                                                             {!anime.seriesId ? (
                                                                 <Flex gap={5}>

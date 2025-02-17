@@ -271,12 +271,6 @@ input,
     .anime-detail-col .ant-card-meta-title .ant-typography {
         font-size: 20px;
     }
-    .space-buttons .manage-button {
-        font-size: 12px;
-    }
-    .space-buttons {
-        justify-content: center;
-    }
     .ant-popover {
         display: none;
     }
