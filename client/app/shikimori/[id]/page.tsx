@@ -16,8 +16,9 @@ import {
     InputNumber,
     Rate,
     ConfigProvider,
+    InputNumberProps,
 } from "antd";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Meta from "antd/es/card/Meta";
 import { getAnimeById } from "@/app/services/shikimori";
 import AbsoluteImage from "@/app/components/AbsoluteImage";
@@ -38,11 +39,11 @@ import {
 import {
     createSeries,
     deleteSeriesByAnimeId,
+    SeriesRequest,
     updateSeries,
 } from "@/app/services/series";
 import Link from "next/link";
 import { LongLeftArrow } from "@/app/img/LongLeftArrow";
-import { getCategoryById, getCategoryList } from "@/app/services/category";
 import noFoundImage from ".//..//../img/img-error.jpg";
 import { IsAuth } from "@/app/api/coockie";
 
@@ -55,34 +56,55 @@ import ScreenshotsPreview from "@/app/components/AnimeDetailDescription/Screensh
 import Loading from "@/app/components/Loading";
 import { Anime, defaultValues } from "@/app/Models/Anime/Anime";
 import useSWR from "swr";
-import { SeriesAnime } from "@/app/Models/Anime/SeriesAnime";
 
 export default function AnimePage({ params }: { params: { id: string } }) {
-    const defaultSeriesValues = {
-        animeId: 0,
-        watchedEpisode: 0,
-        categoryId: 0,
-        isFavorite: false,
-    } as Series;
     const [isAuth, setIsAuth] = useState<boolean>(false);
-
-    const [series, setSeries] = useState<Series | any>(defaultSeriesValues);
     const [categories, setCategories] = useState<MenuProps["items"]>([]);
-    const [category, setCategory] = useState<Category | any>();
-    const [isSeries, setIsSeries] = useState<boolean>(false);
-    const [isFavorite, setisFavorite] = useState<boolean>(false);
     const [watchedEpisode, setWatchedEpisode] = useState<number>(0);
-    const getCategories = async (series: Series, anime: Anime) => {
-        const categories2 = await getCategoryList();
+
+    const defaultCategories = [
+        { id: 1, name: "Запланировано" },
+        { id: 2, name: "Смотрю" },
+        { id: 3, name: "Просмотрено" },
+        { id: 4, name: "Пересматриваю" },
+        { id: 5, name: "Отложено" },
+        { id: 6, name: "Брошено" },
+    ] as Category[];
+
+    const getAnime = async (id: string) => {
+        const response = await getAnimeById(id);
+        checkAuth();
+        setWatchedEpisode(
+            response.watchedEpisodes === null ? 0 : response.watchedEpisodes
+        );
+        getCategories(response);
+        return response;
+    };
+
+    const { data: anime = defaultValues, isLoading } = useSWR<Anime>(
+        params.id,
+        getAnime,
+        {
+            revalidateOnFocus: false,
+            revalidateOnReconnect: false,
+        }
+    );
+
+    const getCategories = async (info: Anime) => {
         const array: MenuProps["items"] = [];
-        categories2.forEach((element: { id: number; name: string }) => {
-            if (element.id === series.categoryId) {
-                array.push({
-                    key: -1,
-                    label: "Удалить из списка",
-                    danger: true,
-                    onClick: async () => deleteFromMylist(series.animeId),
-                });
+        defaultCategories.forEach((element: { id: number; name: string }) => {
+            if (element.id === info.categoryId) {
+                array.push(
+                    {
+                        type: "divider",
+                    },
+                    {
+                        key: -1,
+                        label: "Удалить из списка",
+                        danger: true,
+                        onClick: async () => deleteFromMylist(info.id),
+                    }
+                );
             } else {
                 array.unshift({
                     key: element.id,
@@ -92,7 +114,7 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                             id: element.id,
                             name: element.name,
                         } as Category;
-                        await updateCategorySeries(series, anime, newCategory);
+                        await updateCategorySeries(info, newCategory);
                     },
                 });
             }
@@ -103,44 +125,37 @@ export default function AnimePage({ params }: { params: { id: string } }) {
     const checkAuth = async () => {
         setIsAuth(await IsAuth());
     };
-    const getAnime = async (id: string) => {
-        const response = await getAnimeById(id);
-        console.log(response);
-        return response;
-    };
 
-    const {
-        data: anime = defaultValues,
-        error,
-        isLoading,
-    } = useSWR<Anime>(params.id, getAnime, {
-        revalidateOnFocus: false,
-        revalidateOnReconnect: false,
-    });
     const updateFavoriteSeries = async () => {
-        if (isSeries === false) {
-            const seriesRequest = {
-                animeId: Number(anime.id),
-                watchedEpisode: 0,
-                categoryId: 1,
-                isFavorite: true,
-            };
-            await createSeries(seriesRequest);
-
+        if (anime.seriesId === null) {
+            const request = createRequest(0, 1, true);
+            await createSeries(request);
             window.location.reload();
             return;
         }
-        series.isFavorite = !isFavorite;
-        setisFavorite(!isFavorite);
-        await updateSeries(series.id, series);
+        const request = createRequest(
+            anime.watchedEpisodes,
+            anime.categoryId,
+            !anime.isFavorite
+        );
+
+        await updateSeries(anime.seriesId, request);
     };
-    const updateEpisodeSeries = async (value: number) => {
-        if (value < 0 || value === null) {
+
+    const updateEpisodeSeries = async (episodeValue: number) => {
+        const request = createRequest(
+            episodeValue,
+            anime.categoryId,
+            anime.isFavorite
+        );
+        await updateSeries(anime.seriesId, request);
+    };
+    const onEpisodeInputChange: InputNumberProps["onChange"] = (value) => {
+        if (value === null) {
             return;
         }
-        setWatchedEpisode(value);
-        series.watchedEpisode = value;
-        await updateSeries(series.id, series);
+        setWatchedEpisode(Number(value));
+        updateEpisodeSeries(Number(value));
     };
 
     const decEpisodeSeries = async () => {
@@ -149,8 +164,7 @@ export default function AnimePage({ params }: { params: { id: string } }) {
         }
         const newValue = watchedEpisode - 1;
         setWatchedEpisode(newValue);
-        series.watchedEpisode = newValue;
-        await updateSeries(series.id, series);
+        updateEpisodeSeries(newValue);
     };
 
     const incEpisodeSeries = async () => {
@@ -159,47 +173,49 @@ export default function AnimePage({ params }: { params: { id: string } }) {
         }
         const newValue = watchedEpisode + 1;
         setWatchedEpisode(newValue);
-        series.watchedEpisode = newValue;
-        await updateSeries(series.id, series);
+        updateEpisodeSeries(newValue);
+    };
+    const createRequest = (
+        watchedEpisode = 0,
+        categoryId = 1,
+        isFavorite = false
+    ) => {
+        const request = {
+            animeId: Number(params.id),
+            watchedEpisode: watchedEpisode,
+            categoryId: categoryId,
+            isFavorite: isFavorite,
+        };
+        return request;
     };
 
-    const updateCategorySeries = async (
-        series: Series,
-        anime: Anime,
-        category: Category
-    ) => {
-        setCategory(category);
-        if (category.id === 3) {
-            series.watchedEpisode = anime.episodes;
-            setWatchedEpisode(anime.episodes);
-        }
-        series.categoryId = category.id;
-        if (series.id) {
-            await updateSeries(series.id, series);
+    const updateCategorySeries = async (anime: Anime, category: Category) => {
+        if (anime.seriesId) {
+            const request = createRequest(
+                anime.watchedEpisodes,
+                category.id,
+                anime.isFavorite
+            );
+            await updateSeries(anime.seriesId, request);
         } else {
-            await createSeries(series);
+            const request = createRequest();
+            await createSeries(request);
         }
 
         window.location.reload();
     };
 
     const deleteFromMylist = async (id: number) => {
-        setSeries(defaultSeriesValues);
         await deleteSeriesByAnimeId(id);
-        setIsSeries(false);
-        setCategory({});
+        window.location.reload();
     };
+
     const AddToMyList = async () => {
-        if (series.id) {
+        if (anime.seriesId !== null) {
             return;
         }
-        const seriesRequest = {
-            animeId: anime.id,
-            watchedEpisode: 0,
-            categoryId: 1,
-            isFavorite: false,
-        };
-        await createSeries(seriesRequest);
+        const request = createRequest();
+        await createSeries(request);
         window.location.reload();
     };
 
@@ -208,20 +224,6 @@ export default function AnimePage({ params }: { params: { id: string } }) {
     const menuProps = {
         items,
     };
-
-    /* const {
-        data: airedanime,
-        error,
-        isLoading,
-    } = useSWR<CalendarAnimeItem[]>(
-        "https://shikimori.one/api/calendar/",
-        fetcher,
-        {
-            revalidateOnFocus: false,
-            revalidateOnReconnect: false,
-        }
-    );*/
-
     return (
         <div className="container">
             <title>
@@ -402,7 +404,7 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                                                         >
                                                             <Tooltip
                                                                 title={
-                                                                    isFavorite
+                                                                    anime.isFavorite
                                                                         ? "Удалить из избранного"
                                                                         : "Добавить в избранное"
                                                                 }
@@ -418,7 +420,7 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                                                                         updateFavoriteSeries
                                                                     }
                                                                     defaultValue={
-                                                                        isFavorite
+                                                                        anime.isFavorite
                                                                             ? 1
                                                                             : 0
                                                                     }
@@ -431,6 +433,7 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                                                                 icon={
                                                                     <DownOutlined />
                                                                 }
+                                                                prefixCls="aaa"
                                                                 className="manage-button"
                                                                 onClick={
                                                                     AddToMyList
@@ -443,35 +446,44 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                                                                     borderRadius: 5,
                                                                 }}
                                                             >
-                                                                {isSeries ? (
-                                                                    <BookOutlined />
+                                                                {anime.categoryId ===
+                                                                0 ? (
+                                                                    <Flex
+                                                                        gap={5}
+                                                                    >
+                                                                        <PlusOutlined />
+                                                                        {
+                                                                            "Добавить в мой список"
+                                                                        }
+                                                                    </Flex>
                                                                 ) : (
-                                                                    <PlusOutlined />
+                                                                    <Flex
+                                                                        style={{
+                                                                            color: anime.categoryColor,
+                                                                        }}
+                                                                        gap={5}
+                                                                    >
+                                                                        <BookOutlined />
+                                                                        {
+                                                                            anime.categoryName
+                                                                        }
+                                                                    </Flex>
                                                                 )}
-                                                                {series.categoryId ===
-                                                                    0 &&
-                                                                    "Добавить в мой список"}
-                                                                {category &&
-                                                                    category.name}
                                                             </Dropdown.Button>
 
-                                                            {series.categoryId >
-                                                                1 && (
+                                                            {anime.categoryId >
+                                                                0 && (
                                                                 <InputNumber
                                                                     readOnly={
-                                                                        series.categoryId ===
+                                                                        anime.categoryId ===
                                                                         3
                                                                     }
                                                                     value={
                                                                         watchedEpisode
                                                                     }
-                                                                    onChange={(
-                                                                        value
-                                                                    ) => {
-                                                                        updateEpisodeSeries(
-                                                                            value
-                                                                        );
-                                                                    }}
+                                                                    onChange={
+                                                                        onEpisodeInputChange
+                                                                    }
                                                                     size="small"
                                                                     maxLength={
                                                                         4
@@ -479,7 +491,7 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                                                                     addonBefore={
                                                                         <Button
                                                                             disabled={
-                                                                                series.categoryId ===
+                                                                                anime.categoryId ===
                                                                                 3
                                                                             }
                                                                             type="link"
@@ -495,7 +507,7 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                                                                     addonAfter={
                                                                         <Button
                                                                             disabled={
-                                                                                series.categoryId ===
+                                                                                anime.categoryId ===
                                                                                 3
                                                                             }
                                                                             type="link"
@@ -519,9 +531,6 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                                                                     }
                                                                     suffix={`из ${anime.episodes} эп.`}
                                                                     min={0}
-                                                                    defaultValue={
-                                                                        series.watchedEpisode
-                                                                    }
                                                                     variant="filled"
                                                                     step={1}
                                                                     controls={

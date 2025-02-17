@@ -45,12 +45,14 @@ namespace SeriesTracker.API.Controllers
         public async Task<ActionResult> GetAnimeById(int id)
         {
             var userId = HttpContext.User.FindFirst("userId")?.Value != null ? Guid.Parse(HttpContext.User.FindFirst("userId")?.Value) : Guid.Empty;
-            UserSeries? userSeries = await _userSeriesService.GetSeriesByAnimeIdAsync(id, userId);
             GraphQLResponse<ShikimoriAnimeBaseList> graphQLResponse = await _shikimoriService.GetAnimeById(id.ToString());
-            var anime = graphQLResponse.Data.Animes.First();
+            var anime = graphQLResponse.Data.Animes[0];
             var response = await _categorySeriesService.GetSeriesAnimeId(userId, anime.Id);
-            var result = _shikimoriService.MapToAnimeSeriesFullDto(anime, response);
-            return new OkObjectResult(result);
+            if (response != null)
+            {
+                return (new OkObjectResult(_shikimoriService.MapToAnimeSeriesFullDto(anime, response)));
+            }
+            return new OkObjectResult(anime);
         }
 
         [HttpGet("activity")]

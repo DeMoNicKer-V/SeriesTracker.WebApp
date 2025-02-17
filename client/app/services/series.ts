@@ -1,4 +1,4 @@
-import { headers } from "next/headers";
+import { Series } from "../Models/Series";
 
 export interface SeriesRequest {
     animeId: number;

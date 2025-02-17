@@ -62,6 +62,7 @@ function AnimeParamsMenu({
     const statusOptions = [
         { russian: "Онгоинг", id: "ongoing" },
         { russian: "Вышло", id: "released" },
+        { russian: "Анонс", id: "anons" },
     ];
 
     const kindOptions = [

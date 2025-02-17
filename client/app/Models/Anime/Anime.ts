@@ -18,7 +18,7 @@ export interface Anime {
     categoryId: number;
     categoryName: string;
     categoryColor: string;
-    wacthedEpisodes: number;
+    watchedEpisodes: number;
     addedDate: string;
     isFavorite: boolean;
 }
@@ -53,7 +53,7 @@ export const defaultValues: Anime = {
     categoryId: 0,
     categoryName: "",
     categoryColor: "",
-    wacthedEpisodes: 0,
+    watchedEpisodes: 0,
     addedDate: "",
     isFavorite: false,
     //  дефолтные значения для полей SeriesAnime
