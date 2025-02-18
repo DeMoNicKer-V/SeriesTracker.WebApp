@@ -940,6 +940,6 @@ button[aria-hidden="true"] {
     min-width: 100vw;
 }
 
-.gay {
-    vertical-align: middle;
+.centered-list :not(:first-child):not(:last-child) * {
+    justify-content: center;
 }

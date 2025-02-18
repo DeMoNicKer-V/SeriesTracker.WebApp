@@ -111,7 +111,7 @@ const AnimeList = ({ userPath }: Props) => {
         updateSearchParams({ page: newPage }); // Обновляем URL
     };
     const {
-        data = Array.from({ length: 14 }).map((_, i) => defaultValues),
+        data = Array.from({ length: 15 }).map((_, i) => defaultValues),
         isLoading,
     } = useSWR(`${path}?${createQueryString(request)}`, getAnimesPost, {
         // Опции для useSWR
@@ -151,8 +151,9 @@ const AnimeList = ({ userPath }: Props) => {
             )}
         >
             <List
-                header={<ListBranches />}
-                footer={<ListBranches />}
+                className="centered-list"
+                header={data.length > 0 && <ListBranches />}
+                footer={data.length > 0 && <ListBranches />}
                 grid={{
                     gutter: 30,
                     xs: 2,
