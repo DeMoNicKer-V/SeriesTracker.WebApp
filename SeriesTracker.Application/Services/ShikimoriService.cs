@@ -47,11 +47,11 @@ namespace SeriesTracker.Application.Services
             });
         }
 
-        public object MapToAnimeSeriesFullDto(ShikimoriAnimeBase anime, SeriesCategoryDto? series)
+        public object MapToAnimeSeriesFullDto(ShikimoriAnimeBase anime, SeriesCategoryDto? series, bool isFull)
         {
             if (series == null)
             {
-                return _mapper.Map<AnimeShortDto>(anime);
+               return isFull ? _mapper.Map<AnimeFullDto>(anime) : _mapper.Map<AnimeShortDto>(anime);
             }
             return _mapper.Map<AnimeSeriesFullDto>(anime, opt =>
             {
@@ -255,7 +255,7 @@ episodesAired
             return new GraphQLRequest
             {
                 Query = @"query GetByAllParams($page: Int, $name: String, $season: SeasonString, $status: AnimeStatusString, $kind: AnimeKindString, $genre: String, $order: OrderEnum, $censored: Boolean) {
-                                animes(page: $page, search: $name, season: $season, status: $status, kind: $kind, genre: $genre, order: $order, censored: $censored, score: 1, limit: 28) {
+                                animes(page: $page, search: $name, season: $season, status: $status, kind: $kind, genre: $genre, order: $order, censored: $censored, score: 1, limit: 22) {
                                     id
                                     russian
                                     name

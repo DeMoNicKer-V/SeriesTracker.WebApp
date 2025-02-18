@@ -49,11 +49,7 @@ namespace SeriesTracker.API.Controllers
             GraphQLResponse<ShikimoriAnimeBaseList> graphQLResponse = await _shikimoriService.GetAnimeById(id.ToString());
             var anime = graphQLResponse.Data.Animes[0];
             var response = await _categorySeriesService.GetSeriesAnimeId(userId, anime.Id);
-            if (response != null)
-            {
-                return (new OkObjectResult(_shikimoriService.MapToAnimeSeriesFullDto(anime, response)));
-            }
-            return new OkObjectResult(anime);
+            return (new OkObjectResult(_shikimoriService.MapToAnimeSeriesFullDto(anime, response, true)));
         }
 
         [HttpGet("activity")]
@@ -85,7 +81,7 @@ namespace SeriesTracker.API.Controllers
                 .Select(async item =>
                 {
                     var response = await _categorySeriesService.GetSeriesAnimeId(userId, item.Id);
-                    return _shikimoriService.MapToAnimeSeriesFullDto(item, response);
+                    return _shikimoriService.MapToAnimeSeriesFullDto(item, response, false);
                 });
             var animeResponses = await Task.WhenAll(animeTasks);
             return Ok(animeResponses);

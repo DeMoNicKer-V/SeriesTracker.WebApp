@@ -24,11 +24,7 @@ import {
 import AnimePopover from "../AnimePopover";
 import AbsoluteImage from "../AbsoluteImage";
 import AnimeParamsMenu from "../AnimeParamsMenu";
-import {
-    getAnimesByParams,
-    getGenres,
-    ShikimoriRequest,
-} from "../../services/shikimori";
+import { getAnimesByParams, getGenres } from "../../services/shikimori";
 import { useCallback, useMemo, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import useSWR from "swr";
@@ -37,6 +33,7 @@ import PageNavigator from "../PageNavigator";
 
 import styles from "./component.module.css";
 import { defaultValues, SeriesAnime } from "@/app/Models/Anime/SeriesAnime";
+import { ShikimoriRequest } from "@/app/Models/Requests/ShikimoriRequest";
 
 const { Text } = Typography;
 interface Props {
@@ -44,9 +41,6 @@ interface Props {
 }
 
 const AnimeList = ({ userPath }: Props) => {
-    const customizeRenderEmpty = () => (
-        <EmptyView text="По вашему запросу ничего не найдено" />
-    );
     const router = useRouter();
     const searchParams = useSearchParams();
     const createQueryString = useMemo(
@@ -73,13 +67,6 @@ const AnimeList = ({ userPath }: Props) => {
     );
     const [request, setRequest] = useState<ShikimoriRequest>({
         page: page,
-        name: "",
-        season: "",
-        status: "",
-        kind: "",
-        genre: "",
-        order: "ranked",
-        censored: true,
     });
 
     function scrollTop() {
@@ -113,7 +100,8 @@ const AnimeList = ({ userPath }: Props) => {
         const list = await getGenres();
         setGenres(list);
         if (data.length === 0) {
-            changePage(page - 1);
+            const prevPage = page - 1;
+            changePage(prevPage);
         }
         return data;
     };
@@ -137,32 +125,34 @@ const AnimeList = ({ userPath }: Props) => {
         },
         [createQueryString, router, path]
     );
+
+    const ListBranches = () => {
+        return (
+            <Skeleton
+                active
+                title={{ style: { width: "100%" } }}
+                paragraph={false}
+                loading={isLoading}
+            >
+                <PageNavigator
+                    nextButtonDisable={data.length < 22}
+                    onFirstButtonCLick={() => changePage(1)}
+                    onPrevButtonCLick={() => changePage(page - 1)}
+                    onNextButtonCLick={() => changePage(page + 1)}
+                    page={page}
+                />
+            </Skeleton>
+        );
+    };
     return (
-        <ConfigProvider renderEmpty={customizeRenderEmpty}>
+        <ConfigProvider
+            renderEmpty={() => (
+                <EmptyView text="По вашему запросу ничего не найдено" />
+            )}
+        >
             <List
-                header={
-                    !isLoading && (
-                        <PageNavigator
-                            nextButtonDisable={data.length < 28}
-                            onFirstButtonCLick={() => changePage(1)}
-                            onPrevButtonCLick={() => changePage(page - 1)}
-                            onNextButtonCLick={() => changePage(page + 1)}
-                            page={page}
-                        />
-                    )
-                }
-                footer={
-                    !isLoading &&
-                    data.length === 28 && (
-                        <PageNavigator
-                            nextButtonDisable={data.length < 28}
-                            onFirstButtonCLick={() => changePage(1)}
-                            onPrevButtonCLick={() => changePage(page - 1)}
-                            onNextButtonCLick={() => changePage(page + 1)}
-                            page={page}
-                        />
-                    )
-                }
+                header={<ListBranches />}
+                footer={<ListBranches />}
                 grid={{
                     gutter: 30,
                     xs: 2,
@@ -172,7 +162,7 @@ const AnimeList = ({ userPath }: Props) => {
                     xl: 6,
                     xxl: 7,
                 }}
-                dataSource={data}
+                dataSource={data.slice(0, -1)}
                 renderItem={(animes: SeriesAnime) => (
                     <List.Item>
                         <Skeleton
