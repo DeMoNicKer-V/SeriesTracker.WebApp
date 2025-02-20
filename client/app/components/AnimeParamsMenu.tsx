@@ -26,7 +26,7 @@ import {
 import dayjs from "dayjs";
 import FilterItem from "../components/FilterItem";
 import { Dispatch, SetStateAction, useRef, useState } from "react";
-import { ShikimoriRequest } from "../services/shikimori";
+import { ShikimoriRequest } from "../Models/Requests/ShikimoriRequest";
 type FieldType = {
     page: number;
     query: string;

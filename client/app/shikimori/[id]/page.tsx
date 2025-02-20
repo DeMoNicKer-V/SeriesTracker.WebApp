@@ -69,6 +69,10 @@ export default function AnimePage({ params }: { params: { id: string } }) {
     const [watchedEpisode, setWatchedEpisode] = useState<number>(0);
     const [isFavorite, setIsFavorite] = useState<boolean>(false);
 
+    const checkAuth = async () => {
+        setIsAuth(await IsAuth());
+    };
+
     const getAnime = async (id: string) => {
         const response = await getAnimeById(id);
         checkAuth();
@@ -111,20 +115,13 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                     key: element.id,
                     label: element.name,
                     onClick: async () => {
-                        const newCategory = {
-                            id: element.id,
-                            name: element.name,
-                        } as Category;
-                        await updateCategorySeries(info, newCategory);
+                        await updateCategorySeries(info, element.id);
                     },
                 });
             }
         });
 
         setCategories(array);
-    };
-    const checkAuth = async () => {
-        setIsAuth(await IsAuth());
     };
 
     const updateFavoriteSeries = async (value: number) => {
@@ -189,18 +186,18 @@ export default function AnimePage({ params }: { params: { id: string } }) {
         return request;
     };
 
-    const updateCategorySeries = async (anime: Anime, category: Category) => {
+    const updateCategorySeries = async (anime: Anime, categoryId: number) => {
         if (anime.seriesId) {
             const request = createRequest(
-                category.id === 3 ? anime.episodes : anime.watchedEpisodes,
-                category.id,
+                categoryId === 3 ? anime.episodes : anime.watchedEpisodes,
+                categoryId,
                 anime.isFavorite
             );
             await updateSeries(anime.seriesId, request, true);
         } else {
             const request = createRequest(
-                category.id === 3 ? anime.episodes : 0,
-                category.id
+                categoryId === 3 ? anime.episodes : 0,
+                categoryId
             );
             await createSeries(request);
         }
@@ -270,7 +267,6 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                                                 <Image
                                                     style={{
                                                         maxHeight: "380px",
-                                                        pointerEvents: "none",
                                                     }}
                                                     preview={false}
                                                     src={anime.pictureUrl}

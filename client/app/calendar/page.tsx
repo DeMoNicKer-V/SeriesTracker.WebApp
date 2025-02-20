@@ -33,6 +33,7 @@ import {
     defaultValues,
 } from "../Models/Anime/CalendarAnimeItem";
 import useSWR from "swr";
+import DaysWeekSkeleton from "../components/DaysWeekSkeleton";
 dayjs.locale("ru");
 
 interface CalendarDateLabel {
@@ -160,11 +161,15 @@ export default function CalendarPage() {
             <title>Series Tracker - Календарь выхода</title>
             <Row justify={"center"}>
                 <Col span={22}>
-                    <Tabs
-                        onChange={(key) => onChangeDate(key)}
-                        centered
-                        items={weekDays}
-                    />
+                    {isLoading ? (
+                        <DaysWeekSkeleton />
+                    ) : (
+                        <Tabs
+                            onChange={(key) => onChangeDate(key)}
+                            centered
+                            items={weekDays}
+                        />
+                    )}
 
                     <ConfigProvider renderEmpty={customizeRenderEmpty}>
                         <List
@@ -224,7 +229,7 @@ export default function CalendarPage() {
                                                             <LoadAnimateImage
                                                                 prev={false}
                                                                 maxWidth={100}
-                                                                src={`https://desu.shikimori.one${item.anime.image.preview}`}
+                                                                src={`https://shikimori.one${item.anime.image.preview}`}
                                                             ></LoadAnimateImage>
                                                         </Col>
                                                         <Col

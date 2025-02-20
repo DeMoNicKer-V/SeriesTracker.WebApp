@@ -23,7 +23,10 @@ function FilterItem({ dataSource, index, censored }: Props) {
                 <Row gutter={[0, 16]}>
                     {dataSource?.map((option) => (
                         <Col span={24} key={`${index}${option.id}`}>
-                            <Checkbox value={option.id}>
+                            <Checkbox
+                                id={`checkbox-${option.id}`}
+                                value={option.id}
+                            >
                                 {option.russian}
                             </Checkbox>
                         </Col>

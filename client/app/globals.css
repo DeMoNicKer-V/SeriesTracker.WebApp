@@ -943,3 +943,7 @@ button[aria-hidden="true"] {
 .centered-list :not(:first-child):not(:last-child) * {
     justify-content: center;
 }
+
+img {
+    pointer-events: none;
+}
