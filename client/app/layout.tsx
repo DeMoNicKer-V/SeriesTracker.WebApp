@@ -38,59 +38,6 @@ export default function RootLayout({
         setMounted(true);
     }, []);
 
-    const darkTheme = {
-        colorPrimary: "#44a5a6",
-        colorInfo: "#44a5a6",
-        colorLink: "#fff",
-        boxShadowCard:
-            "0 1px 2px 0 rgba(0, 0, 0, 0.5), 0 3px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px 0 rgba(0, 0, 0, 0.4)",
-    };
-
-    const darkThemeLayout = {
-        Layout: {
-            headerBg: "#151515",
-            footerBg: "transparent",
-            siderBg: "#151515",
-            bodyBg: ["/signup", "/login"].includes(pathName)
-                ? "radial-gradient(ellipse at bottom, #08494961 0%, #151515 100%)"
-                : "#151515",
-        },
-        Menu: {
-            activeBarBorderWidth: 0,
-        },
-        Radio: {
-            colorBorder: "transparent",
-        },
-        Card: {
-            colorBgContainer: "#121212",
-            colorBorderSecondary: "transparent",
-            bodyPadding: 0,
-            boxShadowCard:
-                "0 1px 2px 0 rgba(0, 0, 0, 0.5), 0 3px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px 0 rgba(0, 0, 0, 0.4)",
-        },
-        Segmented: {
-            itemSelectedBg: "#44a5a6",
-            colorBg: "transparent",
-        },
-        Drawer: {
-            colorBgElevated: "#151515",
-        },
-        Input: {
-            colorPrimaryHover: "#fff",
-        },
-        Collapse: {
-            headerBg: "#141414",
-            border: "none",
-        },
-        Form: {
-            verticalLabelPadding: "8px 0",
-        },
-        Typography: {
-            colorLink: "#44a5a6",
-            colorLinkHover: "#44a5a661",
-        },
-    };
-
     return (
         <html lang="en">
             <head>

@@ -190,7 +190,7 @@ episodesAired
                                 
                                  
                                     airedOn {
-                                        date
+                                        year
                                     }
                                     poster {
                                         mainUrl
@@ -268,7 +268,7 @@ episodesAired
                                     status
                                     score
                                     airedOn {
-                                        date
+                                        year
                                     }
                                     poster {
                                         mainUrl
@@ -315,7 +315,7 @@ episodesAired
                            id
     name
     russian
-    poster {miniUrl}
+    poster {mini2xUrl}
     kind
     airedOn{year}
       }

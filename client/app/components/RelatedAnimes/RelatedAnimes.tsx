@@ -19,6 +19,7 @@ import {
     CalendarOutlined,
     ReadOutlined,
 } from "@ant-design/icons";
+import { Related } from "@/app/Models/Anime/Anime";
 
 interface Props {
     animes: Related[];
@@ -51,10 +52,11 @@ const RelatedAnimes = ({ animes }: Props) => {
                                     xs={24}
                                     md={4}
                                     lg={3}
-                                    xl={2}
+                                    xl={3}
                                     xxl={2}
                                 >
                                     <Image
+                                        width={70}
                                         preview={false}
                                         src={item.anime.pictureUrl}
                                         fallback={noFoundImage.src}
@@ -65,7 +67,7 @@ const RelatedAnimes = ({ animes }: Props) => {
                                     xs={24}
                                     md={20}
                                     lg={21}
-                                    xl={22}
+                                    xl={21}
                                     xxl={22}
                                 >
                                     <Meta

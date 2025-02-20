@@ -34,7 +34,7 @@ namespace SeriesTracker.Core.Models.Shikimori
         {
             get
             {
-                return AiredDate.Date != null ? AiredDate.Date : null;
+                return AiredDate.Date != null ? AiredDate.Date : AiredDate.Year;
             }
             set { }
         }

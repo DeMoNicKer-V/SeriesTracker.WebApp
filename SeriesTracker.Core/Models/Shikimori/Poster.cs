@@ -33,7 +33,7 @@ namespace SeriesTracker.Core.Models.Shikimori
         }
 
         [JsonProperty("mainUrl")] private string? MainUrl { get; set; }
-        [JsonProperty("miniUrl")] private string? MiniUrl { get; set; }
+        [JsonProperty("mini2xUrl")] private string? MiniUrl { get; set; }
         [JsonProperty("mainAltUrl")] private string? MainAltUrl { get; set; }
         [JsonProperty("originalUrl")] private string? OriginalUrl { get; set; }
     }

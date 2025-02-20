@@ -21,7 +21,6 @@ import {
     SearchOutlined,
     StarOutlined,
 } from "@ant-design/icons";
-import AnimePopover from "../AnimePopover";
 import AbsoluteImage from "../AbsoluteImage";
 import AnimeParamsMenu from "../AnimeParamsMenu";
 import { getAnimesByParams, getGenres } from "../../services/shikimori";
@@ -34,6 +33,7 @@ import PageNavigator from "../PageNavigator";
 import styles from "./component.module.css";
 import { defaultValues, SeriesAnime } from "@/app/Models/Anime/SeriesAnime";
 import { ShikimoriRequest } from "@/app/Models/Requests/ShikimoriRequest";
+import AnimeDetailPopover from "../Popovers/AnimeDetailPopover";
 
 const { Text } = Typography;
 interface Props {
@@ -180,13 +180,13 @@ const AnimeList = ({ userPath }: Props) => {
                         >
                             <Popover
                                 trigger={"hover"}
-                                mouseEnterDelay={0.5}
+                                mouseEnterDelay={1}
                                 mouseLeaveDelay={0.2}
                                 placement="bottomLeft"
                                 arrow={false}
                                 content={
-                                    <AnimePopover
-                                        animes={animes}
+                                    <AnimeDetailPopover
+                                        anime={animes}
                                         isOpen={false}
                                     />
                                 }
@@ -223,9 +223,7 @@ const AnimeList = ({ userPath }: Props) => {
                                                         styles["cover-text"]
                                                     }
                                                 >
-                                                    {new Date(
-                                                        animes.startDate
-                                                    ).getFullYear()}
+                                                    {animes.startDate}
                                                 </Text>
                                             </Flex>
                                         }

@@ -1,0 +1,24 @@
+.description {
+    -webkit-line-clamp: 4;
+    line-clamp: 4;
+}
+
+.subTitle {
+    -webkit-line-clamp: 1;
+    line-clamp: 1;
+}
+
+.title {
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+}
+
+.trimText {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -moz-box;
+    -moz-box-orient: vertical;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    box-orient: vertical;
+}

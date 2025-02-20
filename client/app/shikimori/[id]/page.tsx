@@ -242,7 +242,7 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                                 <AbsoluteImage
                                     src={anime.pictureUrl}
                                     zIndex={-1}
-                                    filter="contrast(175%) brightness(75%)"
+                                    filter="contrast(225%) brightness(75%)"
                                 />
 
                                 <Button

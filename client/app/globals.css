@@ -48,43 +48,6 @@ body {
     display: flex !important;
 }
 
-.textTitle {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: -moz-box;
-    -moz-box-orient: vertical;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    line-clamp: 2;
-    box-orient: vertical;
-}
-
-.cardTitle {
-    -webkit-line-clamp: 1;
-    -webkit-box-orient: vertical;
-    display: -webkit-box;
-    margin-top: 8px;
-    overflow: hidden;
-    word-break: break-all;
-    font-size: 0.875rem !important;
-    font-weight: 500;
-    letter-spacing: 0.0071428571em !important;
-    line-height: 1.375rem;
-}
-
-.text {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: -moz-box;
-    -moz-box-orient: vertical;
-    display: -webkit-box;
-    -webkit-line-clamp: 4;
-    -webkit-box-orient: vertical;
-    line-clamp: 4;
-    box-orient: vertical;
-}
-
 .calendar-card-text-drawer {
     overflow: hidden;
     text-overflow: ellipsis;
@@ -143,8 +106,9 @@ body {
     cursor: default;
 }
 .tag {
-    font-size: 11;
-    font-weight: 500;
+    margin-inline-end: 5px;
+    padding-inline: 5px;
+    font-weight: 600;
 }
 .tag:hover {
     background-color: rgba(0, 0, 0, 0.3) !important;
