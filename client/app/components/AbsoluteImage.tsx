@@ -15,8 +15,6 @@ export const AbsoluteImage = ({
     return (
         <Flex
             className="background-poster"
-            align={"flex-end"}
-            justify={"end"}
             style={{
                 pointerEvents: "none",
                 flexDirection: "column",
@@ -32,6 +30,7 @@ export const AbsoluteImage = ({
                 borderRadius: 10,
                 zIndex: zIndex,
                 filter: filter,
+                justifyContent: "flex-end",
             }}
         >
             {children}

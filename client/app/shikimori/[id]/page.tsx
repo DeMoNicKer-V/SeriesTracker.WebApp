@@ -437,6 +437,11 @@ export default function AnimePage({ params }: { params: { id: string } }) {
 
                                                         {anime.seriesId && (
                                                             <InputNumber
+                                                                className={
+                                                                    styles[
+                                                                        "episodes-input"
+                                                                    ]
+                                                                }
                                                                 readOnly={
                                                                     anime.categoryId ===
                                                                     3
@@ -481,9 +486,6 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                                                                         }
                                                                     ></Button>
                                                                 }
-                                                                style={{
-                                                                    width: "auto",
-                                                                }}
                                                                 max={
                                                                     anime.episodes
                                                                 }

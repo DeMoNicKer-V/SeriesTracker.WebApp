@@ -111,7 +111,7 @@ const AnimeList = ({ userPath }: Props) => {
         updateSearchParams({ page: newPage }); // Обновляем URL
     };
     const {
-        data = Array.from({ length: 15 }).map((_, i) => defaultValues),
+        data = Array.from({ length: 14 }).map((_, i) => defaultValues),
         isLoading,
     } = useSWR(`${path}?${createQueryString(request)}`, getAnimesPost, {
         // Опции для useSWR
@@ -153,7 +153,7 @@ const AnimeList = ({ userPath }: Props) => {
             <List
                 className="centered-list"
                 header={data.length > 0 && <ListBranches />}
-                footer={data.length > 0 && <ListBranches />}
+                footer={data.length > 7 ? <ListBranches /> : []}
                 grid={{
                     gutter: 30,
                     xs: 2,
@@ -163,7 +163,7 @@ const AnimeList = ({ userPath }: Props) => {
                     xl: 6,
                     xxl: 7,
                 }}
-                dataSource={data.slice(0, -1)}
+                dataSource={data.length === 22 ? data.slice(0, -1) : data}
                 renderItem={(animes: SeriesAnime) => (
                     <List.Item>
                         <Skeleton
@@ -179,6 +179,8 @@ const AnimeList = ({ userPath }: Props) => {
                             title={false}
                         >
                             <Popover
+                                destroyTooltipOnHide
+                                rootClassName="popover"
                                 trigger={"hover"}
                                 mouseEnterDelay={1}
                                 mouseLeaveDelay={0.2}
@@ -223,7 +225,9 @@ const AnimeList = ({ userPath }: Props) => {
                                                         styles["cover-text"]
                                                     }
                                                 >
-                                                    {animes.startDate}
+                                                    {new Date(
+                                                        animes.startDate
+                                                    ).getFullYear()}
                                                 </Text>
                                             </Flex>
                                         }

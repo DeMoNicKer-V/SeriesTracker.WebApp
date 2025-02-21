@@ -95,6 +95,8 @@ const SearchBar = ({}) => {
             renderEmpty={customizeRenderEmpty}
         >
             <Popover
+                destroyTooltipOnHide
+                rootClassName="popover"
                 trigger={"hover"}
                 styles={{
                     root: {
@@ -190,7 +192,7 @@ const SearchBar = ({}) => {
                         ref={inputRef}
                         onClick={handleClick}
                         id="searchbar"
-                        className={loading === true ? "loading" : ""}
+                        className={loading === true ? styles["loading"] : ""}
                         spellCheck={"false"}
                         variant="filled"
                         value={query}

@@ -22,3 +22,10 @@
         justify-content: center;
     }
 }
+
+.episodes-input {
+    max-width: 285px;
+}
+.episodes-input input {
+    text-align: end !important;
+}
