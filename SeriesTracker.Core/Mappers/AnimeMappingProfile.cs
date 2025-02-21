@@ -15,14 +15,16 @@ namespace SeriesTracker.Core.Mappers
             CreateMap<ShikimoriAnimeBase, AnimeFullDto>();
 
             CreateMap<ShikimoriAnimeBase, AnimeSeriesDto>()
-           .AfterMap((src, dest, context) => {
+           .AfterMap((src, dest, context) =>
+           {
                dest.CategoryId = (int)context.Items["CategoryId"];
                dest.CategoryName = (string)context.Items["CategoryName"];
                dest.CategoryColor = (string)context.Items["CategoryColor"];
            });
 
             CreateMap<ShikimoriAnimeBase, AnimeSeriesFullDto>()
-           .AfterMap((src, dest, context) => {
+           .AfterMap((src, dest, context) =>
+           {
                dest.SeriesId = (Guid)context.Items["SeriesId"];
                dest.CategoryId = (int)context.Items["CategoryId"];
                dest.CategoryName = (string)context.Items["CategoryName"];

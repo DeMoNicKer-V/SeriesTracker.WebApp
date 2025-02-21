@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+﻿using System.Text.RegularExpressions;
 
 namespace SeriesTracker.Core
 {
@@ -36,9 +31,9 @@ namespace SeriesTracker.Core
 
             return MultipleSpacesFormatRegex().Replace(result, " ").Trim();
         }
-    
 
-    public static string ConvertStatusToDefault(string? statusName)
+
+        public static string ConvertStatusToDefault(string? statusName)
         {
             return statusName switch
             {

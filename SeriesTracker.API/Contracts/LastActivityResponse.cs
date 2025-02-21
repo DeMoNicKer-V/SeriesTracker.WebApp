@@ -3,8 +3,8 @@
     public record LastActivityResponse
     (
         int Id,
-        string Image, 
-        string Title, 
+        string Image,
+        string Title,
         string Date
      );
 }

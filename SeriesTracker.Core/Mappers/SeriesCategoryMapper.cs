@@ -1,16 +1,9 @@
-﻿using AutoMapper;
-using SeriesTracker.Core.Dtos.Series;
-using SeriesTracker.Core.Dtos.UserDtos;
+﻿using SeriesTracker.Core.Dtos.Series;
 using SeriesTracker.Core.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SeriesTracker.Core.Mappers
 {
-    public static class SeriesCategoryMapper 
+    public static class SeriesCategoryMapper
     {
         public static SeriesCategoryDto ToSeriesCategoryDTO(this UserSeries series, Category category)
         {

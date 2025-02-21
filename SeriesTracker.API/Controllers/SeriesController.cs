@@ -1,8 +1,6 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using SeriesTracker.API.Contracts;
 using SeriesTracker.Application.Interfaces.Auth;
-using SeriesTracker.Application.Services;
 using SeriesTracker.Core.Abstractions;
 using SeriesTracker.Core.Enums;
 using SeriesTracker.Core.Models;
@@ -21,8 +19,8 @@ namespace SeriesTracker.API.Controllers
         private readonly ICategoryService _categoryService;
         private readonly IJwtProvider _jwtProvider;
 
-        public SeriesController(ISeriesService seriesService, 
-            ICategoryService categoryService, 
+        public SeriesController(ISeriesService seriesService,
+            ICategoryService categoryService,
             IUserSeriesService userSeriesService,
             IJwtProvider jwtProvider)
         {
@@ -54,7 +52,7 @@ namespace SeriesTracker.API.Controllers
 
         [RequirePermission(Permission.Read)]
         [HttpPost]
-        public async Task<ActionResult<Guid>> CreateSeries([FromBody] CreateSeriesRequest request) 
+        public async Task<ActionResult<Guid>> CreateSeries([FromBody] CreateSeriesRequest request)
         {
             var token = Request.Cookies["secretCookie"];
 
@@ -66,9 +64,9 @@ namespace SeriesTracker.API.Controllers
             var principal = _jwtProvider.ValidateToken(token);
             var userId = principal.FindFirstValue("userId");
             var date = DateTime.Now.ToString("s");
-            var (series, error) = UserSeries.Create(Guid.NewGuid(), request.AnimeId,  Guid.Parse(userId), request.CategoryId, request.WatchedEpisode, date, date, request.IsFavorite);
+            var (series, error) = UserSeries.Create(Guid.NewGuid(), request.AnimeId, Guid.Parse(userId), request.CategoryId, request.WatchedEpisode, date, date, request.IsFavorite);
 
-            if (!string.IsNullOrEmpty(error)) 
+            if (!string.IsNullOrEmpty(error))
             {
                 return BadRequest(error);
             }

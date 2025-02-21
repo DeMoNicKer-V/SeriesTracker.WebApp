@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SeriesTracker.Core.Abstractions;
-using SeriesTracker.Core.Enums;
 using SeriesTracker.Core.Models;
 using SeriesTracker.DataAccess.Entities;
 

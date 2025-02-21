@@ -1,11 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using SeriesTracker.Application.Services;
 using SeriesTracker.Core.Abstractions;
 using SeriesTracker.Core.Enums;
-using SeriesTracker.Infrastructure;
 using SeriesTracker.Infrastructure.Authentication;
 using System.Text;
 
@@ -13,7 +11,7 @@ namespace SeriesTracker.API.Extensions
 {
     public static class ApiExtensions
     {
-        public static void AddApiAuthentication(this IServiceCollection services, IConfiguration configuration) 
+        public static void AddApiAuthentication(this IServiceCollection services, IConfiguration configuration)
         {
             var jwtOptions = configuration.GetSection(nameof(JwtOptions)).Get<JwtOptions>();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

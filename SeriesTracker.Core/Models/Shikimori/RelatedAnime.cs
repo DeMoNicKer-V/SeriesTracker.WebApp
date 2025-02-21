@@ -1,9 +1,4 @@
 ﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SeriesTracker.Core.Models.Shikimori
 {
@@ -20,7 +15,7 @@ namespace SeriesTracker.Core.Models.Shikimori
         [JsonProperty("name")] public string SubTitle { get; set; }
         [JsonProperty("russian")] public string Title { get; set; }
         [JsonIgnore] public string Kind { get { return kindInfo != null ? kindInfo.ToUpper() : ""; } set { } }
-        [JsonProperty("kind")] private string? kindInfo { get; set; }    
+        [JsonProperty("kind")] private string? kindInfo { get; set; }
         [JsonIgnore] public string? PictureUrl { get { return poster != null ? poster.Url : null; } }
         [JsonIgnore]
         public string StartDate

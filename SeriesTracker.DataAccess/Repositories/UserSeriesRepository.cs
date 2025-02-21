@@ -3,7 +3,6 @@ using SeriesTracker.Core.Abstractions;
 using SeriesTracker.Core.Dtos.Series;
 using SeriesTracker.Core.Models;
 using SeriesTracker.DataAccess.Entities;
-using SeriesTracker.DataAccess.Migrations;
 
 namespace SeriesTracker.DataAccess.Repositories
 {

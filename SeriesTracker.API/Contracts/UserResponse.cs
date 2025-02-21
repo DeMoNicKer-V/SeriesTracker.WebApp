@@ -1,6 +1,4 @@
-﻿using SeriesTracker.Core.Enums;
-
-namespace SeriesTracker.API.Contracts
+﻿namespace SeriesTracker.API.Contracts
 {
     public record UserResponse
     (
@@ -13,5 +11,5 @@ namespace SeriesTracker.API.Contracts
           string DateBirth
         );
 
-    
+
 }

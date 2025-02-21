@@ -1,9 +1,4 @@
 ﻿using SeriesTracker.Core.Models.Shikimori;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SeriesTracker.Core.Dtos.Anime
 {
@@ -12,7 +7,7 @@ namespace SeriesTracker.Core.Dtos.Anime
         public int Id { get; set; }
         public string? Description { get; set; }
         public string? Genres { get; set; }
-        public double Duration { get; set; } 
+        public double Duration { get; set; }
         public int Episodes { get; set; }
         public double Score { get; set; }
         public string StartDate { get; set; }

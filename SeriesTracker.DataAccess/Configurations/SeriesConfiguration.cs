@@ -8,14 +8,14 @@ namespace SeriesTracker.DataAccess.Configurations
     {
         public void Configure(EntityTypeBuilder<SeriesEntity> builder)
         {
-           builder.HasKey(x => x.Id);
+            builder.HasKey(x => x.Id);
             builder.Property(s => s.AnimeId).IsRequired();
             builder.Property(s => s.AddedDate).IsRequired();
             builder.Property(s => s.AnimeId).IsRequired();
             builder.Property(s => s.WatchedEpisode).IsRequired();
 
-           /* builder.HasOne(s => s.Category).
-                WithMany(c => c.Series).HasForeignKey(c => c.CategoryId);*/
+            /* builder.HasOne(s => s.Category).
+                 WithMany(c => c.Series).HasForeignKey(c => c.CategoryId);*/
         }
     }
 }

@@ -1,7 +1,4 @@
-﻿using SeriesTracker.Core.Models;
-using SeriesTracker.Core.Models.Shikimori;
-
-namespace SeriesTracker.API.Contracts
+﻿namespace SeriesTracker.API.Contracts
 {
     public record SeriesResponse
     (

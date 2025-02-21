@@ -1,8 +1,6 @@
-﻿using SeriesTracker.Core.Enums;
-
-namespace SeriesTracker.API.Contracts
+﻿namespace SeriesTracker.API.Contracts
 {
-        public record DefaultUserResponse
+    public record DefaultUserResponse
 (
       string Email,
       string UserName,
@@ -13,5 +11,5 @@ namespace SeriesTracker.API.Contracts
       string DateBirth,
       int RoleId
     );
-    
+
 }

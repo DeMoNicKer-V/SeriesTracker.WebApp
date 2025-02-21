@@ -1,5 +1,5 @@
-﻿using SeriesTracker.Core.Models;
-using SeriesTracker.Core.Abstractions;
+﻿using SeriesTracker.Core.Abstractions;
+using SeriesTracker.Core.Models;
 
 namespace SeriesTracker.Application.Services
 {

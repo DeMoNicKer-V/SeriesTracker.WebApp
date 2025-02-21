@@ -1,9 +1,4 @@
 ﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SeriesTracker.Core.Models.Shikimori
 {
@@ -14,7 +9,7 @@ namespace SeriesTracker.Core.Models.Shikimori
         {
             get
             {
-               
+
                 if (MainUrl != null)
                 {
                     return MainUrl;

@@ -1,18 +1,13 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Microsoft.EntityFrameworkCore;
-using SeriesTracker.DataAccess.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using SeriesTracker.Core.Enums;
+using SeriesTracker.DataAccess.Entities;
 
 namespace SeriesTracker.DataAccess.Configurations
 {
     internal class CategoryConfiguration : IEntityTypeConfiguration<CategoryEntity>
     {
-        private readonly Dictionary<Category, string> categoryColors = 
+        private readonly Dictionary<Category, string> categoryColors =
             new()
             {
                     { Category.Запланировано, "#6DBA91" },

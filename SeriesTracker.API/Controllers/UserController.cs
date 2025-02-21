@@ -38,9 +38,9 @@ namespace SeriesTracker.API.Controllers
             var categoryGroup = await _userSeriesService.GetGroupSeries(user.Id);
 
             var lastActivityList = await _userSeriesService.GetRecentSeriesString(user.Id);
-            
 
-            return Results.Ok(new {UserInfo = user.ToDetailDTO(), SeriesInfo = categoryGroup, ActivityInfo = lastActivityList});
+
+            return Results.Ok(new { UserInfo = user.ToDetailDTO(), SeriesInfo = categoryGroup, ActivityInfo = lastActivityList });
         }
 
         [HttpGet("categoryCount")]
@@ -161,8 +161,8 @@ namespace SeriesTracker.API.Controllers
             }
             return Results.Ok(token);
         }
-    
-    [HttpPost("login")]
+
+        [HttpPost("login")]
         public async Task<IResult> Login([FromBody] LoginUserRequest request)
         {
             string token = string.Empty;

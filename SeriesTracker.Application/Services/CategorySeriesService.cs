@@ -1,14 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
 using SeriesTracker.Core.Abstractions;
 using SeriesTracker.Core.Dtos.Series;
 using SeriesTracker.Core.Models;
 using SeriesTracker.DataAccess;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SeriesTracker.Application.Services
 {

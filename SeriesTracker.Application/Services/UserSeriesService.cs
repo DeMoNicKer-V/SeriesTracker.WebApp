@@ -3,12 +3,6 @@ using SeriesTracker.Core.Abstractions;
 using SeriesTracker.Core.Dtos.Series;
 using SeriesTracker.Core.Models;
 using SeriesTracker.DataAccess;
-using SeriesTracker.DataAccess.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SeriesTracker.Application.Services
 {
@@ -18,7 +12,7 @@ namespace SeriesTracker.Application.Services
         private readonly IDbContextFactory<SeriesTrackerDbContext> _contextFactory;
         private readonly ICategoryRepository _categoryRepository;
 
-        public UserSeriesService(IDbContextFactory<SeriesTrackerDbContext> contextFactory, IUserSeriesRepository userSeriesRepository , ICategoryRepository categoryRepository)
+        public UserSeriesService(IDbContextFactory<SeriesTrackerDbContext> contextFactory, IUserSeriesRepository userSeriesRepository, ICategoryRepository categoryRepository)
         {
             _contextFactory = contextFactory;
             _userSeriesRepository = userSeriesRepository;
@@ -27,7 +21,7 @@ namespace SeriesTracker.Application.Services
 
         public async Task<UserSeries?> GetSeriesByAnimeIdAsync(int id, Guid userId)
         {
-                return await _userSeriesRepository.GetSeriesByAnimeIdAsync(id, userId);
+            return await _userSeriesRepository.GetSeriesByAnimeIdAsync(id, userId);
         }
 
         public async Task<Category?> GetCategoryByAnimeSeries(int id, Guid userId)

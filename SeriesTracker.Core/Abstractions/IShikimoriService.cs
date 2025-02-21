@@ -1,14 +1,8 @@
 ﻿using GraphQL;
-using GraphQL.Client.Abstractions;
 using SeriesTracker.Core.Dtos.Anime;
 using SeriesTracker.Core.Dtos.Series;
 using SeriesTracker.Core.Models;
 using SeriesTracker.Core.Models.Shikimori;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SeriesTracker.Core.Abstractions
 {

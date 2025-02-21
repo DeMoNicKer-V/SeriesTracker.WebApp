@@ -1,15 +1,9 @@
-﻿using AutoMapper;
-using GraphQL;
+﻿using GraphQL;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using SeriesTracker.API.Contracts;
-using SeriesTracker.Application.Services;
 using SeriesTracker.Core.Abstractions;
 using SeriesTracker.Core.Models;
 using SeriesTracker.Core.Models.Shikimori;
-using System.Linq;
-using System.Text.Json;
-using System.Xml.Linq;
 
 namespace SeriesTracker.API.Controllers
 {

@@ -5,7 +5,6 @@ using SeriesTracker.Application.Interfaces.Auth;
 using SeriesTracker.Application.Services;
 using SeriesTracker.Core.Abstractions;
 using SeriesTracker.Core.Abstractions.UserAbastractions;
-using SeriesTracker.Core.Enums;
 using SeriesTracker.Core.Mappers;
 using SeriesTracker.DataAccess;
 using SeriesTracker.DataAccess.Repositories;
@@ -42,7 +41,8 @@ builder.Services.AddScoped<IShikimoriService, ShikimoriService>();
 builder.Services.AddScoped<IJwtProvider, JwtProvider>();
 builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
 
-builder.Services.AddDbContextFactory<SeriesTrackerDbContext>(options => {
+builder.Services.AddDbContextFactory<SeriesTrackerDbContext>(options =>
+{
     options.UseNpgsql(builder.Configuration.GetConnectionString(nameof(SeriesTrackerDbContext)));
 });
 var app = builder.Build();

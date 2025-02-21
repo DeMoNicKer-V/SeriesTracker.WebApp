@@ -1,6 +1,4 @@
 ﻿using Newtonsoft.Json;
-using SeriesTracker.Core.Models;
-using System.Text.RegularExpressions;
 
 namespace SeriesTracker.Core.Models.Shikimori
 {

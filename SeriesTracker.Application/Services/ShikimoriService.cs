@@ -1,14 +1,12 @@
-﻿using GraphQL;
-using GraphQL.Client.Abstractions;
+﻿using AutoMapper;
+using GraphQL;
 using GraphQL.Client.Http;
 using GraphQL.Client.Serializer.Newtonsoft;
-using SeriesTracker.Core.Models.Shikimori;
 using SeriesTracker.Core.Abstractions;
-using SeriesTracker.Core.Models;
-using System.Xml.Linq;
-using AutoMapper;
 using SeriesTracker.Core.Dtos.Anime;
 using SeriesTracker.Core.Dtos.Series;
+using SeriesTracker.Core.Models;
+using SeriesTracker.Core.Models.Shikimori;
 
 namespace SeriesTracker.Application.Services
 {
