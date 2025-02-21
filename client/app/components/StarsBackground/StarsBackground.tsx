@@ -1,4 +1,6 @@
-export const StarsBackground = ({}) => {
+import styles from "./component.module.css";
+
+const StarsBackground = ({}) => {
     /*  function createStyle(start: number) {
         let array: string[] = [];
         for (let index = 0; index < start; index++) {
@@ -10,10 +12,12 @@ export const StarsBackground = ({}) => {
     }*/
 
     return (
-        <div className="background" style={{ zIndex: 1 }}>
-            <div className="stars"></div>
-            <div className="stars"></div>
-            <div className="stars"></div>
+        <div className={styles["background"]}>
+            <div className={styles["stars"]}></div>
+            <div className={styles["stars"]}></div>
+            <div className={styles["stars"]}></div>
         </div>
     );
 };
+
+export default StarsBackground;

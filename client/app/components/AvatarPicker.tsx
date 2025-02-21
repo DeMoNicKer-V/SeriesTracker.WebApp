@@ -33,23 +33,29 @@ const AvatarPicker = ({ onChange, preloadFile }: Props) => {
         fileList: newFileList,
     }) => {
         if (newFileList.length > 0) {
+            const file = newFileList[0]; // Get the file object
+            if (!file.originFileObj) {
+                console.warn("originFileObj is undefined for file:", file);
+                message.error("Ошибка загрузки файла. Попробуйте еще раз.");
+                return;
+            }
+
             const isJpgOrPng =
-                newFileList[0].type === "image/jpeg" ||
-                newFileList[0].type === "image/png";
+                file.type === "image/jpeg" || file.type === "image/png";
             if (!isJpgOrPng) {
                 message.error("Только JPG/PNG файлы!");
                 return;
             }
-            const isLt2M = Number(newFileList[0].size) / 1024 / 1024 < 0.25;
+            const isLt2M = Number(file.size) / 1024 / 1024 < 0.25;
             if (!isLt2M) {
                 message.error("Размер файла не должен превышать 256КБ!");
                 return;
             }
 
             const reader = new FileReader();
-            reader.readAsDataURL(newFileList[0].originFileObj);
+            reader.readAsDataURL(file.originFileObj);
             reader.onloadend = () => {
-                onChange(newFileList[0].thumbUrl);
+                onChange(file.thumbUrl);
             };
         } else {
             onChange("");

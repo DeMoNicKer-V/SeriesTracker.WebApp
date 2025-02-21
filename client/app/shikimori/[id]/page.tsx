@@ -1,4 +1,5 @@
 "use client";
+import styles from "./page.module.css";
 import {
     Button,
     Card,
@@ -42,9 +43,8 @@ import {
 } from "@/app/services/series";
 import { IsAuth } from "@/app/api/coockie";
 import { LongLeftArrow } from "@/app/img/LongLeftArrow";
-import noFoundImage from ".//..//../img/img-error.jpg";
+import noFoundImage from "@/app/img/img-error.jpg";
 import Relatedanimes from "@/app/components/RelatedAnimes/RelatedAnimes";
-import styles from "./page.module.css";
 import InfoDescription from "@/app/components/AnimeDetailDescription/InfoDescription";
 import GenreDescription from "@/app/components/AnimeDetailDescription/GenreDescription";
 import ScreenshotsPreview from "@/app/components/AnimeDetailDescription/ScreenshotsPreview";

@@ -22,8 +22,8 @@ namespace SeriesTracker.Application.Services
         public ShikimoriService(IMapper mapper)
         {
             _mapper = mapper;
-        
-        
+
+
             graphQLClient = new GraphQLHttpClient(apiUrl, new NewtonsoftJsonSerializer());
         }
 
@@ -51,19 +51,19 @@ namespace SeriesTracker.Application.Services
         {
             if (series == null)
             {
-               return isFull ? _mapper.Map<AnimeFullDto>(anime) : _mapper.Map<AnimeShortDto>(anime);
+                return isFull ? _mapper.Map<AnimeFullDto>(anime) : _mapper.Map<AnimeShortDto>(anime);
             }
             return _mapper.Map<AnimeSeriesFullDto>(anime, opt =>
             {
-              
-                    opt.Items["SeriesId"] = series.SeriesId;
-                    opt.Items["CategoryId"] = series.CategoryId;
-                    opt.Items["CategoryName"] = series.CategoryName;
-                    opt.Items["CategoryColor"] = series.CategoryColor;
-                    opt.Items["WatchedEpisodes"] = series.WatchedEpisodes;
-                    opt.Items["AddedDate"] = series.AddedDate;
-                    opt.Items["IsFavorite"] = series.IsFavorite;
-                
+
+                opt.Items["SeriesId"] = series.SeriesId;
+                opt.Items["CategoryId"] = series.CategoryId;
+                opt.Items["CategoryName"] = series.CategoryName;
+                opt.Items["CategoryColor"] = series.CategoryColor;
+                opt.Items["WatchedEpisodes"] = series.WatchedEpisodes;
+                opt.Items["AddedDate"] = series.AddedDate;
+                opt.Items["IsFavorite"] = series.IsFavorite;
+
             });
         }
 
@@ -185,10 +185,8 @@ namespace SeriesTracker.Application.Services
                                     name
                                     kind
                                     episodes
-episodesAired
+                                    episodesAired
                                     status
-                                
-                                 
                                     airedOn {
                                         year
                                     }
@@ -309,18 +307,18 @@ episodesAired
                                     episodesAired
                                     status
                                     score
-   screenshots { id originalUrl}
-    related {
-      anime {
-                           id
-    name
-    russian
-    poster {mini2xUrl}
-    kind
-    airedOn{year}
-      }
-      relationText
-    }
+                                    screenshots { id originalUrl}
+                                    related {
+                                      anime {
+                                        id
+                                        name
+                                        russian
+                                        poster {mini2xUrl}
+                                        kind
+                                        airedOn{year}
+                                        }
+                                      relationText
+                                    }
                                     airedOn {
                                         date
                                     }

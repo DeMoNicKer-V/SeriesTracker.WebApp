@@ -13,7 +13,7 @@ export const AbsoluteImage = ({
     filter = "",
 }: Props) => {
     return (
-        <Flex
+        <div
             className="background-poster"
             style={{
                 pointerEvents: "none",
@@ -31,10 +31,11 @@ export const AbsoluteImage = ({
                 zIndex: zIndex,
                 filter: filter,
                 justifyContent: "flex-end",
+                display: "flex",
             }}
         >
             {children}
-        </Flex>
+        </div>
     );
 };
 
