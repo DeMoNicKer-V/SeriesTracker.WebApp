@@ -22,6 +22,15 @@
     border-radius: 5px;
 }
 
+.sider-menu {
+    font-size: 16px;
+    font-weight: 600;
+}
+.sider-menu span[role="img"] {
+    font-size: 20px !important;
+    padding-right: 2px;
+}
+
 @media (max-width: 1200px) {
     .sider {
         max-width: 100% !important;

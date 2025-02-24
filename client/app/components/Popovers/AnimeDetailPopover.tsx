@@ -7,8 +7,6 @@ import {
     TeamOutlined,
 } from "@ant-design/icons";
 import { SeriesAnime } from "@/app/Models/Anime/SeriesAnime";
-
-import styles from "./component.module.css";
 interface Props {
     anime: SeriesAnime;
     isOpen: boolean;
@@ -26,14 +24,14 @@ export const AnimeDetailPopover = ({ anime }: Props) => {
                     <Col span={24}>
                         <Flex className="flex-column">
                             <Title
-                                className={`${styles.trimText} ${styles.title}`}
+                                className={"trimText title"}
                                 level={5}
                                 style={{ marginBottom: 0 }}
                             >
                                 {anime.title}
                             </Title>
                             <Text
-                                className={`${styles.trimText} ${styles.subTitle}`}
+                                className={"trimText subTitle"}
                                 strong
                                 style={{ marginBottom: 5 }}
                                 italic
@@ -41,9 +39,7 @@ export const AnimeDetailPopover = ({ anime }: Props) => {
                             >
                                 {anime.subTitle}
                             </Text>
-                            <Paragraph
-                                className={`${styles.trimText} ${styles.description}`}
-                            >
+                            <Paragraph className={"trimText description"}>
                                 <Text strong type="secondary">
                                     Описание:{" "}
                                 </Text>
@@ -52,46 +48,39 @@ export const AnimeDetailPopover = ({ anime }: Props) => {
                                     : anime.description}
                             </Paragraph>
                             <Space align="center" size={[0, 5]} wrap>
-                                <Tag icon={<InfoCircleOutlined />}>
+                                <Tag
+                                    className="tag"
+                                    icon={<InfoCircleOutlined />}
+                                >
                                     {`${anime.kind}`}
                                 </Tag>
-                                <Tag icon={<TeamOutlined />}>
+                                <Tag className="tag" icon={<TeamOutlined />}>
                                     {anime.rating}
                                 </Tag>
-                                <Tag icon={<CalendarOutlined />}>
+                                <Tag
+                                    className="tag"
+                                    icon={<CalendarOutlined />}
+                                >
                                     {anime.startDate}
                                 </Tag>
-                                <Tag>
-                                    <Flex
-                                        gap={3}
-                                        align={"center"}
-                                        justify={"center"}
-                                    >
-                                        <YoutubeOutlined />
-                                        {`${anime.episodes} эп.`}
-                                    </Flex>
+                                <Tag className="tag" icon={<YoutubeOutlined />}>
+                                    {`${anime.episodes} эп.`}
                                 </Tag>
-
-                                <Tag>
-                                    <Flex
-                                        gap={3}
-                                        align={"center"}
-                                        justify={"center"}
-                                    >
-                                        <StarOutlined />
-                                        {anime.score}
-                                    </Flex>
+                                <Tag className="tag" icon={<StarOutlined />}>
+                                    {anime.score}
                                 </Tag>
                             </Space>
                         </Flex>
                     </Col>
-                    <Col span={24} style={{ marginTop: "auto" }}>
+                    <Col span={24}>
                         <Button
                             type="primary"
                             href={`/shikimori/${anime.id}`}
                             className="width-100"
                         >
-                            Посмотреть подробнее
+                            <Text strong style={{ fontSize: 15 }}>
+                                Посмотреть подробнее
+                            </Text>
                         </Button>
                     </Col>
                 </Row>

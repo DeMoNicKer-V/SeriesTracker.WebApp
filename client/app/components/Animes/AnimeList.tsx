@@ -151,7 +151,7 @@ const AnimeList = ({ userPath }: Props) => {
             )}
         >
             <List
-                className="centered-list"
+                className={styles["animes-list"]}
                 header={data.length > 0 && <ListBranches />}
                 footer={data.length > 7 ? <ListBranches /> : []}
                 grid={{

@@ -22,3 +22,11 @@
     width: -webkit-fill-available !important;
     border-radius: 10px;
 }
+
+.animes-list :not(:first-child):not(:last-child) * {
+    justify-content: center;
+}
+
+.animes-list > :nth-child(2) {
+    margin-top: 10px;
+}

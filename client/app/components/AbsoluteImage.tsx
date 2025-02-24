@@ -14,7 +14,6 @@ export const AbsoluteImage = ({
 }: Props) => {
     return (
         <div
-            className="background-poster"
             style={{
                 pointerEvents: "none",
                 flexDirection: "column",

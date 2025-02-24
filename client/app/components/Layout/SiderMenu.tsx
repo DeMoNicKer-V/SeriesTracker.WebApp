@@ -93,7 +93,7 @@ const SiderMenu = ({
             hidden={["/signup", "/login"].includes(pathName)}
         >
             <Menu
-                className="sider-menu"
+                className={styles["sider-menu"]}
                 onSelect={({ key }) => {
                     setLoading(true);
                     setCurrentKey(key);
