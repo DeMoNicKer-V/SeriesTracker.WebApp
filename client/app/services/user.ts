@@ -49,6 +49,19 @@ export interface MainUserInfo {
     seriesGroup: SeriesGroup[];
     seriesIDS: string;
 }
+
+export const defaultUserValues = {
+    email: "",
+    userName: "",
+    avatar: "",
+    name: "",
+    surName: "",
+    dateBirth: "",
+    regDate: "",
+    roleId: 0,
+    seriesGroup: [],
+    seriesIDS: "",
+};
 export interface LoginRequest {
     email: string;
     password: string;

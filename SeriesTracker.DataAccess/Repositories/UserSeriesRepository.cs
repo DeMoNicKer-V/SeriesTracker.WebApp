@@ -87,15 +87,19 @@ namespace SeriesTracker.DataAccess.Repositories
             var userSeriesList = await _context.UserSeriesEntities.AsNoTracking().Where(s => s.UserId == id).Include(user => user.Category).ToListAsync();
 
             var categoryGroup = userSeriesList
-     .GroupBy(s => s.Category)
-     .Select(g => new SeriesGroupDto
-     {
-         Id = g.Key?.Id ?? default(int), // Обращаемся к Id через Category, делая null-safe
-         Name = g.Key?.Name ?? "", //Обработка null
-         Color = g.Key?.Color ?? "", //Обработка null
-         SeriesCount = g.Count(),
-     })
-     .ToList();
+                .GroupBy(s => s.Category?.Id) // Группируем по Id категории
+                .Select(g => {
+                    var category = g.FirstOrDefault(x => x.Category?.Id == g.Key)?.Category;
+
+                    return new SeriesGroupDto
+                    {
+                        Id = g.Key ?? default(int), // Используем Id из ключа группы
+                        Name = category?.Name ?? "", // Обращаемся к Name через category
+                        Color = category?.Color ?? "", // Обращаемся к Color через category
+                        SeriesCount = g.Count()
+                    };
+                })
+                .ToList();
 
             return categoryGroup;
         }

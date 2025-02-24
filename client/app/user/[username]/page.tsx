@@ -17,7 +17,11 @@ import {
     Typography,
 } from "antd";
 import { useState } from "react";
-import { getUserByUserName, MainUserInfo } from "../../services/user";
+import {
+    defaultUserValues,
+    getUserByUserName,
+    MainUserInfo,
+} from "../../services/user";
 import {
     CrownOutlined,
     SettingOutlined,
@@ -34,6 +38,7 @@ import { LongRightArrow } from "@/app/img/LongRightArrow";
 import dayjs from "dayjs";
 import "dayjs/locale/ru";
 import relativeTime from "dayjs/plugin/relativeTime";
+import SeriesGroupInfo from "@/app/components/SeriesGroupInfo";
 dayjs.locale("ru");
 dayjs.extend(relativeTime);
 
@@ -42,9 +47,9 @@ export default function UserPage({ params }: { params: { username: string } }) {
     const [error, setError] = useState<boolean>(false);
     const [currentUser, setCurrentUser] = useState<boolean>(false);
     const pathname = usePathname();
-    const [userInfo, setUserInfo] = useState<MainUserInfo | null>(null);
+    const [userInfo, setUserInfo] = useState<MainUserInfo>(defaultUserValues);
     const [animes, setAnimes] = useState<LastActivityAnime[]>();
-    const { Text, Title } = Typography;
+    const { Text, Title, Paragraph } = Typography;
 
     const getCurrentUser = async (username: string) => {
         const user = await getUserByUserName(username);
@@ -124,113 +129,59 @@ export default function UserPage({ params }: { params: { username: string } }) {
                                                 )}
                                             </Flex>
                                         </Divider>
-                                        <Flex align="center">
-                                            <Text>{userInfo?.name}</Text>
-                                            <Text>{userInfo?.surName}</Text>
 
+                                        <Paragraph>
+                                            {userInfo?.name}
+                                            {userInfo?.surName}
                                             <Divider type="vertical" />
-
-                                            <Text>
-                                                {getFormatedAge(
-                                                    userInfo?.dateBirth
-                                                )}
-                                            </Text>
-
-                                            <Divider type="vertical" />
-                                            {userInfo?.regDate && (
-                                                <Flex gap={5}>
-                                                    <Text>{`на сайте с`}</Text>
-                                                    <Text
-                                                        underline
-                                                        style={{
-                                                            cursor: "help",
-                                                            textDecorationStyle:
-                                                                "dashed",
-                                                        }}
-                                                    >
-                                                        <Tooltip
-                                                            title={new Date(
-                                                                userInfo?.regDate
-                                                            ).toLocaleDateString(
-                                                                "ru-RU",
-                                                                {
-                                                                    day: "numeric",
-                                                                    month: "long",
-                                                                    year: "numeric",
-                                                                }
-                                                            )}
-                                                        >
-                                                            {`${new Date(
-                                                                userInfo?.regDate
-                                                            ).getFullYear()} г.`}
-                                                        </Tooltip>
-                                                    </Text>
-                                                </Flex>
+                                            {getFormatedAge(
+                                                userInfo?.dateBirth
                                             )}
-                                        </Flex>
+                                            <Divider type="vertical" />
+                                            {`на сайте с`}{" "}
+                                            <Text
+                                                underline
+                                                style={{
+                                                    cursor: "help",
+                                                    textDecorationStyle:
+                                                        "dashed",
+                                                }}
+                                            >
+                                                <Tooltip
+                                                    title={new Date(
+                                                        userInfo.regDate
+                                                    ).toLocaleDateString(
+                                                        "ru-RU",
+                                                        {
+                                                            day: "numeric",
+                                                            month: "long",
+                                                            year: "numeric",
+                                                        }
+                                                    )}
+                                                >
+                                                    {`${new Date(
+                                                        userInfo.regDate
+                                                    ).getFullYear()} г.`}
+                                                </Tooltip>
+                                            </Text>
+                                        </Paragraph>
                                     </Col>
                                 </Row>
                             </Col>
                         </Row>
                     </Card>
                 </Col>
-                {userInfo?.seriesGroup.length ? (
-                    <Col xs={24} sm={24} md={24} lg={16} xl={16}>
-                        <Title level={4}>
-                            <Link href={`${userInfo?.userName}/list?mylist=0`}>
-                                Список аниме
-                            </Link>
-                        </Title>
-                        <Divider />
-                        <Row>
-                            {userInfo?.seriesGroup.map((item) => (
-                                <Tooltip color={item.color} title={item.name}>
-                                    <Col flex={item.seriesCount}>
-                                        <Card
-                                            bordered={false}
-                                            hoverable
-                                            style={{
-                                                backgroundColor: item.color,
-                                                borderRadius: 0,
-                                                textAlign: "center",
-                                                padding: 0,
-                                                margin: 0,
-                                            }}
-                                        >
-                                            {item.seriesCount}
-                                        </Card>
-                                    </Col>
-                                </Tooltip>
-                            ))}
-                        </Row>
-                    </Col>
+                {userInfo.seriesGroup.length > 0 ? (
+                    <SeriesGroupInfo
+                        items={userInfo.seriesGroup}
+                        username={userInfo.userName}
+                    />
                 ) : (
                     <Col xs={24} sm={24} md={24} lg={16} xl={16}>
                         <EmptyView text="Пользователь еще ничего не добавил" />
                     </Col>
                 )}
-                <Col xs={24} sm={24} md={24} lg={16} xl={16}>
-                    <Row gutter={[25, 25]} justify={"center"}>
-                        {userInfo?.seriesGroup.map((item) => (
-                            <Col>
-                                <Flex style={{ flexDirection: "column" }}>
-                                    <Link
-                                        style={{ marginBottom: 3 }}
-                                        className="title-link"
-                                        href={`${userInfo?.userName}/list?mylist=${item.id}`}
-                                    >
-                                        {`${item.name} (${item.seriesCount})`}
-                                    </Link>
-                                    <Tag
-                                        style={{ padding: 0, margin: 0 }}
-                                        color={item.color}
-                                    ></Tag>
-                                </Flex>
-                            </Col>
-                        ))}
-                    </Row>
-                </Col>
-                {userInfo?.seriesGroup.length > 0 && (
+                {userInfo.seriesGroup.length > 0 && (
                     <Col xs={24} sm={24} md={24} lg={16} xl={16}>
                         <Title level={4}>
                             <Link href={`${userInfo?.userName}/list`}>
@@ -238,7 +189,16 @@ export default function UserPage({ params }: { params: { username: string } }) {
                             </Link>
                         </Title>
                         <Divider />
-                        <ConfigProvider renderEmpty={customizeRenderEmpty}>
+                        <ConfigProvider
+                            renderEmpty={customizeRenderEmpty}
+                            theme={{
+                                components: {
+                                    Card: {
+                                        bodyPadding: 12,
+                                    },
+                                },
+                            }}
+                        >
                             <List
                                 loading={{
                                     spinning: isLoading,
@@ -248,10 +208,7 @@ export default function UserPage({ params }: { params: { username: string } }) {
                                 renderItem={(item: LastActivityAnime) => (
                                     <List.Item style={{ display: "block" }}>
                                         <Link href={`/shikimori/${item.id}`}>
-                                            <Card
-                                                style={{ padding: 12 }}
-                                                hoverable
-                                            >
+                                            <Card hoverable>
                                                 <Row
                                                     className="responsive-text-align"
                                                     gutter={[20, 20]}
