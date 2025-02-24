@@ -1,4 +1,6 @@
-﻿using SeriesTracker.Core.Dtos.UserDtos;
+﻿using SeriesTracker.Core.Dtos.Series;
+using SeriesTracker.Core.Dtos.User;
+using SeriesTracker.Core.Dtos.UserDtos;
 using SeriesTracker.Core.Models;
 
 namespace SeriesTracker.Core.Mappers
@@ -29,6 +31,24 @@ namespace SeriesTracker.Core.Mappers
                 Surname = user.Surname,
                 DateBirth = user.DateBirth,
                 Avatar = user.Avatar,
+            };
+        }
+
+        public static UserActivityDTO ToUserActivityDto(this User user, List<SeriesGroupDto> series, string seriesIDS)
+        {
+            return new UserActivityDTO
+            {
+                Id = user.Id,
+                UserName = user.UserName,
+                Email = user.Email,
+                RoleId = user.RoleId,
+                RegDate = user.RegDate,
+                Name = user.Name,
+                Surname = user.Surname,
+                DateBirth = user.DateBirth,
+                Avatar = user.Avatar,
+                SeriesGroup = series,
+                SeriesIDS = seriesIDS
             };
         }
     }

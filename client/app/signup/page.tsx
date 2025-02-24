@@ -49,7 +49,7 @@ const { Text, Title, Link } = Typography;
 const SignupPage = () => {
     const router = useRouter();
     const [avatar, setAvatar] = useState<string>("");
-    const [current, setCurrent] = useState<number>(0);
+    const [current, setCurrent] = useState<number>(1);
     const [formData, setFormData] = useState<UserRequest>({
         email: "",
         password: "",
@@ -541,23 +541,20 @@ const SignupPage = () => {
                                                 onChange={setAvatar}
                                             />
                                         </Form.Item>
-                                        <Meta
-                                            title={
-                                                <Title level={5}>
-                                                    {"Выберите ваш аватар"}
-                                                </Title>
-                                            }
-                                            description={
-                                                <Text
-                                                    type="secondary"
-                                                    style={{ fontSize: 12 }}
-                                                >
-                                                    {
-                                                        "допускаются только файлы формата JPG/PNG, размером не превышающие 512 КБ"
-                                                    }
-                                                </Text>
-                                            }
-                                        ></Meta>
+                                        <Flex className="flex-column">
+                                            <Title level={5}>
+                                                {"Выберите ваш аватар"}
+                                            </Title>
+
+                                            <Text
+                                                type="secondary"
+                                                style={{ fontSize: 12 }}
+                                            >
+                                                {
+                                                    "только файлы формата JPG/PNG, размером не превышающие 256 КБ"
+                                                }
+                                            </Text>
+                                        </Flex>
                                     </Space>
 
                                     <Divider>Как вас зовут?</Divider>
@@ -642,7 +639,7 @@ const SignupPage = () => {
                                             Необязательные данные{" "}
                                             <Tooltip
                                                 title={
-                                                    "Вы можете не заполнять вышеприведенные поля"
+                                                    "Эту форму можно пропустить"
                                                 }
                                             >
                                                 <QuestionCircleOutlined />

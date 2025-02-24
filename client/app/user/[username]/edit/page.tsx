@@ -9,7 +9,6 @@ import {
     EditOutlined,
     CloseOutlined,
     KeyOutlined,
-    DeleteOutlined,
 } from "@ant-design/icons";
 import {
     Avatar,
@@ -48,6 +47,8 @@ import Paragraph from "antd/es/typography/Paragraph";
 import { useRouter } from "next/navigation";
 import { IsCurrentUser } from "@/app/api/coockie";
 dayjs.locale("ru");
+
+const { Text, Title } = Typography;
 export default function EditUserPage({
     params,
 }: {
@@ -200,23 +201,15 @@ export default function EditUserPage({
                                     }
                                 />
                             </Form.Item>
-                            <Meta
-                                title={
-                                    <Typography.Title level={5}>
-                                        {"Выберите ваш новый аватар"}
-                                    </Typography.Title>
-                                }
-                                description={
-                                    <Typography.Text
-                                        italic
-                                        style={{ fontSize: 12 }}
-                                    >
-                                        {
-                                            "допускаются только файлы формата JPG/PNG, размером не превышающие 512 КБ"
-                                        }
-                                    </Typography.Text>
-                                }
-                            ></Meta>
+                            <Flex className="flex-column">
+                                <Title level={5}>{"Выберите ваш аватар"}</Title>
+
+                                <Text type="secondary" style={{ fontSize: 12 }}>
+                                    {
+                                        "только файлы формата JPG/PNG, размером не превышающие 256 КБ"
+                                    }
+                                </Text>
+                            </Flex>
                         </Space>
                         <Form.Item
                             name={"userName"}
@@ -562,9 +555,7 @@ export default function EditUserPage({
                 title={
                     <Flex gap={10}>
                         <QuestionCircleOutlined style={{ color: "orange" }} />
-                        <Typography.Title level={5}>
-                            Удалить все ваши данные?
-                        </Typography.Title>
+                        <Title level={5}>Удалить все ваши данные?</Title>
                     </Flex>
                 }
                 footer={(_, { OkBtn, CancelBtn }) => (
@@ -586,9 +577,9 @@ export default function EditUserPage({
                         Убедитесь, что Вы экспортировали свои данные заранее.
                         <br />
                         Для того, чтобы удалить данные, введите в поле ниже - (
-                        <Typography.Text type="danger" code strong>
+                        <Text type="danger" code strong>
                             УДАЛИТЬ
-                        </Typography.Text>
+                        </Text>
                         ) .
                     </Paragraph>
 
@@ -622,9 +613,7 @@ export default function EditUserPage({
                 title={
                     <Flex gap={10}>
                         <QuestionCircleOutlined style={{ color: "orange" }} />
-                        <Typography.Title level={5}>
-                            Удалить Ваш Аккаунт?
-                        </Typography.Title>
+                        <Title level={5}>Удалить Ваш Аккаунт?</Title>
                     </Flex>
                 }
                 footer={(_, { OkBtn, CancelBtn }) => (
@@ -638,9 +627,9 @@ export default function EditUserPage({
                     <Paragraph>
                         Будьте внимательны, это необратимое действие! <br />
                         Для того, чтобы удалить аккаунт, введите в поле ниже - (
-                        <Typography.Text type="danger" code strong>
+                        <Text type="danger" code strong>
                             УДАЛИТЬ
-                        </Typography.Text>
+                        </Text>
                         ) .
                     </Paragraph>
 

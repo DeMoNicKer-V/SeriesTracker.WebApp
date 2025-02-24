@@ -2,13 +2,8 @@ import { FloatButton, Menu, MenuProps } from "antd";
 import Sider from "antd/es/layout/Sider";
 import { useEffect, useMemo, useState } from "react";
 import Icon, {
-    BookOutlined,
-    LogoutOutlined,
-    MailOutlined,
     InfoCircleOutlined,
-    MenuUnfoldOutlined,
     SettingOutlined,
-    UserOutlined,
     CalendarOutlined,
 } from "@ant-design/icons";
 import styles from "./component.module.css";

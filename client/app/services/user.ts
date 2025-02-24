@@ -30,7 +30,7 @@ export interface UserInfo {
     roleId: number;
 }
 
-export interface SeriesInfo {
+export interface SeriesGroup {
     id: number;
     name: string;
     color: string;
@@ -38,9 +38,16 @@ export interface SeriesInfo {
 }
 
 export interface MainUserInfo {
-    userInfo: UserInfo;
-    seriesInfo: SeriesInfo[];
-    activityInfo: string;
+    email: string;
+    userName: string;
+    avatar: string;
+    name: string;
+    surName: string;
+    dateBirth: string;
+    regDate: string;
+    roleId: number;
+    seriesGroup: SeriesGroup[];
+    seriesIDS: string;
 }
 export interface LoginRequest {
     email: string;

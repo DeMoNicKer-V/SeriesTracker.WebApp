@@ -19,7 +19,6 @@ import {
     InputNumberProps,
 } from "antd";
 import { useState } from "react";
-import Meta from "antd/es/card/Meta";
 import { getAnimeById } from "@/app/services/shikimori";
 import AbsoluteImage from "@/app/components/AbsoluteImage";
 import {
@@ -237,7 +236,7 @@ export default function AnimePage({ params }: { params: { id: string } }) {
             >
                 <Row align={"middle"} justify={"center"}>
                     <Col xxl={19} md={21}>
-                        <Card style={{ opacity: 0.9, padding: 0 }}>
+                        <Card style={{ opacity: 0.9 }}>
                             <Flex style={{ zIndex: 0, position: "relative" }}>
                                 <AbsoluteImage
                                     src={anime.pictureUrl}
@@ -287,26 +286,13 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                                                     styles["flex-anime-detail"]
                                                 }
                                             >
-                                                <Meta
-                                                    className={
-                                                        styles[
-                                                            "anime-detail-title"
-                                                        ]
-                                                    }
-                                                    title={
-                                                        <Title level={3}>
-                                                            {anime.title}
-                                                        </Title>
-                                                    }
-                                                    description={
-                                                        <Text
-                                                            italic
-                                                            type="secondary"
-                                                        >
-                                                            {anime.subTitle}
-                                                        </Text>
-                                                    }
-                                                />
+                                                <Title level={3}>
+                                                    {anime.title}
+                                                </Title>
+                                                <Text italic type="secondary">
+                                                    {anime.subTitle}
+                                                </Text>
+
                                                 <GenreDescription
                                                     genresString={anime.genres}
                                                 />
@@ -515,15 +501,17 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                                     </Row>
                                 </div>
                             </Flex>
-                            <Meta
-                                style={{ padding: 24 }}
-                                title={<Title level={3}>Описание</Title>}
-                                description={
-                                    anime.description
+                            <Flex className={styles["description"]}>
+                                <Title level={3}>Описание</Title>
+                                <Text
+                                    className={styles["descriptionText"]}
+                                    type="secondary"
+                                >
+                                    {anime.description
                                         ? anime.description
-                                        : "Описание отсутствует"
-                                }
-                            />
+                                        : "Описание отсутствует"}
+                                </Text>
+                            </Flex>
                             <Collapse
                                 items={[
                                     ...(anime.screenshots.length > 0

@@ -23,6 +23,9 @@
     .manage-buttons {
         justify-content: center;
     }
+    .flex-anime-detail {
+        text-align: center;
+    }
 }
 
 .episodes-input {
@@ -31,4 +34,14 @@
 
 .episodes-input input {
     text-align: end !important;
+}
+
+.description {
+    margin-inline: 24px;
+    flex-direction: column;
+    row-gap: 5px;
+}
+
+.descriptionText {
+    font-size: 15px;
 }

@@ -34,13 +34,16 @@ namespace SeriesTracker.API.Controllers
         public async Task<IResult> GetUserInfoByUserName(string username)
         {
             var user = await _userService.GetUserByUserName(username);
+            if (user == null)
+            {
+                return Results.BadRequest("Такого пользователя не существует");
+            }
 
             var categoryGroup = await _userSeriesService.GetGroupSeries(user.Id);
 
             var lastActivityList = await _userSeriesService.GetRecentSeriesString(user.Id);
 
-
-            return Results.Ok(new { UserInfo = user.ToDetailDTO(), SeriesInfo = categoryGroup, ActivityInfo = lastActivityList });
+            return Results.Ok(user.ToUserActivityDto(categoryGroup, lastActivityList));
         }
 
         [HttpGet("categoryCount")]

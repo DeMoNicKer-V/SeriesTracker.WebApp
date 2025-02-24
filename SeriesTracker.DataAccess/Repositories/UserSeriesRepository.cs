@@ -115,9 +115,9 @@ namespace SeriesTracker.DataAccess.Repositories
             return seriesAnimeIdsList;
         }
 
-        public async Task<UserSeries?> GetSeriesByAnimeIdAsync(int id, Guid userId)
+        public async Task<UserSeries?> GetSeriesByAnimeIdAsync(int id, string username)
         {
-            var s = await _context.UserSeriesEntities.AsNoTracking().Where(s => s.AnimeId == id && s.UserId == userId).FirstOrDefaultAsync();
+            var s = await _context.UserSeriesEntities.AsNoTracking().Where(s => s.AnimeId == id && s.User.UserName == username).FirstOrDefaultAsync();
             if (s == null)
             {
                 return null;

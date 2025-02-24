@@ -47,15 +47,15 @@ namespace SeriesTracker.API.Controllers
         }
 
         [HttpGet("activity")]
-        public async Task<ActionResult> GetLastAnimesById(string id)
+        public async Task<ActionResult> GetLastAnimesById(string username, string id)
         {
-            var userId = Guid.Parse(HttpContext.User.FindFirst("userId")?.Value);
+
             GraphQLResponse<ShikimoriAnimeBaseList> graphQLResponse = await _shikimoriService.GetAnimeListByIds(id);
             var anime = graphQLResponse.Data.Animes;
             var response = new List<LastActivityResponse>();
             foreach (var item in anime)
             {
-                var ob = await _userSeriesService.GetSeriesByAnimeIdAsync(item.Id, userId);
+                var ob = await _userSeriesService.GetSeriesByAnimeIdAsync(item.Id, username);
                 var b = new LastActivityResponse(item.Id, item.PictureUrl, item.Title, ob.ChangedDate);
                 response.Add(b);
             }

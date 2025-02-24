@@ -1,0 +1,17 @@
+.username-divider {
+    margin: 0px !important;
+}
+.username-divider::after {
+    width: 200% !important;
+}
+
+@media (max-width: 576px) {
+    .header-user-info,
+    .header-user-info * {
+        justify-content: center;
+        text-align: center;
+    }
+    .username-divider::after {
+        width: 50% !important;
+    }
+}

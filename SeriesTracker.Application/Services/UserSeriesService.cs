@@ -19,16 +19,16 @@ namespace SeriesTracker.Application.Services
             _categoryRepository = categoryRepository;
         }
 
-        public async Task<UserSeries?> GetSeriesByAnimeIdAsync(int id, Guid userId)
+        public async Task<UserSeries?> GetSeriesByAnimeIdAsync(int id, string username)
         {
-            return await _userSeriesRepository.GetSeriesByAnimeIdAsync(id, userId);
+            return await _userSeriesRepository.GetSeriesByAnimeIdAsync(id, username);
         }
 
-        public async Task<Category?> GetCategoryByAnimeSeries(int id, Guid userId)
+        public async Task<Category?> GetCategoryByAnimeSeries(int id, string username)
         {
             using (var context = _contextFactory.CreateDbContext())
             {
-                var series = await _userSeriesRepository.GetSeriesByAnimeIdAsync(id, userId);
+                var series = await _userSeriesRepository.GetSeriesByAnimeIdAsync(id, username);
                 if (series == null)
                 {
                     return null;

@@ -65,9 +65,9 @@ export const getAnimeById = async (id: string) => {
     return animes;
 };
 
-export const getAnimesById = async (id: string) => {
+export const getAnimesById = async (username: string, id: string) => {
     const response = await fetch(
-        `http://localhost:5125/shikimori/activity/?id=${id}`,
+        `http://localhost:5125/shikimori/activity?username=${username}&id=${id}`,
         {
             method: "GET",
             headers: {

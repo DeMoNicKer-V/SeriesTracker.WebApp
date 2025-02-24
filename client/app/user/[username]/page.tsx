@@ -1,4 +1,5 @@
 "use client";
+import styles from "./page.module.css";
 import {
     Avatar,
     Button,
@@ -53,8 +54,8 @@ export default function UserPage({ params }: { params: { username: string } }) {
         setError(true);
         setCurrentUser(await IsCurrentUser(username));
         setUserInfo(user);
-        if (user.activityInfo.length > 0) {
-            const animes = await getAnimesById(user.activityInfo);
+        if (user.seriesIDS.length > 0) {
+            const animes = await getAnimesById(username, user.seriesIDS);
             setAnimes(animes);
         }
     };
@@ -64,8 +65,10 @@ export default function UserPage({ params }: { params: { username: string } }) {
         revalidateOnFocus: false, // Отключить обновление при фокусе
         revalidateOnReconnect: false, // Отключить обновление при восстановлении соединения
     });
-    const getFormatedAge = (dateBirth: string) => {
-        return dayjs(dateBirth).fromNow(true);
+    const getFormatedAge = (dateBirth?: string) => {
+        if (!dateBirth) {
+            return null;
+        } else return dayjs(dateBirth).fromNow(true);
     };
     const { Meta } = Card;
     const customizeRenderEmpty = () => (
@@ -76,87 +79,65 @@ export default function UserPage({ params }: { params: { username: string } }) {
             <title>{`${params.username} / Профиль`}</title>
             <Row gutter={[15, 15]} align={"top"} justify={"center"}>
                 <Col xs={24} sm={24} md={24} lg={16} xl={16} xxl={16}>
-                    <Card
-                        style={{
-                            padding: 12,
-                        }}
-                        bordered
-                    >
-                        <Row
-                            className="responsive-text-align"
-                            gutter={[15, 15]}
-                            align={"middle"}
-                        >
-                            <Col>
-                                <Avatar
-                                    style={{
-                                        backgroundColor: "transparent",
-                                    }}
-                                    icon={<UserOutlined />}
-                                    size={100}
-                                    src={
-                                        userInfo?.userInfo?.avatar
-                                            ? userInfo?.userInfo?.avatar
-                                            : null
-                                    }
-                                    shape="circle"
-                                ></Avatar>
-                            </Col>
-                            <Col>
-                                <Meta
-                                    style={{
-                                        marginBottom: 0,
-                                        fontSize: 17,
-                                    }}
-                                    title={
-                                        <Flex
-                                            align="center"
-                                            className="responsive-text-align"
+                    <Card style={{ padding: 12 }}>
+                        <Row className={styles["header-user-info"]}>
+                            <Col span={24}>
+                                <Row align={"middle"} gutter={[0, 0]}>
+                                    <Col>
+                                        <Avatar
+                                            style={{
+                                                backgroundColor: "transparent",
+                                            }}
+                                            icon={<UserOutlined />}
+                                            size={100}
+                                            src={
+                                                userInfo?.avatar
+                                                    ? userInfo?.avatar
+                                                    : null
+                                            }
+                                            shape="circle"
+                                        ></Avatar>
+                                    </Col>
+                                    <Col>
+                                        <Divider
+                                            className={
+                                                styles["username-divider"]
+                                            }
                                         >
-                                            <Title
-                                                style={{
-                                                    margin: 0,
-                                                }}
-                                                level={3}
-                                            >
-                                                {userInfo?.userInfo.userName}
-                                            </Title>
-                                            {userInfo?.userInfo.roleId ===
-                                                1 && (
-                                                <Tooltip title="Админ">
-                                                    <Button
-                                                        color="gold"
-                                                        variant="link"
-                                                        icon={<CrownOutlined />}
-                                                    />
-                                                </Tooltip>
-                                            )}
-                                        </Flex>
-                                    }
-                                    description={
-                                        <Flex
-                                            gap={5}
-                                            justify="center"
-                                            align="center"
-                                        >
+                                            <Flex align="baseline">
+                                                <Title level={3}>
+                                                    {userInfo?.userName}
+                                                </Title>
+                                                {userInfo?.roleId === 1 && (
+                                                    <Tooltip title="Админ">
+                                                        <Button
+                                                            style={{
+                                                                fontSize: 18,
+                                                            }}
+                                                            color="gold"
+                                                            variant="link"
+                                                            icon={
+                                                                <CrownOutlined />
+                                                            }
+                                                        />
+                                                    </Tooltip>
+                                                )}
+                                            </Flex>
+                                        </Divider>
+                                        <Flex align="center">
+                                            <Text>{userInfo?.name}</Text>
+                                            <Text>{userInfo?.surName}</Text>
+
+                                            <Divider type="vertical" />
+
                                             <Text>
-                                                {userInfo?.userInfo.name}
-                                            </Text>
-                                            <Text>
-                                                {userInfo?.userInfo.surName}
+                                                {getFormatedAge(
+                                                    userInfo?.dateBirth
+                                                )}
                                             </Text>
 
                                             <Divider type="vertical" />
-                                            {userInfo?.userInfo.dateBirth && (
-                                                <Text>
-                                                    {getFormatedAge(
-                                                        userInfo?.userInfo
-                                                            .dateBirth
-                                                    )}
-                                                </Text>
-                                            )}
-                                            <Divider type="vertical" />
-                                            {userInfo?.userInfo.regDate && (
+                                            {userInfo?.regDate && (
                                                 <Flex gap={5}>
                                                     <Text>{`на сайте с`}</Text>
                                                     <Text
@@ -169,7 +150,7 @@ export default function UserPage({ params }: { params: { username: string } }) {
                                                     >
                                                         <Tooltip
                                                             title={new Date(
-                                                                userInfo?.userInfo?.regDate
+                                                                userInfo?.regDate
                                                             ).toLocaleDateString(
                                                                 "ru-RU",
                                                                 {
@@ -180,31 +161,29 @@ export default function UserPage({ params }: { params: { username: string } }) {
                                                             )}
                                                         >
                                                             {`${new Date(
-                                                                userInfo?.userInfo?.regDate
-                                                            ).getFullYear()} г.`}{" "}
+                                                                userInfo?.regDate
+                                                            ).getFullYear()} г.`}
                                                         </Tooltip>
                                                     </Text>
                                                 </Flex>
                                             )}
                                         </Flex>
-                                    }
-                                />
+                                    </Col>
+                                </Row>
                             </Col>
                         </Row>
                     </Card>
                 </Col>
-                {userInfo?.seriesInfo.length ? (
+                {userInfo?.seriesGroup.length ? (
                     <Col xs={24} sm={24} md={24} lg={16} xl={16}>
                         <Title level={4}>
-                            <Link
-                                href={`${userInfo?.userInfo.userName}/list?mylist=0`}
-                            >
+                            <Link href={`${userInfo?.userName}/list?mylist=0`}>
                                 Список аниме
                             </Link>
                         </Title>
                         <Divider />
                         <Row>
-                            {userInfo?.seriesInfo.map((item) => (
+                            {userInfo?.seriesGroup.map((item) => (
                                 <Tooltip color={item.color} title={item.name}>
                                     <Col flex={item.seriesCount}>
                                         <Card
@@ -232,13 +211,13 @@ export default function UserPage({ params }: { params: { username: string } }) {
                 )}
                 <Col xs={24} sm={24} md={24} lg={16} xl={16}>
                     <Row gutter={[25, 25]} justify={"center"}>
-                        {userInfo?.seriesInfo.map((item) => (
+                        {userInfo?.seriesGroup.map((item) => (
                             <Col>
                                 <Flex style={{ flexDirection: "column" }}>
                                     <Link
                                         style={{ marginBottom: 3 }}
                                         className="title-link"
-                                        href={`${userInfo?.userInfo.userName}/list?mylist=${item.id}`}
+                                        href={`${userInfo?.userName}/list?mylist=${item.id}`}
                                     >
                                         {`${item.name} (${item.seriesCount})`}
                                     </Link>
@@ -251,10 +230,10 @@ export default function UserPage({ params }: { params: { username: string } }) {
                         ))}
                     </Row>
                 </Col>
-                {userInfo?.seriesInfo.length > 0 && (
+                {userInfo?.seriesGroup.length > 0 && (
                     <Col xs={24} sm={24} md={24} lg={16} xl={16}>
                         <Title level={4}>
-                            <Link href={`${userInfo?.userInfo.userName}/list`}>
+                            <Link href={`${userInfo?.userName}/list`}>
                                 Последняя активность
                             </Link>
                         </Title>
