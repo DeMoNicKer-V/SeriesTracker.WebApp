@@ -1,3 +1,4 @@
+import styles from "./component.module.css";
 import {
     Card,
     Col,
@@ -21,13 +22,11 @@ import {
     CalendarOutlined,
 } from "@ant-design/icons";
 import { getAnimesByName } from "../../services/shikimori";
-import Meta from "antd/es/card/Meta";
 import noFoundImage from "../../img/img-error.jpg";
 import { EmptyView } from "../EmptyView";
 import Link from "next/link";
-
-import styles from "./component.module.css";
 import { SeriesAnime } from "@/app/Models/Anime/SeriesAnime";
+import MainShortInfo from "../MainShortInfo/MainShortInfo";
 
 const SearchBar = ({}) => {
     const inputRef = useRef<InputRef>(null);
@@ -130,53 +129,62 @@ const SearchBar = ({}) => {
                                             />
                                         </Col>
                                         <Col offset={1}>
-                                            <Meta
-                                                style={{
-                                                    padding: 0,
-                                                    marginBottom: 8,
-                                                    whiteSpace: "break-spaces",
-                                                }}
+                                            <MainShortInfo
                                                 title={item.title}
-                                                description={item.subTitle}
-                                            />
-                                            <Space wrap size={[5, 5]}>
-                                                {item.status.length > 6 ? (
+                                                subTitle={item.subTitle}
+                                            >
+                                                <Space wrap size={[5, 5]}>
+                                                    {item.status.length > 6 ? (
+                                                        <Tag
+                                                            color="orange"
+                                                            icon={
+                                                                <FireOutlined />
+                                                            }
+                                                        >
+                                                            {item.status}
+                                                        </Tag>
+                                                    ) : (
+                                                        <Tag
+                                                            icon={
+                                                                <FireOutlined />
+                                                            }
+                                                        >
+                                                            {item.status}
+                                                        </Tag>
+                                                    )}
                                                     <Tag
-                                                        color="orange"
-                                                        icon={<FireOutlined />}
+                                                        icon={
+                                                            <InfoCircleOutlined />
+                                                        }
                                                     >
-                                                        {item.status}
+                                                        {item.kind}
                                                     </Tag>
-                                                ) : (
                                                     <Tag
-                                                        icon={<FireOutlined />}
+                                                        icon={
+                                                            <CalendarOutlined />
+                                                        }
                                                     >
-                                                        {item.status}
+                                                        {new Date(
+                                                            item.startDate
+                                                        ).toLocaleString(
+                                                            "ru-Ru",
+                                                            {
+                                                                year: "numeric",
+                                                            }
+                                                        )}
                                                     </Tag>
-                                                )}
-                                                <Tag
-                                                    icon={
-                                                        <InfoCircleOutlined />
-                                                    }
-                                                >
-                                                    {item.kind}
-                                                </Tag>
-                                                <Tag
-                                                    icon={<CalendarOutlined />}
-                                                >
-                                                    {new Date(
-                                                        item.startDate
-                                                    ).toLocaleString("ru-Ru", {
-                                                        year: "numeric",
-                                                    })}
-                                                </Tag>
 
-                                                <Tag icon={<YoutubeOutlined />}>
-                                                    {item.status === "Вышло"
-                                                        ? `${item.episodes} эп.`
-                                                        : `${item.episodesAired} эп.`}
-                                                </Tag>
-                                            </Space>
+                                                    <Tag
+                                                        icon={
+                                                            <YoutubeOutlined />
+                                                        }
+                                                    >
+                                                        {item.status === "Вышло"
+                                                            ? `${item.episodes} эп.`
+                                                            : `${item.episodesAired} эп.`}
+                                                    </Tag>
+                                                </Space>
+                                            </MainShortInfo>
                                         </Col>
                                     </Row>
                                 </Card>

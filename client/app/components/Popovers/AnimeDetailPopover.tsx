@@ -7,6 +7,7 @@ import {
     TeamOutlined,
 } from "@ant-design/icons";
 import { SeriesAnime } from "@/app/Models/Anime/SeriesAnime";
+import MainShortInfo from "../MainShortInfo/MainShortInfo";
 interface Props {
     anime: SeriesAnime;
     isOpen: boolean;
@@ -22,31 +23,13 @@ export const AnimeDetailPopover = ({ anime }: Props) => {
             <Col offset={1} span={16}>
                 <Row className="height-100">
                     <Col span={24}>
-                        <Flex className="flex-column">
-                            <Title
-                                className={"trimText title"}
-                                level={5}
-                                style={{ marginBottom: 0 }}
-                            >
-                                {anime.title}
-                            </Title>
-                            <Text
-                                className={"trimText subTitle"}
-                                strong
-                                style={{ marginBottom: 5 }}
-                                italic
-                                type="secondary"
-                            >
-                                {anime.subTitle}
-                            </Text>
-                            <Paragraph className={"trimText description"}>
-                                <Text strong type="secondary">
-                                    Описание:{" "}
-                                </Text>
-                                {!anime.description
-                                    ? "отсутствует"
-                                    : anime.description}
-                            </Paragraph>
+                        <MainShortInfo
+                            title={anime.title}
+                            subTitle={anime.subTitle}
+                            description={anime.description}
+                            showDescription
+                            strongSubTitle
+                        >
                             <Space align="center" size={[0, 5]} wrap>
                                 <Tag
                                     className="tag"
@@ -70,7 +53,7 @@ export const AnimeDetailPopover = ({ anime }: Props) => {
                                     {anime.score}
                                 </Tag>
                             </Space>
-                        </Flex>
+                        </MainShortInfo>
                     </Col>
                     <Col span={24}>
                         <Button

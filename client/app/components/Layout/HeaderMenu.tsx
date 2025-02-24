@@ -21,13 +21,13 @@ import {
     SettingOutlined,
     UserOutlined,
 } from "@ant-design/icons";
-import SearchBar from "../Searchbar/searchbar";
 import Link from "next/link";
 import { LogOut } from "@/app/api/coockie";
 import { useRouter } from "next/navigation";
 import { LogoIcon } from "@/app/img/LogoIcon";
 
 import styles from "./component.module.css";
+import SearchBar from "../Searchbar/searchbar";
 interface Props {
     pathName: string;
     user?: User;
