@@ -95,27 +95,6 @@ input {
     }
 }
 
-.ant-card-meta-title {
-    margin-bottom: 0 !important;
-}
-.ant-card-meta-title,
-.ant-card-meta-description {
-    white-space: break-spaces !important;
-}
-
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-}
-
-.search_result .ant-card-meta-description,
-.ant-card-meta-title {
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    display: -webkit-box;
-    overflow: hidden;
-}
 .hidden {
     display: none;
 }
@@ -123,9 +102,6 @@ input::-webkit-inner-spin-button {
 .avatar-picker :not(span):not(a) > *:not(span):not(a) {
     width: 60px !important;
     height: 60px !important;
-}
-.login-space .ant-space-item {
-    flex: auto;
 }
 
 .title-link {

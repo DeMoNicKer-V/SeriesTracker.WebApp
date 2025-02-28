@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import {
     CheckOutlined,
-    QuestionCircleOutlined,
+    InfoCircleOutlined,
     UserOutlined,
 } from "@ant-design/icons";
 import {
@@ -21,7 +21,6 @@ import {
     Checkbox,
     Collapse,
     CheckboxProps,
-    Tooltip,
 } from "antd";
 import {
     checkExistEmail,
@@ -41,6 +40,7 @@ import { IsAuth } from "../api/coockie";
 import dayjs from "dayjs";
 import SignPageConfigProvider from "../components/SignPageConfigProvider";
 import PageErrorView from "../components/PageErrorVIew";
+import NameFormItem from "../components/SingupComponents/NameFormItem";
 
 dayjs.locale("ru");
 const { Text, Title, Link } = Typography;
@@ -48,7 +48,7 @@ const { Text, Title, Link } = Typography;
 const SignupPage = () => {
     const router = useRouter();
     const [avatar, setAvatar] = useState<string>("");
-    const [current, setCurrent] = useState<number>(1);
+    const [current, setCurrent] = useState<number>(2);
     const [formData, setFormData] = useState<UserRequest>({
         email: "",
         password: "",
@@ -87,39 +87,6 @@ const SignupPage = () => {
         }
     };
 
-    const DefaultFormInput = ({
-        name,
-        label,
-    }: {
-        name: string;
-        label: string;
-    }) => {
-        return (
-            <Form.Item
-                rules={[
-                    {
-                        min: 3,
-                        message: "Длина слишком короткая",
-                    },
-                    {
-                        min: 16,
-                        message: "Длина не может превышать 16 символов",
-                    },
-                    {
-                        pattern: new RegExp("^[a-zA-Zа-яА-Я]+$"),
-                        message: `${label} не может включать в себя спец. символы и пробел`,
-                    },
-                ]}
-                name={name}
-            >
-                <Input
-                    autoComplete="off"
-                    variant="filled"
-                    placeholder={label}
-                ></Input>
-            </Form.Item>
-        );
-    };
     const onChangeAgreeRules: CheckboxProps["onChange"] = (e) => {
         setChecked(e.target.checked);
     };
@@ -142,8 +109,8 @@ const SignupPage = () => {
     };
 
     const getIsAuth = async () => {
-        const a = await IsAuth();
-        setAuth(a);
+        const status = await IsAuth();
+        setAuth(status);
     };
 
     useEffect(() => {
@@ -210,13 +177,7 @@ const SignupPage = () => {
                         Регистрация на{" "}
                         <Link style={{ fontSize: 20 }}>@SeriesTracker</Link>
                     </Title>
-                    <Card
-                        style={{
-                            width: "100%",
-                            padding: 24,
-                            cursor: "default",
-                        }}
-                    >
+                    <Card className="width-100">
                         <Form
                             layout="vertical"
                             form={form}
@@ -233,6 +194,7 @@ const SignupPage = () => {
                                     >
                                         <Col sm={19} xs={24}>
                                             <Form.Item
+                                                help={false}
                                                 validateFirst
                                                 validateDebounce={1500}
                                                 hasFeedback
@@ -323,6 +285,7 @@ const SignupPage = () => {
                                         >
                                             <Col sm={19} xs={24}>
                                                 <Form.Item
+                                                    help={false}
                                                     style={{
                                                         display:
                                                             visibleFields[1]
@@ -405,6 +368,7 @@ const SignupPage = () => {
                                         >
                                             <Col sm={19} xs={24}>
                                                 <Form.Item
+                                                    help={false}
                                                     validateFirst
                                                     validateDebounce={1500}
                                                     hasFeedback
@@ -559,19 +523,15 @@ const SignupPage = () => {
                                     <Divider>Как вас зовут?</Divider>
 
                                     <Space
-                                        className="login-space"
-                                        style={{
-                                            width: "100%",
-                                            textAlign: "center",
-                                        }}
+                                        styles={{ item: { flex: "auto" } }}
                                         wrap
                                         size={[10, 10]}
                                     >
-                                        <DefaultFormInput
+                                        <NameFormItem
                                             name={"name"}
                                             label={"Имя"}
                                         />
-                                        <DefaultFormInput
+                                        <NameFormItem
                                             name={"surName"}
                                             label={"Фамилия"}
                                         />
@@ -581,7 +541,7 @@ const SignupPage = () => {
                                         layout="horizontal"
                                         label={<Divider>Дата рождения</Divider>}
                                         name={"dateBirth"}
-                                        style={{ width: "100%" }}
+                                        className="width-100"
                                         getValueProps={(value) => ({
                                             value: value && dayjs(value),
                                         })}
@@ -602,7 +562,7 @@ const SignupPage = () => {
                                                         18
                                                 )
                                             )}
-                                            style={{ width: "100%" }}
+                                            className="width-100"
                                             placeholder="Укажите дату рождения"
                                         ></DatePicker>
                                     </Form.Item>
@@ -633,16 +593,10 @@ const SignupPage = () => {
                                             Перейти к завершению
                                         </Button>
                                     </Flex>
-                                    <Divider className="zero-margin" dashed>
-                                        <Text type="secondary">
-                                            Необязательные данные{" "}
-                                            <Tooltip
-                                                title={
-                                                    "Эту форму можно пропустить"
-                                                }
-                                            >
-                                                <QuestionCircleOutlined />
-                                            </Tooltip>
+                                    <Divider dashed>
+                                        <Text type="secondary" italic>
+                                            <InfoCircleOutlined /> можно
+                                            пропустить и заполнить позже
                                         </Text>
                                     </Divider>
                                 </Flex>
@@ -705,11 +659,8 @@ const SignupPage = () => {
                                         {
                                             key: "1",
                                             label: (
-                                                <Divider
-                                                    className="zero-margin"
-                                                    orientation="left"
-                                                >
-                                                    Необязательные параметры
+                                                <Divider orientation="left">
+                                                    Необязательные данные
                                                 </Divider>
                                             ),
                                             children: (
@@ -756,9 +707,7 @@ const SignupPage = () => {
                                                                 "D MMMM, YYYY"
                                                             }
                                                             suffixIcon={null}
-                                                            style={{
-                                                                width: "100%",
-                                                            }}
+                                                            className="width-100"
                                                             allowClear={false}
                                                             placeholder="не указано"
                                                             inputReadOnly

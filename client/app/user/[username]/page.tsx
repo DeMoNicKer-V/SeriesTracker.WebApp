@@ -77,9 +77,6 @@ export default function UserPage({ params }: { params: { username: string } }) {
         } else return dayjs(dateBirth).fromNow(true);
     };
 
-    const customizeRenderEmpty = () => (
-        <EmptyView text="Пользователь еще ничего не добавил" />
-    );
     return error === true ? (
         <div className="container">
             <title>{`${params.username} / Профиль`}</title>
@@ -191,7 +188,9 @@ export default function UserPage({ params }: { params: { username: string } }) {
                         </Title>
                         <Divider />
                         <ConfigProvider
-                            renderEmpty={customizeRenderEmpty}
+                            renderEmpty={() => (
+                                <EmptyView text="Пользователь еще ничего не добавил" />
+                            )}
                             theme={{
                                 components: {
                                     Card: {

@@ -22,6 +22,7 @@ const SignPageConfigProvider = ({ children }: Props) => {
                     Card: {
                         colorBgContainer: "#0b3c3c61",
                         colorBorderSecondary: "#0b3c3c",
+                        bodyPadding: 24,
                     },
                     Input: {
                         activeBg: "transparent",
@@ -42,6 +43,9 @@ const SignPageConfigProvider = ({ children }: Props) => {
                     Button: { colorBorder: "#084949" },
                     Tooltip: {
                         colorBgSpotlight: "#123535",
+                    },
+                    Divider: {
+                        margin: 0,
                     },
                 },
             }}

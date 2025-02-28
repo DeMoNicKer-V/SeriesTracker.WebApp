@@ -28,7 +28,6 @@ import {
     Tooltip,
     Modal,
 } from "antd";
-import Meta from "antd/es/card/Meta";
 import {
     checkExistEmail,
     deleteSeriesByUsername,

@@ -43,8 +43,8 @@ const LoginPage = () => {
             window.location.href = "/shikimori";
         }
     };
-    const loginFailed = async () => {
-        setErrorMessage("Эл. почта и пароль обязательны для входа");
+    const loginFailed = async (values: any) => {
+        setErrorMessage(values.errorFields[0].errors);
     };
 
     return auth === false ? (
@@ -104,7 +104,6 @@ const LoginPage = () => {
                     <Card
                         className="width-100"
                         style={{
-                            padding: 24,
                             textAlign: "center",
                             cursor: "default",
                         }}
@@ -119,17 +118,19 @@ const LoginPage = () => {
                             initialValues={{ items: [{}] }}
                         >
                             <Form.Item
+                                validateFirst
+                                help={false}
                                 name={["email"]}
                                 label="Эл. почта"
                                 rules={[
                                     {
+                                        type: "email",
+                                        message: "Эл. почта неккоректна",
+                                    },
+                                    {
                                         required: true,
                                         message:
                                             "Вы не можете войти без эл. почты",
-                                    },
-                                    {
-                                        type: "email",
-                                        message: "Эл. почта неккоректна",
                                     },
                                 ]}
                             >
@@ -142,6 +143,8 @@ const LoginPage = () => {
                             </Form.Item>
 
                             <Form.Item
+                                validateFirst
+                                help={false}
                                 rules={[
                                     {
                                         required: true,
@@ -155,7 +158,6 @@ const LoginPage = () => {
                                 <Input.Password
                                     autoComplete={"current-password"}
                                     addonBefore={<KeyOutlined />}
-                                    autoFocus
                                     spellCheck={false}
                                 />
                             </Form.Item>
