@@ -1,4 +1,5 @@
 "use client";
+import "./style.css";
 import React, { useEffect, useState } from "react";
 import {
     CheckOutlined,
@@ -28,27 +29,28 @@ import {
     registerUser,
     UserRequest,
 } from "../services/user";
+
 import locale from "antd/es/date-picker/locale/ru_RU";
-import "dayjs/locale/ru";
 import AvatarPicker from "../components/AvatarPicker";
-import "./style.css";
 import { LongLeftArrow } from "../img/LongLeftArrow";
 import { LongRightArrow } from "../img/LongRightArrow";
 import { LogoIcon } from "../img/LogoIcon";
 import { useRouter } from "next/navigation";
 import { IsAuth } from "../api/coockie";
-import dayjs from "dayjs";
 import SignPageConfigProvider from "../components/SignPageConfigProvider";
 import PageErrorView from "../components/PageErrorVIew";
 import NameFormItem from "../components/SingupComponents/NameFormItem";
 
+import dayjs from "dayjs";
+import "dayjs/locale/ru";
 dayjs.locale("ru");
+
 const { Text, Title, Link } = Typography;
 
 const SignupPage = () => {
     const router = useRouter();
     const [avatar, setAvatar] = useState<string>("");
-    const [current, setCurrent] = useState<number>(2);
+    const [current, setCurrent] = useState<number>(0);
     const [formData, setFormData] = useState<UserRequest>({
         email: "",
         password: "",
@@ -164,15 +166,7 @@ const SignupPage = () => {
                         </Link>
                     </Space>
                 </Flex>
-                <Flex
-                    className="flex-column width-100"
-                    style={{
-                        alignItems: "center",
-                        maxWidth: "660px",
-                        paddingTop: 128,
-                        gap: 30,
-                    }}
-                >
+                <Flex className="flex-column width-100 form-content">
                     <Title level={4}>
                         Регистрация на{" "}
                         <Link style={{ fontSize: 20 }}>@SeriesTracker</Link>
@@ -286,12 +280,6 @@ const SignupPage = () => {
                                             <Col sm={19} xs={24}>
                                                 <Form.Item
                                                     help={false}
-                                                    style={{
-                                                        display:
-                                                            visibleFields[1]
-                                                                ? "block"
-                                                                : "none",
-                                                    }}
                                                     validateFirst
                                                     validateDebounce={1500}
                                                     hasFeedback
@@ -326,7 +314,7 @@ const SignupPage = () => {
                                                 </Form.Item>
                                             </Col>
                                             <Col sm={5} xs={24}>
-                                                {isActive.password ? (
+                                                {isActive.password && (
                                                     <Form.Item shouldUpdate>
                                                         {() => (
                                                             <Button
@@ -355,7 +343,7 @@ const SignupPage = () => {
                                                             </Button>
                                                         )}
                                                     </Form.Item>
-                                                ) : null}
+                                                )}
                                             </Col>
                                         </Row>
                                     )}
@@ -434,7 +422,7 @@ const SignupPage = () => {
                                                 </Form.Item>
                                             </Col>
                                             <Col sm={5} xs={24}>
-                                                {isActive.userName ? (
+                                                {isActive.userName && (
                                                     <Form.Item shouldUpdate>
                                                         {() => (
                                                             <Button
@@ -459,7 +447,7 @@ const SignupPage = () => {
                                                             </Button>
                                                         )}
                                                     </Form.Item>
-                                                ) : null}
+                                                )}
                                             </Col>
                                         </Row>
                                     )}

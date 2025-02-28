@@ -21,6 +21,13 @@ label {
     font-weight: 600;
 }
 
+.form-content {
+    align-items: center;
+    max-width: 660px;
+    padding-top: 128px;
+    gap: 30px;
+}
+
 @media (max-width: 992px) {
     .head {
         justify-content: space-between;

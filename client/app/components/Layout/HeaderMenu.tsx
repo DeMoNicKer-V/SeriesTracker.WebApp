@@ -27,7 +27,7 @@ import { useRouter } from "next/navigation";
 import { LogoIcon } from "@/app/img/LogoIcon";
 
 import styles from "./component.module.css";
-import SearchBar from "../Searchbar/searchbar";
+import SearchBar from "../Searchbar/Searchbar";
 interface Props {
     pathName: string;
     user?: User;

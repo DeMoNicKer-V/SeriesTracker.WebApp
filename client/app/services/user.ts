@@ -8,17 +8,6 @@ export interface UserRequest {
     dateBirth?: string;
 }
 
-export interface UserResponse {
-    email: string;
-    password: string;
-    userName: string;
-    avatar: string;
-    name: string;
-    surName: string;
-    dateBirth: string;
-    permissions: number[];
-}
-
 export interface UserInfo {
     email: string;
     userName: string;
