@@ -23,7 +23,6 @@ import {
     CheckboxProps,
     Tooltip,
 } from "antd";
-import Meta from "antd/es/card/Meta";
 import {
     checkExistEmail,
     checkExistUserName,
@@ -39,9 +38,9 @@ import { LongRightArrow } from "../img/LongRightArrow";
 import { LogoIcon } from "../img/LogoIcon";
 import { useRouter } from "next/navigation";
 import { IsAuth } from "../api/coockie";
-import { EmptyView } from "../components/EmptyView";
 import dayjs from "dayjs";
 import SignPageConfigProvider from "../components/SignPageConfigProvider";
+import PageErrorView from "../components/PageErrorVIew";
 
 dayjs.locale("ru");
 const { Text, Title, Link } = Typography;
@@ -817,25 +816,7 @@ const SignupPage = () => {
             </SignPageConfigProvider>
         </Flex>
     ) : (
-        <Flex
-            gap={10}
-            justify="center"
-            align="center"
-            className="bg flex-column"
-        >
-            <EmptyView text="Вы уже вошли в свой аккаунт" />
-            <Link
-                href={"/shikimori"}
-                style={{
-                    fontWeight: 700,
-                }}
-            >
-                <Flex gap={5} justify="center" align="center">
-                    Вернуться на главную
-                    <LongRightArrow />
-                </Flex>
-            </Link>
-        </Flex>
+        <PageErrorView text="Вы уже вошли в свой аккаунт" />
     );
 };
 

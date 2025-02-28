@@ -33,12 +33,13 @@ import { getAnimesById, LastActivityAnime } from "@/app/services/shikimori";
 import { IsCurrentUser } from "@/app/api/coockie";
 import { EmptyView } from "@/app/components/EmptyView";
 import useSWR from "swr";
-import { LongRightArrow } from "@/app/img/LongRightArrow";
 
 import dayjs from "dayjs";
 import "dayjs/locale/ru";
 import relativeTime from "dayjs/plugin/relativeTime";
 import SeriesGroupInfo from "@/app/components/SeriesGroupInfo";
+import PageErrorView from "@/app/components/PageErrorVIew";
+import MainShortInfo from "@/app/components/MainShortInfo/MainShortInfo";
 dayjs.locale("ru");
 dayjs.extend(relativeTime);
 
@@ -75,7 +76,7 @@ export default function UserPage({ params }: { params: { username: string } }) {
             return null;
         } else return dayjs(dateBirth).fromNow(true);
     };
-    const { Meta } = Card;
+
     const customizeRenderEmpty = () => (
         <EmptyView text="Пользователь еще ничего не добавил" />
     );
@@ -232,9 +233,9 @@ export default function UserPage({ params }: { params: { username: string } }) {
                                                         lg={20}
                                                         xxl={20}
                                                     >
-                                                        <Meta
+                                                        <MainShortInfo
                                                             title={item.title}
-                                                            description={new Date(
+                                                            subTitle={new Date(
                                                                 item.date
                                                             ).toLocaleDateString(
                                                                 "ru-RU",
@@ -268,23 +269,6 @@ export default function UserPage({ params }: { params: { username: string } }) {
             )}
         </div>
     ) : (
-        <Flex
-            gap={10}
-            justify="center"
-            align="center"
-            className="flex-column height-100"
-        >
-            <EmptyView text="Такого пользователя не существует" />
-
-            <Button
-                href="/shikimori"
-                style={{ fontWeight: 700 }}
-                type="link"
-                icon={<LongRightArrow />}
-                iconPosition="end"
-            >
-                Вернуться на главную
-            </Button>
-        </Flex>
+        <PageErrorView text="Такого пользователя не существует" />
     );
 }

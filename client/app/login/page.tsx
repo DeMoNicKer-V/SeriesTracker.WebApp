@@ -14,11 +14,11 @@ import {
 import { login, LoginRequest } from "../services/user";
 
 import { IsAuth } from "../api/coockie";
-import { EmptyView } from "../components/EmptyView";
 import { LongRightArrow } from "../img/LongRightArrow";
 import { LogoIcon } from "../img/LogoIcon";
 import "./style.css";
 import SignPageConfigProvider from "../components/SignPageConfigProvider";
+import PageErrorView from "../components/PageErrorVIew";
 
 const { Text, Title, Link } = Typography;
 const LoginPage = () => {
@@ -27,8 +27,8 @@ const LoginPage = () => {
     const [auth, setAuth] = useState<boolean>(false);
 
     const getIsAuth = async () => {
-        const a = await IsAuth();
-        setAuth(a);
+        const status = await IsAuth();
+        setAuth(status);
     };
     useEffect(() => {
         getIsAuth();
@@ -193,15 +193,7 @@ const LoginPage = () => {
             </SignPageConfigProvider>
         </Flex>
     ) : (
-        <Flex
-            gap={10}
-            justify="center"
-            align="center"
-            className="flex-column height-100"
-        >
-            <EmptyView text="Вы уже вошли в свой аккаунт" />
-            <Link href={"/shikimori"}>Вернуться на главную</Link>
-        </Flex>
+        <PageErrorView text="Вы уже вошли в свой аккаунт" />
     );
 };
 

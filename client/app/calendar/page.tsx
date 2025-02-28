@@ -14,7 +14,6 @@ import {
     Skeleton,
 } from "antd";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { getAiredAnimes } from "../services/shikimori";
 
 import {
     CheckCircleOutlined,
@@ -52,7 +51,6 @@ function dateComparer(date1: Date, date2: Date): JSX.Element {
         return <CheckCircleOutlined style={{ color: "#52c41a" }} />;
     } else return <ClockCircleOutlined style={{ color: "#faad14" }} />;
 }
-const dateNow = new Date();
 
 const customizeRenderEmpty = () => (
     <Flex className="emptyview" justify="center" align="middle" gap={10}>
