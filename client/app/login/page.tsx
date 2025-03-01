@@ -1,26 +1,15 @@
 "use client";
+import "./style.css";
 import React, { useEffect, useState } from "react";
 import { MailOutlined, KeyOutlined } from "@ant-design/icons";
-import {
-    Button,
-    Card,
-    Flex,
-    Form,
-    Input,
-    Space,
-    Typography,
-    Divider,
-} from "antd";
+import { Button, Card, Flex, Form, Input, Typography, Divider } from "antd";
 import { login, LoginRequest } from "../services/user";
 
 import { IsAuth } from "../api/coockie";
-import { LongRightArrow } from "../img/LongRightArrow";
-import { LogoIcon } from "../img/LogoIcon";
-import "./style.css";
+
 import SignPageConfigProvider from "../components/SignPageConfigProvider";
 import PageErrorView from "../components/PageErrorVIew";
 import SignFormHeader from "../components/SignFormHeader";
-import Paragraph from "antd/es/typography/Paragraph";
 
 const { Text, Title, Link } = Typography;
 const LoginPage = () => {
@@ -37,10 +26,11 @@ const LoginPage = () => {
     }, []);
 
     const loginUser = async (values: LoginRequest) => {
-        setErrorMessage(null);
-        const response = await login(values);
-        if (response) {
-            setErrorMessage(response);
+        setErrorMessage(null); // Сбрасываем сообщение об ошибке перед отправкой
+
+        const error = await login(values); // Получаем сообщение об ошибке или undefined при успехе
+        if (error) {
+            setErrorMessage(error); // Отображаем сообщение об ошибке
         } else {
             window.location.href = "/shikimori";
         }
@@ -131,10 +121,7 @@ const LoginPage = () => {
                                     spellCheck={false}
                                 />
                             </Form.Item>
-                            <Form.Item
-                                label={errorMessage && "Ошибка"}
-                                shouldUpdate
-                            >
+                            <Form.Item shouldUpdate>
                                 {() => (
                                     <Text
                                         strong

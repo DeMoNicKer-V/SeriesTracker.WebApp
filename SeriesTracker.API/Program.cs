@@ -12,6 +12,7 @@ using SeriesTracker.Infrastructure.Authentication;
 using SeriesTracker.Infrastructure.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Logging.AddConsole();
 builder.Services.AddApiAuthentication(builder.Configuration);
 builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection(nameof(JwtOptions)));
 builder.Services.Configure<AuthorizationOptions>(builder.Configuration.GetSection(nameof(AuthorizationOptions)));

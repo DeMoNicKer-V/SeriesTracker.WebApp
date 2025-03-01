@@ -76,12 +76,11 @@ export const registerUser = async (
         return null; // Возвращаем null при успехе
     } else {
         try {
-            const errorData = await response.text();
-            console.error("Ошибка регистрации:", errorData);
-            return errorData;
+            const errorData = await response.json(); // Попытка распарсить JSON
+            return errorData.message || "Произошла ошибка. Попробуйте позже."; // Возвращаем сообщение об ошибке из JSON или сообщение по умолчанию
         } catch (error) {
-            console.error("Ошибка при обработке ответа об ошибке:", error);
-            return "Произошла непредвиденная ошибка. Попробуйте позже.";
+            console.error("Ошибка при разборе JSON:", error); // Логируем ошибку парсинга
+            return "Произошла непредвиденная ошибка. Попробуйте позже."; // Возвращаем общее сообщение об ошибке
         }
     }
 };
@@ -95,8 +94,17 @@ export const login = async (request: LoginRequest) => {
         body: JSON.stringify(request),
         credentials: "include",
     });
-    if (response.status !== 200) {
-        return response.json();
+
+    if (response.ok) {
+        return null; // Возвращаем null при успехе
+    } else {
+        try {
+            const errorData = await response.json(); // Попытка распарсить JSON
+            return errorData.message || "Произошла ошибка. Попробуйте позже."; // Возвращаем сообщение об ошибке из JSON или сообщение по умолчанию
+        } catch (error) {
+            console.error("Ошибка при разборе JSON:", error); // Логируем ошибку парсинга
+            return "Произошла непредвиденная ошибка. Попробуйте позже."; // Возвращаем общее сообщение об ошибке
+        }
     }
 };
 

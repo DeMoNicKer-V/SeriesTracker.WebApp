@@ -30,7 +30,6 @@ import SecondaryForm from "../components/SingupComponents/SecondaryForm";
 import dayjs from "dayjs";
 import "dayjs/locale/ru";
 import { useRouter } from "next/navigation";
-import Paragraph from "antd/es/typography/Paragraph";
 dayjs.locale("ru");
 
 const { Text, Title, Link } = Typography;

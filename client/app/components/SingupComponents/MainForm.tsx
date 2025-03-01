@@ -9,11 +9,7 @@ import {
     Typography,
     FormInstance,
 } from "antd";
-import {
-    checkExistEmail,
-    checkExistUserName,
-    UserRequest,
-} from "../../services/user";
+import { checkExistEmail, checkExistUserName } from "../../services/user";
 
 const { Text } = Typography;
 

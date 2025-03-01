@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using SeriesTracker.API.Contracts;
+using SeriesTracker.Application.Services;
 using SeriesTracker.Core.Abstractions;
 using SeriesTracker.Core.Abstractions.UserAbastractions;
 using SeriesTracker.Core.Enums;
@@ -10,11 +12,11 @@ namespace SeriesTracker.API.Controllers
 {
     [ApiController]
     [Route("user")]
-    public class UserController(IUserService userService, IUserSeriesService userSeriesService, ICategoryService categoryService) : ControllerBase
+    public class UserController(IUserService userService, IUserSeriesService userSeriesService, ICategoryService categoryService, ILogger<UserController> logger) : ControllerBase
     {
         private readonly IUserService _userService = userService;
-        private readonly ICategoryService _categoryService = categoryService;
         private readonly IUserSeriesService _userSeriesService = userSeriesService;
+        private readonly ILogger<UserController> _logger = logger; // Внедряем ILogger<UserService>
 
         [HttpGet("id/{id}")]
         public async Task<IResult> GetUserById(Guid id)
@@ -60,18 +62,28 @@ namespace SeriesTracker.API.Controllers
         {
             try
             {
-                await _userService.Register(userRequest.Email, userRequest.Password, userRequest.UserName, userRequest.Avatar, userRequest.Name, userRequest.SurName, userRequest.DateBirth);
-                return Results.Ok();
+                await _userService.Register(
+                    userRequest.Email,
+                    userRequest.Password,
+                    userRequest.UserName,
+                    userRequest.Avatar,
+                    userRequest.Name,
+                    userRequest.SurName,
+                    userRequest.DateBirth
+                );
+
+                // Успешная регистрация:
+                return Results.Ok(new { Message = "Регистрация прошла успешно." }); // Возвращаем JSON-объект с сообщением
             }
             catch (ArgumentException ex) // Пример: Обработка исключения, если что-то не так с данными
             {
-                return Results.BadRequest($"Ошибка регистрации: {ex.Message}"); // Возвращаем сообщение об ошибке
+                _logger.LogWarning(ex, $"Ошибка регистрации для email: {userRequest.Email}. Причина: {ex.Message}");
+                return Results.BadRequest(new { Message = ex.Message }); // Возвращаем JSON-объект с сообщением об ошибке
             }
-            catch (Exception ex) // Ловим все остальные исключения (например, ошибки базы данных)
+            catch (Exception ex) // Ловим все остальные исключения
             {
-                // Логируем ошибку (очень важно для отладки!)
-                Console.Error.WriteLine($"Ошибка регистрации: {ex}");
-                return Results.StatusCode(500); // Внутренняя ошибка сервера
+                _logger.LogError(ex, $"Непредвиденная ошибка регистрации для email: {userRequest.Email}");
+                return Results.Json(new { Message = "Произошла непредвиденная ошибка. Попробуйте позже." }, statusCode: 500);
             }
         }
 
@@ -181,17 +193,24 @@ namespace SeriesTracker.API.Controllers
         [HttpPost("login")]
         public async Task<IResult> Login([FromBody] LoginUserRequest request)
         {
-            string token = string.Empty;
             try
             {
-                token = await _userService.Login(request.Email, request.Password);
+                string token = await _userService.Login(request.Email, request.Password);
+
+                // Успешный вход: устанавливаем cookie и возвращаем токен
+                Response.Cookies.Append("secretCookie", token, new CookieOptions { HttpOnly = true, Secure = true });
+                return Results.Ok(new { Token = token }); //  Но лучше вернуть JSON-объект
             }
-            catch (Exception)
+            catch (ArgumentException ex) // Неверный email или пароль
             {
-                return Results.BadRequest("Неправильный адрес почты или пароль");
+                _logger.LogWarning(ex, $"Неудачная попытка входа для email: {request.Email}.  Причина: {ex.Message}"); // Добавляем информацию об ошибке
+                return Results.BadRequest(new { Message = ex.Message }); // Возвращаем JSON-объект с сообщением
             }
-            Response.Cookies.Append("secretCookie", token);
-            return Results.Ok(token);
+            catch (Exception ex) // Непредвиденная ошибка
+            {
+                _logger.LogError(ex, $"Непредвиденная ошибка входа для email: {request.Email}");
+                return Results.Json(new { Message = "Произошла непредвиденная ошибка. Попробуйте позже." }, statusCode: 500);
+            }
         }
     }
 }

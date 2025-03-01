@@ -64,19 +64,31 @@ namespace SeriesTracker.DataAccess.Repositories
 
         public async Task<User> GetUserByEmail(string email)
         {
-            var userEntity = await _context.UserEntities.AsNoTracking().Include(u => u.Roles).Where(c => c.Email == email).FirstAsync();
+            var userEntity = await _context.UserEntities.AsNoTracking().Include(u => u.Roles).Where(c => c.Email == email).FirstOrDefaultAsync();
+            if (userEntity == null)
+            {
+                return null;
+            }
             return CreateUser(userEntity);
         }
 
         public async Task<User> GetUserById(Guid id)
         {
-            var userEntity = await _context.UserEntities.AsNoTracking().Include(u => u.Roles).Where(c => c.Id == id).FirstAsync();
+            var userEntity = await _context.UserEntities.AsNoTracking().Include(u => u.Roles).Where(c => c.Id == id).FirstOrDefaultAsync();
+            if (userEntity == null)
+            {
+                return null;
+            }
             return CreateUser(userEntity);
         }
 
         public async Task<User> GetUserByUserName(string username)
         {
-            var userEntity = await _context.UserEntities.AsNoTracking().Include(u => u.Roles).Where(c => c.UserName == username).FirstAsync();
+            var userEntity = await _context.UserEntities.AsNoTracking().Include(u => u.Roles).Where(c => c.UserName == username).FirstOrDefaultAsync();
+            if (userEntity == null)
+            {
+                return null;
+            }
             return CreateUser(userEntity);
         }
 

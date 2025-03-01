@@ -2,22 +2,14 @@ import React, { Dispatch, SetStateAction, useState } from "react";
 import { InfoCircleOutlined } from "@ant-design/icons";
 import {
     Button,
-    Col,
     DatePicker,
     Flex,
     Form,
-    Input,
-    Row,
     Space,
     Typography,
     Divider,
     FormInstance,
 } from "antd";
-import {
-    checkExistEmail,
-    checkExistUserName,
-    UserRequest,
-} from "../../services/user";
 
 import locale from "antd/es/date-picker/locale/ru_RU";
 import AvatarPicker from "../../components/AvatarPicker";

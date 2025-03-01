@@ -1,7 +1,9 @@
-﻿using SeriesTracker.Application.Interfaces.Auth;
+﻿using Microsoft.Extensions.Logging;
+using SeriesTracker.Application.Interfaces.Auth;
 using SeriesTracker.Core.Abstractions.UserAbastractions;
 using SeriesTracker.Core.Enums;
 using SeriesTracker.Core.Models;
+using System.Globalization;
 
 namespace SeriesTracker.Application.Services
 {
@@ -10,24 +12,66 @@ namespace SeriesTracker.Application.Services
         private readonly IUserRepository _userRepository;
         private readonly IPasswordHasher _passwordHasher;
         private readonly IJwtProvider _jwtProvider;
+        private readonly ILogger<UserService> _logger; // Внедряем ILogger<UserService>
 
-        public UserService(IUserRepository userRepository, IPasswordHasher passwordHasher, IJwtProvider jwtProvider)
+        public UserService(IUserRepository userRepository, IPasswordHasher passwordHasher, IJwtProvider jwtProvider, ILogger<UserService> logger)
         {
             _userRepository = userRepository;
             _passwordHasher = passwordHasher;
             _jwtProvider = jwtProvider;
+            _logger = logger;
         }
 
         public async Task Register(string email, string password, string username, string avatar, string name, string surname, string dateBirth)
         {
-            if (string.IsNullOrEmpty(username)) throw new ArgumentException("UserName is required.");
-            if (string.IsNullOrEmpty(email)) throw new ArgumentException("Email is required.");
-            if (string.IsNullOrEmpty(password)) throw new ArgumentException("Password is required.");
+            // 1. Валидация данных
+            if (string.IsNullOrWhiteSpace(username)) // Используем IsNullOrWhiteSpace
+            {
+                _logger.LogWarning("Попытка регистрации с пустым username.");
+                throw new ArgumentException("Никнейм не может быть пустым.", nameof(username)); // nameof() для лучшей информации об ошибке
+            }
+            if (string.IsNullOrWhiteSpace(email))
+            {
+                _logger.LogWarning("Попытка регистрации с пустым email.");
+                throw new ArgumentException("Эл. почта не может быть пустым.", nameof(email));
+            }
+            if (string.IsNullOrWhiteSpace(password))
+            {
+                _logger.LogWarning("Попытка регистрации с пустым password.");
+                throw new ArgumentException("Пароль не может быть пустым.", nameof(password));
+            }
 
-            var hashedPassword = _passwordHasher.Generate(password);
-            var user = User.Create(Guid.NewGuid(), username, name, surname, email, hashedPassword, avatar, dateBirth, DateTime.Now.ToString("s"));
-            await _userRepository.CreateUser(user);
+            // 2. Хеширование пароля
+            string hashedPassword = _passwordHasher.Generate(password);
+
+            // 3. Создание пользователя (с учетом безопасности и лучших практик)
+            try
+            {
+
+                var user = User.Create(
+                    Guid.NewGuid(),
+                    username,
+                    name,
+                    surname,
+                    email,
+                    hashedPassword,
+                    avatar,
+                    dateBirth,
+                    DateTime.UtcNow.ToString("s") // Используем UTC время
+                );
+
+                // 4. Сохранение пользователя в репозитории
+                await _userRepository.CreateUser(user);
+                _logger.LogInformation($"Пользователь {username} зарегистрирован успешно.");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Ошибка при создании или сохранении пользователя {username}."); // Логируем все исключения
+                                                                                                      //  Можно перебросить исключение, если нужно, чтобы оно обработалось в контроллере
+                throw; //  или  throw new Exception("Не удалось зарегистрировать пользователя.", ex);
+            }
         }
+
         public string HashPassword(string password)
         {
             var hashedPassword = _passwordHasher.Generate(password);
@@ -37,16 +81,18 @@ namespace SeriesTracker.Application.Services
         public async Task<string> Login(string email, string password)
         {
             var user = await _userRepository.GetUserByEmail(email);
-            var result = _passwordHasher.Verify(password, user.PasswordHash);
 
-            if (result == false)
+            // Объединяем проверки email и пароля в одно условие и одно сообщение об ошибке
+            if (user == null || !_passwordHasher.Verify(password, user.PasswordHash))
             {
-                throw new Exception("Failed ot Login");
+                // Логируем попытку входа с неверными данными (без указания конкретной причины)
+                _logger.LogInformation($"Неудачная попытка входа: {email}");  // Используем LogInformation для логирования события
+                throw new ArgumentException("Неправильный адрес почты или пароль");
             }
 
             var token = _jwtProvider.GenerateToken(user);
             return token;
-        }
+    }
 
         public async Task<bool> Verify(string email, string password)
         {
