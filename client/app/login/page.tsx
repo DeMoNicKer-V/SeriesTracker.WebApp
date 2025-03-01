@@ -19,11 +19,13 @@ import { LogoIcon } from "../img/LogoIcon";
 import "./style.css";
 import SignPageConfigProvider from "../components/SignPageConfigProvider";
 import PageErrorView from "../components/PageErrorVIew";
+import SignFormHeader from "../components/SignFormHeader";
+import Paragraph from "antd/es/typography/Paragraph";
 
 const { Text, Title, Link } = Typography;
 const LoginPage = () => {
     const [form] = Form.useForm();
-    const [errorMessage, setErrorMessage] = useState<string>("");
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [auth, setAuth] = useState<boolean>(false);
 
     const getIsAuth = async () => {
@@ -35,7 +37,7 @@ const LoginPage = () => {
     }, []);
 
     const loginUser = async (values: LoginRequest) => {
-        setErrorMessage("");
+        setErrorMessage(null);
         const response = await login(values);
         if (response) {
             setErrorMessage(response);
@@ -57,43 +59,11 @@ const LoginPage = () => {
         >
             <title>Series Tracker - Вход</title>
             <SignPageConfigProvider>
-                <Flex
-                    className="width-100 head"
-                    align="center"
-                    justify="space-around"
-                >
-                    <Button
-                        style={{ cursor: "pointer" }}
-                        href="/shikimori"
-                        type="link"
-                        icon={
-                            <LogoIcon
-                                width={50}
-                                height={50}
-                                firstColor="white"
-                                secondColor="#44a5a6"
-                            />
-                        }
-                    />
-
-                    <Space size={[5, 5]}>
-                        <Text type="secondary" italic>
-                            Еще нет акканута?
-                        </Text>
-                        <Link
-                            target="_top"
-                            href={"/signup"}
-                            style={{
-                                fontWeight: 700,
-                            }}
-                        >
-                            <Flex gap={5} justify="center" align="center">
-                                Регистрация
-                                <LongRightArrow />
-                            </Flex>
-                        </Link>
-                    </Space>
-                </Flex>
+                <SignFormHeader
+                    text="Ещё нет аккаунта?"
+                    actionText="Регистрация"
+                    href="/signup"
+                />
 
                 <Flex align="center" className="flex-column width-100 headline">
                     <Title level={4}>
@@ -162,7 +132,7 @@ const LoginPage = () => {
                                 />
                             </Form.Item>
                             <Form.Item
-                                style={{ marginTop: -5, marginBottom: -10 }}
+                                label={errorMessage && "Ошибка"}
                                 shouldUpdate
                             >
                                 {() => (

@@ -58,8 +58,21 @@ namespace SeriesTracker.API.Controllers
         [HttpPost("register")]
         public async Task<IResult> Register([FromBody] UserRequest userRequest)
         {
-            await _userService.Register(userRequest.Email, userRequest.Password, userRequest.UserName, userRequest.Avatar, userRequest.Name, userRequest.SurName, userRequest.DateBirth);
-            return Results.Ok();
+            try
+            {
+                await _userService.Register(userRequest.Email, userRequest.Password, userRequest.UserName, userRequest.Avatar, userRequest.Name, userRequest.SurName, userRequest.DateBirth);
+                return Results.Ok();
+            }
+            catch (ArgumentException ex) // Пример: Обработка исключения, если что-то не так с данными
+            {
+                return Results.BadRequest($"Ошибка регистрации: {ex.Message}"); // Возвращаем сообщение об ошибке
+            }
+            catch (Exception ex) // Ловим все остальные исключения (например, ошибки базы данных)
+            {
+                // Логируем ошибку (очень важно для отладки!)
+                Console.Error.WriteLine($"Ошибка регистрации: {ex}");
+                return Results.StatusCode(500); // Внутренняя ошибка сервера
+            }
         }
 
         [HttpGet("email")]

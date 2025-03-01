@@ -61,7 +61,9 @@ export interface CategoryCount {
     value: number;
 }
 
-export const registerUser = async (request: UserRequest) => {
+export const registerUser = async (
+    request: UserRequest
+): Promise<string | null> => {
     const response = await fetch(`http://localhost:5125/user/register`, {
         method: "POST",
         headers: {
@@ -69,8 +71,18 @@ export const registerUser = async (request: UserRequest) => {
         },
         body: JSON.stringify(request),
     });
-    if (response.status !== 200) {
-        return false;
+
+    if (response.ok) {
+        return null; // Возвращаем null при успехе
+    } else {
+        try {
+            const errorData = await response.text();
+            console.error("Ошибка регистрации:", errorData);
+            return errorData;
+        } catch (error) {
+            console.error("Ошибка при обработке ответа об ошибке:", error);
+            return "Произошла непредвиденная ошибка. Попробуйте позже.";
+        }
     }
 };
 
