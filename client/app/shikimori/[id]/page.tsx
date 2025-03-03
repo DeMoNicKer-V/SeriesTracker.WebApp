@@ -11,12 +11,12 @@ import {
     FloatButton,
     Collapse,
     Space,
-    MenuProps,
-    Dropdown,
     InputNumber,
     Rate,
     ConfigProvider,
     InputNumberProps,
+    Select,
+    Divider,
 } from "antd";
 import { useState } from "react";
 import { getAnimeById } from "@/app/services/shikimori";
@@ -25,7 +25,6 @@ import {
     StarOutlined,
     HeartFilled,
     CalendarOutlined,
-    DownOutlined,
     ClockCircleOutlined,
     BookOutlined,
     TeamOutlined,
@@ -34,6 +33,7 @@ import {
     PlusOutlined,
     InfoCircleOutlined,
     MinusOutlined,
+    CloseOutlined,
 } from "@ant-design/icons";
 import {
     createSeries,
@@ -49,22 +49,27 @@ import GenreDescription from "@/app/components/AnimeDetailDescription/GenreDescr
 import ScreenshotsPreview from "@/app/components/AnimeDetailDescription/ScreenshotsPreview";
 import Loading from "@/app/components/Loading";
 import { Anime, defaultValues } from "@/app/Models/Anime/Anime";
-import useSWR from "swr";
+import useSWR, { mutate } from "swr";
 
 const { Title, Text } = Typography;
 
 const defaultCategories = [
-    { id: 1, name: "Запланировано" },
-    { id: 2, name: "Смотрю" },
-    { id: 3, name: "Просмотрено" },
-    { id: 4, name: "Пересматриваю" },
-    { id: 5, name: "Отложено" },
-    { id: 6, name: "Брошено" },
-] as Category[];
+    { value: 1, label: "Запланировано" },
+    { value: 2, label: "Смотрю" },
+    { value: 3, label: "Просмотрено" },
+    { value: 4, label: "Пересматриваю" },
+    { value: 5, label: "Отложено" },
+    { value: 6, label: "Брошено" },
+];
 
 export default function AnimePage({ params }: { params: { id: string } }) {
+    const [filteredCategories, setFilteredCategories] = useState<
+        {
+            value: number;
+            label: string;
+        }[]
+    >([]);
     const [isAuth, setIsAuth] = useState<boolean>(false);
-    const [categories, setCategories] = useState<MenuProps["items"]>([]);
     const [watchedEpisode, setWatchedEpisode] = useState<number>(0);
     const [isFavorite, setIsFavorite] = useState<boolean>(false);
 
@@ -81,7 +86,11 @@ export default function AnimePage({ params }: { params: { id: string } }) {
         setIsFavorite(
             response.isFavorite === null ? false : response.isFavorite
         );
-        getCategories(response);
+        setFilteredCategories(
+            defaultCategories.filter(
+                (category) => category.value !== response.categoryId
+            )
+        );
         return response;
     };
 
@@ -94,35 +103,6 @@ export default function AnimePage({ params }: { params: { id: string } }) {
         }
     );
 
-    const getCategories = async (info: Anime) => {
-        const array: MenuProps["items"] = [];
-        defaultCategories.forEach((element: { id: number; name: string }) => {
-            if (element.id === info.categoryId) {
-                array.push(
-                    {
-                        type: "divider",
-                    },
-                    {
-                        key: -1,
-                        label: "Удалить из списка",
-                        danger: true,
-                        onClick: async () => deleteSeries(info.seriesId),
-                    }
-                );
-            } else {
-                array.unshift({
-                    key: element.id,
-                    label: element.name,
-                    onClick: async () => {
-                        await updateCategorySeries(info, element.id);
-                    },
-                });
-            }
-        });
-
-        setCategories(array);
-    };
-
     const updateFavoriteSeries = async (value: number) => {
         if (anime.seriesId) {
             const request = createRequest(
@@ -131,11 +111,13 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                 !anime.isFavorite
             );
             setIsFavorite(Boolean(value));
-            await updateSeries(anime.seriesId, request, false);
+            await updateSeries(anime.seriesId, request);
             return;
         }
         const request = createRequest(0, 1, true);
         await createSeries(request);
+
+        mutate(params.id);
     };
 
     const updateEpisodeSeries = async (episodeValue: number) => {
@@ -171,6 +153,7 @@ export default function AnimePage({ params }: { params: { id: string } }) {
         setWatchedEpisode(newValue);
         updateEpisodeSeries(newValue);
     };
+
     const createRequest = (
         watchedEpisode = 0,
         categoryId = 1,
@@ -192,7 +175,7 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                 categoryId,
                 anime.isFavorite
             );
-            await updateSeries(anime.seriesId, request, true);
+            await updateSeries(anime.seriesId, request);
         } else {
             const request = createRequest(
                 categoryId === 3 ? anime.episodes : 0,
@@ -200,17 +183,14 @@ export default function AnimePage({ params }: { params: { id: string } }) {
             );
             await createSeries(request);
         }
+
+        mutate(params.id);
     };
 
-    const AddToMyList = async () => {
-        if (anime.seriesId !== null) {
-            return;
-        }
-        const request = createRequest();
-        await createSeries(request);
+    const deleteSeriesById = async (seriesId: string) => {
+        await deleteSeries(seriesId);
+        mutate(params.id);
     };
-
-    const items: MenuProps["items"] = categories;
 
     return isLoading ? (
         <Loading loading />
@@ -230,6 +210,10 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                         },
                         Collapse: {
                             colorBorder: "transparent",
+                        },
+                        Select: {
+                            colorText: anime.categoryColor,
+                            activeBorderColor: anime.categoryColor,
                         },
                     },
                 }}
@@ -389,37 +373,87 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                                                             count={1}
                                                         />
 
-                                                        <Dropdown.Button
+                                                        <Select
+                                                            onChange={(
+                                                                value: string
+                                                            ) =>
+                                                                updateCategorySeries(
+                                                                    anime,
+                                                                    Number(
+                                                                        value
+                                                                    )
+                                                                )
+                                                            }
+                                                            rootClassName={
+                                                                styles[
+                                                                    "selector"
+                                                                ]
+                                                            }
                                                             size="small"
-                                                            menu={{ items }}
-                                                            icon={
-                                                                <DownOutlined />
+                                                            style={{
+                                                                width: 240,
+                                                                textAlign:
+                                                                    "start",
+                                                            }}
+                                                            defaultActiveFirstOption={
+                                                                false
                                                             }
-                                                            onClick={
-                                                                AddToMyList
+                                                            prefix={
+                                                                <BookOutlined />
                                                             }
-                                                        >
-                                                            {!anime.seriesId ? (
+                                                            value={
+                                                                anime.categoryName
+                                                            }
+                                                            placement="topLeft"
+                                                            placeholder={
                                                                 <Flex gap={5}>
                                                                     <PlusOutlined />
                                                                     {
                                                                         "Добавить в мой список"
                                                                     }
                                                                 </Flex>
-                                                            ) : (
-                                                                <Flex
-                                                                    style={{
-                                                                        color: anime.categoryColor,
-                                                                    }}
-                                                                    gap={5}
-                                                                >
-                                                                    <BookOutlined />
-                                                                    {
-                                                                        anime.categoryName
-                                                                    }
-                                                                </Flex>
+                                                            }
+                                                            dropdownRender={(
+                                                                menu: any
+                                                            ) => (
+                                                                <>
+                                                                    {menu}
+                                                                    <Divider
+                                                                        style={{
+                                                                            marginBlock: 10,
+                                                                        }}
+                                                                    />
+
+                                                                    {anime.seriesId && (
+                                                                        <Button
+                                                                            style={{
+                                                                                fontSize: 12,
+                                                                                fontWeight: 500,
+                                                                            }}
+                                                                            className="width-100"
+                                                                            size="small"
+                                                                            danger
+                                                                            type="link"
+                                                                            icon={
+                                                                                <CloseOutlined />
+                                                                            }
+                                                                            onClick={() =>
+                                                                                deleteSeriesById(
+                                                                                    anime.seriesId
+                                                                                )
+                                                                            }
+                                                                        >
+                                                                            Удалить
+                                                                            из
+                                                                            списка
+                                                                        </Button>
+                                                                    )}
+                                                                </>
                                                             )}
-                                                        </Dropdown.Button>
+                                                            options={
+                                                                filteredCategories
+                                                            }
+                                                        />
 
                                                         {anime.seriesId && (
                                                             <InputNumber

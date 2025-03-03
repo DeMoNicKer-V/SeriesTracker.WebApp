@@ -79,15 +79,11 @@ export const createSeries = async (seriesReqruest: SeriesRequest) => {
         // Можно показать пользователю сообщение об ошибке
         return;
     }
-
-    // Если запрос успешно выполнен, перезагружаем страницу
-    window.location.reload();
 };
 
 export const updateSeries = async (
     id: string,
-    seriesReqruest: SeriesRequest,
-    refresh = false
+    seriesReqruest: SeriesRequest
 ) => {
     const response = await fetch(
         `http://localhost:5125/controller/updateSeries/${id}`,
@@ -106,9 +102,6 @@ export const updateSeries = async (
         // Можно показать пользователю сообщение об ошибке
         return;
     }
-
-    // Если запрос успешно выполнен, перезагружаем страницу
-    refresh ?? window.location.reload();
 };
 
 export const deleteSeries = async (id: string) => {
@@ -128,9 +121,6 @@ export const deleteSeries = async (id: string) => {
         // Можно показать пользователю сообщение об ошибке
         return;
     }
-
-    // Если запрос успешно выполнен, перезагружаем страницу
-    window.location.reload();
 };
 
 export const deleteSeriesByAnimeId = async (id: number) => {

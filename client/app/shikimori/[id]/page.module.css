@@ -45,3 +45,7 @@
 .descriptionText {
     font-size: 15px;
 }
+
+.selector :not(span):not(svg) > *:not(span):not(svg) {
+    color: rgba(255, 255, 255, 0.85);
+}
