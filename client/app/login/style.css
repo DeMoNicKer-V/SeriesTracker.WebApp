@@ -1,6 +1,15 @@
+.bg {
+    position: relative;
+    height: 100%;
+    width: 100%;
+    align-items: center;
+    padding: 24px;
+}
+
 label {
     font-weight: 600;
 }
+
 @media (max-width: 992px) {
     .head {
         justify-content: space-between;

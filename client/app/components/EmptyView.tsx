@@ -1,4 +1,4 @@
-import { Flex, Typography } from "antd";
+import { Flex, Space, Typography } from "antd";
 
 import { InfoCircleOutlined } from "@ant-design/icons";
 
@@ -9,16 +9,18 @@ interface Props {
 }
 export const EmptyView = ({ text, iconSize = 32, fontSize = 22 }: Props) => {
     return (
-        <Typography.Text
-            style={{
-                fontSize: fontSize,
-                textAlign: "center",
-            }}
-        >
+        <Space wrap style={{ justifyContent: "center", textAlign: "center" }}>
             <InfoCircleOutlined
                 style={{ fontSize: iconSize, verticalAlign: "bottom" }}
-            />{" "}
-            {text}
-        </Typography.Text>
+            />
+            <p
+                style={{
+                    fontSize: fontSize,
+                    fontWeight: 500,
+                }}
+            >
+                {text}
+            </p>
+        </Space>
     );
 };

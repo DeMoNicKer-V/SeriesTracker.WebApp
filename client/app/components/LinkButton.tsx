@@ -1,4 +1,4 @@
-import { Button } from "antd";
+import { Button, Flex } from "antd";
 import React from "react";
 import { LongRightArrow } from "../img/LongRightArrow";
 import { LongLeftArrow } from "../img/LongLeftArrow";
@@ -17,15 +17,26 @@ const LinkButton = ({
     arrowIcon = "right",
 }: Props) => {
     return (
-        <Button
-            style={{ fontWeight: 700, width: "100%" }}
-            type="link"
-            href={href}
-            icon={arrowIcon === "left" ? <LongLeftArrow /> : <LongRightArrow />}
-            iconPosition={iconPosition}
-        >
-            {text}
-        </Button>
+        <Flex justify="center">
+            <Button
+                style={{
+                    fontWeight: 700,
+                    paddingInline: "15px 0",
+                }}
+                type="link"
+                href={href}
+                icon={
+                    arrowIcon === "left" ? (
+                        <LongLeftArrow />
+                    ) : (
+                        <LongRightArrow />
+                    )
+                }
+                iconPosition={iconPosition}
+            >
+                {text}
+            </Button>
+        </Flex>
     );
 };
 export default LinkButton;

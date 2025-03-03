@@ -12,7 +12,6 @@ import {
     Image,
     List,
     Row,
-    Tag,
     Tooltip,
     Typography,
 } from "antd";
@@ -45,7 +44,7 @@ dayjs.extend(relativeTime);
 
 export default function UserPage({ params }: { params: { username: string } }) {
     const router = useRouter();
-    const [error, setError] = useState<boolean>(false);
+    const [error, setError] = useState<boolean | null>(null);
     const [currentUser, setCurrentUser] = useState<boolean>(false);
     const pathname = usePathname();
     const [userInfo, setUserInfo] = useState<MainUserInfo>(defaultUserValues);
@@ -55,9 +54,10 @@ export default function UserPage({ params }: { params: { username: string } }) {
     const getCurrentUser = async (username: string) => {
         const user = await getUserByUserName(username);
         if (!user) {
+            setError(true);
             return;
         }
-        setError(true);
+        setError(false);
         setCurrentUser(await IsCurrentUser(username));
         setUserInfo(user);
         if (user.seriesIDS.length > 0) {
@@ -77,186 +77,195 @@ export default function UserPage({ params }: { params: { username: string } }) {
         } else return dayjs(dateBirth).fromNow(true);
     };
 
-    return error === true ? (
+    return (
         <div className="container">
             <title>{`${params.username} / Профиль`}</title>
-            <Row gutter={[15, 15]} align={"top"} justify={"center"}>
-                <Col xs={24} sm={24} md={24} lg={16} xl={16} xxl={16}>
-                    <Card style={{ padding: 12 }}>
-                        <Row className={styles["header-user-info"]}>
-                            <Col span={24}>
-                                <Row align={"middle"} gutter={[0, 0]}>
-                                    <Col>
-                                        <Avatar
-                                            style={{
-                                                backgroundColor: "transparent",
-                                            }}
-                                            icon={<UserOutlined />}
-                                            size={100}
-                                            src={
-                                                userInfo?.avatar
-                                                    ? userInfo?.avatar
-                                                    : null
-                                            }
-                                            shape="circle"
-                                        ></Avatar>
-                                    </Col>
-                                    <Col>
-                                        <Divider
-                                            className={
-                                                styles["username-divider"]
-                                            }
-                                        >
-                                            <Flex align="baseline">
-                                                <Title level={3}>
-                                                    {userInfo?.userName}
-                                                </Title>
-                                                {userInfo?.roleId === 1 && (
-                                                    <Tooltip title="Админ">
-                                                        <Button
-                                                            style={{
-                                                                fontSize: 18,
-                                                            }}
-                                                            color="gold"
-                                                            variant="link"
-                                                            icon={
-                                                                <CrownOutlined />
-                                                            }
-                                                        />
-                                                    </Tooltip>
-                                                )}
-                                            </Flex>
-                                        </Divider>
-
-                                        <Paragraph>
-                                            {userInfo?.name}
-                                            {userInfo?.surName}
-                                            <Divider type="vertical" />
-                                            {getFormatedAge(
-                                                userInfo?.dateBirth
-                                            )}
-                                            <Divider type="vertical" />
-                                            {`на сайте с`}{" "}
-                                            <Text
-                                                underline
+            {error === false && (
+                <Row gutter={[15, 15]} align={"top"} justify={"center"}>
+                    <Col xs={24} sm={24} md={24} lg={16} xl={16} xxl={16}>
+                        <Card style={{ padding: 12 }}>
+                            <Row className={styles["header-user-info"]}>
+                                <Col span={24}>
+                                    <Row align={"middle"} gutter={[0, 0]}>
+                                        <Col>
+                                            <Avatar
                                                 style={{
-                                                    cursor: "help",
-                                                    textDecorationStyle:
-                                                        "dashed",
+                                                    backgroundColor:
+                                                        "transparent",
                                                 }}
+                                                icon={<UserOutlined />}
+                                                size={100}
+                                                src={
+                                                    userInfo?.avatar
+                                                        ? userInfo?.avatar
+                                                        : null
+                                                }
+                                                shape="circle"
+                                            ></Avatar>
+                                        </Col>
+                                        <Col>
+                                            <Divider
+                                                className={
+                                                    styles["username-divider"]
+                                                }
                                             >
-                                                <Tooltip
-                                                    title={new Date(
-                                                        userInfo.regDate
-                                                    ).toLocaleDateString(
-                                                        "ru-RU",
-                                                        {
-                                                            day: "numeric",
-                                                            month: "long",
-                                                            year: "numeric",
-                                                        }
-                                                    )}
-                                                >
-                                                    {`${new Date(
-                                                        userInfo.regDate
-                                                    ).getFullYear()} г.`}
-                                                </Tooltip>
-                                            </Text>
-                                        </Paragraph>
-                                    </Col>
-                                </Row>
-                            </Col>
-                        </Row>
-                    </Card>
-                </Col>
-                {userInfo.seriesGroup.length > 0 ? (
-                    <SeriesGroupInfo
-                        items={userInfo.seriesGroup}
-                        username={userInfo.userName}
-                    />
-                ) : (
-                    <Col xs={24} sm={24} md={24} lg={16} xl={16}>
-                        <EmptyView text="Пользователь еще ничего не добавил" />
-                    </Col>
-                )}
-                {userInfo.seriesGroup.length > 0 && (
-                    <Col xs={24} sm={24} md={24} lg={16} xl={16}>
-                        <Title level={4}>
-                            <Link href={`${userInfo?.userName}/list`}>
-                                Последняя активность
-                            </Link>
-                        </Title>
-                        <Divider />
-                        <ConfigProvider
-                            renderEmpty={() => (
-                                <EmptyView text="Пользователь еще ничего не добавил" />
-                            )}
-                            theme={{
-                                components: {
-                                    Card: {
-                                        bodyPadding: 12,
-                                    },
-                                },
-                            }}
-                        >
-                            <List
-                                loading={{
-                                    spinning: isLoading,
-                                    size: "large",
-                                }}
-                                dataSource={animes}
-                                renderItem={(item: LastActivityAnime) => (
-                                    <List.Item style={{ display: "block" }}>
-                                        <Link href={`/shikimori/${item.id}`}>
-                                            <Card hoverable>
-                                                <Row
-                                                    className="responsive-text-align"
-                                                    gutter={[20, 20]}
-                                                    align={"middle"}
-                                                >
-                                                    <Col
-                                                        xs={24}
-                                                        sm={4}
-                                                        lg={4}
-                                                        xxl={2}
-                                                    >
-                                                        <Image
-                                                            preview={false}
-                                                            height={90}
-                                                            src={item.image}
-                                                        />
-                                                    </Col>
-                                                    <Col
-                                                        xs={24}
-                                                        sm={20}
-                                                        lg={20}
-                                                        xxl={20}
-                                                    >
-                                                        <MainShortInfo
-                                                            title={item.title}
-                                                            subTitle={new Date(
-                                                                item.date
-                                                            ).toLocaleDateString(
-                                                                "ru-RU",
-                                                                {
-                                                                    day: "numeric",
-                                                                    month: "long",
-                                                                    year: "numeric",
+                                                <Flex align="baseline">
+                                                    <Title level={3}>
+                                                        {userInfo?.userName}
+                                                    </Title>
+                                                    {userInfo?.roleId === 1 && (
+                                                        <Tooltip title="Админ">
+                                                            <Button
+                                                                style={{
+                                                                    fontSize: 18,
+                                                                }}
+                                                                color="gold"
+                                                                variant="link"
+                                                                icon={
+                                                                    <CrownOutlined />
                                                                 }
-                                                            )}
-                                                        />
-                                                    </Col>
-                                                </Row>
-                                            </Card>
-                                        </Link>
-                                    </List.Item>
-                                )}
-                            ></List>
-                        </ConfigProvider>
-                    </Col>
-                )}
-            </Row>
+                                                            />
+                                                        </Tooltip>
+                                                    )}
+                                                </Flex>
+                                            </Divider>
 
+                                            <Paragraph>
+                                                {userInfo?.name}
+                                                {userInfo?.surName}
+                                                <Divider type="vertical" />
+                                                {getFormatedAge(
+                                                    userInfo?.dateBirth
+                                                )}
+                                                <Divider type="vertical" />
+                                                {`на сайте с`}{" "}
+                                                <Text
+                                                    underline
+                                                    style={{
+                                                        cursor: "help",
+                                                        textDecorationStyle:
+                                                            "dashed",
+                                                    }}
+                                                >
+                                                    <Tooltip
+                                                        title={new Date(
+                                                            userInfo.regDate
+                                                        ).toLocaleDateString(
+                                                            "ru-RU",
+                                                            {
+                                                                day: "numeric",
+                                                                month: "long",
+                                                                year: "numeric",
+                                                            }
+                                                        )}
+                                                    >
+                                                        {`${new Date(
+                                                            userInfo.regDate
+                                                        ).getFullYear()} г.`}
+                                                    </Tooltip>
+                                                </Text>
+                                            </Paragraph>
+                                        </Col>
+                                    </Row>
+                                </Col>
+                            </Row>
+                        </Card>
+                    </Col>
+                    {userInfo.seriesGroup.length > 0 ? (
+                        <SeriesGroupInfo
+                            items={userInfo.seriesGroup}
+                            username={userInfo.userName}
+                        />
+                    ) : (
+                        <Col xs={24} sm={24} md={24} lg={16} xl={16}>
+                            <EmptyView text="Пользователь еще ничего не добавил" />
+                        </Col>
+                    )}
+                    {userInfo.seriesGroup.length > 0 && (
+                        <Col xs={24} sm={24} md={24} lg={16} xl={16}>
+                            <Title level={4}>
+                                <Link href={`${userInfo?.userName}/list`}>
+                                    Последняя активность
+                                </Link>
+                            </Title>
+                            <Divider />
+                            <ConfigProvider
+                                renderEmpty={() => (
+                                    <EmptyView text="Пользователь еще ничего не добавил" />
+                                )}
+                                theme={{
+                                    components: {
+                                        Card: {
+                                            bodyPadding: 12,
+                                        },
+                                    },
+                                }}
+                            >
+                                <List
+                                    loading={{
+                                        spinning: isLoading,
+                                        size: "large",
+                                    }}
+                                    dataSource={animes}
+                                    renderItem={(item: LastActivityAnime) => (
+                                        <List.Item style={{ display: "block" }}>
+                                            <Link
+                                                href={`/shikimori/${item.id}`}
+                                            >
+                                                <Card hoverable>
+                                                    <Row
+                                                        className="responsive-text-align"
+                                                        gutter={[20, 20]}
+                                                        align={"middle"}
+                                                    >
+                                                        <Col
+                                                            xs={24}
+                                                            sm={4}
+                                                            lg={4}
+                                                            xxl={2}
+                                                        >
+                                                            <Image
+                                                                preview={false}
+                                                                height={90}
+                                                                src={item.image}
+                                                            />
+                                                        </Col>
+                                                        <Col
+                                                            xs={24}
+                                                            sm={20}
+                                                            lg={20}
+                                                            xxl={20}
+                                                        >
+                                                            <MainShortInfo
+                                                                title={
+                                                                    item.title
+                                                                }
+                                                                subTitle={new Date(
+                                                                    item.date
+                                                                ).toLocaleDateString(
+                                                                    "ru-RU",
+                                                                    {
+                                                                        day: "numeric",
+                                                                        month: "long",
+                                                                        year: "numeric",
+                                                                    }
+                                                                )}
+                                                            />
+                                                        </Col>
+                                                    </Row>
+                                                </Card>
+                                            </Link>
+                                        </List.Item>
+                                    )}
+                                ></List>
+                            </ConfigProvider>
+                        </Col>
+                    )}
+                </Row>
+            )}
+            {error === true && (
+                <PageErrorView text="Такого пользователя не существует" />
+            )}
             {currentUser && (
                 <FloatButton.Group style={{ right: 32 }}>
                     <FloatButton
@@ -267,7 +276,5 @@ export default function UserPage({ params }: { params: { username: string } }) {
                 </FloatButton.Group>
             )}
         </div>
-    ) : (
-        <PageErrorView text="Такого пользователя не существует" />
     );
 }

@@ -41,6 +41,7 @@ input {
 }
 
 .container {
+    position: relative;
     padding: 20px;
     min-height: 100%;
     min-width: 100%;
@@ -174,4 +175,12 @@ button[aria-hidden="true"] {
 img {
     pointer-events: none;
     border-radius: 5px;
+}
+
+.absolute-center {
+    position: absolute; /* Позволяет растянуть элемент на всё пространство */
+    top: 0; /* Привязывает к верхнему краю родителя */
+    right: 0; /* Привязывает к правому краю родителя */
+    bottom: 0; /* Привязывает к нижнему краю родителя */
+    left: 0;
 }

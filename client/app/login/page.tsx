@@ -15,7 +15,7 @@ const { Text, Title, Link } = Typography;
 const LoginPage = () => {
     const [form] = Form.useForm();
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
-    const [auth, setAuth] = useState<boolean>(false);
+    const [auth, setAuth] = useState<boolean | null>(null);
 
     const getIsAuth = async () => {
         const status = await IsAuth();
@@ -39,120 +39,120 @@ const LoginPage = () => {
         setErrorMessage(values.errorFields[0].errors);
     };
 
-    return auth === false ? (
-        <Flex
-            className="flex-column width-height-100"
-            align="center"
-            style={{
-                padding: 24,
-            }}
-        >
+    return (
+        <Flex className="bg flex-column">
             <title>Series Tracker - Вход</title>
-            <SignPageConfigProvider>
-                <SignFormHeader
-                    text="Ещё нет аккаунта?"
-                    actionText="Регистрация"
-                    href="/signup"
-                />
+            {auth === false && (
+                <SignPageConfigProvider>
+                    <SignFormHeader
+                        text="Ещё нет аккаунта?"
+                        actionText="Регистрация"
+                        href="/signup"
+                    />
 
-                <Flex align="center" className="flex-column width-100 headline">
-                    <Title level={4}>
-                        Вход на{" "}
-                        <Link style={{ fontSize: 20 }}>@SeriesTracker</Link>
-                    </Title>
-
-                    <Card
-                        className="width-100"
-                        style={{
-                            textAlign: "center",
-                            cursor: "default",
-                        }}
+                    <Flex
+                        align="center"
+                        className="flex-column width-100 headline"
                     >
-                        <Form
-                            onFinishFailed={loginFailed}
-                            onFinish={loginUser}
-                            layout="vertical"
-                            form={form}
-                            name="loginForm"
-                            style={{ width: "100%" }}
-                            initialValues={{ items: [{}] }}
+                        <Title level={4}>
+                            Вход на{" "}
+                            <Link style={{ fontSize: 20 }}>@SeriesTracker</Link>
+                        </Title>
+
+                        <Card
+                            className="width-100"
+                            style={{
+                                textAlign: "center",
+                                cursor: "default",
+                            }}
                         >
-                            <Form.Item
-                                validateFirst
-                                help={false}
-                                name={["email"]}
-                                label="Эл. почта"
-                                rules={[
-                                    {
-                                        type: "email",
-                                        message: "Эл. почта неккоректна",
-                                    },
-                                    {
-                                        required: true,
-                                        message:
-                                            "Вы не можете войти без эл. почты",
-                                    },
-                                ]}
+                            <Form
+                                onFinishFailed={loginFailed}
+                                onFinish={loginUser}
+                                layout="vertical"
+                                form={form}
+                                name="loginForm"
+                                style={{ width: "100%" }}
+                                initialValues={{ items: [{}] }}
                             >
-                                <Input
-                                    autoComplete={"email"}
-                                    addonBefore={<MailOutlined />}
-                                    autoFocus
-                                    spellCheck={false}
-                                />
-                            </Form.Item>
-
-                            <Form.Item
-                                validateFirst
-                                help={false}
-                                rules={[
-                                    {
-                                        required: true,
-                                        message:
-                                            "Вы не можете войти без пароля",
-                                    },
-                                ]}
-                                name={["password"]}
-                                label="Пароль"
-                            >
-                                <Input.Password
-                                    autoComplete={"current-password"}
-                                    addonBefore={<KeyOutlined />}
-                                    spellCheck={false}
-                                />
-                            </Form.Item>
-                            <Form.Item shouldUpdate>
-                                {() => (
-                                    <Text
-                                        strong
-                                        type="danger"
-                                        style={{
-                                            opacity: 0.8,
-                                        }}
-                                    >
-                                        {errorMessage}
-                                    </Text>
-                                )}
-                            </Form.Item>
-
-                            <Divider />
-                            <Form.Item>
-                                <Button
-                                    ghost
-                                    block
-                                    type="primary"
-                                    htmlType="submit"
+                                <Form.Item
+                                    validateFirst
+                                    help={false}
+                                    name={["email"]}
+                                    label="Эл. почта"
+                                    rules={[
+                                        {
+                                            type: "email",
+                                            message: "Эл. почта неккоректна",
+                                        },
+                                        {
+                                            required: true,
+                                            message:
+                                                "Вы не можете войти без эл. почты",
+                                        },
+                                    ]}
                                 >
-                                    Войти
-                                </Button>
-                            </Form.Item>
-                        </Form>
-                    </Card>
-                </Flex>
-            </SignPageConfigProvider>
+                                    <Input
+                                        autoComplete={"email"}
+                                        addonBefore={<MailOutlined />}
+                                        autoFocus
+                                        spellCheck={false}
+                                    />
+                                </Form.Item>
+
+                                <Form.Item
+                                    validateFirst
+                                    help={false}
+                                    rules={[
+                                        {
+                                            required: true,
+                                            message:
+                                                "Вы не можете войти без пароля",
+                                        },
+                                    ]}
+                                    name={["password"]}
+                                    label="Пароль"
+                                >
+                                    <Input.Password
+                                        autoComplete={"current-password"}
+                                        addonBefore={<KeyOutlined />}
+                                        spellCheck={false}
+                                    />
+                                </Form.Item>
+                                <Form.Item shouldUpdate>
+                                    {() => (
+                                        <Text
+                                            strong
+                                            type="danger"
+                                            style={{
+                                                opacity: 0.8,
+                                            }}
+                                        >
+                                            {errorMessage}
+                                        </Text>
+                                    )}
+                                </Form.Item>
+
+                                <Divider />
+                                <Form.Item>
+                                    <Button
+                                        ghost
+                                        block
+                                        type="primary"
+                                        htmlType="submit"
+                                    >
+                                        Войти
+                                    </Button>
+                                </Form.Item>
+                            </Form>
+                        </Card>
+                    </Flex>
+                </SignPageConfigProvider>
+            )}
+            {auth === true && (
+                <PageErrorView text="Вы уже вошли в свой аккаунт" />
+            )}
         </Flex>
-    ) : (
-        <PageErrorView text="Вы уже вошли в свой аккаунт" />
     );
 };
 

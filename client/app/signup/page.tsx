@@ -37,13 +37,13 @@ const { Text, Title, Link } = Typography;
 const SignupPage = () => {
     const router = useRouter();
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
-    const [current, setCurrent] = useState<number>(2);
+    const [current, setCurrent] = useState<number>(0);
     const [formData, setFormData] = useState<UserRequest>({
         email: "",
         password: "",
         userName: "",
     });
-    const [auth, setAuth] = useState<boolean>(false);
+    const [auth, setAuth] = useState<boolean | null>(null);
     const [checked, setChecked] = useState(false);
 
     const [form] = Form.useForm();
@@ -82,218 +82,225 @@ const SignupPage = () => {
         getIsAuth();
     }, []);
 
-    return auth === false ? (
-        <Flex
-            className="bg flex-column"
-            style={{
-                alignItems: "center",
-                padding: 24,
-            }}
-        >
+    return (
+        <Flex className="bg flex-column">
             <title>Series Tracker - Регистрация</title>
-            <SignPageConfigProvider>
-                <SignFormHeader
-                    text="Уже есть аккаунт?"
-                    actionText="Войти"
-                    href="/login"
-                />
+            {auth === false && (
+                <SignPageConfigProvider>
+                    <SignFormHeader
+                        text="Уже есть аккаунт?"
+                        actionText="Войти"
+                        href="/login"
+                    />
 
-                <Flex className="flex-column width-100 form-content">
-                    <Title level={4}>
-                        Регистрация на{" "}
-                        <Link style={{ fontSize: 20 }}>@SeriesTracker</Link>
-                    </Title>
-                    <Card className="width-100">
-                        {current === 0 && (
-                            <MainForm form={form} handleNext={handleNext} />
-                        )}
-                        {current === 1 && (
-                            <SecondaryForm
-                                form={form}
-                                handleNext={handleNext}
-                                setCurrent={setCurrent}
-                            />
-                        )}
-                        {current === 2 && (
-                            <Form
-                                onFinish={() => createNewAccount()}
-                                className="review-form"
-                                spellCheck={false}
-                                layout="horizontal"
-                            >
-                                <Flex
-                                    className="flex-column"
-                                    style={{ marginBottom: 10 }}
-                                    justify="center"
-                                    align="center"
+                    <Flex className="flex-column width-100 form-content">
+                        <Title level={4}>
+                            Регистрация на{" "}
+                            <Link style={{ fontSize: 20 }}>@SeriesTracker</Link>
+                        </Title>
+                        <Card className="width-100">
+                            {current === 0 && (
+                                <MainForm form={form} handleNext={handleNext} />
+                            )}
+                            {current === 1 && (
+                                <SecondaryForm
+                                    form={form}
+                                    handleNext={handleNext}
+                                    setCurrent={setCurrent}
+                                />
+                            )}
+                            {current === 2 && (
+                                <Form
+                                    onFinish={() => createNewAccount()}
+                                    className="review-form"
+                                    spellCheck={false}
+                                    layout="horizontal"
                                 >
-                                    <Form.Item shouldUpdate>
-                                        {() => (
-                                            <Text
-                                                strong
-                                                type="danger"
-                                                style={{
-                                                    opacity: 0.8,
-                                                }}
-                                            >
-                                                {errorMessage}
-                                            </Text>
-                                        )}
-                                    </Form.Item>
-
-                                    <Form.Item noStyle>
-                                        <Avatar
-                                            icon={<UserOutlined />}
-                                            shape="circle"
-                                            src={formData.avatar}
-                                            size={120}
-                                        />
-                                    </Form.Item>
-                                </Flex>
-
-                                <Form.Item label={"Никнейм"}>
-                                    <Input
-                                        autoComplete="off"
-                                        variant="borderless"
-                                        readOnly
-                                        value={formData.userName}
-                                    />
-                                </Form.Item>
-                                <Form.Item label={"Эл. почта"}>
-                                    <Input
-                                        autoComplete="off"
-                                        variant="borderless"
-                                        readOnly
-                                        value={formData.email}
-                                    />
-                                </Form.Item>
-
-                                <Form.Item label={"Пароль"}>
-                                    <Input.Password
-                                        autoComplete="off"
-                                        readOnly
-                                        value={formData.password}
-                                        variant="borderless"
-                                    />
-                                </Form.Item>
-
-                                <Collapse
-                                    className="nonrequired-collapse"
-                                    bordered={false}
-                                    style={{
-                                        backgroundColor: "transparent",
-                                    }}
-                                    items={[
-                                        {
-                                            key: "1",
-                                            label: (
-                                                <Divider orientation="left">
-                                                    Необязательные данные
-                                                </Divider>
-                                            ),
-                                            children: (
-                                                <Flex
+                                    <Flex
+                                        className="flex-column"
+                                        style={{ marginBottom: 10 }}
+                                        justify="center"
+                                        align="center"
+                                    >
+                                        <Form.Item shouldUpdate>
+                                            {() => (
+                                                <Text
+                                                    strong
+                                                    type="danger"
                                                     style={{
-                                                        flexDirection: "column",
+                                                        opacity: 0.8,
                                                     }}
                                                 >
-                                                    <Form.Item label={"Имя"}>
-                                                        <Input
-                                                            value={
-                                                                formData.name
-                                                            }
-                                                            placeholder="не указано"
-                                                            readOnly
-                                                            variant="borderless"
-                                                        />
-                                                    </Form.Item>
-                                                    <Form.Item
-                                                        label={"Фамилия"}
-                                                    >
-                                                        <Input
-                                                            value={
-                                                                formData.surName
-                                                            }
-                                                            placeholder="не указано"
-                                                            readOnly
-                                                            variant="borderless"
-                                                        />
-                                                    </Form.Item>
-                                                    <Form.Item
-                                                        label={"Дата рождения"}
-                                                    >
-                                                        <DatePicker
-                                                            value={
-                                                                formData.dateBirth
-                                                                    ? dayjs(
-                                                                          formData.dateBirth
-                                                                      )
-                                                                    : null
-                                                            }
-                                                            locale={locale}
-                                                            format={
-                                                                "D MMMM, YYYY"
-                                                            }
-                                                            suffixIcon={null}
-                                                            className="width-100"
-                                                            allowClear={false}
-                                                            placeholder="не указано"
-                                                            inputReadOnly
-                                                            popupStyle={{
-                                                                display: "none",
-                                                            }}
-                                                            variant="borderless"
-                                                        />
-                                                    </Form.Item>
-                                                </Flex>
-                                            ),
-                                        },
-                                    ]}
-                                />
+                                                    {errorMessage}
+                                                </Text>
+                                            )}
+                                        </Form.Item>
 
-                                <Checkbox onChange={onChangeAgreeRules}>
-                                    <Text>
-                                        Я ознакомлен(а) с{" "}
-                                        <Link href="/about" target="_blank">
-                                            правилами
-                                        </Link>{" "}
-                                        сайта и соглашаюсь с ними.
-                                    </Text>
-                                </Checkbox>
+                                        <Form.Item noStyle>
+                                            <Avatar
+                                                icon={<UserOutlined />}
+                                                shape="circle"
+                                                src={formData.avatar}
+                                                size={120}
+                                            />
+                                        </Form.Item>
+                                    </Flex>
 
-                                <Divider />
-                                <Flex gap={10} justify="space-between">
-                                    <Form.Item>
-                                        <Button
-                                            style={{
-                                                opacity: 0.75,
-                                                fontSize: 12,
-                                            }}
-                                            icon={<LongLeftArrow />}
-                                            onClick={() => setCurrent(1)}
-                                            type="link"
-                                        >
-                                            Назад
-                                        </Button>
+                                    <Form.Item label={"Никнейм"}>
+                                        <Input
+                                            autoComplete="off"
+                                            variant="borderless"
+                                            readOnly
+                                            value={formData.userName}
+                                        />
                                     </Form.Item>
-                                    <Form.Item>
-                                        <Button
-                                            disabled={!checked}
-                                            htmlType="submit"
-                                            type="primary"
-                                            shape="circle"
-                                            icon={<CheckOutlined />}
-                                        ></Button>
+                                    <Form.Item label={"Эл. почта"}>
+                                        <Input
+                                            autoComplete="off"
+                                            variant="borderless"
+                                            readOnly
+                                            value={formData.email}
+                                        />
                                     </Form.Item>
-                                </Flex>
-                            </Form>
-                        )}
-                    </Card>
-                </Flex>
-            </SignPageConfigProvider>
+
+                                    <Form.Item label={"Пароль"}>
+                                        <Input.Password
+                                            autoComplete="off"
+                                            readOnly
+                                            value={formData.password}
+                                            variant="borderless"
+                                        />
+                                    </Form.Item>
+
+                                    <Collapse
+                                        className="nonrequired-collapse"
+                                        bordered={false}
+                                        style={{
+                                            backgroundColor: "transparent",
+                                        }}
+                                        items={[
+                                            {
+                                                key: "1",
+                                                label: (
+                                                    <Divider orientation="left">
+                                                        Необязательные данные
+                                                    </Divider>
+                                                ),
+                                                children: (
+                                                    <Flex
+                                                        style={{
+                                                            flexDirection:
+                                                                "column",
+                                                        }}
+                                                    >
+                                                        <Form.Item
+                                                            label={"Имя"}
+                                                        >
+                                                            <Input
+                                                                value={
+                                                                    formData.name
+                                                                }
+                                                                placeholder="не указано"
+                                                                readOnly
+                                                                variant="borderless"
+                                                            />
+                                                        </Form.Item>
+                                                        <Form.Item
+                                                            label={"Фамилия"}
+                                                        >
+                                                            <Input
+                                                                value={
+                                                                    formData.surName
+                                                                }
+                                                                placeholder="не указано"
+                                                                readOnly
+                                                                variant="borderless"
+                                                            />
+                                                        </Form.Item>
+                                                        <Form.Item
+                                                            label={
+                                                                "Дата рождения"
+                                                            }
+                                                        >
+                                                            <DatePicker
+                                                                value={
+                                                                    formData.dateBirth
+                                                                        ? dayjs(
+                                                                              formData.dateBirth
+                                                                          )
+                                                                        : null
+                                                                }
+                                                                locale={locale}
+                                                                format={
+                                                                    "D MMMM, YYYY"
+                                                                }
+                                                                suffixIcon={
+                                                                    null
+                                                                }
+                                                                className="width-100"
+                                                                allowClear={
+                                                                    false
+                                                                }
+                                                                placeholder="не указано"
+                                                                inputReadOnly
+                                                                popupStyle={{
+                                                                    display:
+                                                                        "none",
+                                                                }}
+                                                                variant="borderless"
+                                                            />
+                                                        </Form.Item>
+                                                    </Flex>
+                                                ),
+                                            },
+                                        ]}
+                                    />
+
+                                    <Checkbox onChange={onChangeAgreeRules}>
+                                        <Text>
+                                            Я ознакомлен(а) с{" "}
+                                            <Link href="/about" target="_blank">
+                                                правилами
+                                            </Link>{" "}
+                                            сайта и соглашаюсь с ними.
+                                        </Text>
+                                    </Checkbox>
+
+                                    <Divider />
+                                    <Flex gap={10} justify="space-between">
+                                        <Form.Item>
+                                            <Button
+                                                style={{
+                                                    opacity: 0.75,
+                                                    fontSize: 12,
+                                                }}
+                                                icon={<LongLeftArrow />}
+                                                onClick={() => setCurrent(1)}
+                                                type="link"
+                                            >
+                                                Назад
+                                            </Button>
+                                        </Form.Item>
+                                        <Form.Item>
+                                            <Button
+                                                disabled={!checked}
+                                                htmlType="submit"
+                                                type="primary"
+                                                shape="circle"
+                                                icon={<CheckOutlined />}
+                                            ></Button>
+                                        </Form.Item>
+                                    </Flex>
+                                </Form>
+                            )}
+                        </Card>
+                    </Flex>
+                </SignPageConfigProvider>
+            )}
+            {auth === true && (
+                <PageErrorView text="Вы уже вошли в свой аккаунт" />
+            )}
         </Flex>
-    ) : (
-        <PageErrorView text="Вы уже вошли в свой аккаунт" />
     );
 };
 

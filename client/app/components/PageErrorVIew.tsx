@@ -13,7 +13,7 @@ const PageErrorView = ({ text }: Props) => {
             gap={10}
             justify="center"
             align="center"
-            className="flex-column height-100"
+            className="flex-column absolute-center"
         >
             <EmptyView text={text} />
             <LinkButton

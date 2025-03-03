@@ -9,12 +9,17 @@
     font-size: 15px !important;
     font-weight: 500;
 }
+
 .nonrequired-collapse:hover {
     box-shadow: none;
 }
+
 .bg {
+    position: relative;
     height: 100%;
     width: 100%;
+    align-items: center;
+    padding: 24px;
 }
 
 label {
