@@ -11,6 +11,7 @@ import {
     Tag,
     Popover,
     Flex,
+    Badge,
 } from "antd";
 import Input, { InputRef } from "antd/es/input";
 import { useEffect, useRef, useState } from "react";
@@ -20,6 +21,7 @@ import {
     FireOutlined,
     YoutubeOutlined,
     CalendarOutlined,
+    HeartFilled,
 } from "@ant-design/icons";
 import { getAnimesByName } from "../../services/shikimori";
 import noFoundImage from "../../img/img-error.jpg";
@@ -114,80 +116,104 @@ const SearchBar = ({}) => {
                         dataSource={animes}
                         renderItem={(item: SeriesAnime) => (
                             <Link target="_top" href={`/shikimori/${item.id}`}>
-                                <Card className={styles["card"]} hoverable>
-                                    <Row
-                                        style={{ flexFlow: "row" }}
-                                        align={"middle"}
-                                    >
-                                        <Col>
-                                            <Image
-                                                preview={false}
-                                                height={100}
-                                                width={70}
-                                                src={item.pictureUrl}
-                                                fallback={noFoundImage.src}
-                                            />
-                                        </Col>
-                                        <Col offset={1}>
-                                            <MainShortInfo
-                                                title={item.title}
-                                                subTitle={item.subTitle}
-                                            >
-                                                <Space wrap size={[5, 5]}>
-                                                    {item.status.length > 6 ? (
-                                                        <Tag
-                                                            color="orange"
-                                                            icon={
-                                                                <FireOutlined />
-                                                            }
-                                                        >
-                                                            {item.status}
-                                                        </Tag>
-                                                    ) : (
-                                                        <Tag
-                                                            icon={
-                                                                <FireOutlined />
-                                                            }
-                                                        >
-                                                            {item.status}
-                                                        </Tag>
-                                                    )}
-                                                    <Tag
-                                                        icon={
-                                                            <InfoCircleOutlined />
-                                                        }
-                                                    >
-                                                        {item.kind}
-                                                    </Tag>
-                                                    <Tag
-                                                        icon={
-                                                            <CalendarOutlined />
-                                                        }
-                                                    >
-                                                        {new Date(
-                                                            item.startDate
-                                                        ).toLocaleString(
-                                                            "ru-Ru",
-                                                            {
-                                                                year: "numeric",
-                                                            }
+                                <Badge.Ribbon
+                                    text={item.categoryName}
+                                    color={item.categoryColor}
+                                    style={{
+                                        display:
+                                            item.categoryId > 0
+                                                ? "block"
+                                                : "none",
+                                    }}
+                                >
+                                    <Card className={styles["card"]} hoverable>
+                                        <Row
+                                            style={{ flexFlow: "row" }}
+                                            align={"middle"}
+                                        >
+                                            <Col>
+                                                <Image
+                                                    preview={false}
+                                                    height={100}
+                                                    width={70}
+                                                    src={item.pictureUrl}
+                                                    fallback={noFoundImage.src}
+                                                />
+                                            </Col>
+                                            <Col offset={1}>
+                                                <MainShortInfo
+                                                    title={item.title}
+                                                    subTitle={item.subTitle}
+                                                >
+                                                    <Space wrap size={[5, 5]}>
+                                                        {item.isFavorite && (
+                                                            <Tag
+                                                                color="cyan"
+                                                                className="tag"
+                                                                icon={
+                                                                    <HeartFilled />
+                                                                }
+                                                            ></Tag>
                                                         )}
-                                                    </Tag>
+                                                        {item.status.length >
+                                                        6 ? (
+                                                            <Tag
+                                                                className="tag"
+                                                                color="orange"
+                                                                icon={
+                                                                    <FireOutlined />
+                                                                }
+                                                            >
+                                                                {item.status}
+                                                            </Tag>
+                                                        ) : (
+                                                            <Tag
+                                                                className="tag"
+                                                                icon={
+                                                                    <FireOutlined />
+                                                                }
+                                                            >
+                                                                {item.status}
+                                                            </Tag>
+                                                        )}
+                                                        <Tag
+                                                            className="tag"
+                                                            icon={
+                                                                <InfoCircleOutlined />
+                                                            }
+                                                        >
+                                                            {item.kind}
+                                                        </Tag>
+                                                        <Tag
+                                                            className="tag"
+                                                            icon={
+                                                                <CalendarOutlined />
+                                                            }
+                                                        >
+                                                            {new Date(
+                                                                item.startDate
+                                                            ).toLocaleString(
+                                                                "ru-Ru",
+                                                                {
+                                                                    year: "numeric",
+                                                                }
+                                                            )}
+                                                        </Tag>
 
-                                                    <Tag
-                                                        icon={
-                                                            <YoutubeOutlined />
-                                                        }
-                                                    >
-                                                        {item.status === "Вышло"
-                                                            ? `${item.episodes} эп.`
-                                                            : `${item.episodesAired} эп.`}
-                                                    </Tag>
-                                                </Space>
-                                            </MainShortInfo>
-                                        </Col>
-                                    </Row>
-                                </Card>
+                                                        <Tag
+                                                            className="tag"
+                                                            icon={
+                                                                <YoutubeOutlined />
+                                                            }
+                                                        >
+                                                            {`${item.episodes} эп.`}
+                                                        </Tag>
+                                                    </Space>
+                                                </MainShortInfo>
+                                            </Col>
+                                        </Row>
+                                    </Card>
+                                </Badge.Ribbon>
                                 <Divider />
                             </Link>
                         )}

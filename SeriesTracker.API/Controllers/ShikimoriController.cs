@@ -82,11 +82,19 @@ namespace SeriesTracker.API.Controllers
         }
 
         [HttpGet("{query}")]
-        public async Task<ActionResult<ShikimoriAnimeBaseList>> GetAnimesByName(string query)
+        public async Task<ActionResult> GetAnimesByName(string query)
         {
-            var graphQLResponse = await _shikimoriService.GetAnimesByName(query);
+            var userId = HttpContext.User.FindFirst("userId")?.Value != null ? Guid.Parse(HttpContext.User.FindFirst("userId")?.Value) : Guid.Empty;
 
-            return Ok(graphQLResponse.Data.Animes);
+            var graphQLResponse = await _shikimoriService.GetAnimesByName(query);
+            var animeTasks = graphQLResponse.Data.Animes
+                .Select(async item =>
+                {
+                    var response = await _categorySeriesService.GetSeriesAnimeId(userId, item.Id);
+                    return _shikimoriService.MapToAnimeSeriesFullDto(item, response, false);
+                });
+            var animeResponses = await Task.WhenAll(animeTasks);
+            return Ok(animeResponses);
         }
 
         [HttpGet("genres")]

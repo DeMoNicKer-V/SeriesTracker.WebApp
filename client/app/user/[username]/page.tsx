@@ -130,7 +130,7 @@ export default function UserPage({ params }: { params: { username: string } }) {
                                                 </Flex>
                                             </Divider>
 
-                                            <Paragraph>
+                                            <Paragraph style={{ fontSize: 16 }}>
                                                 {userInfo?.name}
                                                 {userInfo?.surName}
                                                 <Divider type="vertical" />
