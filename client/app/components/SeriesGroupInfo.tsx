@@ -48,10 +48,9 @@ const SeriesGroupInfo = ({ items, username }: Props) => {
                             >
                                 {`${item.name} (${item.seriesCount})`}
                             </Link>
-                            <Tag
-                                style={{ padding: 0, margin: 0 }}
-                                color={item.color}
-                            ></Tag>
+                            <div
+                                style={{ background: item.color, height: 1.5 }}
+                            />
                         </Flex>
                     </Col>
                 ))}

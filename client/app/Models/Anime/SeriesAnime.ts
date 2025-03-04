@@ -16,6 +16,7 @@ export interface SeriesAnime {
     categoryId: number;
     categoryName: string;
     categoryColor: string;
+    changedDate: string;
 }
 
 export const defaultValues: SeriesAnime = {
@@ -36,5 +37,6 @@ export const defaultValues: SeriesAnime = {
     categoryId: 0,
     categoryName: "",
     categoryColor: "",
+    changedDate: "",
     //  дефолтные значения для полей SeriesAnime
 };

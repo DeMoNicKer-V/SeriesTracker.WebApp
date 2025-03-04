@@ -76,7 +76,7 @@ export const getAnimesById = async (username: string, id: string) => {
             credentials: "include",
         }
     );
-    const animes: LastActivityAnime[] = await response.json();
+    const animes: SeriesAnime[] = await response.json();
     return animes;
 };
 

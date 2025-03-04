@@ -16,6 +16,7 @@ namespace SeriesTracker.Core.Mappers
                 WatchedEpisodes = series.WatchedEpisode,
                 AddedDate = series.AddedDate,
                 IsFavorite = series.IsFavorite,
+                ChangedDate = series.ChangedDate
             };
         }
     }

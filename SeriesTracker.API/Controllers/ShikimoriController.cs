@@ -2,8 +2,10 @@
 using Microsoft.AspNetCore.Mvc;
 using SeriesTracker.API.Contracts;
 using SeriesTracker.Core.Abstractions;
+using SeriesTracker.Core.Dtos.Anime;
 using SeriesTracker.Core.Models;
 using SeriesTracker.Core.Models.Shikimori;
+using System.Threading.Tasks;
 
 namespace SeriesTracker.API.Controllers
 {
@@ -39,10 +41,10 @@ namespace SeriesTracker.API.Controllers
         [HttpGet("id/{id}")]
         public async Task<ActionResult> GetAnimeById(int id)
         {
-            var userId = HttpContext.User.FindFirst("userId")?.Value != null ? Guid.Parse(HttpContext.User.FindFirst("userId")?.Value) : Guid.Empty;
+            var username = HttpContext.User.FindFirst("userName")?.Value != null ? HttpContext.User.FindFirst("userName")?.Value : "";
             GraphQLResponse<ShikimoriAnimeBaseList> graphQLResponse = await _shikimoriService.GetAnimeById(id.ToString());
             var anime = graphQLResponse.Data.Animes[0];
-            var response = await _categorySeriesService.GetSeriesAnimeId(userId, anime.Id);
+            var response = await _categorySeriesService.GetSeriesAnimeId(username, anime.Id);
             return (new OkObjectResult(_shikimoriService.MapToAnimeSeriesFullDto(anime, response, true)));
         }
 
@@ -51,22 +53,23 @@ namespace SeriesTracker.API.Controllers
         {
 
             GraphQLResponse<ShikimoriAnimeBaseList> graphQLResponse = await _shikimoriService.GetAnimeListByIds(id);
-            var anime = graphQLResponse.Data.Animes;
-            var response = new List<LastActivityResponse>();
-            foreach (var item in anime)
-            {
-                var ob = await _userSeriesService.GetSeriesByAnimeIdAsync(item.Id, username);
-                var b = new LastActivityResponse(item.Id, item.PictureUrl, item.Title, ob.ChangedDate);
-                response.Add(b);
-            }
-            var sortedResponse = response.OrderByDescending(item => DateTime.Parse(item.Date));
-            return new OkObjectResult(sortedResponse);
+            var animeTasks = graphQLResponse.Data.Animes
+                .Select(async item =>
+                {
+                    var response = await _categorySeriesService.GetSeriesAnimeId(username, item.Id);
+                    return _shikimoriService.MapToAnimeSeriesFullDto(item, response, false);
+                });
+
+            AnimeSeriesFullDto[] response = (await Task.WhenAll(animeTasks))
+                .Select(obj => (AnimeSeriesFullDto)obj).OrderByDescending(s => s.ChangedDate)
+                .ToArray();
+            return Ok(response);
         }
 
         [HttpGet]
         public async Task<ActionResult> GetAnimesByAllParams([FromQuery] ShikimoriParamsRequest request)
         {
-            var userId = HttpContext.User.FindFirst("userId")?.Value != null ? Guid.Parse(HttpContext.User.FindFirst("userId")?.Value) : Guid.Empty;
+            var username = HttpContext.User.FindFirst("userName")?.Value != null ? HttpContext.User.FindFirst("userName")?.Value : "";
             GraphQLResponse<ShikimoriAnimeBaseList> graphQLResponse =
                 await _shikimoriService.GetAnimesByAllParams(request.Page, request.Name, request.Season, request.Status,
                                                            request.Kind, request.Genre, request.Order, request.Censored);
@@ -74,23 +77,25 @@ namespace SeriesTracker.API.Controllers
             var animeTasks = graphQLResponse.Data.Animes
                 .Select(async item =>
                 {
-                    var response = await _categorySeriesService.GetSeriesAnimeId(userId, item.Id);
+                    var response = await _categorySeriesService.GetSeriesAnimeId(username, item.Id);
                     return _shikimoriService.MapToAnimeSeriesFullDto(item, response, false);
                 });
             var animeResponses = await Task.WhenAll(animeTasks);
             return Ok(animeResponses);
+
+
         }
 
         [HttpGet("{query}")]
         public async Task<ActionResult> GetAnimesByName(string query)
         {
-            var userId = HttpContext.User.FindFirst("userId")?.Value != null ? Guid.Parse(HttpContext.User.FindFirst("userId")?.Value) : Guid.Empty;
+            var username = HttpContext.User.FindFirst("userName")?.Value != null ? HttpContext.User.FindFirst("userName")?.Value : "";
 
             var graphQLResponse = await _shikimoriService.GetAnimesByName(query);
             var animeTasks = graphQLResponse.Data.Animes
                 .Select(async item =>
                 {
-                    var response = await _categorySeriesService.GetSeriesAnimeId(userId, item.Id);
+                    var response = await _categorySeriesService.GetSeriesAnimeId(username, item.Id);
                     return _shikimoriService.MapToAnimeSeriesFullDto(item, response, false);
                 });
             var animeResponses = await Task.WhenAll(animeTasks);

@@ -31,6 +31,7 @@ namespace SeriesTracker.Core.Mappers
                dest.CategoryColor = (string)context.Items["CategoryColor"];
                dest.WatchedEpisodes = (int)context.Items["WatchedEpisodes"];
                dest.AddedDate = (string)context.Items["AddedDate"];
+               dest.ChangedDate = (string)context.Items["ChangedDate"];
                dest.IsFavorite = (bool)context.Items["IsFavorite"];
            });
         }

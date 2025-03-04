@@ -25,6 +25,7 @@ namespace SeriesTracker.Core.Dtos.Anime
         public string? CategoryColor { get; set; } = string.Empty;
         public int WatchedEpisodes { get; set; } = 0;
         public string? AddedDate { get; set; } = string.Empty;
+        public string? ChangedDate { get; set; } = string.Empty;
         public bool IsFavorite { get; set; } = false;
     }
 }

@@ -61,6 +61,7 @@ namespace SeriesTracker.Application.Services
                 opt.Items["WatchedEpisodes"] = series.WatchedEpisodes;
                 opt.Items["AddedDate"] = series.AddedDate;
                 opt.Items["IsFavorite"] = series.IsFavorite;
+                opt.Items["ChangedDate"] = series.ChangedDate;
 
             });
         }

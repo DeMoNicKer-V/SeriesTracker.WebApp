@@ -6,7 +6,9 @@ interface Props {
     subTitle?: string;
     strongSubTitle?: boolean;
     description?: string;
+    descriptionColor: string;
     showDescription?: boolean;
+    descriptionPrefix?: string;
     children?: React.ReactNode;
 }
 
@@ -16,7 +18,9 @@ const MainShortInfo = ({
     subTitle,
     strongSubTitle = false,
     description,
+    descriptionColor = "",
     showDescription = false,
+    descriptionPrefix = "Описание:",
     children,
 }: Props) => {
     return (
@@ -31,7 +35,6 @@ const MainShortInfo = ({
             <Text
                 className={`${styles.trimText} ${styles.subTitle}`}
                 strong={strongSubTitle}
-                style={{ marginBottom: 5 }}
                 italic
                 type="secondary"
             >
@@ -39,10 +42,11 @@ const MainShortInfo = ({
             </Text>
             {showDescription && (
                 <Paragraph
+                    style={{ color: descriptionColor }}
                     className={`${styles.trimText} ${styles.description}`}
                 >
                     <Text strong type="secondary">
-                        Описание:{" "}
+                        {descriptionPrefix}{" "}
                     </Text>
                     {!description ? "отсутствует" : description}
                 </Paragraph>

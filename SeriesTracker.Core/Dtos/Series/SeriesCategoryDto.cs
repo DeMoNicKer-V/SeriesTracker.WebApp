@@ -31,6 +31,11 @@
             get; set;
         }
 
+        public string? ChangedDate
+        {
+            get; set;
+        }
+
         public bool IsFavorite
         {
             get; set;

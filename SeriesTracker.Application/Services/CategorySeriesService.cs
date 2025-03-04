@@ -26,11 +26,11 @@ namespace SeriesTracker.Application.Services
             }
         }
 
-        public async Task<SeriesCategoryDto?> GetSeriesAnimeId(Guid userId, int animeId)
+        public async Task<SeriesCategoryDto?> GetSeriesAnimeId(string username, int animeId)
         {
             using (var context = _contextFactory.CreateDbContext())
             {
-                var seriesCategory = await _categorySeriesRepository.GetSeriesAnimeId(userId, animeId);
+                var seriesCategory = await _categorySeriesRepository.GetSeriesAnimeId(username, animeId);
 
                 return seriesCategory;
             }

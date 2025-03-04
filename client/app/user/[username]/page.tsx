@@ -12,6 +12,7 @@ import {
     Image,
     List,
     Row,
+    Tag,
     Tooltip,
     Typography,
 } from "antd";
@@ -39,6 +40,7 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import SeriesGroupInfo from "@/app/components/SeriesGroupInfo";
 import PageErrorView from "@/app/components/PageErrorVIew";
 import MainShortInfo from "@/app/components/MainShortInfo/MainShortInfo";
+import { SeriesAnime } from "@/app/Models/Anime/SeriesAnime";
 dayjs.locale("ru");
 dayjs.extend(relativeTime);
 
@@ -48,7 +50,7 @@ export default function UserPage({ params }: { params: { username: string } }) {
     const [currentUser, setCurrentUser] = useState<boolean>(false);
     const pathname = usePathname();
     const [userInfo, setUserInfo] = useState<MainUserInfo>(defaultUserValues);
-    const [animes, setAnimes] = useState<LastActivityAnime[]>();
+    const [animes, setAnimes] = useState<SeriesAnime[]>();
     const { Text, Title, Paragraph } = Typography;
 
     const getCurrentUser = async (username: string) => {
@@ -207,7 +209,7 @@ export default function UserPage({ params }: { params: { username: string } }) {
                                         size: "large",
                                     }}
                                     dataSource={animes}
-                                    renderItem={(item: LastActivityAnime) => (
+                                    renderItem={(item: SeriesAnime) => (
                                         <List.Item style={{ display: "block" }}>
                                             <Link
                                                 href={`/shikimori/${item.id}`}
@@ -227,7 +229,9 @@ export default function UserPage({ params }: { params: { username: string } }) {
                                                             <Image
                                                                 preview={false}
                                                                 height={90}
-                                                                src={item.image}
+                                                                src={
+                                                                    item.pictureUrl
+                                                                }
                                                             />
                                                         </Col>
                                                         <Col
@@ -241,15 +245,25 @@ export default function UserPage({ params }: { params: { username: string } }) {
                                                                     item.title
                                                                 }
                                                                 subTitle={new Date(
-                                                                    item.date
+                                                                    item.changedDate
                                                                 ).toLocaleDateString(
                                                                     "ru-RU",
                                                                     {
                                                                         day: "numeric",
                                                                         month: "long",
                                                                         year: "numeric",
+                                                                        hour: "numeric",
+                                                                        minute: "numeric",
                                                                     }
                                                                 )}
+                                                                showDescription
+                                                                descriptionPrefix="Статус:"
+                                                                description={
+                                                                    item.categoryName
+                                                                }
+                                                                descriptionColor={
+                                                                    item.categoryColor
+                                                                }
                                                             />
                                                         </Col>
                                                     </Row>
