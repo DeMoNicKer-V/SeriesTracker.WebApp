@@ -9,42 +9,42 @@ import {
     EditOutlined,
     CloseOutlined,
     KeyOutlined,
+    CheckOutlined,
 } from "@ant-design/icons";
 import {
-    Avatar,
     Button,
     Card,
     Col,
-    DatePicker,
     Flex,
     Form,
     Input,
     Row,
-    Space,
     Typography,
     message,
     Divider,
     Breadcrumb,
     Tooltip,
     Modal,
+    ConfigProvider,
 } from "antd";
 import {
     checkExistEmail,
+    defaultUserValues,
     deleteSeriesByUsername,
     deleteUserByUsername,
     getUserByUserName,
+    MainUserInfo,
     updateUser,
-    UserInfo,
     verify,
 } from "../../../services/user";
 import Link from "next/link";
-import locale from "antd/es/date-picker/locale/ru_RU";
 import dayjs from "dayjs";
 import "dayjs/locale/ru";
-import AvatarPicker from "../../../components/AvatarPicker";
 import Paragraph from "antd/es/typography/Paragraph";
 import { useRouter } from "next/navigation";
 import { IsCurrentUser } from "@/app/api/coockie";
+import SecondaryEditUserForm from "@/app/components/UserComponents/SecondaryEditUserForm";
+import { LongLeftArrow } from "@/app/img/LongLeftArrow";
 dayjs.locale("ru");
 
 const { Text, Title } = Typography;
@@ -55,20 +55,25 @@ export default function EditUserPage({
 }) {
     const router = useRouter();
     const [messageApi, contextHolder] = message.useMessage();
-    const [user, setUser] = useState<UserInfo>();
+    const [user, setUser] = useState<MainUserInfo>(defaultUserValues);
     const [error, setError] = useState<boolean>(false);
     const [deleteStr, setDeleteStr] = useState<string>("");
     const [openDelete, setOpenDelete] = useState<boolean>(false);
     const [openDeleteUser, setOpenDeleteUser] = useState<boolean>(false);
-    const [avatarDelete, setAvatarDelete] = useState<boolean>(false);
     const [form] = Form.useForm();
     const getUser = async () => {
         if ((await IsCurrentUser(params.username)) === false) {
             return null;
         }
+
+        const potentialUser = await getUserByUserName(params.username);
+        setUser(potentialUser);
+        form.setFieldsValue(potentialUser); // Устанавливаем начальные значения формы
+        form.setFieldValue(
+            "dateBirth",
+            !potentialUser?.dateBirth ? null : dayjs(potentialUser?.dateBirth)
+        );
         setError(true);
-        const user = await getUserByUserName(params.username);
-        setUser(user.userInfo);
     };
 
     const deleteUser = async () => {
@@ -115,24 +120,12 @@ export default function EditUserPage({
         });
     };
 
-    useEffect(() => {
-        form.setFieldsValue(user); // Устанавливаем начальные значения формы
-        form.setFieldValue(
-            "dateBirth",
-            !user?.dateBirth ? null : dayjs(user?.dateBirth)
-        );
-    }, [user, form]);
-
     const onClose = () => {
         setOpenDelete(false);
         setOpenDeleteUser(false);
         setDeleteStr("");
     };
 
-    const onAvatarDeleteClick = () => {
-        setAvatarDelete(true);
-        form.setFieldValue("avatar", "");
-    };
     return error === true ? (
         <div className="container">
             {contextHolder}
@@ -159,353 +152,301 @@ export default function EditUserPage({
             />
             <Row justify="center" align="middle">
                 <Col>
-                    <Form
-                        style={{ maxWidth: 600 }}
-                        spellCheck={false}
-                        layout="vertical"
-                        onFinish={onFinish}
-                        form={form}
-                    >
-                        {user?.avatar && !avatarDelete && (
-                            <Flex style={{ marginBottom: 10 }} justify="center">
-                                <Avatar
-                                    src={user?.avatar}
-                                    size={160}
-                                    shape="square"
-                                />
-                                <Button
-                                    onClick={onAvatarDeleteClick}
-                                    style={{
-                                        position: "absolute",
-                                        top: "160px",
-                                    }}
-                                    type="text"
-                                    icon={<CloseOutlined />}
-                                />
-                            </Flex>
-                        )}
-                        <Space
-                            style={{ justifyContent: "center" }}
-                            wrap
-                            size={[10, 10]}
+                    <ConfigProvider>
+                        <Form
+                            spellCheck={false}
+                            layout="vertical"
+                            onFinish={onFinish}
+                            form={form}
                         >
                             <Form.Item
-                                style={{ margin: 0 }}
-                                name="avatar"
-                                valuePropName="fileList"
+                                noStyle
+                                className="width-100"
+                                name={"userName"}
                             >
-                                <AvatarPicker
-                                    onChange={(fileList) =>
-                                        form.setFieldValue("avatar", fileList)
+                                <Input
+                                    addonAfter={
+                                        <Tooltip title="Чувствителен к регистру">
+                                            <QuestionCircleOutlined />
+                                        </Tooltip>
                                     }
+                                    addonBefore="Никнейм"
                                 />
                             </Form.Item>
-                            <Flex className="flex-column">
-                                <Title level={5}>{"Выберите ваш аватар"}</Title>
+                            <Divider>{user?.email}</Divider>
+                            <SecondaryEditUserForm previewFile={user?.avatar} />
 
-                                <Text type="secondary" style={{ fontSize: 12 }}>
-                                    {
-                                        "только файлы формата JPG/PNG, размером не превышающие 256 КБ"
-                                    }
-                                </Text>
-                            </Flex>
-                        </Space>
-                        <Form.Item
-                            name={"userName"}
-                            tooltip={"Чувствителен к регистру"}
-                            label={"Имя пользователя"}
-                        >
-                            <Input />
-                        </Form.Item>
-
-                        <Divider>{user?.email}</Divider>
-
-                        <Form.List name="emailPassword">
-                            {(fields, { add, remove }) => (
-                                <div
-                                    style={{
-                                        display: "flex",
-                                        rowGap: 16,
-                                        flexDirection: "column",
-                                    }}
-                                >
-                                    {fields.map((field) => (
-                                        <Card
-                                            className="main-user-info"
-                                            bordered={false}
-                                            style={{
-                                                backgroundColor: "transparent",
-                                            }}
-                                            size="small"
-                                            key={field.key}
-                                            extra={
-                                                <CloseOutlined
-                                                    onClick={() => {
-                                                        remove(field.name);
-                                                    }}
-                                                />
-                                            }
-                                        >
-                                            <Form.Item
-                                                validateDebounce={1500}
-                                                hasFeedback
-                                                style={{ width: "100%" }}
-                                                label={"Новая эл. почта"}
-                                                name={[field.name, "email"]}
-                                                rules={[
-                                                    {
-                                                        type: "email",
-                                                        message:
-                                                            "Эл. почта имеет некорректную сигнатуру",
-                                                    },
-                                                    {
-                                                        validator: async (
-                                                            _,
-                                                            value
-                                                        ) => {
-                                                            if (!value) {
-                                                                // Проверка на пустоту
-                                                                return Promise.resolve(); // Возвращаем Promise.resolve(), если поле пустое
-                                                            }
-                                                            // Проверка на стороне сервера
-                                                            const exists =
-                                                                await checkExistEmail(
-                                                                    value
-                                                                );
-                                                            if (exists) {
-                                                                return Promise.reject(
-                                                                    new Error(
-                                                                        "Этот email уже используется."
-                                                                    )
-                                                                );
-                                                            }
-                                                            // Разрешить регистрацию, если email уникален
-                                                            return Promise.resolve();
+                            <Form.List name="emailPassword">
+                                {(fields, { add, remove }) => (
+                                    <div
+                                        style={{
+                                            display: "flex",
+                                            rowGap: 16,
+                                            flexDirection: "column",
+                                        }}
+                                    >
+                                        {fields.map((field) => (
+                                            <Card
+                                                className="main-user-info"
+                                                bordered={false}
+                                                style={{
+                                                    backgroundColor:
+                                                        "transparent",
+                                                }}
+                                                size="small"
+                                                key={field.key}
+                                                extra={
+                                                    <CloseOutlined
+                                                        onClick={() => {
+                                                            remove(field.name);
+                                                        }}
+                                                    />
+                                                }
+                                            >
+                                                <Form.Item
+                                                    validateDebounce={1500}
+                                                    hasFeedback
+                                                    style={{ width: "100%" }}
+                                                    label={"Новая эл. почта"}
+                                                    name={[field.name, "email"]}
+                                                    rules={[
+                                                        {
+                                                            type: "email",
+                                                            message:
+                                                                "Эл. почта имеет некорректную сигнатуру",
                                                         },
-                                                    },
-                                                ]}
-                                            >
-                                                <Input placeholder="Введите новый адрес" />
-                                            </Form.Item>
+                                                        {
+                                                            validator: async (
+                                                                _,
+                                                                value
+                                                            ) => {
+                                                                if (!value) {
+                                                                    // Проверка на пустоту
+                                                                    return Promise.resolve(); // Возвращаем Promise.resolve(), если поле пустое
+                                                                }
+                                                                // Проверка на стороне сервера
+                                                                const exists =
+                                                                    await checkExistEmail(
+                                                                        value
+                                                                    );
+                                                                if (exists) {
+                                                                    return Promise.reject(
+                                                                        new Error(
+                                                                            "Этот email уже используется."
+                                                                        )
+                                                                    );
+                                                                }
+                                                                // Разрешить регистрацию, если email уникален
+                                                                return Promise.resolve();
+                                                            },
+                                                        },
+                                                    ]}
+                                                >
+                                                    <Input placeholder="Введите новый адрес" />
+                                                </Form.Item>
 
-                                            <Form.List
-                                                name={[
-                                                    field.name,
-                                                    "passwordList",
-                                                ]}
-                                            >
-                                                {(subFields, subOpt) => (
-                                                    <div>
-                                                        {subFields.map(
-                                                            (subField) => (
-                                                                <Flex
+                                                <Form.List
+                                                    name={[
+                                                        field.name,
+                                                        "passwordList",
+                                                    ]}
+                                                >
+                                                    {(subFields, subOpt) => (
+                                                        <div>
+                                                            {subFields.map(
+                                                                (subField) => (
+                                                                    <Flex
+                                                                        style={{
+                                                                            flexDirection:
+                                                                                "column",
+                                                                        }}
+                                                                    >
+                                                                        <Form.Item
+                                                                            validateDebounce={
+                                                                                1500
+                                                                            }
+                                                                            hasFeedback
+                                                                            style={{
+                                                                                width: "100%",
+                                                                            }}
+                                                                            label={
+                                                                                "Старый пароль"
+                                                                            }
+                                                                            name={[
+                                                                                subField.name,
+                                                                                "oldPassword",
+                                                                            ]}
+                                                                            rules={[
+                                                                                {
+                                                                                    required:
+                                                                                        true,
+                                                                                    message:
+                                                                                        "Вы дожны подтвердить свой пароль.",
+                                                                                },
+                                                                                {
+                                                                                    validator:
+                                                                                        async (
+                                                                                            _,
+                                                                                            value
+                                                                                        ) => {
+                                                                                            if (
+                                                                                                !value
+                                                                                            ) {
+                                                                                                // Проверка на пустоту
+                                                                                                return Promise.resolve(); // Возвращаем Promise.resolve(), если поле пустое
+                                                                                            }
+                                                                                            // Проверка на стороне сервера
+                                                                                            const exists =
+                                                                                                await verify(
+                                                                                                    {
+                                                                                                        email: user?.email,
+                                                                                                        password:
+                                                                                                            value,
+                                                                                                    }
+                                                                                                );
+                                                                                            if (
+                                                                                                exists
+                                                                                            ) {
+                                                                                                return Promise.reject(
+                                                                                                    new Error(
+                                                                                                        "Неверный пароль"
+                                                                                                    )
+                                                                                                );
+                                                                                            }
+                                                                                            // Разрешить регистрацию, если email уникален
+                                                                                            return Promise.resolve();
+                                                                                        },
+                                                                                },
+                                                                            ]}
+                                                                        >
+                                                                            <Input.Password placeholder="Введите старый пароль" />
+                                                                        </Form.Item>
+                                                                        <Form.Item
+                                                                            validateDebounce={
+                                                                                1500
+                                                                            }
+                                                                            hasFeedback
+                                                                            style={{
+                                                                                width: "100%",
+                                                                            }}
+                                                                            label={
+                                                                                "Новый пароль"
+                                                                            }
+                                                                            name={[
+                                                                                subField.name,
+                                                                                "newPassword",
+                                                                            ]}
+                                                                            rules={[
+                                                                                {
+                                                                                    required:
+                                                                                        true,
+                                                                                    message:
+                                                                                        "Пароль не может быть пустым.",
+                                                                                },
+                                                                                {
+                                                                                    pattern:
+                                                                                        new RegExp(
+                                                                                            "^(?=.*[A-Z]|[А-Я])(?=.*).{8,}$|.{15,}$"
+                                                                                        ),
+                                                                                    message:
+                                                                                        "Убедитесь, что пароль содержит не менее 15 символов или не менее 8 символов, включая цифру и строчную букву.",
+                                                                                },
+                                                                            ]}
+                                                                        >
+                                                                            <Input.Password placeholder="Введите новый пароль" />
+                                                                        </Form.Item>
+                                                                        <Form.Item
+                                                                            style={{
+                                                                                display:
+                                                                                    "flex",
+                                                                                justifyContent:
+                                                                                    "center",
+                                                                            }}
+                                                                        >
+                                                                            <MinusCircleOutlined
+                                                                                onClick={() =>
+                                                                                    subOpt.remove(
+                                                                                        subField.name
+                                                                                    )
+                                                                                }
+                                                                            />
+                                                                        </Form.Item>
+                                                                    </Flex>
+                                                                )
+                                                            )}
+                                                            {subFields.length <
+                                                                1 && (
+                                                                <Form.Item
                                                                     style={{
-                                                                        flexDirection:
-                                                                            "column",
+                                                                        marginTop: 15,
                                                                     }}
                                                                 >
-                                                                    <Form.Item
-                                                                        validateDebounce={
-                                                                            1500
+                                                                    <Button
+                                                                        type="text"
+                                                                        onClick={() =>
+                                                                            subOpt.add()
                                                                         }
-                                                                        hasFeedback
-                                                                        style={{
-                                                                            width: "100%",
-                                                                        }}
-                                                                        label={
-                                                                            "Старый пароль"
+                                                                        block
+                                                                        icon={
+                                                                            <KeyOutlined />
                                                                         }
-                                                                        name={[
-                                                                            subField.name,
-                                                                            "oldPassword",
-                                                                        ]}
-                                                                        rules={[
-                                                                            {
-                                                                                required:
-                                                                                    true,
-                                                                                message:
-                                                                                    "Вы дожны подтвердить свой пароль.",
-                                                                            },
-                                                                            {
-                                                                                validator:
-                                                                                    async (
-                                                                                        _,
-                                                                                        value
-                                                                                    ) => {
-                                                                                        if (
-                                                                                            !value
-                                                                                        ) {
-                                                                                            // Проверка на пустоту
-                                                                                            return Promise.resolve(); // Возвращаем Promise.resolve(), если поле пустое
-                                                                                        }
-                                                                                        // Проверка на стороне сервера
-                                                                                        const exists =
-                                                                                            await verify(
-                                                                                                {
-                                                                                                    email: user?.email,
-                                                                                                    password:
-                                                                                                        value,
-                                                                                                }
-                                                                                            );
-                                                                                        if (
-                                                                                            exists
-                                                                                        ) {
-                                                                                            return Promise.reject(
-                                                                                                new Error(
-                                                                                                    "Неверный пароль"
-                                                                                                )
-                                                                                            );
-                                                                                        }
-                                                                                        // Разрешить регистрацию, если email уникален
-                                                                                        return Promise.resolve();
-                                                                                    },
-                                                                            },
-                                                                        ]}
                                                                     >
-                                                                        <Input.Password placeholder="Введите старый пароль" />
-                                                                    </Form.Item>
-                                                                    <Form.Item
-                                                                        validateDebounce={
-                                                                            1500
-                                                                        }
-                                                                        hasFeedback
-                                                                        style={{
-                                                                            width: "100%",
-                                                                        }}
-                                                                        label={
-                                                                            "Новый пароль"
-                                                                        }
-                                                                        name={[
-                                                                            subField.name,
-                                                                            "newPassword",
-                                                                        ]}
-                                                                        rules={[
-                                                                            {
-                                                                                required:
-                                                                                    true,
-                                                                                message:
-                                                                                    "Пароль не может быть пустым.",
-                                                                            },
-                                                                            {
-                                                                                pattern:
-                                                                                    new RegExp(
-                                                                                        "^(?=.*[A-Z]|[А-Я])(?=.*).{8,}$|.{15,}$"
-                                                                                    ),
-                                                                                message:
-                                                                                    "Убедитесь, что пароль содержит не менее 15 символов или не менее 8 символов, включая цифру и строчную букву.",
-                                                                            },
-                                                                        ]}
-                                                                    >
-                                                                        <Input.Password placeholder="Введите новый пароль" />
-                                                                    </Form.Item>
-                                                                    <Form.Item
-                                                                        style={{
-                                                                            display:
-                                                                                "flex",
-                                                                            justifyContent:
-                                                                                "center",
-                                                                        }}
-                                                                    >
-                                                                        <MinusCircleOutlined
-                                                                            onClick={() =>
-                                                                                subOpt.remove(
-                                                                                    subField.name
-                                                                                )
-                                                                            }
-                                                                        />
-                                                                    </Form.Item>
-                                                                </Flex>
-                                                            )
-                                                        )}
-                                                        {subFields.length <
-                                                            1 && (
-                                                            <Form.Item
-                                                                style={{
-                                                                    marginTop: 15,
-                                                                }}
-                                                            >
-                                                                <Button
-                                                                    type="text"
-                                                                    onClick={() =>
-                                                                        subOpt.add()
-                                                                    }
-                                                                    block
-                                                                    icon={
-                                                                        <KeyOutlined />
-                                                                    }
-                                                                >
-                                                                    Изменить
-                                                                    пароль
-                                                                </Button>
-                                                            </Form.Item>
-                                                        )}
-                                                    </div>
-                                                )}
-                                            </Form.List>
-                                        </Card>
-                                    ))}
+                                                                        Изменить
+                                                                        пароль
+                                                                    </Button>
+                                                                </Form.Item>
+                                                            )}
+                                                        </div>
+                                                    )}
+                                                </Form.List>
+                                            </Card>
+                                        ))}
 
-                                    {fields.length < 1 && (
-                                        <Form.Item>
-                                            <Button
-                                                type="text"
-                                                onClick={() => add()}
-                                                block
-                                                icon={<EditOutlined />}
-                                            >
-                                                Изменить email и/или пароль
-                                            </Button>
-                                        </Form.Item>
-                                    )}
-                                </div>
-                            )}
-                        </Form.List>
-
-                        <Divider orientation="left">
-                            Необязательные параметры
-                        </Divider>
-                        <Form.Item name={"name"} label={"Имя"}>
-                            <Input />
-                        </Form.Item>
-                        <Form.Item name={"surName"} label={"Фамилия"}>
-                            <Input />
-                        </Form.Item>
-                        <Form.Item name={"dateBirth"} label={"Дата рождения"}>
-                            <DatePicker
-                                locale={locale}
-                                format={"D MMMM, YYYY г."}
-                                maxDate={dayjs(
-                                    new Date().setFullYear(
-                                        new Date().getFullYear() - 12
-                                    )
+                                        {fields.length < 1 && (
+                                            <Form.Item>
+                                                <Button
+                                                    type="text"
+                                                    onClick={() => add()}
+                                                    block
+                                                    icon={<EditOutlined />}
+                                                >
+                                                    Изменить email и/или пароль
+                                                </Button>
+                                            </Form.Item>
+                                        )}
+                                    </div>
                                 )}
-                                style={{ width: "100%" }}
-                                placeholder="Укажите вашу дату рождения"
-                            />
-                        </Form.Item>
-                        <Divider />
-                        <Flex gap={10} justify="end">
-                            <Form.Item>
+                            </Form.List>
+
+                            <Divider />
+                            <Flex gap={10} justify="space-between">
                                 <Button
-                                    type="primary"
+                                    style={{
+                                        opacity: 0.75,
+                                        fontSize: 12,
+                                    }}
+                                    icon={<LongLeftArrow />}
                                     onClick={() => router.back()}
+                                    type="link"
                                 >
                                     Назад
                                 </Button>
-                            </Form.Item>
-                            <Form.Item>
-                                <Button type="primary" htmlType="submit">
-                                    Сохранить изменения
+
+                                <Button
+                                    htmlType="submit"
+                                    type="link"
+                                    style={{
+                                        opacity: 0.75,
+                                        fontSize: 12,
+                                    }}
+                                    iconPosition="end"
+                                    icon={<CheckOutlined />}
+                                >
+                                    Подтвердить изменения
                                 </Button>
-                            </Form.Item>
-                        </Flex>
-                    </Form>
-                    <Button ghost type="primary">
-                        Экспортировать данные
-                    </Button>
-                    <Button ghost type="primary">
-                        Импортировать данные
-                    </Button>
+                            </Flex>
+                        </Form>
+                    </ConfigProvider>
                     <Divider orientation="left">
                         <Flex gap={10}>
                             Дополнительные настройки{" "}
