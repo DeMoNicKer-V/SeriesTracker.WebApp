@@ -28,7 +28,7 @@ namespace SeriesTracker.Core.Mappers
                 RoleId = user.RoleId,
                 RegDate = user.RegDate,
                 Name = user.Name,
-                Surname = user.Surname,
+                SurName = user.SurName,
                 DateBirth = user.DateBirth,
                 Avatar = user.Avatar,
             };
@@ -44,7 +44,7 @@ namespace SeriesTracker.Core.Mappers
                 RoleId = user.RoleId,
                 RegDate = user.RegDate,
                 Name = user.Name,
-                Surname = user.Surname,
+                SurName = user.SurName,
                 DateBirth = user.DateBirth,
                 Avatar = user.Avatar,
                 SeriesGroup = series,

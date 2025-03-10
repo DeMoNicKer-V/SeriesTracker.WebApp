@@ -1,7 +1,7 @@
 export interface UserRequest {
-    email: string;
-    password: string;
-    userName: string;
+    email?: string;
+    password?: string;
+    userName?: string;
     avatar?: string;
     name?: string;
     surName?: string;
@@ -52,8 +52,8 @@ export const defaultUserValues = {
     seriesIDS: "",
 };
 export interface LoginRequest {
-    email: string;
-    password: string;
+    email?: string;
+    password?: string;
 }
 
 export interface CategoryCount {

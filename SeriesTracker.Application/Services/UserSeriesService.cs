@@ -19,16 +19,16 @@ namespace SeriesTracker.Application.Services
             _categoryRepository = categoryRepository;
         }
 
-        public async Task<UserSeries?> GetSeriesByAnimeIdAsync(int id, string username)
+        public async Task<UserSeries?> GetSeriesByAnimeIdAsync(int id, string userName)
         {
-            return await _userSeriesRepository.GetSeriesByAnimeIdAsync(id, username);
+            return await _userSeriesRepository.GetSeriesByAnimeIdAsync(id, userName);
         }
 
-        public async Task<Category?> GetCategoryByAnimeSeries(int id, string username)
+        public async Task<Category?> GetCategoryByAnimeSeries(int id, string userName)
         {
             using (var context = _contextFactory.CreateDbContext())
             {
-                var series = await _userSeriesRepository.GetSeriesByAnimeIdAsync(id, username);
+                var series = await _userSeriesRepository.GetSeriesByAnimeIdAsync(id, userName);
                 if (series == null)
                 {
                     return null;
@@ -64,9 +64,9 @@ namespace SeriesTracker.Application.Services
             return await _userSeriesRepository.UpdateSeries(id, watched, changed, categoryId, favorite);
         }
 
-        public async Task<string> GetSeriesAnimeIdsList(string username, int categoryId)
+        public async Task<string> GetSeriesAnimeIdsList(string userName, int categoryId)
         {
-            var result = await _userSeriesRepository.GetSeriesAnimeIdsList(username, categoryId);
+            var result = await _userSeriesRepository.GetSeriesAnimeIdsList(userName, categoryId);
             return string.Join(",", result);
         }
 

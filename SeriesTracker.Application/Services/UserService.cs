@@ -22,13 +22,13 @@ namespace SeriesTracker.Application.Services
             _logger = logger;
         }
 
-        public async Task Register(string email, string password, string username, string avatar, string name, string surname, string dateBirth)
+        public async Task Register(string email, string password, string userName, string avatar, string name, string surName, string dateBirth)
         {
             // 1. Валидация данных
-            if (string.IsNullOrWhiteSpace(username)) // Используем IsNullOrWhiteSpace
+            if (string.IsNullOrWhiteSpace(userName)) // Используем IsNullOrWhiteSpace
             {
-                _logger.LogWarning("Попытка регистрации с пустым username.");
-                throw new ArgumentException("Никнейм не может быть пустым.", nameof(username)); // nameof() для лучшей информации об ошибке
+                _logger.LogWarning("Попытка регистрации с пустым userName.");
+                throw new ArgumentException("Никнейм не может быть пустым.", nameof(userName)); // nameof() для лучшей информации об ошибке
             }
             if (string.IsNullOrWhiteSpace(email))
             {
@@ -50,9 +50,9 @@ namespace SeriesTracker.Application.Services
 
                 var user = User.Create(
                     Guid.NewGuid(),
-                    username,
+                    userName,
                     name,
-                    surname,
+                    surName,
                     email,
                     hashedPassword,
                     avatar,
@@ -62,11 +62,11 @@ namespace SeriesTracker.Application.Services
 
                 // 4. Сохранение пользователя в репозитории
                 await _userRepository.CreateUser(user);
-                _logger.LogInformation($"Пользователь {username} зарегистрирован успешно.");
+                _logger.LogInformation($"Пользователь {userName} зарегистрирован успешно.");
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Ошибка при создании или сохранении пользователя {username}."); // Логируем все исключения
+                _logger.LogError(ex, $"Ошибка при создании или сохранении пользователя {userName}."); // Логируем все исключения
                                                                                                       //  Можно перебросить исключение, если нужно, чтобы оно обработалось в контроллере
                 throw; //  или  throw new Exception("Не удалось зарегистрировать пользователя.", ex);
             }
@@ -132,9 +132,9 @@ namespace SeriesTracker.Application.Services
             return await _userRepository.GetUserById(id);
         }
 
-        public async Task<User> GetUserByUserName(string username)
+        public async Task<User> GetUserByUserName(string userName)
         {
-            return await _userRepository.GetUserByUserName(username);
+            return await _userRepository.GetUserByUserName(userName);
         }
 
         public async Task<Guid?> GetUserIdByEmail(string email)
@@ -147,9 +147,9 @@ namespace SeriesTracker.Application.Services
             return await _userRepository.GetUserIdByUserName(userName);
         }
 
-        public async Task<Guid> UpdateUser(Guid id, string username, string name, string surname, string email, string passwordHash, string avatar, string dateBirth)
+        public async Task<Guid> UpdateUser(Guid id, string userName, string name, string surName, string email, string passwordHash, string avatar, string dateBirth)
         {
-            return await _userRepository.UpdateUser(id, username, name, surname, email, passwordHash, avatar, dateBirth);
+            return await _userRepository.UpdateUser(id, userName, name, surName, email, passwordHash, avatar, dateBirth);
         }
 
         public async Task<Guid> ChangeUserRole(Guid id, int roleId)

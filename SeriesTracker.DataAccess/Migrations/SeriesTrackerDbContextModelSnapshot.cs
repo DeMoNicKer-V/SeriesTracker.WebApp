@@ -304,7 +304,7 @@ namespace SeriesTracker.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Surname")
+                    b.Property<string>("SurName")
                         .HasColumnType("text");
 
                     b.Property<string>("UserName")

@@ -32,10 +32,10 @@ namespace SeriesTracker.API.Controllers
             return Results.Ok(userList.Select(user => user.ToDTO()));
         }
 
-        [HttpGet("username/{username}")]
-        public async Task<IResult> GetUserInfoByUserName(string username)
+        [HttpGet("userName/{userName}")]
+        public async Task<IResult> GetUserInfoByUserName(string userName)
         {
-            var user = await _userService.GetUserByUserName(username);
+            var user = await _userService.GetUserByUserName(userName);
             if (user == null)
             {
                 return Results.BadRequest("Такого пользователя не существует");
@@ -49,10 +49,10 @@ namespace SeriesTracker.API.Controllers
         }
 
         [HttpGet("categoryCount")]
-        public async Task<IResult> GetCategoriesSeriesCount(string username)
+        public async Task<IResult> GetCategoriesSeriesCount(string userName)
         {
 
-            var userId = await _userService.GetUserIdByUserName(username);
+            var userId = await _userService.GetUserIdByUserName(userName);
             var categoryGroup = await _userSeriesService.GetGroupShortSeries(userId.Value);
             return Results.Ok(categoryGroup);
         }
@@ -98,10 +98,10 @@ namespace SeriesTracker.API.Controllers
             return Results.Ok();
         }
 
-        [HttpGet("username")]
-        public async Task<IResult> CheckUserName(string username)
+        [HttpGet("userName")]
+        public async Task<IResult> CheckUserName(string userName)
         {
-            var userId = await _userService.GetUserIdByUserName(username);
+            var userId = await _userService.GetUserIdByUserName(userName);
             if (userId != Guid.Empty)
             {
                 return Results.BadRequest("Данный никнейм уже занят");
@@ -110,13 +110,13 @@ namespace SeriesTracker.API.Controllers
         }
 
         [RequirePermission(Permission.Read)]
-        [HttpDelete("deleteSeries/{username}")]
-        public async Task<IResult> DeleteAllSeriesByUserName(string username)
+        [HttpDelete("deleteSeries/{userName}")]
+        public async Task<IResult> DeleteAllSeriesByUserName(string userName)
         {
-            var userId = await _userService.GetUserIdByUserName(username);
+            var userId = await _userService.GetUserIdByUserName(userName);
             if (userId != Guid.Empty)
             {
-                var user = await _userService.GetUserByUserName(username);
+                var user = await _userService.GetUserByUserName(userName);
                 await _userSeriesService.DeleteAllSeriesByUserId(user.Id);
             }
 
@@ -124,13 +124,13 @@ namespace SeriesTracker.API.Controllers
         }
 
         [RequirePermission(Permission.Read)]
-        [HttpPut("update/{username}")]
-        public async Task<IResult> UpdateUser(string username, [FromBody] UserRequest request)
+        [HttpPut("update/{userName}")]
+        public async Task<IResult> UpdateUser(string userName, [FromBody] UserRequest request)
         {
-            var userId = await _userService.GetUserIdByUserName(username);
+            var userId = await _userService.GetUserIdByUserName(userName);
             if (userId != null)
             {
-                var user = await _userService.GetUserByUserName(username);
+                var user = await _userService.GetUserByUserName(userName);
                 string passwordHash = string.IsNullOrEmpty(request.Password) ? string.Empty : _userService.HashPassword(request.Password);
                 await _userService.UpdateUser(user.Id, request.UserName, request.Name, request.SurName, request.Email, passwordHash, request.Avatar, request.DateBirth);
                 return Results.Ok();
@@ -148,13 +148,13 @@ namespace SeriesTracker.API.Controllers
         }
 
         [RequirePermission(Permission.Delete)]
-        [HttpDelete("deleteUser/{username}")]
-        public async Task<IResult> DeleteUserByUserName(string username)
+        [HttpDelete("deleteUser/{userName}")]
+        public async Task<IResult> DeleteUserByUserName(string userName)
         {
-            var userId = await _userService.GetUserIdByEmail(username);
+            var userId = await _userService.GetUserIdByEmail(userName);
             if (userId == null)
             {
-                return Results.NotFound($"User with username '{username}' not found.");
+                return Results.NotFound($"User with userName '{userName}' not found.");
             }
 
             await _userService.DeleteUser(userId.Value);
@@ -162,13 +162,13 @@ namespace SeriesTracker.API.Controllers
         }
 
         [RequirePermission(Permission.Read)]
-        [HttpDelete("deleteSelf/{username}")]
-        public async Task<IResult> DeleteSelfAccount(string username)
+        [HttpDelete("deleteSelf/{userName}")]
+        public async Task<IResult> DeleteSelfAccount(string userName)
         {
-            var userId = await _userService.GetUserIdByEmail(username);
+            var userId = await _userService.GetUserIdByEmail(userName);
             if (userId == null)
             {
-                return Results.NotFound($"User with username '{username}' not found.");
+                return Results.NotFound($"User with userName '{userName}' not found.");
             }
 
             await _userService.DeleteUser(userId.Value);

@@ -9,7 +9,7 @@ namespace SeriesTracker.Core.Models
             this.Id = id;
             this.UserName = userName;
             this.Name = name;
-            this.Surname = surName;
+            this.SurName = surName;
             this.Email = email;
             this.PasswordHash = password;
             this.Avatar = avatar;
@@ -64,7 +64,7 @@ namespace SeriesTracker.Core.Models
             get; private set;
         }
 
-        public string? Surname
+        public string? SurName
         {
             get; private set;
         }

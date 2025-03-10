@@ -35,7 +35,7 @@ namespace SeriesTracker.DataAccess.Repositories
             }
         }
 
-        public async Task<SeriesCategoryDto?> GetSeriesAnimeId(string username, int animeId)
+        public async Task<SeriesCategoryDto?> GetSeriesAnimeId(string userName, int animeId)
         {
             using (var context = _contextFactory.CreateDbContext())
             {
@@ -43,7 +43,7 @@ namespace SeriesTracker.DataAccess.Repositories
                .AsNoTracking()
               .Include(c => c.Category)
              .AsSplitQuery()
-             .Where(s => s.AnimeId == animeId && s.User.UserName == username)
+             .Where(s => s.AnimeId == animeId && s.User.UserName == userName)
              .FirstOrDefaultAsync();
 
                 if (s == null)

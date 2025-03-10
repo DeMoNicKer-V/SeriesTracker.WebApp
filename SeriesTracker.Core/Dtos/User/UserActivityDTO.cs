@@ -11,7 +11,7 @@ namespace SeriesTracker.Core.Dtos.User
         public string? Name { get; set; }
         public string RegDate { get; set; }
         public int RoleId { get; set; }
-        public string? Surname { get; set; }
+        public string? SurName { get; set; }
         public string UserName { get; set; }
         public List<SeriesGroupDto> SeriesGroup { get; set; }
         public string SeriesIDS { get; set; }

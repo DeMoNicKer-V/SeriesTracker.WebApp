@@ -133,8 +133,9 @@ export default function UserPage({ params }: { params: { username: string } }) {
                                             </Divider>
 
                                             <Paragraph style={{ fontSize: 16 }}>
-                                                {userInfo?.name}
-                                                {userInfo?.surName}
+                                                {`${userInfo?.name}${" "}${
+                                                    userInfo?.surName
+                                                }`}
                                                 <Divider type="vertical" />
                                                 {getFormatedAge(
                                                     userInfo?.dateBirth

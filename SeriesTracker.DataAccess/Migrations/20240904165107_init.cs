@@ -66,7 +66,7 @@ namespace SeriesTracker.DataAccess.Migrations
                     Name = table.Column<string>(type: "text", nullable: true),
                     PasswordHash = table.Column<string>(type: "text", nullable: false),
                     RegDate = table.Column<string>(type: "text", nullable: false),
-                    Surname = table.Column<string>(type: "text", nullable: true),
+                    SurName = table.Column<string>(type: "text", nullable: true),
                     UserName = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>

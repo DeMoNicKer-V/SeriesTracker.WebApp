@@ -5,7 +5,7 @@ namespace SeriesTracker.Core.Abstractions.UserAbastractions
 {
     public interface IUserService
     {
-        Task Register(string email, string password, string nickname, string avatar, string name, string surname, string dateBirth);
+        Task Register(string email, string password, string nickname, string avatar, string name, string surName, string dateBirth);
         Task<string> Login(string email, string password);
         Task<bool> Verify(string email, string password);
         string HashPassword(string password);
@@ -16,8 +16,8 @@ namespace SeriesTracker.Core.Abstractions.UserAbastractions
         Task<Guid?> GetUserIdByUserName(string userName);
         Task<ICollection<Permission>> GetUserPermissions(Guid id);
         Task<ICollection<Role>> GetUserRoles(Guid userId);
-        Task<User> GetUserByUserName(string username);
-        Task<Guid> UpdateUser(Guid id, string username, string name, string surname, string email, string passwordHash, string avatar, string dateBirth);
+        Task<User> GetUserByUserName(string userName);
+        Task<Guid> UpdateUser(Guid id, string userName, string name, string surName, string email, string passwordHash, string avatar, string dateBirth);
         Task<Guid> ChangeUserRole(Guid id, int roleId);
     }
 }

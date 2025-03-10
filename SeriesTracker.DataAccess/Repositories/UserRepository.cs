@@ -41,7 +41,7 @@ namespace SeriesTracker.DataAccess.Repositories
                 UserName = user.UserName,
                 Name = user.Name,
                 Roles = [roleEntity],
-                Surname = user.Surname,
+                SurName = user.SurName,
                 Email = user.Email,
                 PasswordHash = user.PasswordHash,
                 Avatar = user.Avatar,
@@ -82,9 +82,9 @@ namespace SeriesTracker.DataAccess.Repositories
             return CreateUser(userEntity);
         }
 
-        public async Task<User> GetUserByUserName(string username)
+        public async Task<User> GetUserByUserName(string userName)
         {
-            var userEntity = await _context.UserEntities.AsNoTracking().Include(u => u.Roles).Where(c => c.UserName == username).FirstOrDefaultAsync();
+            var userEntity = await _context.UserEntities.AsNoTracking().Include(u => u.Roles).Where(c => c.UserName == userName).FirstOrDefaultAsync();
             if (userEntity == null)
             {
                 return null;
@@ -151,12 +151,12 @@ namespace SeriesTracker.DataAccess.Repositories
                 .ToHashSet();
         }
 
-        public async Task<Guid> UpdateUser(Guid id, string username, string name, string surname, string email, string passwordHash, string avatar, string dateBirth)
+        public async Task<Guid> UpdateUser(Guid id, string userName, string name, string surName, string email, string passwordHash, string avatar, string dateBirth)
         {
             await _context.UserEntities.Where(s => s.Id == id)
-                .ExecuteUpdateAsync(s => s.SetProperty(s => s.UserName, s => username)
+                .ExecuteUpdateAsync(s => s.SetProperty(s => s.UserName, s => userName)
                 .SetProperty(s => s.Name, s => name)
-                .SetProperty(s => s.Surname, s => surname)
+                .SetProperty(s => s.SurName, s => surName)
                 .SetProperty(s => s.Email, s => string.IsNullOrEmpty(email) ? s.Email : email)
                 .SetProperty(s => s.PasswordHash, s => string.IsNullOrEmpty(passwordHash) ? s.PasswordHash : passwordHash)
                 .SetProperty(s => s.DateBirth, s => dateBirth).SetProperty(s => s.Avatar, s => avatar)); ;
@@ -166,7 +166,7 @@ namespace SeriesTracker.DataAccess.Repositories
 
         private User CreateUser(UserEntity userEntity)
         {
-            var user = User.Create(userEntity.Id, userEntity.UserName, userEntity.Name, userEntity.Surname, userEntity.Email, userEntity.PasswordHash, userEntity.Avatar, userEntity.DateBirth, userEntity.RegDate, userEntity.Roles.FirstOrDefault().Id);
+            var user = User.Create(userEntity.Id, userEntity.UserName, userEntity.Name, userEntity.SurName, userEntity.Email, userEntity.PasswordHash, userEntity.Avatar, userEntity.DateBirth, userEntity.RegDate, userEntity.Roles.FirstOrDefault().Id);
             return user;
         }
     }
