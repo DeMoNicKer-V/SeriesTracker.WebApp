@@ -1,4 +1,4 @@
-import { Series } from "../Models/Series";
+import { Series } from "../Models/Series/Series";
 
 export interface SeriesRequest {
     animeId: number;

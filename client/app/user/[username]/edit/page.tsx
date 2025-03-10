@@ -22,11 +22,9 @@ import {
     ConfigProvider,
 } from "antd";
 import {
-    defaultUserValues,
+    deleteSelfAccount,
     deleteSeriesByUsername,
-    deleteUserByUsername,
     getUserByUserName,
-    MainUserInfo,
 } from "../../../services/user";
 import Link from "next/link";
 import dayjs from "dayjs";
@@ -35,6 +33,10 @@ import Paragraph from "antd/es/typography/Paragraph";
 import { IsCurrentUser } from "@/app/api/coockie";
 import MainEditUserForm from "@/app/components/UserComponents/MainEditUserForm";
 import PageErrorView from "@/app/components/PageErrorVIew";
+import {
+    defaultUserValues,
+    MainUserInfo,
+} from "@/app/Models/User/MainUserInfo";
 dayjs.locale("ru");
 
 const { Text, Title } = Typography;
@@ -62,7 +64,9 @@ export default function EditUserPage({
 
     const deleteUser = async () => {
         setOpenDeleteUser(false);
-        await deleteUserByUsername(params.username);
+        await deleteSelfAccount(params.username).then(
+            () => (window.location.href = `/login`)
+        );
     };
 
     const deleteSeriesByUser = async () => {
@@ -225,7 +229,6 @@ export default function EditUserPage({
                         okButtonProps={{
                             danger: true,
                             disabled: deleteStr !== "УДАЛИТЬ",
-                            href: "/login",
                         }}
                         title={
                             <Flex gap={10}>

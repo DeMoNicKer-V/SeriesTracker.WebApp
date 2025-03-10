@@ -16,7 +16,7 @@ import {
     Collapse,
     CheckboxProps,
 } from "antd";
-import { registerUser, UserRequest } from "../services/user";
+import { registerUser } from "../services/user";
 
 import locale from "antd/es/date-picker/locale/ru_RU";
 import { LongLeftArrow } from "../img/LongLeftArrow";
@@ -30,6 +30,7 @@ import SecondaryForm from "../components/SingupComponents/SecondaryForm";
 import dayjs from "dayjs";
 import "dayjs/locale/ru";
 import { useRouter } from "next/navigation";
+import { UserRequest } from "../Models/User/Requests/UserRequest";
 dayjs.locale("ru");
 
 const { Text, Title, Link } = Typography;

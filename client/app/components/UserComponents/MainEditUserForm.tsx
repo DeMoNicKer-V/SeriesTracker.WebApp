@@ -8,19 +8,17 @@ import {
     CheckOutlined,
 } from "@ant-design/icons";
 import { Button, Card, Flex, Form, Input, Divider, Tooltip } from "antd";
-import {
-    checkExistEmail,
-    defaultUserValues,
-    MainUserInfo,
-    updateUser,
-    verify,
-} from "../../services/user";
+import { checkExistEmail, updateUser, verify } from "../../services/user";
 import dayjs from "dayjs";
 import "dayjs/locale/ru";
 import { useRouter } from "next/navigation";
 import SecondaryEditUserForm from "@/app/components/UserComponents/SecondaryEditUserForm";
 import { LongLeftArrow } from "@/app/img/LongLeftArrow";
 import { MessageInstance } from "antd/es/message/interface";
+import {
+    defaultUserValues,
+    MainUserInfo,
+} from "@/app/Models/User/MainUserInfo";
 dayjs.locale("ru");
 
 interface Props {

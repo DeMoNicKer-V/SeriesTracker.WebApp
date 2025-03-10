@@ -159,6 +159,7 @@ namespace SeriesTracker.API.Controllers
             }
 
             await _userService.DeleteUser(userId.Value);
+            Response.Cookies.Delete("secretCookie");
             return Results.Ok();
         }
 
@@ -166,13 +167,14 @@ namespace SeriesTracker.API.Controllers
         [HttpDelete("deleteSelf/{userName}")]
         public async Task<IResult> DeleteSelfAccount(string userName)
         {
-            var userId = await _userService.GetUserIdByEmail(userName);
+            var userId = await _userService.GetUserIdByUserName(userName);
             if (userId == null)
             {
                 return Results.NotFound($"User with userName '{userName}' not found.");
             }
 
             await _userService.DeleteUser(userId.Value);
+            Response.Cookies.Delete("secretCookie");
             return Results.Ok();
         }
 

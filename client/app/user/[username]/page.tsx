@@ -17,11 +17,7 @@ import {
     Typography,
 } from "antd";
 import { useState } from "react";
-import {
-    defaultUserValues,
-    getUserByUserName,
-    MainUserInfo,
-} from "../../services/user";
+import { getUserByUserName } from "../../services/user";
 import {
     CrownOutlined,
     SettingOutlined,
@@ -41,6 +37,10 @@ import SeriesGroupInfo from "@/app/components/SeriesGroupInfo";
 import PageErrorView from "@/app/components/PageErrorVIew";
 import MainShortInfo from "@/app/components/MainShortInfo/MainShortInfo";
 import { SeriesAnime } from "@/app/Models/Anime/SeriesAnime";
+import {
+    defaultUserValues,
+    MainUserInfo,
+} from "@/app/Models/User/MainUserInfo";
 dayjs.locale("ru");
 dayjs.extend(relativeTime);
 
@@ -180,7 +180,14 @@ export default function UserPage({ params }: { params: { username: string } }) {
                             username={userInfo.userName}
                         />
                     ) : (
-                        <Col xs={24} sm={24} md={24} lg={16} xl={16}>
+                        <Col
+                            style={{ textAlign: "center" }}
+                            xs={24}
+                            sm={24}
+                            md={24}
+                            lg={16}
+                            xl={16}
+                        >
                             <EmptyView text="Пользователь еще ничего не добавил" />
                         </Col>
                     )}

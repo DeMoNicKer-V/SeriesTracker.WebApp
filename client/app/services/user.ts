@@ -1,60 +1,6 @@
-export interface UserRequest {
-    email?: string;
-    password?: string;
-    userName?: string;
-    avatar?: string;
-    name?: string;
-    surName?: string;
-    dateBirth?: string;
-}
-
-export interface UserInfo {
-    email: string;
-    userName: string;
-    avatar: string;
-    name: string;
-    surName: string;
-    dateBirth: string;
-    regDate: string;
-    roleId: number;
-}
-
-export interface SeriesGroup {
-    id: number;
-    name: string;
-    color: string;
-    seriesCount: number;
-}
-
-export interface MainUserInfo {
-    email: string;
-    userName: string;
-    avatar: string;
-    name: string;
-    surName: string;
-    dateBirth: string;
-    regDate: string;
-    roleId: number;
-    seriesGroup: SeriesGroup[];
-    seriesIDS: string;
-}
-
-export const defaultUserValues = {
-    email: "",
-    userName: "",
-    avatar: "",
-    name: "",
-    surName: "",
-    dateBirth: "",
-    regDate: "",
-    roleId: 0,
-    seriesGroup: [],
-    seriesIDS: "",
-};
-export interface LoginRequest {
-    email?: string;
-    password?: string;
-}
+import { MainUserInfo } from "../Models/User/MainUserInfo";
+import { LoginRequest } from "../Models/User/Requests/LoginRequest";
+import { UserRequest } from "../Models/User/Requests/UserRequest";
 
 export interface CategoryCount {
     key: string;
@@ -184,6 +130,10 @@ export const deleteSelfAccount = async (username: string) => {
 export const deleteSeriesByUsername = async (username: string) => {
     await fetch(`http://localhost:5125/user/deleteSeries/${username}`, {
         method: "DELETE",
+        headers: {
+            "content-type": "application/json",
+        },
+        credentials: "include",
     });
 };
 
