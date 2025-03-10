@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import {
     QuestionCircleOutlined,
     MinusCircleOutlined,
@@ -7,16 +7,7 @@ import {
     KeyOutlined,
     CheckOutlined,
 } from "@ant-design/icons";
-import {
-    Button,
-    Card,
-    Flex,
-    Form,
-    Input,
-    Divider,
-    Tooltip,
-    ConfigProvider,
-} from "antd";
+import { Button, Card, Flex, Form, Input, Divider, Tooltip } from "antd";
 import {
     checkExistEmail,
     defaultUserValues,
@@ -47,9 +38,7 @@ const MainEditUserForm = ({ messageApi, user = defaultUserValues }: Props) => {
             password:
                 values["emailPassword"]?.[0].passwordList?.[0].newPassword,
             avatar: values["avatar"],
-            dateBirth: values["dateBirth"]
-                ? values["dateBirth"].format("YYYY-MM-DD").toString()
-                : "",
+            dateBirth: values["dateBirth"],
         };
         if (user === null) {
             return;
@@ -62,7 +51,9 @@ const MainEditUserForm = ({ messageApi, user = defaultUserValues }: Props) => {
                     content: "Профиль успешно обновлен!",
                     duration: 1.5,
                 })
-                .then(() => router.push(`./user/${values["userName"]}`));
+                .then(
+                    () => (window.location.href = `../${values["userName"]}`)
+                );
 
             return;
         }
@@ -72,14 +63,10 @@ const MainEditUserForm = ({ messageApi, user = defaultUserValues }: Props) => {
         });
     };
     const [form] = Form.useForm();
-    const { isFieldsValidating, setFieldsValue, setFieldValue } = form;
+    const { isFieldsValidating, setFieldsValue } = form;
 
     useEffect(() => {
         setFieldsValue(user);
-        setFieldValue(
-            "dateBirth",
-            !user?.dateBirth ? null : dayjs(user?.dateBirth)
-        );
     }, []);
 
     return (

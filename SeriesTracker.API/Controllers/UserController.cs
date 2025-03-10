@@ -127,12 +127,13 @@ namespace SeriesTracker.API.Controllers
         [HttpPut("update/{userName}")]
         public async Task<IResult> UpdateUser(string userName, [FromBody] UserRequest request)
         {
-            var userId = await _userService.GetUserIdByUserName(userName);
-            if (userId != null)
+            var user = await _userService.GetUserByUserName(userName);
+            if (user != null)
             {
-                var user = await _userService.GetUserByUserName(userName);
                 string passwordHash = string.IsNullOrEmpty(request.Password) ? string.Empty : _userService.HashPassword(request.Password);
                 await _userService.UpdateUser(user.Id, request.UserName, request.Name, request.SurName, request.Email, passwordHash, request.Avatar, request.DateBirth);
+                string token = await _userService.GenerateNewUserToken(request.UserName);
+                Response.Cookies.Append("secretCookie", token, new CookieOptions { HttpOnly = true, Secure = true });
                 return Results.Ok();
             }
 

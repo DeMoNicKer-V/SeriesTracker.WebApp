@@ -94,6 +94,22 @@ namespace SeriesTracker.Application.Services
             return token;
     }
 
+        public async Task<string> GenerateNewUserToken(string userName)
+        {
+            var user = await _userRepository.GetUserByUserName(userName);
+
+            // Объединяем проверки email и пароля в одно условие и одно сообщение об ошибке
+            if (user == null)
+            {
+                // Логируем попытку входа с неверными данными (без указания конкретной причины)
+                _logger.LogInformation($"Ошибка при генерации токена для userName: {userName}");  // Используем LogInformation для логирования события
+                throw new ArgumentException("Пользователь не найден");
+            }
+
+            var token = _jwtProvider.GenerateToken(user);
+            return token;
+        }
+
         public async Task<bool> Verify(string email, string password)
         {
             var user = await _userRepository.GetUserByEmail(email);
