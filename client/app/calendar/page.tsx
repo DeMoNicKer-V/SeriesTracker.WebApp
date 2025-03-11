@@ -92,7 +92,16 @@ const getDatesArray = () => {
     return datesArray;
 };
 const fetcher = async (url: string) => {
-    const response = await fetch(url);
+    const response = await fetch(url, {
+        method: "OPTIONS",
+        headers: {
+            "content-type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "*",
+            "Access-Control-Allow-Headers": "*",
+        },
+        credentials: "include",
+    });
     if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
     }

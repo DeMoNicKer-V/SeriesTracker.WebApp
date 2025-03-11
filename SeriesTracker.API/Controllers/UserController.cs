@@ -202,7 +202,7 @@ namespace SeriesTracker.API.Controllers
 
                 // Успешный вход: устанавливаем cookie и возвращаем токен
                 Response.Cookies.Append("secretCookie", token, new CookieOptions { HttpOnly = true, Secure = true });
-                return Results.Ok(new { Token = token }); //  Но лучше вернуть JSON-объект
+                return Results.Ok(new { Token = token });
             }
             catch (ArgumentException ex) // Неверный email или пароль
             {
@@ -212,6 +212,26 @@ namespace SeriesTracker.API.Controllers
             catch (Exception ex) // Непредвиденная ошибка
             {
                 _logger.LogError(ex, $"Непредвиденная ошибка входа для email: {request.Email}");
+                return Results.Json(new { Message = "Произошла непредвиденная ошибка. Попробуйте позже." }, statusCode: 500);
+            }
+        }
+
+        [HttpPost("logout")]
+        public IResult Logout()
+        {
+            try
+            {
+                // Удаляем cookie, устанавливая Expires в прошлое
+                Response.Cookies.Delete("secretCookie");
+
+                // Логируем выход пользователя
+                _logger.LogInformation("Пользователь успешно вышел из системы.");
+
+                return Results.Ok(new { Message = "Вы успешно вышли из системы." });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Ошибка при выходе из системы.");
                 return Results.Json(new { Message = "Произошла непредвиденная ошибка. Попробуйте позже." }, statusCode: 500);
             }
         }

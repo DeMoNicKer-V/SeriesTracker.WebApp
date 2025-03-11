@@ -237,7 +237,7 @@ const AnimeList = ({ userPath }: Props) => {
                                             bordered={false}
                                             cover={
                                                 <AbsoluteImage
-                                                    src={animes.pictureUrl}
+                                                    src={`https://shikimori.one/${animes.pictureUrl}`}
                                                     zIndex={0}
                                                 >
                                                     {animes.categoryId > 0 && (

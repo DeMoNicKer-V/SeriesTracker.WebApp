@@ -2,6 +2,7 @@
 import { cookies } from "next/headers";
 import { jwtDecode } from "jwt-decode";
 import { getUserById } from "../services/user";
+import { redirect } from "next/navigation";
 
 interface UserToken {
     userId: string;
@@ -64,6 +65,28 @@ export async function GetDecodedUserToken() {
 }
 
 export async function LogOut() {
-    const cookieStore = cookies();
-    cookieStore.delete("secretCookie");
+    try {
+        const cookieStore = cookies();
+        cookieStore.delete("secretCookie");
+
+        // Вызываем API logout на бэкенде
+        const response = await fetch(`http://localhost:5125/user/logout`, {
+            method: "POST",
+            headers: {
+                "content-type": "application/json",
+            },
+            credentials: "include",
+        }).then(redirect("/login"));
+
+        if (!response.ok) {
+            console.error(
+                "Ошибка при вызове API logout:",
+                response.status,
+                response.statusText
+            );
+        }
+    } catch (error) {
+        console.error("Ошибка при выходе из системы:", error);
+        //  Обработка ошибки
+    }
 }
