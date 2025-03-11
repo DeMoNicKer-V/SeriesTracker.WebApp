@@ -36,11 +36,8 @@ import { ShikimoriRequest } from "@/app/Models/Requests/ShikimoriRequest";
 import AnimeDetailPopover from "../Popovers/AnimeDetailPopover";
 
 const { Text } = Typography;
-interface Props {
-    userPath?: string;
-}
 
-const AnimeList = ({ userPath }: Props) => {
+const AnimeList = ({}) => {
     const router = useRouter();
     const searchParams = useSearchParams();
     const createQueryString = useMemo(
@@ -60,7 +57,7 @@ const AnimeList = ({ userPath }: Props) => {
     );
 
     const [genres, setGenres] = useState<Genre[] | any>([]);
-    const path = userPath ? userPath + usePathname() : usePathname();
+    const path = usePathname();
 
     const [page, setPage] = useState<number>(
         searchParams.get("page") != null ? Number(searchParams.get("page")) : 1
@@ -130,7 +127,7 @@ const AnimeList = ({ userPath }: Props) => {
         return (
             <Skeleton
                 active
-                title={{ style: { width: "100%" } }}
+                className="width-100"
                 paragraph={false}
                 loading={isLoading}
             >
@@ -179,7 +176,6 @@ const AnimeList = ({ userPath }: Props) => {
                             title={false}
                         >
                             <Popover
-                                destroyTooltipOnHide
                                 rootClassName="popover"
                                 trigger={"hover"}
                                 mouseEnterDelay={1}

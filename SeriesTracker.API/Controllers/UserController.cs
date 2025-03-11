@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using GraphQL;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SeriesTracker.API.Contracts;
 using SeriesTracker.Application.Services;
@@ -6,16 +7,18 @@ using SeriesTracker.Core.Abstractions;
 using SeriesTracker.Core.Abstractions.UserAbastractions;
 using SeriesTracker.Core.Enums;
 using SeriesTracker.Core.Mappers;
+using SeriesTracker.Core.Models.Shikimori;
 using SeriesTracker.Infrastructure.Authentication;
 
 namespace SeriesTracker.API.Controllers
 {
     [ApiController]
     [Route("user")]
-    public class UserController(IUserService userService, IUserSeriesService userSeriesService, ICategoryService categoryService, ILogger<UserController> logger) : ControllerBase
+    public class UserController(IUserService userService, IUserSeriesService userSeriesService, ICategoryService categoryService, IShikimoriService shikimoriService, ILogger<UserController> logger) : ControllerBase
     {
         private readonly IUserService _userService = userService;
         private readonly IUserSeriesService _userSeriesService = userSeriesService;
+        private readonly IShikimoriService _shikimoriService = shikimoriService;
         private readonly ILogger<UserController> _logger = logger; // Внедряем ILogger<UserService>
 
         [HttpGet("id/{id}")]
@@ -216,6 +219,18 @@ namespace SeriesTracker.API.Controllers
             }
         }
 
+        [HttpGet("{usermame}/list")]
+        public async Task<ActionResult<ShikimoriAnimeBaseList[]>> GetAnimesByUser(string usermame, [FromQuery] ShikimoriParamsRequest request, int mylist = 0)
+        {
+            string? userSeries = await _userSeriesService.GetSeriesAnimeIdsList(usermame, mylist);
+            if (string.IsNullOrEmpty(userSeries))
+            {
+                return Ok(new List<ShikimoriAnimeBaseList>());
+            }
+            GraphQLResponse<ShikimoriAnimeBaseList> graphQLResponse = await _shikimoriService.GetAnimesByAllParamsAndIds(request.Page, request.Name, userSeries, request.Season, request.Status,
+                                                           request.Kind, request.Genre, request.Order, request.Censored);
+            return new ObjectResult(graphQLResponse.Data.Animes);
+        }
         [HttpPost("logout")]
         public IResult Logout()
         {

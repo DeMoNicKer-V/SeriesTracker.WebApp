@@ -223,7 +223,7 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                         <Card style={{ opacity: 0.9 }}>
                             <Flex style={{ zIndex: 0, position: "relative" }}>
                                 <AbsoluteImage
-                                    src={anime.pictureUrl}
+                                    src={`https://shikimori.one/${anime.pictureUrl}`}
                                     zIndex={-1}
                                     filter="contrast(225%) brightness(75%)"
                                 />
@@ -252,7 +252,7 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                                                         maxHeight: "380px",
                                                     }}
                                                     preview={false}
-                                                    src={anime.pictureUrl}
+                                                    src={`https://shikimori.one/${anime.pictureUrl}`}
                                                     fallback={noFoundImage.src}
                                                 />
                                             </Flex>

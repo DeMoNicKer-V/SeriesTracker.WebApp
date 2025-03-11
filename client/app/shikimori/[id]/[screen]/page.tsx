@@ -1,6 +1,6 @@
 "use client";
 import { getAnimeById } from "@/app/services/shikimori";
-import { Breadcrumb, Spin, Card, Row, Col, Tooltip } from "antd";
+import { Breadcrumb, Card, Row, Col, Tooltip } from "antd";
 import Title from "antd/es/typography/Title";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -8,13 +8,14 @@ import { LongLeftArrow } from "@/app/img/LongLeftArrow";
 import { ShikimoriLogo } from "@/app/img/ShikimoriLogo";
 import ScreenshotsPreview from "@/app/components/AnimeDetailDescription/ScreenshotsPreview";
 import Loading from "@/app/components/Loading";
+import { Anime } from "@/app/Models/Anime/Anime";
 
 export default function ScreenshotPage({ params }: { params: { id: string } }) {
     const [animes, setAnimes] = useState<Anime[] | any>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const getAnimes = async (id: string) => {
-        const series = await getAnimeById(id);
-        setAnimes(series.anime);
+        const anime = await getAnimeById(id);
+        setAnimes(anime);
         setLoading(false);
     };
     useEffect(() => {

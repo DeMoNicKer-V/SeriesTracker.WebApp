@@ -6,7 +6,7 @@ interface Props {
     subTitle?: string;
     strongSubTitle?: boolean;
     description?: string;
-    descriptionColor: string;
+    descriptionColor?: string;
     showDescription?: boolean;
     descriptionPrefix?: string;
     children?: React.ReactNode;

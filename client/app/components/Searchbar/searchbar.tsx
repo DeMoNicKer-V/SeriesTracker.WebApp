@@ -136,7 +136,7 @@ const SearchBar = ({}) => {
                                                     preview={false}
                                                     height={100}
                                                     width={70}
-                                                    src={item.pictureUrl}
+                                                    src={`https://shikimori.one/${item.pictureUrl}`}
                                                     fallback={noFoundImage.src}
                                                 />
                                             </Col>

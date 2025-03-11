@@ -183,7 +183,7 @@ export default function UserPage({ params }: { params: { username: string } }) {
                 </Col>
 
                 <Col span={24}>
-                    <AnimeList userPath="/shikimori" />
+                    <AnimeList />
                 </Col>
             </Row>
         </div>

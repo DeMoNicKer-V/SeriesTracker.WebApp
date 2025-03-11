@@ -61,7 +61,7 @@ const RelatedAnimes = ({ animes }: Props) => {
                                     <Image
                                         width={70}
                                         preview={false}
-                                        src={item.anime.pictureUrl}
+                                        src={`https://shikimori.one/${item.anime.pictureUrl}`}
                                         fallback={noFoundImage.src}
                                     />
                                 </Col>

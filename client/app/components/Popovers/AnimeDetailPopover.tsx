@@ -14,15 +14,17 @@ interface Props {
 }
 
 export const AnimeDetailPopover = ({ anime }: Props) => {
-    const { Text, Title, Paragraph } = Typography;
+    const { Text } = Typography;
     return (
-        <Row style={{ maxWidth: 600, minHeight: 250 }} justify={"start"}>
+        <Row style={{ maxWidth: 600 }} justify={"start"}>
             <Col span={7}>
-                <Image src={anime.pictureUrl} />
+                <Flex className="height-100" align="center">
+                    <Image src={`https://shikimori.one/${anime.pictureUrl}`} />
+                </Flex>
             </Col>
             <Col offset={1} span={16}>
                 <Row className="height-100">
-                    <Col span={24}>
+                    <Col span={24} style={{ marginBottom: 10 }}>
                         <MainShortInfo
                             title={anime.title}
                             subTitle={anime.subTitle}
@@ -55,7 +57,7 @@ export const AnimeDetailPopover = ({ anime }: Props) => {
                             </Space>
                         </MainShortInfo>
                     </Col>
-                    <Col span={24}>
+                    <Col span={24} style={{ marginTop: "auto" }}>
                         <Button
                             type="primary"
                             href={`/shikimori/${anime.id}`}
