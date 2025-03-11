@@ -1,6 +1,7 @@
 ﻿using GraphQL;
 using Microsoft.AspNetCore.Mvc;
 using SeriesTracker.API.Contracts;
+using SeriesTracker.Application.Services;
 using SeriesTracker.Core.Abstractions;
 using SeriesTracker.Core.Dtos.Anime;
 using SeriesTracker.Core.Models;
@@ -14,18 +15,44 @@ namespace SeriesTracker.API.Controllers
     public class ShikimoriController : ControllerBase
     {
         private readonly ICategorySeriesService _categorySeriesService;
-        private readonly IUserSeriesService _userSeriesService;
+        private readonly IMyFetcher _myFetcher;
         private readonly IShikimoriService _shikimoriService;
 
-        public ShikimoriController(ICategorySeriesService categorySeriesService,
-            IUserSeriesService userSeriesService, IShikimoriService shikimoriService)
+
+        public ShikimoriController(ICategorySeriesService categorySeriesService, 
+         IShikimoriService shikimoriService,
+         IMyFetcher myFetcher)
         {
             _categorySeriesService = categorySeriesService;
-            _userSeriesService = userSeriesService;
             _shikimoriService = shikimoriService;
+            _myFetcher = myFetcher;
         }
 
-        [HttpGet("id/{id}")]
+        [HttpGet("getData")] //  Укажите маршрут для этого метода (например, /api/My/getData)
+        public async Task<IActionResult> GetData()
+        {
+           
+            {
+                //  Определяем тип ожидаемого ответа
+                //  Предположим, что API, к которому мы обращаемся, возвращает такой JSON
+                //  { "message": "Hello from external API", "value": 42 }
+                //  Тогда определим класс:
+                //  public class ExternalApiResponse { public string? Message { get; set; } public int Value { get; set; } }
+                //  И передадим его как тип параметра
+                var data = await _myFetcher.FetchAsync<ExternalApiResponse>("https://shikimori.one/api/calendar/"); //  Вызываем FetchAsync
+                return Ok(data); // Возвращаем данные (HTTP 200 OK) в формате JSON
+           
+        }
+    }
+
+    //  Вспомогательный класс для представления данных ответа
+    public class ExternalApiResponse
+    {
+        public string? Message { get; set; }
+        public int Value { get; set; }
+    }
+
+    [HttpGet("id/{id}")]
         public async Task<ActionResult> GetAnimeById(int id)
         {
             var userName = HttpContext.User.FindFirst("userName")?.Value != null ? HttpContext.User.FindFirst("userName")?.Value : "";

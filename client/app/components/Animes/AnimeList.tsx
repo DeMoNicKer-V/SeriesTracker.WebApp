@@ -233,7 +233,7 @@ const AnimeList = ({}) => {
                                             bordered={false}
                                             cover={
                                                 <AbsoluteImage
-                                                    src={`https://shikimori.one/${animes.pictureUrl}`}
+                                                    src={animes.pictureUrl}
                                                     zIndex={0}
                                                 >
                                                     {animes.categoryId > 0 && (

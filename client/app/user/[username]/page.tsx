@@ -237,7 +237,9 @@ export default function UserPage({ params }: { params: { username: string } }) {
                                                             <Image
                                                                 preview={false}
                                                                 height={90}
-                                                                src={`https://shikimori.one/${item.pictureUrl}`}
+                                                                src={
+                                                                    item.pictureUrl
+                                                                }
                                                             />
                                                         </Col>
                                                         <Col

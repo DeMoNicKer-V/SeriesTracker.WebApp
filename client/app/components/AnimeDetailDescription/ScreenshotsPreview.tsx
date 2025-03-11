@@ -41,7 +41,7 @@ const ScreenshotsPreview = ({
                     renderItem={(item: Screenshot) => (
                         <List.Item className={styles["my-centered-item"]}>
                             <LoadAnimateImage
-                                src={`https://shikimori.one/${item.originalUrl}`}
+                                src={item.originalUrl}
                                 maxWidth={maxWidth}
                                 aspectRatio="12/7"
                                 prev={true}

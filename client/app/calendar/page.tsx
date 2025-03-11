@@ -93,9 +93,7 @@ const getDatesArray = () => {
 };
 const fetcher = async (url: string) => {
     const response = await fetch(url);
-    if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-    }
+
     return await response.json();
 };
 export default function CalendarPage() {
@@ -115,6 +113,8 @@ export default function CalendarPage() {
         {
             revalidateOnFocus: false,
             revalidateOnReconnect: false,
+            errorRetryInterval: 10000,
+            refreshInterval: 1000,
         }
     );
 
