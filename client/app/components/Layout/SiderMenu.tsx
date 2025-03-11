@@ -92,6 +92,7 @@ const SiderMenu = ({
                 onSelect={({ key }) => {
                     setLoading(true);
                     setCurrentKey(key);
+                    setCollapsed(true);
                 }}
                 selectedKeys={[currentKey]}
                 style={{

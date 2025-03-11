@@ -368,29 +368,20 @@ namespace SeriesTracker.Application.Services
                 }
             };
         }
-        private static GraphQLRequest GetOngoingList(string id)
+
+        private static GraphQLRequest GetOngoingList(int page)
         {
             return new GraphQLRequest
             {
-                Query = @"query GetListById($id: String) {
-                                animes(ids: $id, limit: 28) {
+                Query = @"query GetListById($page: Int) {
+                                animes(status: ""ongoing"" limit: 50, page: $page) {
                                     id
                                     russian
                                     name
-                                    description
-                                    kind
-                                    rating
-                                    duration
                                     episodes
-                                    genres{ id kind russian }
                                     episodesAired
-                                    status
-                                    score
-                                    airedOn {
-                                        date
-                                    }
+                                    nextEpisodeAt
                                     poster {
-                                        
                                         mainUrl
                                     }
                                 }
@@ -398,7 +389,7 @@ namespace SeriesTracker.Application.Services
                 OperationName = "GetListById",
                 Variables = new
                 {
-                    id,
+                    page,
                 }
             };
         }
