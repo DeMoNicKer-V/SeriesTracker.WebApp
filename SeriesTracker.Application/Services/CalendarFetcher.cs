@@ -52,7 +52,8 @@ namespace SeriesTracker.Application.Services
                 {
                     throw new JsonException("JSON deserialization returned null.");
                 }
-                return result;
+                var filteredItems = result.Where(i => DateTime.Parse(i.NextEpisodeDate).Date < DateTime.Now.AddDays(7).Date);
+                return filteredItems;
             }
             catch (HttpRequestException ex)
             {

@@ -13,7 +13,7 @@ import {
     Tag,
     Skeleton,
 } from "antd";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import {
     CheckCircleOutlined,
@@ -33,6 +33,7 @@ import {
 } from "../Models/Anime/CalendarAnimeItem";
 import useSWR from "swr";
 import DaysWeekSkeleton from "../components/DaysWeekSkeleton";
+import { getCalendarAnimes } from "../services/shikimori";
 dayjs.locale("ru");
 
 interface CalendarDateLabel {
@@ -91,29 +92,17 @@ const getDatesArray = () => {
 
     return datesArray;
 };
-const fetcher = async (url: string) => {
-    const response = await fetch(url, {
-        method: "GET",
-    });
-    if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    return await response.json();
-};
+
 export default function CalendarPage() {
     const [weekDays] = useState<CalendarDateLabel[]>(getDatesArray());
-
     const [filterDate, setFilterDate] = useState<Date>(new Date());
     const [filterAnimes, setFilterAnimes] = useState<CalendarAnimeItem[]>(
         Array.from({ length: 5 }).map((_, i) => defaultValues)
     );
-    const {
-        data: airedAnimes,
-        error,
-        isLoading,
-    } = useSWR<CalendarAnimeItem[]>(
+
+    const { data: airedAnimes, isLoading } = useSWR<CalendarAnimeItem[]>(
         "http://localhost:5125/shikimori/calendar",
-        fetcher,
+        getCalendarAnimes,
         {
             revalidateOnFocus: false,
             revalidateOnReconnect: false,
@@ -140,7 +129,7 @@ export default function CalendarPage() {
             });
             setFilterAnimes(filteredData);
         },
-        [isDateEqual, setFilterAnimes] //  ✅ Важно: Добавьте setFilterAnimes в зависимости!
+        [isDateEqual, setFilterAnimes]
     );
 
     const onChangeDate = useCallback(
@@ -157,6 +146,7 @@ export default function CalendarPage() {
             filterItems(airedAnimes, filterDate);
         }
     }, [airedAnimes, filterDate, filterItems]);
+
     return (
         <div className="container">
             <title>Series Tracker - Календарь выхода</title>
@@ -184,11 +174,6 @@ export default function CalendarPage() {
                                         className={styles["calendar-skeleton"]}
                                         loading={isLoading}
                                         active
-                                        style={{
-                                            padding: 20,
-                                            borderRadius: 8,
-                                            backgroundColor: "#121212",
-                                        }}
                                         avatar={{
                                             className:
                                                 styles[
@@ -249,11 +234,9 @@ export default function CalendarPage() {
                                                                 strong
                                                             >
                                                                 {item.anime
-                                                                    .russian
-                                                                    ? item.anime
-                                                                          .russian
-                                                                    : item.anime
-                                                                          .name}
+                                                                    .russian ||
+                                                                    item.anime
+                                                                        .name}
                                                             </Text>
                                                             <Descriptions
                                                                 items={[

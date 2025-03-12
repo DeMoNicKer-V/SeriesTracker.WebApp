@@ -71,7 +71,8 @@ const SiderMenu = ({
     }, [user]);
 
     useEffect(() => {
-        setCurrentKey(pathName?.split("/")[1]);
+        setCurrentKey(pathName?.replace("/", ""));
+        //     setCurrentKey(pathName?.split("/")[1]);
         setLoading(false);
     }, [pathName]);
     return (

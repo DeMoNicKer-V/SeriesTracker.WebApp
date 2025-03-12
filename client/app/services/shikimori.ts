@@ -41,6 +41,12 @@ export const getAnimes = async (page: number, order: string) => {
     return animes;
 };
 
+export const getCalendarAnimes = async (url: string) => {
+    const response = await fetch(url);
+    const animes: CalendarAnimeItem[] = await response.json();
+    return animes;
+};
+
 export const getAnimesByParams = async (fullUrl: string) => {
     const response = await fetch(`http://localhost:5125${fullUrl}`, {
         method: "GET",
