@@ -92,7 +92,9 @@ const getDatesArray = () => {
     return datesArray;
 };
 const fetcher = async (url: string) => {
-    const response = await fetch(url);
+    const response = await fetch(url, {
+        method: "GET",
+    });
     if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
     }
@@ -110,11 +112,12 @@ export default function CalendarPage() {
         error,
         isLoading,
     } = useSWR<CalendarAnimeItem[]>(
-        "https://shikimori.one/api/calendar/",
+        "http://localhost:5125/shikimori/calendar",
         fetcher,
         {
             revalidateOnFocus: false,
             revalidateOnReconnect: false,
+            errorRetryInterval: 30000,
         }
     );
 

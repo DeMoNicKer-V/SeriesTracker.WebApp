@@ -41,6 +41,7 @@ builder.Services.AddAutoMapper(typeof(AnimeMappingProfile));
 builder.Services.AddScoped<IShikimoriService, ShikimoriService>();
 builder.Services.AddScoped<IJwtProvider, JwtProvider>();
 builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
+builder.Services.AddScoped<ICalendarFetcher, CalendarFetcher>();
 
 builder.Services.AddDbContextFactory<SeriesTrackerDbContext>(options =>
 {

@@ -14,12 +14,21 @@ namespace SeriesTracker.API.Controllers
     {
         private readonly ICategorySeriesService _categorySeriesService;
         private readonly IShikimoriService _shikimoriService;
-
+        private readonly ICalendarFetcher _fetcher;
         public ShikimoriController(ICategorySeriesService categorySeriesService,
-         IShikimoriService shikimoriService)
+         IShikimoriService shikimoriService,
+         ICalendarFetcher fetcher)
         {
             _categorySeriesService = categorySeriesService;
             _shikimoriService = shikimoriService;
+            _fetcher = fetcher; 
+        }
+
+        [HttpGet("calendar")]
+        public async Task<IActionResult> GetOngoings()
+        {
+                var data = await _fetcher.FetchData();
+                return new OkObjectResult(data);
         }
 
         [HttpGet("id/{id}")]
