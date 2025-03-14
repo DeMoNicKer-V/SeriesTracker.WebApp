@@ -1,25 +1,54 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using SeriesTracker.Application.Interfaces.Auth;
+using SeriesTracker.Application.Services;
 using SeriesTracker.Core.Abstractions.UserAbastractions;
-using SeriesTracker.Core.Enums;
 using SeriesTracker.Core.Models;
-using System.Globalization;
 
-namespace SeriesTracker.Application.Services
+namespace SeriesTracker.Core.Abstractions
 {
-    public class UserService : IUserService
+    public class AuthenticationService : IAuthenticationService
     {
         private readonly IUserRepository _userRepository;
         private readonly IPasswordHasher _passwordHasher;
         private readonly IJwtProvider _jwtProvider;
-        private readonly ILogger<UserService> _logger; // Внедряем ILogger<UserService>
+        private readonly ILogger<AuthenticationService> _logger;
 
-        public UserService(IUserRepository userRepository, IPasswordHasher passwordHasher, IJwtProvider jwtProvider, ILogger<UserService> logger)
+        public AuthenticationService(IUserRepository userRepository, IPasswordHasher passwordHasher, IJwtProvider jwtProvider, ILogger<AuthenticationService> logger)
         {
             _userRepository = userRepository;
             _passwordHasher = passwordHasher;
             _jwtProvider = jwtProvider;
             _logger = logger;
+        }
+
+        public async Task<string> Login(string email, string password)
+        {
+            var user = await _userRepository.GetUserByEmail(email);
+
+            // Объединяем проверки email и пароля в одно условие и одно сообщение об ошибке
+            if (user == null || !_passwordHasher.Verify(password, user.PasswordHash))
+            {
+                // Логируем попытку входа с неверными данными (без указания конкретной причины)
+                _logger.LogInformation($"Неудачная попытка входа: {email}");  // Используем LogInformation для логирования события
+                throw new ArgumentException("Неправильный адрес почты или пароль");
+            }
+
+            var token = _jwtProvider.GenerateToken(user);
+            return token;
+        }
+
+        public async Task<bool> Verify(string email, string password)
+        {
+            var user = await _userRepository.GetUserByEmail(email);
+            var result = _passwordHasher.Verify(password, user.PasswordHash);
+
+            if (result == false)
+            {
+                throw new Exception("Failed ot Login");
+            }
+
+            return result;
         }
 
         public async Task Register(string email, string password, string userName, string avatar, string name, string surName, string dateBirth)
@@ -72,76 +101,18 @@ namespace SeriesTracker.Application.Services
             }
         }
 
-        public string HashPassword(string password)
+        public async Task Logout(HttpContext context)
         {
-            var hashedPassword = _passwordHasher.Generate(password);
-            return hashedPassword;
-        }
-
-        public async Task<string> GenerateNewUserToken(string userName)
-        {
-            var user = await _userRepository.GetUserByUserName(userName);
-
-            // Объединяем проверки email и пароля в одно условие и одно сообщение об ошибке
-            if (user == null)
+            try
             {
-                // Логируем попытку входа с неверными данными (без указания конкретной причины)
-                _logger.LogInformation($"Ошибка при генерации токена для userName: {userName}");  // Используем LogInformation для логирования события
-                throw new ArgumentException("Пользователь не найден");
+                context.Response.Cookies.Delete("secretCookie"); // Удаляем cookie
+                _logger.LogInformation("Пользователь успешно вышел из системы.");
             }
-
-            var token = _jwtProvider.GenerateToken(user);
-            return token;
-        }
-
-        public async Task<ICollection<Permission>> GetUserPermissions(Guid id)
-        {
-            return await _userRepository.GetUserPermissions(id);
-        }
-
-        public async Task<ICollection<Role>> GetUserRoles(Guid id)
-        {
-            return await _userRepository.GetUserRoles(id);
-        }
-
-        public async Task<Guid> DeleteUser(Guid id)
-        {
-            return await _userRepository.DeleteUser(id);
-        }
-
-        public async Task<List<User>> GetUserList()
-        {
-            return await _userRepository.GetUserList();
-        }
-
-        public async Task<User> GetUserById(Guid id)
-        {
-            return await _userRepository.GetUserById(id);
-        }
-
-        public async Task<User> GetUserByUserName(string userName)
-        {
-            return await _userRepository.GetUserByUserName(userName);
-        }
-
-        public async Task<Guid?> GetUserIdByEmail(string email)
-        {
-            return await _userRepository.GetUserIdByEmail(email);
-        }
-
-        public async Task<Guid?> GetUserIdByUserName(string userName)
-        {
-            return await _userRepository.GetUserIdByUserName(userName);
-        }
-
-        public async Task<Guid> UpdateUser(Guid id, string userName, string name, string surName, string email, string passwordHash, string avatar, string dateBirth)
-        {
-            return await _userRepository.UpdateUser(id, userName, name, surName, email, passwordHash, avatar, dateBirth);
-        }
-
-        public async Task<Guid> ChangeUserRole(Guid id, int roleId)
-        {
-            return await _userRepository.ChangeUserRole(id, roleId);
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Ошибка при выходе из системы.");
+                throw; //  Перебрасываем исключение, чтобы обработать его в контроллере
+            }
         }
     }
 }

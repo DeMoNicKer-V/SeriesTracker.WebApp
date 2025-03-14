@@ -70,7 +70,7 @@ export async function LogOut() {
         cookieStore.delete("secretCookie");
 
         // Вызываем API logout на бэкенде
-        const response = await fetch(`http://localhost:5125/user/logout`, {
+        const response = await fetch(`http://localhost:5125/auth/logout`, {
             method: "POST",
             headers: {
                 "content-type": "application/json",

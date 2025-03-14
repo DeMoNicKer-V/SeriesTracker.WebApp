@@ -10,7 +10,7 @@ export interface CategoryCount {
 export const registerUser = async (
     request: UserRequest
 ): Promise<string | null> => {
-    const response = await fetch(`http://localhost:5125/user/register`, {
+    const response = await fetch(`http://localhost:5125/auth/register`, {
         method: "POST",
         headers: {
             "content-type": "application/json",
@@ -32,7 +32,7 @@ export const registerUser = async (
 };
 
 export const login = async (request: LoginRequest) => {
-    const response = await fetch(`http://localhost:5125/user/login`, {
+    const response = await fetch(`http://localhost:5125/auth/login`, {
         method: "POST",
         headers: {
             "content-type": "application/json",
@@ -55,7 +55,7 @@ export const login = async (request: LoginRequest) => {
 };
 
 export const verify = async (request: LoginRequest) => {
-    const response = await fetch(`http://localhost:5125/user/verify`, {
+    const response = await fetch(`http://localhost:5125/auth/verify`, {
         method: "POST",
         headers: {
             "content-type": "application/json",

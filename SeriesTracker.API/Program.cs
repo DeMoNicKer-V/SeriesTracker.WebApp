@@ -23,6 +23,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IUserSeriesRepository, UserSeriesRepository>();
 builder.Services.AddScoped<IUserSeriesService, UserSeriesService>();
+builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 
 builder.Services.AddScoped<ISeriesService, SeriesService>();
 builder.Services.AddScoped<ISeriesRepository, SeriesRepository>();
