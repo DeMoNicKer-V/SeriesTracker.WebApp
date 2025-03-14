@@ -20,6 +20,7 @@
         "react": "^18",
         "react-date-picker": "^10.6.0",
         "react-dom": "^18",
+        "react-router-dom": "^7.3.0",
         "react-toastify": "^11.0.3",
         "swr": "^2.2.5",
         "tailwind-datepicker-react": "^1.4.3",

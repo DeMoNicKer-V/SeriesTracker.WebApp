@@ -22,8 +22,8 @@ import {
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import useSWR from "swr";
-import { getUserCategoriesCount } from "@/app/services/user";
 import AnimeList from "@/app/components/Animes/AnimeList";
+import { getUserCategoriesCount } from "@/app/api/user/getUser";
 
 export default function UserPage({ params }: { params: { username: string } }) {
     const path = usePathname();

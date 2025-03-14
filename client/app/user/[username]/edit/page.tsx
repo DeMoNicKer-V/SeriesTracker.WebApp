@@ -24,7 +24,6 @@ import {
 import {
     deleteSelfAccount,
     deleteSeriesByUsername,
-    getUserByUserName,
 } from "../../../services/user";
 import Link from "next/link";
 import dayjs from "dayjs";
@@ -37,6 +36,7 @@ import {
     defaultUserValues,
     MainUserInfo,
 } from "@/app/Models/User/MainUserInfo";
+import { getUserByUsername } from "@/app/api/user/getUser";
 dayjs.locale("ru");
 
 const { Text, Title } = Typography;
@@ -57,7 +57,7 @@ export default function EditUserPage({
             setError(true);
             return;
         }
-        const potentialUser = await getUserByUserName(params.username);
+        const potentialUser = await getUserByUsername(params.username);
         setUser(potentialUser);
         setError(false);
     };

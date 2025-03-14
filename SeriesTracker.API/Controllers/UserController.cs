@@ -19,7 +19,7 @@ namespace SeriesTracker.API.Controllers
         private readonly IShikimoriService _shikimoriService = shikimoriService;
         private readonly ILogger<UserController> _logger = logger;
 
-        [HttpGet("id/{id}")]
+        [HttpGet("id/{id:guid}")]
         public async Task<IResult> GetUserById(Guid id)
         {
             var user = await _userService.GetUserById(id);

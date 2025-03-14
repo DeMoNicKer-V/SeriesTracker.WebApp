@@ -3,13 +3,14 @@ import "./style.css";
 import React, { useEffect, useState } from "react";
 import { MailOutlined, KeyOutlined } from "@ant-design/icons";
 import { Button, Card, Flex, Form, Input, Typography, Divider } from "antd";
-import { login, LoginRequest } from "../services/user";
 
 import { IsAuth } from "../api/coockie";
 
 import SignPageConfigProvider from "../components/SignPageConfigProvider";
 import PageErrorView from "../components/PageErrorVIew";
 import SignFormHeader from "../components/SignFormHeader";
+import { LoginRequest } from "../Models/User/Requests/LoginRequest";
+import { login } from "../api/auth";
 
 const { Text, Title, Link } = Typography;
 const LoginPage = () => {
@@ -28,13 +29,15 @@ const LoginPage = () => {
     const loginUser = async (values: LoginRequest) => {
         setErrorMessage(null); // Сбрасываем сообщение об ошибке перед отправкой
 
-        const error = await login(values); // Получаем сообщение об ошибке или undefined при успехе
-        if (error) {
-            setErrorMessage(error); // Отображаем сообщение об ошибке
-        } else {
-            window.location.href = "/shikimori";
+        try {
+            await login(values); // Вызываем login и ждем результат
+            window.location.href = "/shikimori"; // Перенаправляем при успехе
+        } catch (error: any) {
+            // Перехватываем ошибку, выброшенную login
+            setErrorMessage(error.message || "Произошла неизвестная ошибка."); // Отображаем сообщение об ошибке
         }
     };
+
     const loginFailed = async (values: any) => {
         setErrorMessage(values.errorFields[0].errors);
     };

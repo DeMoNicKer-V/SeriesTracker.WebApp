@@ -1,8 +1,8 @@
 "use server";
 import { cookies } from "next/headers";
 import { jwtDecode } from "jwt-decode";
-import { getUserById } from "../services/user";
 import { redirect } from "next/navigation";
+import { getUserById } from "./user/getUser";
 
 interface UserToken {
     userId: string;
@@ -76,7 +76,7 @@ export async function LogOut() {
                 "content-type": "application/json",
             },
             credentials: "include",
-        }).then(redirect("/login"));
+        });
 
         if (!response.ok) {
             console.error(

@@ -12,12 +12,10 @@ import {
     Image,
     List,
     Row,
-    Tag,
     Tooltip,
     Typography,
 } from "antd";
 import { useState } from "react";
-import { getUserByUserName } from "../../services/user";
 import {
     CrownOutlined,
     SettingOutlined,
@@ -41,6 +39,7 @@ import {
     defaultUserValues,
     MainUserInfo,
 } from "@/app/Models/User/MainUserInfo";
+import { getUserByUsername } from "@/app/api/user/getUser";
 dayjs.locale("ru");
 dayjs.extend(relativeTime);
 
@@ -54,7 +53,7 @@ export default function UserPage({ params }: { params: { username: string } }) {
     const { Text, Title, Paragraph } = Typography;
 
     const getCurrentUser = async (username: string) => {
-        const user = await getUserByUserName(username);
+        const user = await getUserByUsername(username);
         if (!user) {
             setError(true);
             return;

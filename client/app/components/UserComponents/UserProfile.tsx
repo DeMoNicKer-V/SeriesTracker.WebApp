@@ -20,6 +20,7 @@ import {
 } from "@ant-design/icons";
 import Link from "next/link";
 import { LogOut } from "@/app/api/coockie";
+import { logout } from "@/app/api/auth";
 interface Props {
     user?: User;
 }
@@ -67,14 +68,10 @@ const UserProfile = ({ user }: Props) => {
             icon: <SettingOutlined />,
         },
         {
-            label: (
-                <Link href={"/login"} target="_top">
-                    Выйти
-                </Link>
-            ),
+            label: "Выйти",
             key: "4",
             onClick: async () => {
-                await LogOut();
+                await logout();
             },
             icon: <LogoutOutlined />,
         },

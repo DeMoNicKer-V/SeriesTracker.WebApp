@@ -1,78 +1,4 @@
-import { MainUserInfo } from "../Models/User/MainUserInfo";
-import { LoginRequest } from "../Models/User/Requests/LoginRequest";
 import { UserRequest } from "../Models/User/Requests/UserRequest";
-
-export interface CategoryCount {
-    key: string;
-    value: number;
-}
-
-export const registerUser = async (
-    request: UserRequest
-): Promise<string | null> => {
-    const response = await fetch(`http://localhost:5125/auth/register`, {
-        method: "POST",
-        headers: {
-            "content-type": "application/json",
-        },
-        body: JSON.stringify(request),
-    });
-
-    if (response.ok) {
-        return null; // Возвращаем null при успехе
-    } else {
-        try {
-            const errorData = await response.json(); // Попытка распарсить JSON
-            return errorData.message || "Произошла ошибка. Попробуйте позже."; // Возвращаем сообщение об ошибке из JSON или сообщение по умолчанию
-        } catch (error) {
-            console.error("Ошибка при разборе JSON:", error); // Логируем ошибку парсинга
-            return "Произошла непредвиденная ошибка. Попробуйте позже."; // Возвращаем общее сообщение об ошибке
-        }
-    }
-};
-
-export const login = async (request: LoginRequest) => {
-    const response = await fetch(`http://localhost:5125/auth/login`, {
-        method: "POST",
-        headers: {
-            "content-type": "application/json",
-        },
-        body: JSON.stringify(request),
-        credentials: "include",
-    });
-
-    if (response.ok) {
-        return null; // Возвращаем null при успехе
-    } else {
-        try {
-            const errorData = await response.json(); // Попытка распарсить JSON
-            return errorData.message || "Произошла ошибка. Попробуйте позже."; // Возвращаем сообщение об ошибке из JSON или сообщение по умолчанию
-        } catch (error) {
-            console.error("Ошибка при разборе JSON:", error); // Логируем ошибку парсинга
-            return "Произошла непредвиденная ошибка. Попробуйте позже."; // Возвращаем общее сообщение об ошибке
-        }
-    }
-};
-
-export const verify = async (request: LoginRequest) => {
-    const response = await fetch(`http://localhost:5125/auth/verify`, {
-        method: "POST",
-        headers: {
-            "content-type": "application/json",
-        },
-        body: JSON.stringify(request),
-        credentials: "include",
-    });
-    if (response.status !== 200) {
-        return response.json();
-    }
-};
-
-export const getUserById = async (id: string) => {
-    const response = await fetch(`http://localhost:5125/user/id/${id}`);
-    const user: User = await response.json();
-    return user;
-};
 
 export const updateUser = async (
     username: string,
@@ -137,14 +63,6 @@ export const deleteSeriesByUsername = async (username: string) => {
     });
 };
 
-export const getUserCategoriesCount = async (username: string) => {
-    const response = await fetch(
-        `http://localhost:5125/user/categoryCount?username=${username}`
-    );
-    const series: CategoryCount[] = await response.json();
-    return series;
-};
-
 export const checkExistEmail = async (email: string) => {
     const response = await fetch(
         `http://localhost:5125/user/email?email=${email}`
@@ -163,20 +81,4 @@ export const checkExistUserName = async (username: string) => {
         return true;
     }
     return false;
-};
-
-export const getUserList = async () => {
-    const response = await fetch(`http://localhost:5125/user`);
-    const user: User[] = await response.json();
-    return user;
-};
-export const getUserByUserName = async (username: string) => {
-    const response = await fetch(
-        `http://localhost:5125/user/username/${username}`
-    );
-    if (!response.ok) {
-        return null;
-    }
-    const user: MainUserInfo = await response.json();
-    return user;
 };
