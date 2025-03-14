@@ -22,8 +22,10 @@ namespace SeriesTracker.Application.Services
                 UseCookies = true,
             };
 
-            _httpClient = new HttpClient(handler);
-            _httpClient.BaseAddress = new Uri(FetchDomain.BaseUrl);
+            _httpClient = new HttpClient(handler)
+            {
+                BaseAddress = new Uri(FetchDomain.BaseUrl)
+            };
 
             //  Добавляем куки при инициализации:
             string cookieName = FetchDomain.CoockieName;
@@ -31,7 +33,7 @@ namespace SeriesTracker.Application.Services
             string cookieDomain = FetchDomain.CoockieDomain;
             string cookiePath = FetchDomain.CookiePath;
 
-            Cookie initialCookie = new Cookie(cookieName, cookieValue, cookiePath, cookieDomain); // Добавление CookiePath в конструктор
+            Cookie initialCookie = new(cookieName, cookieValue, cookiePath, cookieDomain); // Добавление CookiePath в конструктор
             _cookieContainer.Add(initialCookie);
         }
 
@@ -46,28 +48,26 @@ namespace SeriesTracker.Application.Services
                 response.EnsureSuccessStatusCode(); //  Проверяем статус
 
                 string jsonString = await response.Content.ReadAsStringAsync();
-                var result = JsonSerializer.Deserialize<IEnumerable<CalendarAnimeItem>>(jsonString);
-
-                if (result == null)
-                {
-                    throw new JsonException("JSON deserialization returned null.");
-                }
+                var result = JsonSerializer.Deserialize<IEnumerable<CalendarAnimeItem>>(jsonString) ?? throw new JsonException("JSON deserialization returned null.");
                 var filteredItems = result.Where(i => DateTime.Parse(i.NextEpisodeDate).Date < DateTime.Now.AddDays(7).Date);
                 return filteredItems;
             }
+
             catch (HttpRequestException ex)
             {
+                // Обрабатываем ошибки, связанные с запросом
                 throw new Exception($"HTTP error! Status: {ex.StatusCode}, Message: {ex.Message}", ex);
             }
             catch (JsonException ex)
             {
+                // Обрабатываем ошибки при десериализации JSON
                 throw new Exception($"JSON deserialization error: {ex.Message}", ex);
             }
             catch (Exception ex)
             {
+                // Обрабатываем другие ошибки
                 throw new Exception($"An unexpected error occurred: {ex.Message}", ex);
             }
         }
-
     }
 }

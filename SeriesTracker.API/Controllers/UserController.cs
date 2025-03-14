@@ -1,8 +1,6 @@
 ﻿using GraphQL;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using SeriesTracker.API.Contracts;
-using SeriesTracker.Application.Services;
 using SeriesTracker.Core.Abstractions;
 using SeriesTracker.Core.Abstractions.UserAbastractions;
 using SeriesTracker.Core.Enums;
@@ -14,12 +12,12 @@ namespace SeriesTracker.API.Controllers
 {
     [ApiController]
     [Route("user")]
-    public class UserController(IUserService userService, IUserSeriesService userSeriesService, ICategoryService categoryService, IShikimoriService shikimoriService, ILogger<UserController> logger) : ControllerBase
+    public class UserController(IUserService userService, IUserSeriesService userSeriesService, IShikimoriService shikimoriService, ILogger<UserController> logger) : ControllerBase
     {
         private readonly IUserService _userService = userService;
         private readonly IUserSeriesService _userSeriesService = userSeriesService;
         private readonly IShikimoriService _shikimoriService = shikimoriService;
-        private readonly ILogger<UserController> _logger = logger; // Внедряем ILogger<UserService>
+        private readonly ILogger<UserController> _logger = logger;
 
         [HttpGet("id/{id}")]
         public async Task<IResult> GetUserById(Guid id)
