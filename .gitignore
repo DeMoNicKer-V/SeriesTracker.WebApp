@@ -362,3 +362,4 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 /SeriesTracker.Core/FetchDomain.cs
+/SeriesTracker.Application/FetchDomain.cs
