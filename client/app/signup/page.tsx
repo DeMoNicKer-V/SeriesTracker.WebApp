@@ -16,7 +16,6 @@ import {
     Collapse,
     CheckboxProps,
 } from "antd";
-import { registerUser } from "../services/user";
 
 import locale from "antd/es/date-picker/locale/ru_RU";
 import { LongLeftArrow } from "../img/LongLeftArrow";
@@ -31,6 +30,7 @@ import dayjs from "dayjs";
 import "dayjs/locale/ru";
 import { useRouter } from "next/navigation";
 import { UserRequest } from "../Models/User/Requests/UserRequest";
+import { register } from "../api/auth";
 dayjs.locale("ru");
 
 const { Text, Title, Link } = Typography;
@@ -53,11 +53,12 @@ const SignupPage = () => {
     const createNewAccount = async () => {
         setErrorMessage(null); // Сбрасываем сообщение об ошибке перед отправкой
 
-        const error = await registerUser(formData); // Получаем сообщение об ошибке или undefined при успехе
-        if (error) {
-            setErrorMessage(error); // Отображаем сообщение об ошибке
-        } else {
-            router.push("/login"); // Перенаправляем на страницу входа
+        try {
+            await register(formData);
+            window.location.href = "/login";
+        } catch (error: any) {
+            // Перехватываем ошибку, выброшенную login
+            setErrorMessage(error.message || "Произошла неизвестная ошибка."); // Отображаем сообщение об ошибке
         }
     };
 

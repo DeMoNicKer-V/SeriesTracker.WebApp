@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using SeriesTracker.Core.Abstractions.UserAbastractions;
 using SeriesTracker.Core.Enums;
 using SeriesTracker.Core.Models;
@@ -6,27 +7,26 @@ using SeriesTracker.DataAccess.Entities;
 
 namespace SeriesTracker.DataAccess.Repositories
 {
-    public class UserRepository : IUserRepository
+    public class UserRepository(SeriesTrackerDbContext context) : IUserRepository
     {
-        private readonly SeriesTrackerDbContext _context;
+        private readonly SeriesTrackerDbContext _context = context;
 
-        public UserRepository(SeriesTrackerDbContext context)
+        public async Task<bool> ChangeUserRole(Guid userId, int roleId)
         {
-            _context = context;
-        }
-
-        public async Task<Guid> ChangeUserRole(Guid userId, int roleId)
-        {
-            var roleEntity = await _context.RoleEntities.AsNoTracking().Where(r => r.Id == roleId).FirstAsync();
+            var roleEntity = await _context.RoleEntities.AsNoTracking().FirstOrDefaultAsync(r => r.Id == roleId);
             var userEntity = await _context.UserEntities
-                   .Include(u => u.Roles)
-                   .FirstAsync(u => u.Id == userId);
+               .Include(u => u.Roles)
+               .FirstOrDefaultAsync(u => u.Id == userId);
 
+            if (userEntity == null || roleEntity == null)
+            {
+                return false; // Пользователь или роль не найдена
+            }
             userEntity.Roles.Clear();
             userEntity.Roles.Add(roleEntity);
 
             await _context.SaveChangesAsync();
-            return userId;
+            return true;
         }
 
         public async Task<Guid> CreateUser(User user)
@@ -62,34 +62,34 @@ namespace SeriesTracker.DataAccess.Repositories
             return id;
         }
 
-        public async Task<User> GetUserByEmail(string email)
+        public async Task<User?> GetUserByEmail(string email)
         {
-            var userEntity = await _context.UserEntities.AsNoTracking().Include(u => u.Roles).Where(c => c.Email == email).FirstOrDefaultAsync();
-            if (userEntity == null)
-            {
-                return null;
-            }
-            return CreateUser(userEntity);
+            var userEntity = await _context.UserEntities
+                .AsNoTracking()
+                .Include(u => u.Roles)
+                .FirstOrDefaultAsync(u => u.Email == email);
+
+            return MapUser(userEntity);
         }
 
-        public async Task<User> GetUserById(Guid id)
+        public async Task<User?> GetUserById(Guid id)
         {
-            var userEntity = await _context.UserEntities.AsNoTracking().Include(u => u.Roles).Where(c => c.Id == id).FirstOrDefaultAsync();
-            if (userEntity == null)
-            {
-                return null;
-            }
-            return CreateUser(userEntity);
+            var userEntity = await _context.UserEntities
+                            .AsNoTracking()
+                            .Include(u => u.Roles)
+                            .FirstOrDefaultAsync(u => u.Id == id);
+
+            return MapUser(userEntity);
         }
 
-        public async Task<User> GetUserByUserName(string userName)
+        public async Task<User?> GetUserByUserName(string userName)
         {
-            var userEntity = await _context.UserEntities.AsNoTracking().Include(u => u.Roles).Where(c => c.UserName == userName).FirstOrDefaultAsync();
-            if (userEntity == null)
-            {
-                return null;
-            }
-            return CreateUser(userEntity);
+            var userEntity = await _context.UserEntities
+                            .AsNoTracking()
+                            .Include(u => u.Roles)
+                            .FirstOrDefaultAsync(u => u.UserName == userName);
+
+            return MapUser(userEntity);
         }
 
         public async Task<Guid?> GetUserIdByEmail(string email)
@@ -110,11 +110,11 @@ namespace SeriesTracker.DataAccess.Repositories
                 .FirstOrDefaultAsync();
         }
 
-        public async Task<List<User>> GetUserList()
+        public async Task<List<User?>> GetUserList()
         {
             var users = await _context.UserEntities.AsNoTracking().Include(u => u.Roles).ToListAsync();
 
-            var userList = users.Select(s => CreateUser(s)).ToList();
+            var userList = users.Select(s => MapUser(s)).ToList();
 
             return userList;
         }
@@ -164,10 +164,17 @@ namespace SeriesTracker.DataAccess.Repositories
             return id;
         }
 
-        private User CreateUser(UserEntity userEntity)
+        private static User? MapUser(UserEntity? userEntity)
         {
-            var user = User.Create(userEntity.Id, userEntity.UserName, userEntity.Name, userEntity.SurName, userEntity.Email, userEntity.PasswordHash, userEntity.Avatar, userEntity.DateBirth, userEntity.RegDate, userEntity.Roles.FirstOrDefault().Id);
-            return user;
+            if (userEntity == null)
+            {
+                return null;
+            }
+            else
+            {
+                var user = User.Create(userEntity.Id, userEntity.UserName, userEntity.Name, userEntity.SurName, userEntity.Email, userEntity.PasswordHash, userEntity.Avatar, userEntity.DateBirth, userEntity.RegDate, userEntity.Roles.FirstOrDefault().Id);
+                return user;
+            }
         }
     }
 }

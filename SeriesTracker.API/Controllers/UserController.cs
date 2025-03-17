@@ -58,30 +58,6 @@ namespace SeriesTracker.API.Controllers
             return Results.Ok(categoryGroup);
         }
 
-       
-
-        [HttpGet("email")]
-        public async Task<IResult> CheckEmail(string email)
-        {
-            var userId = await _userService.GetUserIdByEmail(email);
-            if (userId != Guid.Empty)
-            {
-                return Results.BadRequest("Адрес эл. почты уже занят");
-            }
-            return Results.Ok();
-        }
-
-        [HttpGet("userName")]
-        public async Task<IResult> CheckUserName(string userName)
-        {
-            var userId = await _userService.GetUserIdByUserName(userName);
-            if (userId != Guid.Empty)
-            {
-                return Results.BadRequest("Данный никнейм уже занят");
-            }
-            return Results.Ok();
-        }
-
         [RequirePermission(Permission.Read)]
         [HttpDelete("deleteSeries/{userName}")]
         public async Task<IResult> DeleteAllSeriesByUserName(string userName)
@@ -117,8 +93,23 @@ namespace SeriesTracker.API.Controllers
         [HttpPut("changeUserRole/{id}")]
         public async Task<IResult> ChangeUserRole(Guid id, [FromBody] int roleId)
         {
-            await _userService.ChangeUserRole(id, roleId);
-            return Results.Ok();
+            try
+            {
+                bool success = await _userService.ChangeUserRole(id, roleId);
+
+                if (!success)
+                {
+                    return Results.NotFound($"Пользователь с ID '{id}' или роль с '{roleId}' не найдены");
+                }
+
+                return Results.NoContent();
+            }
+            catch (Exception ex)
+            {
+                // Логирование непредвиденной ошибки
+                _logger.LogError(ex, "Ошибка при изменении роли пользователя. userId - {userId}; roleId - {roleId}", id, roleId);
+                return Results.BadRequest(ex.Message); 
+            }
         }
 
         [RequirePermission(Permission.Delete)]

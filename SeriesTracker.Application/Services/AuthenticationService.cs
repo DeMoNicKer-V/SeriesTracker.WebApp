@@ -40,18 +40,50 @@ namespace SeriesTracker.Core.Abstractions
 
         public async Task<bool> Verify(string email, string password)
         {
-            var user = await _userRepository.GetUserByEmail(email);
-            var result = _passwordHasher.Verify(password, user.PasswordHash);
-
-            if (result == false)
+            if (string.IsNullOrWhiteSpace(email))
             {
-                throw new Exception("Failed ot Login");
+                throw new ArgumentException("Email не может быть пустым или пробелом.", nameof(email));
             }
 
-            return result;
+            if (string.IsNullOrWhiteSpace(password))
+            {
+                throw new ArgumentException("Пароль не может быть пустым или пробелом.", nameof(password));
+            }
+
+            var user = await _userRepository.GetUserByEmail(email);
+
+            if (user == null)
+            {
+                _logger.LogWarning("Попытка входа с несуществующим email: {email}", email);
+                throw new UnauthorizedAccessException("Неверный email или пароль.");
+            }
+
+            bool passwordMatches = _passwordHasher.Verify(password, user.PasswordHash);
+
+            if (!passwordMatches)
+            {
+                _logger.LogWarning("Неудачная попытка входа для пользователя: {Email}", email);
+                throw new UnauthorizedAccessException("Неверный email или пароль.");
+            }
+
+            return true;
         }
 
-        public async Task Register(string email, string password, string userName, string avatar, string name, string surName, string dateBirth)
+        public async Task<bool> EmailExists(string email)
+        {
+            var user = await _userRepository.GetUserByEmail(email);
+
+            return user != null; // Возвращаем true, если email занят, и false, если свободен
+        }
+
+        public async Task<bool> UserNameExists(string userName)
+        {
+            var user = await _userRepository.GetUserByUserName(userName);
+
+            return user != null; // Возвращаем true, если userName занят, и false, если свободен
+        }
+
+        public async Task Register(string email, string password, string userName, string? avatar, string? name, string? surName, string? dateBirth)
         {
             // 1. Валидация данных
             if (string.IsNullOrWhiteSpace(userName)) // Используем IsNullOrWhiteSpace
@@ -73,7 +105,7 @@ namespace SeriesTracker.Core.Abstractions
             // 2. Хеширование пароля
             string hashedPassword = _passwordHasher.Generate(password);
 
-            // 3. Создание пользователя (с учетом безопасности и лучших практик)
+            // 3. Создание пользователя
             try
             {
 
@@ -95,23 +127,9 @@ namespace SeriesTracker.Core.Abstractions
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Ошибка при создании или сохранении пользователя {userName}."); // Логируем все исключения
-                                                                                                      //  Можно перебросить исключение, если нужно, чтобы оно обработалось в контроллере
-                throw; //  или  throw new Exception("Не удалось зарегистрировать пользователя.", ex);
-            }
-        }
-
-        public async Task Logout(HttpContext context)
-        {
-            try
-            {
-                context.Response.Cookies.Delete("secretCookie"); // Удаляем cookie
-                _logger.LogInformation("Пользователь успешно вышел из системы.");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Ошибка при выходе из системы.");
-                throw; //  Перебрасываем исключение, чтобы обработать его в контроллере
+                _logger.LogError(ex, $"Ошибка при создании или сохранении пользователя {userName}.");
+                                                                                                    
+                throw new Exception("Не удалось зарегистрировать пользователя.", ex);
             }
         }
     }

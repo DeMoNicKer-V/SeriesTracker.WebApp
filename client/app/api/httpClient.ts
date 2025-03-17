@@ -1,4 +1,4 @@
-const API_BASE_URL = "http://localhost:5125"; // Перенесите сюда базовый URL
+const API_BASE_URL = "http://localhost:5125"; // Базовый URL
 
 async function request<T>(
     url: string,

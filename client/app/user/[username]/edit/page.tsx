@@ -21,10 +21,6 @@ import {
     Modal,
     ConfigProvider,
 } from "antd";
-import {
-    deleteSelfAccount,
-    deleteSeriesByUsername,
-} from "../../../services/user";
 import Link from "next/link";
 import dayjs from "dayjs";
 import "dayjs/locale/ru";
@@ -36,6 +32,7 @@ import {
     defaultUserValues,
     MainUserInfo,
 } from "@/app/Models/User/MainUserInfo";
+import { deleteUserSeries } from "@/app/api/user/deleteUser";
 import { getUserByUsername } from "@/app/api/user/getUser";
 dayjs.locale("ru");
 
@@ -64,14 +61,13 @@ export default function EditUserPage({
 
     const deleteUser = async () => {
         setOpenDeleteUser(false);
-        await deleteSelfAccount(params.username).then(
-            () => (window.location.href = `/login`)
-        );
+        await deleteSelfAccount(params.username);
+        window.location.href = `/login`;
     };
 
     const deleteSeriesByUser = async () => {
         setOpenDelete(false);
-        await deleteSeriesByUsername(params.username);
+        await deleteUserSeries(params.username);
     };
     useEffect(() => {
         getUser();
@@ -278,4 +274,7 @@ export default function EditUserPage({
             )}
         </div>
     );
+}
+function deleteSelfAccount(username: string) {
+    throw new Error("Function not implemented.");
 }

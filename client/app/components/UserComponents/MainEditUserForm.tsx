@@ -8,7 +8,6 @@ import {
     CheckOutlined,
 } from "@ant-design/icons";
 import { Button, Card, Flex, Form, Input, Divider, Tooltip } from "antd";
-import { checkExistEmail, updateUser, verify } from "../../services/user";
 import dayjs from "dayjs";
 import "dayjs/locale/ru";
 import { useRouter } from "next/navigation";
@@ -19,6 +18,8 @@ import {
     defaultUserValues,
     MainUserInfo,
 } from "@/app/Models/User/MainUserInfo";
+import { isEmailExists, isUserNameExists, verify } from "@/app/api/auth";
+import { updateUser } from "@/app/api/user/editUser";
 dayjs.locale("ru");
 
 interface Props {
@@ -42,7 +43,8 @@ const MainEditUserForm = ({ messageApi, user = defaultUserValues }: Props) => {
             return;
         }
         const response = await updateUser(user.userName, UserRequest);
-        if (response === 200) {
+        try {
+            await updateUser(user.userName, UserRequest); // Вызываем login и ждем результат
             messageApi
                 .open({
                     type: "success",
@@ -52,13 +54,12 @@ const MainEditUserForm = ({ messageApi, user = defaultUserValues }: Props) => {
                 .then(
                     () => (window.location.href = `../${values["userName"]}`)
                 );
-
-            return;
+        } catch (error: any) {
+            messageApi.open({
+                type: "error",
+                content: `Не удалось обновить пользователя. Ошибка - ${response}`,
+            });
         }
-        messageApi.open({
-            type: "error",
-            content: `Не удалось обновить пользователя. Ошибка - ${response}`,
-        });
     };
     const [form] = Form.useForm();
     const { isFieldsValidating, setFieldsValue } = form;
@@ -75,7 +76,30 @@ const MainEditUserForm = ({ messageApi, user = defaultUserValues }: Props) => {
             onFinish={onFinish}
             form={form}
         >
-            <Form.Item noStyle className="width-100" name={"userName"}>
+            <Form.Item
+                validateDebounce={1500}
+                hasFeedback
+                className="width-100"
+                name={"userName"}
+                rules={[
+                    {
+                        validator: async (_, value) => {
+                            if (!value || value === user?.userName) {
+                                return Promise.resolve();
+                            }
+                            try {
+                                await isUserNameExists(value);
+                            } catch (error: any) {
+                                return Promise.reject(error);
+                            }
+                        },
+                    },
+                    {
+                        required: true,
+                        message: "Никнейм не может быть пустым",
+                    },
+                ]}
+            >
                 <Input
                     addonAfter={
                         <Tooltip title="Чувствителен к регистру">
@@ -118,24 +142,19 @@ const MainEditUserForm = ({ messageApi, user = defaultUserValues }: Props) => {
                                         },
                                         {
                                             validator: async (_, value) => {
-                                                if (!value) {
-                                                    // Проверка на пустоту
-                                                    return Promise.resolve(); // Возвращаем Promise.resolve(), если поле пустое
+                                                if (
+                                                    !value ||
+                                                    value === user?.email
+                                                ) {
+                                                    return Promise.resolve();
                                                 }
-                                                // Проверка на стороне сервера
-                                                const exists =
-                                                    await checkExistEmail(
-                                                        value
-                                                    );
-                                                if (exists) {
+                                                try {
+                                                    await isEmailExists(value);
+                                                } catch (error: any) {
                                                     return Promise.reject(
-                                                        new Error(
-                                                            "Этот email уже используется."
-                                                        )
+                                                        error
                                                     );
                                                 }
-                                                // Разрешить регистрацию, если email уникален
-                                                return Promise.resolve();
                                             },
                                         },
                                     ]}
@@ -178,25 +197,11 @@ const MainEditUserForm = ({ messageApi, user = defaultUserValues }: Props) => {
                                                                             return Promise.resolve(); // Возвращаем Promise.resolve(), если поле пустое
                                                                         }
                                                                         // Проверка на стороне сервера
-                                                                        const exists =
-                                                                            await verify(
-                                                                                {
-                                                                                    email: user?.email,
-                                                                                    password:
-                                                                                        value,
-                                                                                }
-                                                                            );
-                                                                        if (
-                                                                            exists
-                                                                        ) {
-                                                                            return Promise.reject(
-                                                                                new Error(
-                                                                                    "Неверный пароль"
-                                                                                )
-                                                                            );
-                                                                        }
-                                                                        // Разрешить регистрацию, если email уникален
-                                                                        return Promise.resolve();
+
+                                                                        await verify(
+                                                                            user?.email,
+                                                                            value
+                                                                        );
                                                                     },
                                                             },
                                                         ]}

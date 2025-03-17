@@ -9,7 +9,7 @@ import {
     Typography,
     FormInstance,
 } from "antd";
-import { checkExistEmail, checkExistUserName } from "../../services/user";
+import { isEmailExists, isUserNameExists } from "@/app/api/auth";
 
 const { Text } = Typography;
 
@@ -71,19 +71,11 @@ const MainForm = ({ form, handleNext }: Props) => {
                                 },
                                 {
                                     validator: async (_, value) => {
-                                        // Проверка на стороне сервера
-                                        const exists = await checkExistEmail(
-                                            value
-                                        );
-                                        if (exists) {
-                                            return Promise.reject(
-                                                new Error(
-                                                    "Этот email уже используется."
-                                                )
-                                            );
+                                        try {
+                                            await isEmailExists(value);
+                                        } catch (error: any) {
+                                            return Promise.reject(error);
                                         }
-                                        // Разрешить регистрацию, если email уникален
-                                        return Promise.resolve();
                                     },
                                 },
                             ]}
@@ -219,18 +211,11 @@ const MainForm = ({ form, handleNext }: Props) => {
                                     },
                                     {
                                         validator: async (_, value) => {
-                                            // Проверка на стороне сервера
-                                            const exists =
-                                                await checkExistUserName(value);
-                                            if (exists) {
-                                                return Promise.reject(
-                                                    new Error(
-                                                        "Этот логин уже используется."
-                                                    )
-                                                );
+                                            try {
+                                                await isUserNameExists(value);
+                                            } catch (error: any) {
+                                                return Promise.reject(error);
                                             }
-                                            // Разрешить регистрацию, если userName уникален
-                                            return Promise.resolve();
                                         },
                                     },
                                 ]}
