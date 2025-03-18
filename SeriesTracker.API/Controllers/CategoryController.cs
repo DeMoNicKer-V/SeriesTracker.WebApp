@@ -22,7 +22,7 @@ namespace SeriesTracker.API.Controllers
             return Ok(categoryList);
         }
 
-        [HttpGet("{id:int}")]
+        [HttpGet("id/{id:int}")]
         public async Task<ActionResult<int>> GetCategoryById(int id)
         {
             var category = await _categoryService.GetCategoryById(id);

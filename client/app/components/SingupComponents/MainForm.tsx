@@ -152,6 +152,7 @@ const MainForm = ({ form, handleNext }: Props) => {
                                 <Form.Item shouldUpdate>
                                     {() => (
                                         <Button
+                                            className="width-100"
                                             type="primary"
                                             ghost
                                             disabled={
@@ -195,7 +196,7 @@ const MainForm = ({ form, handleNext }: Props) => {
                                     {
                                         min: 3,
                                         message:
-                                            "Длина логина должны быть не менее 3 символов",
+                                            "Длина логина должна быть не менее 3 символов",
                                     },
                                     {
                                         max: 16,

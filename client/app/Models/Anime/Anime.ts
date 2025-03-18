@@ -33,7 +33,7 @@ export interface Related {
     relationText: string;
 }
 
-export const defaultValues: Anime = {
+export const defaultAnimeValues: Anime = {
     id: 0,
     title: "",
     subTitle: "",
@@ -56,5 +56,5 @@ export const defaultValues: Anime = {
     watchedEpisodes: 0,
     addedDate: "",
     isFavorite: false,
-    //  дефолтные значения для полей SeriesAnime
+    //  дефолтные значения для полей Anime
 };

@@ -1,4 +1,4 @@
-const API_BASE_URL = "http://localhost:5125"; // Базовый URL
+import { BASE_API_URL } from "./endpoints";
 
 async function request<T>(
     url: string,
@@ -18,7 +18,7 @@ async function request<T>(
         options.body = JSON.stringify(body);
     }
 
-    const response = await fetch(`${API_BASE_URL}${url}`, options);
+    const response = await fetch(`${BASE_API_URL}${url}`, options);
 
     if (!response.ok) {
         let errorMessage = "Произошла ошибка. Попробуйте позже.";

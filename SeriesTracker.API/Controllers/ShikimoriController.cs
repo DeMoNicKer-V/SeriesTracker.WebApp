@@ -79,12 +79,12 @@ namespace SeriesTracker.API.Controllers
 
         }
 
-        [HttpGet("{query}")]
-        public async Task<ActionResult> GetAnimesByName(string query)
+        [HttpGet("{name}")]
+        public async Task<ActionResult> GetAnimesByName(string name)
         {
             var userName = HttpContext.User.FindFirst("userName")?.Value != null ? HttpContext.User.FindFirst("userName")?.Value : "";
 
-            var graphQLResponse = await _shikimoriService.GetAnimesByName(query);
+            var graphQLResponse = await _shikimoriService.GetAnimesByName(name);
             var animeTasks = graphQLResponse.Data.Animes
                 .Select(async item =>
                 {

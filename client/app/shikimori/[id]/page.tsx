@@ -100,6 +100,7 @@ export default function AnimePage({ params }: { params: { id: string } }) {
         {
             revalidateOnFocus: false,
             revalidateOnReconnect: false,
+            errorRetryInterval: 30000,
         }
     );
 

@@ -114,6 +114,7 @@ const AnimeList = ({}) => {
         // Опции для useSWR
         revalidateOnFocus: false, // Отключить обновление при фокусе
         revalidateOnReconnect: false, // Отключить обновление при восстановлении соединения
+        errorRetryInterval: 30000,
     });
     const updateSearchParams = useCallback(
         (newQuery: any) => {

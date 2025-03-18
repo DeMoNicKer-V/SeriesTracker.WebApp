@@ -64,6 +64,7 @@ export default function UserPage({ params }: { params: { username: string } }) {
         // Опции для useSWR
         revalidateOnFocus: false, // Отключить обновление при фокусе
         revalidateOnReconnect: false, // Отключить обновление при восстановлении соединения
+        errorRetryInterval: 30000,
     });
 
     type MenuItem = Required<MenuProps>["items"][number];

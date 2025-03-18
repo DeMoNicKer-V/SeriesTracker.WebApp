@@ -19,7 +19,7 @@ export interface SeriesAnime {
     changedDate: string;
 }
 
-export const defaultValues: SeriesAnime = {
+export const defaultSeriesAnimeValues: SeriesAnime = {
     id: 0,
     isFavorite: false,
     title: "",

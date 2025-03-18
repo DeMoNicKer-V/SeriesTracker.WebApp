@@ -11,7 +11,7 @@ using System.Security.Claims;
 namespace SeriesTracker.API.Controllers
 {
     [ApiController]
-    [Route("controller")]
+    [Route("series")]
     public class SeriesController : ControllerBase
     {
         private readonly ISeriesService _seriesService;
@@ -51,7 +51,7 @@ namespace SeriesTracker.API.Controllers
 
 
         [RequirePermission(Permission.Read)]
-        [HttpPost]
+        [HttpPost("create")]
         public async Task<ActionResult<Guid>> CreateSeries([FromBody] CreateSeriesRequest request)
         {
             var token = Request.Cookies["secretCookie"];
@@ -77,7 +77,7 @@ namespace SeriesTracker.API.Controllers
 
 
         [RequirePermission(Permission.Read)]
-        [HttpPut("updateSeries/{id:guid}")]
+        [HttpPut("update/{id:guid}")]
         public async Task<ActionResult<Guid>> UpdateSeries(Guid id, [FromBody] SeriesRequest request)
         {
             var date = DateTime.Now.ToString("s");
@@ -88,7 +88,7 @@ namespace SeriesTracker.API.Controllers
 
 
         [RequirePermission(Permission.Read)]
-        [HttpDelete("deleteSeries/{id:guid}")]
+        [HttpDelete("delete/{id:guid}")]
         public async Task<ActionResult<Guid>> DeleteSeries(Guid id)
         {
             return Ok(await _userSeriesService.DeleteSeries(id));
