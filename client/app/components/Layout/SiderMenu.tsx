@@ -8,11 +8,12 @@ import Icon, {
 } from "@ant-design/icons";
 import styles from "./component.module.css";
 import Link from "next/link";
-import { getRandomAnime } from "@/app/services/shikimori";
+
 import { useRouter } from "next/navigation";
 import { ShikimoriLogo } from "@/app/img/ShikimoriLogo";
 import { RandomIcon } from "@/app/img/RandomIcon";
 import { CustomIconComponentProps } from "@ant-design/icons/lib/components/Icon";
+import { getRandomAnimeId } from "@/app/api/shikimori/anime/getAnime";
 
 interface Props {
     pathName: string;
@@ -36,8 +37,8 @@ const SiderMenu = ({
     const RandomMenuIcon = (props: Partial<CustomIconComponentProps>) => (
         <Icon component={RandomIcon} {...props} />
     );
-    const getRandomAnimeId = async () => {
-        const id = await getRandomAnime();
+    const viewRandomAnime = async () => {
+        const id = await getRandomAnimeId();
         router.push(`/shikimori/${id}`);
     };
     type MenuItem = Required<MenuProps>["items"][number];
@@ -54,7 +55,7 @@ const SiderMenu = ({
                 label: <Link href={"/calendar"}>Календарь выхода</Link>,
             },
             {
-                onClick: async () => getRandomAnimeId(),
+                onClick: async () => viewRandomAnime(),
                 key: "random",
                 icon: <RandomMenuIcon />,
                 label: "Случайное аниме",

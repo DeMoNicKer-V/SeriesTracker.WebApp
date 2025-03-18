@@ -19,7 +19,6 @@ import {
     Divider,
 } from "antd";
 import { useState } from "react";
-import { getAnimeById } from "@/app/services/shikimori";
 import AbsoluteImage from "@/app/components/AbsoluteImage";
 import {
     StarOutlined,
@@ -35,11 +34,6 @@ import {
     MinusOutlined,
     CloseOutlined,
 } from "@ant-design/icons";
-import {
-    createSeries,
-    deleteSeries,
-    updateSeries,
-} from "@/app/services/series";
 import { IsAuth } from "@/app/api/coockie";
 import { LongLeftArrow } from "@/app/img/LongLeftArrow";
 import noFoundImage from "@/app/img/img-error.jpg";
@@ -48,8 +42,14 @@ import InfoDescription from "@/app/components/AnimeDetailDescription/InfoDescrip
 import GenreDescription from "@/app/components/AnimeDetailDescription/GenreDescription";
 import ScreenshotsPreview from "@/app/components/AnimeDetailDescription/ScreenshotsPreview";
 import Loading from "@/app/components/Loading";
-import { Anime, defaultValues } from "@/app/Models/Anime/Anime";
+import {
+    Anime,
+    defaultAnimeValues as defaultValues,
+} from "@/app/Models/Anime/Anime";
 import useSWR, { mutate } from "swr";
+import { getAnimeById } from "@/app/api/shikimori/anime/getAnime";
+import { updateSeries } from "@/app/api/series/editSeries";
+import { createSeries } from "@/app/api/series/createSeries";
 
 const { Title, Text } = Typography;
 
@@ -189,7 +189,7 @@ export default function AnimePage({ params }: { params: { id: string } }) {
     };
 
     const deleteSeriesById = async (seriesId: string) => {
-        await deleteSeries(seriesId);
+        await deleteSeriesById(seriesId);
         mutate(params.id);
     };
 

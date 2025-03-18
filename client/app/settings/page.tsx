@@ -20,7 +20,6 @@ import {
     Typography,
 } from "antd";
 import type { RadioChangeEvent, TableColumnType, TableProps } from "antd";
-import { getCategoryList, updateCategoryById } from "../services/category";
 import { LongLeftArrow } from "../img/LongLeftArrow";
 import {
     BorderlessTableOutlined,
@@ -31,16 +30,17 @@ import {
     SearchOutlined,
     TeamOutlined,
 } from "@ant-design/icons";
-import {
-    changeUserRole,
-    deleteUserByUsername,
-    getUserList,
-} from "../services/user";
 
 import { FilterDropdownProps } from "antd/es/table/interface";
 import { EmptyView } from "../components/EmptyView";
 import { GetDecodedUserToken } from "../api/coockie";
 import PageErrorView from "../components/PageErrorVIew";
+import { Category } from "../Models/Category";
+import { getAllCategoriesList } from "../api/category/getCategory";
+import { editCategoryColor } from "../api/category/editCategory";
+import { getAllUsersList } from "../api/user/getUser";
+import { deleteUser } from "../api/user/deleteUser";
+import { changeUserRole } from "../api/user/editUser";
 
 export default function SettingsPage() {
     const [error, setError] = useState<boolean>(false);
@@ -62,8 +62,8 @@ export default function SettingsPage() {
         }
         setError(true);
         setCurrentUser(token);
-        const category = await getCategoryList();
-        const users = await getUserList();
+        const category = await getAllCategoriesList();
+        const users = await getAllUsersList();
         setCategories(category);
         setUsers(users);
     };
@@ -87,8 +87,8 @@ export default function SettingsPage() {
         await openNotification(record, color);
     };
 
-    const deleteUser = async () => {
-        await deleteUserByUsername(deleteUserUsername);
+    const onDeleteUser = async () => {
+        await deleteUser(deleteUserUsername);
         window.location.reload();
     };
 
@@ -106,7 +106,7 @@ export default function SettingsPage() {
         if (!prevColor) {
             return;
         }
-        await updateCategoryById(record.id, prevColor);
+        await editCategoryColor(record.id, prevColor);
         await getCategories();
     };
     useEffect(() => {
@@ -129,7 +129,7 @@ export default function SettingsPage() {
                     type="primary"
                     size="small"
                     onClick={async () => {
-                        await updateCategoryById(record.id, color);
+                        await editCategoryColor(record.id, color);
                         await getCategories();
                         api.destroy(key);
                     }}
@@ -445,7 +445,7 @@ export default function SettingsPage() {
                 </Row>
                 <Modal
                     centered
-                    onOk={deleteUser}
+                    onOk={onDeleteUser}
                     onCancel={onClose}
                     closeIcon={false}
                     open={openDeleteUser}

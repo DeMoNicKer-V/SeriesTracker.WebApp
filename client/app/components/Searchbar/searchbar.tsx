@@ -23,12 +23,12 @@ import {
     CalendarOutlined,
     HeartFilled,
 } from "@ant-design/icons";
-import { getAnimesByName } from "../../services/shikimori";
 import noFoundImage from "../../img/img-error.jpg";
 import { EmptyView } from "../EmptyView";
 import Link from "next/link";
 import { SeriesAnime } from "@/app/Models/Anime/SeriesAnime";
 import MainShortInfo from "../MainShortInfo/MainShortInfo";
+import { getAnimesByName } from "@/app/api/shikimori/anime/getAnime";
 
 const SearchBar = ({}) => {
     const inputRef = useRef<InputRef>(null);

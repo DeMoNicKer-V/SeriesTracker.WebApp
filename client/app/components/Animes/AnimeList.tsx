@@ -23,7 +23,6 @@ import {
 } from "@ant-design/icons";
 import AbsoluteImage from "../AbsoluteImage";
 import AnimeParamsMenu from "../AnimeParamsMenu";
-import { getAnimesByParams, getGenres } from "../../services/shikimori";
 import { useCallback, useMemo, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import useSWR from "swr";
@@ -31,9 +30,14 @@ import { EmptyView } from "../EmptyView";
 import PageNavigator from "../PageNavigator";
 
 import styles from "./component.module.css";
-import { defaultValues, SeriesAnime } from "@/app/Models/Anime/SeriesAnime";
+import {
+    defaultSeriesAnimeValues as defaultValues,
+    SeriesAnime,
+} from "@/app/Models/Anime/SeriesAnime";
 import { ShikimoriRequest } from "@/app/Models/Requests/ShikimoriRequest";
 import AnimeDetailPopover from "../Popovers/AnimeDetailPopover";
+import { getAnimes } from "@/app/api/shikimori/anime/getAnime";
+import { getGenres } from "@/app/api/shikimori/genre/getGenre";
 
 const { Text } = Typography;
 
@@ -93,7 +97,7 @@ const AnimeList = ({}) => {
     );
 
     const getAnimesPost = async (url: string) => {
-        const data: SeriesAnime[] = await getAnimesByParams(url);
+        const data: SeriesAnime[] = await getAnimes(url);
         const list = await getGenres();
         setGenres(list);
         if (data.length === 0) {

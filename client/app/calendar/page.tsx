@@ -29,11 +29,11 @@ import styles from "./page.module.css";
 import LoadAnimateImage from "../components/LoadAnimateImage";
 import {
     CalendarAnimeItem,
-    defaultValues,
+    defaultCalendarAnimeValues as defaultValues,
 } from "../Models/Anime/CalendarAnimeItem";
 import useSWR from "swr";
 import DaysWeekSkeleton from "../components/DaysWeekSkeleton";
-import { getCalendarAnimes } from "../services/shikimori";
+import { getCalendarAnimes } from "../api/shikimori/calendar/getCalendarAnime";
 dayjs.locale("ru");
 
 interface CalendarDateLabel {

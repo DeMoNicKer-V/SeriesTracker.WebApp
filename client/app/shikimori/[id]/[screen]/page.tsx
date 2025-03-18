@@ -1,5 +1,4 @@
 "use client";
-import { getAnimeById } from "@/app/services/shikimori";
 import { Breadcrumb, Card, Row, Col, Tooltip } from "antd";
 import Title from "antd/es/typography/Title";
 import Link from "next/link";
@@ -9,6 +8,7 @@ import { ShikimoriLogo } from "@/app/img/ShikimoriLogo";
 import ScreenshotsPreview from "@/app/components/AnimeDetailDescription/ScreenshotsPreview";
 import Loading from "@/app/components/Loading";
 import { Anime } from "@/app/Models/Anime/Anime";
+import { getAnimeById } from "@/app/api/shikimori/anime/getAnime";
 
 export default function ScreenshotPage({ params }: { params: { id: string } }) {
     const [animes, setAnimes] = useState<Anime[] | any>([]);

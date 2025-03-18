@@ -23,7 +23,6 @@ import {
 } from "@ant-design/icons";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
-import { getAnimesById, LastActivityAnime } from "@/app/services/shikimori";
 import { IsCurrentUser } from "@/app/api/coockie";
 import { EmptyView } from "@/app/components/EmptyView";
 import useSWR from "swr";
@@ -40,6 +39,7 @@ import {
     MainUserInfo,
 } from "@/app/Models/User/MainUserInfo";
 import { getUserByUsername } from "@/app/api/user/getUser";
+import { GetRecentUserActivities } from "@/app/api/shikimori/anime/getAnime";
 dayjs.locale("ru");
 dayjs.extend(relativeTime);
 
@@ -62,7 +62,10 @@ export default function UserPage({ params }: { params: { username: string } }) {
         setCurrentUser(await IsCurrentUser(username));
         setUserInfo(user);
         if (user.seriesIDS.length > 0) {
-            const animes = await getAnimesById(username, user.seriesIDS);
+            const animes = await GetRecentUserActivities(
+                username,
+                user.seriesIDS
+            );
             setAnimes(animes);
         }
     };

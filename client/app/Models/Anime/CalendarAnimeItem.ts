@@ -25,7 +25,7 @@ interface CalendarAnimeImage {
     preview: string;
 }
 
-export const defaultValues: CalendarAnimeItem = {
+export const defaultCalendarAnimeValues: CalendarAnimeItem = {
     next_episode: 0,
     next_episode_at: "",
     duration: 0,
