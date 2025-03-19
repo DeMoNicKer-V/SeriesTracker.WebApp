@@ -10,16 +10,15 @@ import {
     Button,
     Col,
     Flex,
-    Form,
     Input,
     Row,
     Typography,
-    message,
     Divider,
     Breadcrumb,
     Tooltip,
     Modal,
     ConfigProvider,
+    notification,
 } from "antd";
 import Link from "next/link";
 import dayjs from "dayjs";
@@ -42,7 +41,7 @@ export default function EditUserPage({
 }: {
     params: { username: string };
 }) {
-    const [messageApi, contextHolder] = message.useMessage();
+    const [messageApi, contextHolder] = notification.useNotification();
     const [user, setUser] = useState<MainUserInfo | null>(defaultUserValues);
     const [error, setError] = useState<boolean | null>(null);
     const [deleteStr, setDeleteStr] = useState<string>("");

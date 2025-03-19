@@ -6,10 +6,9 @@ import { put } from "../httpClient";
 export const updateUser = async (
     userName: string,
     userRequset: UserRequest
-): Promise<User> => {
-    const url = UPDATE_USER_URL.replace("{username}", userName);
-    const user = await put<User>(url, userRequset);
-    return user;
+): Promise<void> => {
+    const url = UPDATE_USER_URL.replace("{userName}", userName);
+    await put(url, userRequset);
 };
 
 // Смена роли пользователя на roleId по userId

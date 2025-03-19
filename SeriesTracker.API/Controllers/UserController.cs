@@ -76,21 +76,29 @@ namespace SeriesTracker.API.Controllers
         [HttpPut("update/{userName}")]
         public async Task<IResult> UpdateUser(string userName, [FromBody] UserRequest request)
         {
-            var user = await _userService.GetUserByUserName(userName);
-            if (user != null)
+            try
             {
-                string passwordHash = string.IsNullOrEmpty(request.Password) ? string.Empty : _userService.HashPassword(request.Password);
-                await _userService.UpdateUser(user.Id, request.UserName, request.Name, request.SurName, request.Email, passwordHash, request.Avatar, request.DateBirth);
-                string token = await _userService.GenerateNewUserToken(request.UserName);
-                Response.Cookies.Append("secretCookie", token, new CookieOptions { HttpOnly = true, Secure = true });
-                return Results.Ok();
+                var user = await _userService.GetUserByUserName(userName);
+                if (user != null)
+                {
+                    string passwordHash = string.IsNullOrEmpty(request.Password) ? string.Empty : _userService.HashPassword(request.Password);
+                    await _userService.UpdateUser(user.Id, request.UserName, request.Name, request.SurName, request.Email, passwordHash, request.Avatar, request.DateBirth);
+                    string token = await _userService.GenerateNewUserToken(request.UserName);
+                    Response.Cookies.Append("secretCookie", token, new CookieOptions { HttpOnly = true, Secure = true });
+                    return Results.Ok();
+                }
+                return Results.BadRequest(new { Message = "Пользователь не найден" });
+            }
+            catch (Exception ex)
+            {
+                return Results.BadRequest(new { Message = ex.Message });
             }
 
-            return Results.BadRequest();
+
         }
 
         [RequirePermission(Permission.Update)]
-        [HttpPut("changeUserRole/{id}")]
+        [HttpPut("changeRole/{id}")]
         public async Task<IResult> ChangeUserRole(Guid id, [FromBody] int roleId)
         {
             try

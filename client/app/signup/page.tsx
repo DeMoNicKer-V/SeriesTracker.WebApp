@@ -36,7 +36,6 @@ dayjs.locale("ru");
 const { Text, Title, Link } = Typography;
 
 const SignupPage = () => {
-    const router = useRouter();
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [current, setCurrent] = useState<number>(0);
     const [formData, setFormData] = useState<UserRequest>({

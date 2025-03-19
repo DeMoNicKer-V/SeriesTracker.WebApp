@@ -34,6 +34,7 @@ import {
 import useSWR from "swr";
 import DaysWeekSkeleton from "../components/DaysWeekSkeleton";
 import { getCalendarAnimes } from "../api/shikimori/calendar/getCalendarAnime";
+import { GET_CALENDAR_ANIMES_URL } from "../api/endpoints";
 dayjs.locale("ru");
 
 interface CalendarDateLabel {
@@ -101,7 +102,7 @@ export default function CalendarPage() {
     );
 
     const { data: airedAnimes, isLoading } = useSWR<CalendarAnimeItem[]>(
-        "http://localhost:5125/shikimori/calendar",
+        GET_CALENDAR_ANIMES_URL,
         getCalendarAnimes,
         {
             revalidateOnFocus: false,
