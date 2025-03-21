@@ -42,6 +42,7 @@ import { deleteUser } from "../api/user/deleteUser";
 import { changeUserRole } from "../api/user/editUser";
 import { getDecodedUserToken, UserToken } from "../utils/cookie";
 import Loading from "../components/Loading";
+import { UserItem, UsersList } from "../Models/User/UsersList";
 
 export default function SettingsPage() {
     const [error, setError] = useState<boolean | null>(null); // Инициализируем null
@@ -49,11 +50,13 @@ export default function SettingsPage() {
 
     const [api, contextHolder] = notification.useNotification();
     const [categories, setCategories] = useState<Category[]>([]);
-    const [users, setUsers] = useState<User[]>([]);
-    const [currentUser, setCurrentUser] = useState<User | any>({
-        id: "",
-        roleId: 0,
+    const [usersData, setUsersData] = useState<UsersList>();
+    const [userToken, setUserToken] = useState<UserToken>({
+        userName: "",
+        userId: "",
+        roleId: "",
     });
+    const [page, setPage] = useState<number>(1);
     const [deleteUserUsername, setDeleteUserUsername] = useState<string>("");
     const [deleteStr, setDeleteStr] = useState<string>("");
     const [openDeleteUser, setOpenDeleteUser] = useState<boolean>(false);
@@ -66,11 +69,7 @@ export default function SettingsPage() {
             return;
         }
         setError(false);
-        setCurrentUser(token);
-        const category = await getAllCategoriesList();
-        const users = await getAllUsersList();
-        setCategories(category);
-        setUsers(users);
+        setUserToken(token);
     };
 
     const handleSearch = (confirm: FilterDropdownProps["confirm"]) => {
@@ -133,10 +132,23 @@ export default function SettingsPage() {
             }
 
             setError(false); // Если все проверки пройдены
+            setUserToken(token);
+            const category = await getAllCategoriesList();
+            const usersData = await getAllUsersList(page);
+            setCategories(category);
+            setUsersData(usersData);
         };
-
         start();
     }, []);
+
+    useEffect(() => {
+        const updateUsers = async () => {
+            const usersData = await getAllUsersList(page);
+
+            setUsersData(usersData);
+        };
+        updateUsers();
+    }, [page]);
 
     const onChange = async (userId: string, e: RadioChangeEvent) => {
         await changeUserRole(userId, e.target.value);
@@ -277,12 +289,8 @@ export default function SettingsPage() {
                 }),
         },
     ];
-    const handleRoleChange = (value: any, record: any) => {
-        // Обработка изменения роли
-        // Например, обновление данных в базе данных
-    };
 
-    const getColumnSearchProps = (): TableColumnType<User> => ({
+    const getColumnSearchProps = (): TableColumnType<UserItem> => ({
         filterDropdown: ({
             setSelectedKeys,
             selectedKeys,
@@ -324,7 +332,7 @@ export default function SettingsPage() {
                 .toLowerCase()
                 .includes((value as string).toLowerCase()),
     });
-    const userColumn: TableProps<User>["columns"] = [
+    const userColumn: TableProps<UserItem>["columns"] = [
         {
             fixed: "left",
             title: "Никнейм",
@@ -357,12 +365,12 @@ export default function SettingsPage() {
                                   {
                                       value: 2,
                                       label: "Модер",
-                                      disabled: currentUser.roleId != 1,
+                                      disabled: Number(userToken.roleId) != 1,
                                   },
                                   {
                                       value: 3,
                                       label: "Юзер",
-                                      disabled: currentUser.roleId != 1,
+                                      disabled: Number(userToken.roleId) != 1,
                                   },
                               ]
                     }
@@ -397,8 +405,8 @@ export default function SettingsPage() {
                         size="small"
                         icon={<EyeOutlined />}
                     />
-                    {record.id !== currentUser.userId &&
-                        record.roleId > currentUser.roleId && (
+                    {record.id !== userToken.userId &&
+                        record.roleId > Number(userToken.roleId) && (
                             <Button
                                 danger
                                 onClick={() => openDeleteModal(record.userName)}
@@ -460,11 +468,15 @@ export default function SettingsPage() {
                                             pagination={{
                                                 defaultPageSize: 10,
                                                 position: ["bottomCenter"],
+                                                total: usersData?.totalCount,
+                                                onChange(page) {
+                                                    setPage(page);
+                                                },
                                             }}
                                             rowKey="userName"
                                             scroll={{ x: "max-content" }}
                                             columns={userColumn}
-                                            dataSource={users}
+                                            dataSource={usersData?.users}
                                         />
                                     ),
                                 },

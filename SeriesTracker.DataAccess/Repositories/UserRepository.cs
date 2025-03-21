@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using SeriesTracker.Core.Abstractions.UserAbastractions;
+using SeriesTracker.Core.Dtos.UserDtos;
 using SeriesTracker.Core.Enums;
 using SeriesTracker.Core.Models;
 using SeriesTracker.DataAccess.Entities;
@@ -108,15 +109,24 @@ namespace SeriesTracker.DataAccess.Repositories
                 .Where(c => c.UserName == userName)
                 .Select(s => s.Id)
                 .FirstOrDefaultAsync();
-        }
+        } 
 
-        public async Task<List<User?>> GetUserList()
+        public async Task<(List<UserDto>, int)> GetUserList(int page)
         {
-            var users = await _context.UserEntities.AsNoTracking().Include(u => u.Roles).ToListAsync();
+            if (page <= 0) page = 1;
+            var totalCount = await _context.UserEntities.CountAsync();
+            var users = await _context.UserEntities.AsNoTracking().Include(u => u.Roles).Skip((page - 1) * 10).Take(10).ToListAsync();
 
-            var userList = users.Select(s => MapUser(s)).ToList();
+            var userList = users.Select(u => new UserDto
+            {
+                Id = u.Id,
+                Email = u.Email,
+                UserName = u.UserName,
+                RoleId = u.Roles.FirstOrDefault()?.Id ?? (int)Role.User,
+                RegDate = u.RegDate,
+            }).ToList();
 
-            return userList;
+            return (userList, totalCount);
         }
 
         public async Task<HashSet<Permission>> GetUserPermissions(Guid userId)

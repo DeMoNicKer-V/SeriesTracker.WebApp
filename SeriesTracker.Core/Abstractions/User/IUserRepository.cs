@@ -1,4 +1,5 @@
-﻿using SeriesTracker.Core.Enums;
+﻿using SeriesTracker.Core.Dtos.UserDtos;
+using SeriesTracker.Core.Enums;
 using SeriesTracker.Core.Models;
 
 namespace SeriesTracker.Core.Abstractions.UserAbastractions
@@ -9,7 +10,7 @@ namespace SeriesTracker.Core.Abstractions.UserAbastractions
         Task<Guid> DeleteUser(Guid id);
         Task<HashSet<Permission>> GetUserPermissions(Guid userId);
         Task<HashSet<Role>> GetUserRoles(Guid userId);
-        Task<List<User?>> GetUserList();
+        Task<(List<UserDto>, int)> GetUserList(int page);
         Task<User?> GetUserById(Guid id);
         Task<User?> GetUserByEmail(string email);
         Task<User?> GetUserByUserName(string userName);

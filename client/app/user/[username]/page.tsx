@@ -81,7 +81,26 @@ export default function UserPage({ params }: { params: { username: string } }) {
     const getFormatedAge = (dateBirth?: string) => {
         if (!dateBirth) {
             return null;
-        } else return dayjs(dateBirth).fromNow(true);
+        } else
+            return (
+                <>
+                    {dayjs(dateBirth).fromNow(true)} <Divider type="vertical" />
+                </>
+            );
+    };
+
+    const getFormatedName = (name?: string, surName?: string) => {
+        const formattedName = name ? name : ""; // Если name не null/undefined, используем его, иначе пустую строку
+        const formattedSurName = surName ? surName : ""; // Аналогично для surName
+
+        if (formattedName || formattedSurName) {
+            return (
+                <>
+                    {formattedName} {formattedSurName}
+                    <Divider type="vertical" />
+                </>
+            ); // Объединяем и убираем лишние пробелы
+        }
     };
 
     return (
@@ -138,14 +157,13 @@ export default function UserPage({ params }: { params: { username: string } }) {
                                             </Divider>
 
                                             <Paragraph style={{ fontSize: 16 }}>
-                                                {`${userInfo?.name}${" "}${
-                                                    userInfo?.surName
-                                                }`}
-                                                <Divider type="vertical" />
+                                                {getFormatedName(
+                                                    userInfo.name,
+                                                    userInfo.surName
+                                                )}
                                                 {getFormatedAge(
                                                     userInfo?.dateBirth
                                                 )}
-                                                <Divider type="vertical" />
                                                 {`на сайте с`}{" "}
                                                 <Text
                                                     underline

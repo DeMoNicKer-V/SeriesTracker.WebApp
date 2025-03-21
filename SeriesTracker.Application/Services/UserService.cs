@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using SeriesTracker.Application.Interfaces.Auth;
 using SeriesTracker.Core.Abstractions.UserAbastractions;
+using SeriesTracker.Core.Dtos.UserDtos;
 using SeriesTracker.Core.Enums;
 using SeriesTracker.Core.Models;
 using System.Globalization;
@@ -58,9 +59,9 @@ namespace SeriesTracker.Application.Services
             return await _userRepository.DeleteUser(id);
         }
 
-        public async Task<List<User>> GetUserList()
+        public async Task<(List<UserDto>, int)> GetUserList(int page)
         {
-            return await _userRepository.GetUserList();
+            return await _userRepository.GetUserList(page);
         }
 
         public async Task<User?> GetUserById(Guid id)

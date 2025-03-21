@@ -26,11 +26,11 @@ namespace SeriesTracker.API.Controllers
             return Results.Ok(user.ToDetailDTO());
         }
 
-        [HttpGet]
-        public async Task<IResult> GetUserList()
+        [HttpGet("{page:int}")]
+        public async Task<IResult> GetUsersList(int page = 1)
         {
-            var userList = await _userService.GetUserList();
-            return Results.Ok(userList.Select(user => user.ToDTO()));
+            var (userList, totalCount) = await _userService.GetUserList(page);
+            return Results.Ok(new { users = userList, totalCount });
         }
 
         [HttpGet("userName/{userName}")]

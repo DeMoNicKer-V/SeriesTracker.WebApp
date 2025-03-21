@@ -11,7 +11,7 @@ export const IS_USERNAME_URL = "/auth/userName?userName={userName}";
 // auth endpoints
 
 // getUser endpoints
-export const GET_ALL_USERS_URL = "/user";
+export const GET_ALL_USERS_URL = "/user/{page}";
 export const GET_USER_BY_ID_URL = "/user/id/{id}";
 export const GET_USER_BY_USERNAME_URL = "/user/userName/{userName}";
 export const GET_USER_BY_EMAIL_URL = "/user/email/{email}";

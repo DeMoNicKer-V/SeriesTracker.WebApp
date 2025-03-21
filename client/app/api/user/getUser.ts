@@ -7,6 +7,7 @@ import {
     GET_SERIES_CATEGORIES_USER_URL,
 } from "../endpoints";
 import { get } from "../httpClient";
+import { UsersList } from "@/app/Models/User/UsersList";
 
 export interface CategoryCount {
     key: string;
@@ -33,8 +34,9 @@ export const getUserByUsername = async (
     return user;
 };
 
-export const getAllUsersList = async (): Promise<User[]> => {
-    const usersList = await get<User[]>(GET_ALL_USERS_URL, {});
+export const getAllUsersList = async (page: number): Promise<UsersList> => {
+    const url = GET_ALL_USERS_URL.replace("{page}", page.toString());
+    const usersList = await get<UsersList>(url, {});
     return usersList;
 };
 

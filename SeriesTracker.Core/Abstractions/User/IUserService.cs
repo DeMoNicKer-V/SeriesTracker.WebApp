@@ -1,4 +1,5 @@
-﻿using SeriesTracker.Core.Enums;
+﻿using SeriesTracker.Core.Dtos.UserDtos;
+using SeriesTracker.Core.Enums;
 using SeriesTracker.Core.Models;
 
 namespace SeriesTracker.Core.Abstractions.UserAbastractions
@@ -7,7 +8,7 @@ namespace SeriesTracker.Core.Abstractions.UserAbastractions
     {
         string HashPassword(string password);
         Task<Guid> DeleteUser(Guid id);
-        Task<List<User>> GetUserList();
+        Task<(List<UserDto>, int)> GetUserList(int page);
         Task<User?> GetUserById(Guid id);
         Task<User?> GetUserByUserName(string userName);
         Task<Guid?> GetUserIdByEmail(string email);
