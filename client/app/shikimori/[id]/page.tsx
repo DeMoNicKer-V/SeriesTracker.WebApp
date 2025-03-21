@@ -34,7 +34,6 @@ import {
     MinusOutlined,
     CloseOutlined,
 } from "@ant-design/icons";
-import { IsAuth } from "@/app/api/coockie";
 import { LongLeftArrow } from "@/app/img/LongLeftArrow";
 import noFoundImage from "@/app/img/img-error.jpg";
 import Relatedanimes from "@/app/components/RelatedAnimes/RelatedAnimes";
@@ -50,6 +49,7 @@ import useSWR, { mutate } from "swr";
 import { getAnimeById } from "@/app/api/shikimori/anime/getAnime";
 import { updateSeries } from "@/app/api/series/editSeries";
 import { createSeries } from "@/app/api/series/createSeries";
+import { getDecodedUserToken } from "@/app/utils/cookie";
 
 const { Title, Text } = Typography;
 
@@ -74,7 +74,8 @@ export default function AnimePage({ params }: { params: { id: string } }) {
     const [isFavorite, setIsFavorite] = useState<boolean>(false);
 
     const checkAuth = async () => {
-        setIsAuth(await IsAuth());
+        const token = await getDecodedUserToken();
+        setIsAuth(token !== null);
     };
 
     const getAnime = async (id: string) => {

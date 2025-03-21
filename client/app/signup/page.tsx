@@ -19,7 +19,6 @@ import {
 
 import locale from "antd/es/date-picker/locale/ru_RU";
 import { LongLeftArrow } from "../img/LongLeftArrow";
-import { IsAuth } from "../api/coockie";
 import SignPageConfigProvider from "../components/SignPageConfigProvider";
 import PageErrorView from "../components/PageErrorVIew";
 import SignFormHeader from "../components/SignFormHeader";
@@ -31,6 +30,7 @@ import "dayjs/locale/ru";
 import { useRouter } from "next/navigation";
 import { UserRequest } from "../Models/User/Requests/UserRequest";
 import { register } from "../api/auth";
+import { getDecodedUserToken } from "../utils/cookie";
 dayjs.locale("ru");
 
 const { Text, Title, Link } = Typography;
@@ -75,8 +75,8 @@ const SignupPage = () => {
     };
 
     const getIsAuth = async () => {
-        const status = await IsAuth();
-        setAuth(status);
+        const token = await getDecodedUserToken();
+        setAuth(token !== null);
     };
 
     useEffect(() => {

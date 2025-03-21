@@ -19,7 +19,6 @@ import {
     UserOutlined,
 } from "@ant-design/icons";
 import Link from "next/link";
-import { LogOut } from "@/app/api/coockie";
 import { logout } from "@/app/api/auth";
 interface Props {
     user?: User;

@@ -28,7 +28,7 @@ async function request<T>(
         } catch (error) {
             console.error("Ошибка при разборе JSON:", error);
         }
-        throw new Error(errorMessage); // Выбрасывайте ошибку
+        throw new Error(errorMessage);
     }
 
     try {

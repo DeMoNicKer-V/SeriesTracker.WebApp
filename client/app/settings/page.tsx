@@ -33,7 +33,6 @@ import {
 
 import { FilterDropdownProps } from "antd/es/table/interface";
 import { EmptyView } from "../components/EmptyView";
-import { GetDecodedUserToken } from "../api/coockie";
 import PageErrorView from "../components/PageErrorVIew";
 import { Category } from "../Models/Category";
 import { getAllCategoriesList } from "../api/category/getCategory";
@@ -41,9 +40,12 @@ import { editCategoryColor } from "../api/category/editCategory";
 import { getAllUsersList } from "../api/user/getUser";
 import { deleteUser } from "../api/user/deleteUser";
 import { changeUserRole } from "../api/user/editUser";
+import { getDecodedUserToken, UserToken } from "../utils/cookie";
+import Loading from "../components/Loading";
 
 export default function SettingsPage() {
-    const [error, setError] = useState<boolean>(false);
+    const [error, setError] = useState<boolean | null>(null); // Инициализируем null
+    const allowedRoles = ["1", "2"];
 
     const [api, contextHolder] = notification.useNotification();
     const [categories, setCategories] = useState<Category[]>([]);
@@ -56,11 +58,14 @@ export default function SettingsPage() {
     const [deleteStr, setDeleteStr] = useState<string>("");
     const [openDeleteUser, setOpenDeleteUser] = useState<boolean>(false);
     const getCategories = async () => {
-        const token = await GetDecodedUserToken();
-        if (!["1", "2"].includes(token.roleId)) {
+        const token: UserToken | null = await getDecodedUserToken();
+
+        if (!token || !["1", "2"].includes(token.roleId)) {
+            // Куки отсутствует или токен недействителен
+            console.warn("Отсутствует JWT токен.");
             return;
         }
-        setError(true);
+        setError(false);
         setCurrentUser(token);
         const category = await getAllCategoriesList();
         const users = await getAllUsersList();
@@ -107,10 +112,30 @@ export default function SettingsPage() {
             return;
         }
         await editCategoryColor(record.id, prevColor);
-        await getCategories();
+        window.location.reload();
     };
     useEffect(() => {
-        getCategories();
+        const start = async () => {
+            const token: UserToken | null = await getDecodedUserToken();
+
+            if (!token) {
+                console.warn("Отсутствует JWT токен.");
+                setError(true);
+                return;
+            }
+
+            if (!allowedRoles.includes(token.roleId)) {
+                console.warn(
+                    `У пользователя roleId "${token.roleId}" нет прав доступа.`
+                );
+                setError(true);
+                return;
+            }
+
+            setError(false); // Если все проверки пройдены
+        };
+
+        start();
     }, []);
 
     const onChange = async (userId: string, e: RadioChangeEvent) => {
@@ -390,7 +415,11 @@ export default function SettingsPage() {
         <EmptyView text={"Ничего не найдено"} iconSize={20} fontSize={16} />
     );
 
-    return error === true ? (
+    if (error === null) {
+        return <Loading loading />; // Пока идет проверка
+    }
+
+    return error === false ? (
         <div className="container">
             <ConfigProvider
                 renderEmpty={customizeRenderEmpty}

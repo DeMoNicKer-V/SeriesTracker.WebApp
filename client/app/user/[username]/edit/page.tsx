@@ -24,7 +24,6 @@ import Link from "next/link";
 import dayjs from "dayjs";
 import "dayjs/locale/ru";
 import Paragraph from "antd/es/typography/Paragraph";
-import { IsCurrentUser } from "@/app/api/coockie";
 import MainEditUserForm from "@/app/components/UserComponents/MainEditUserForm";
 import PageErrorView from "@/app/components/PageErrorVIew";
 import {
@@ -33,6 +32,7 @@ import {
 } from "@/app/Models/User/MainUserInfo";
 import { deleteUserSeries } from "@/app/api/user/deleteUser";
 import { getUserByUsername } from "@/app/api/user/getUser";
+import { getDecodedUserToken } from "@/app/utils/cookie";
 dayjs.locale("ru");
 
 const { Text, Title } = Typography;
@@ -49,7 +49,8 @@ export default function EditUserPage({
     const [openDeleteUser, setOpenDeleteUser] = useState<boolean>(false);
 
     const getUser = async () => {
-        if ((await IsCurrentUser(params.username)) === false) {
+        const token = await getDecodedUserToken();
+        if (token?.userName !== params.username) {
             setError(true);
             return;
         }

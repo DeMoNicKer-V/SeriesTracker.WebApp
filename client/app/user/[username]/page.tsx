@@ -23,7 +23,6 @@ import {
 } from "@ant-design/icons";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
-import { IsCurrentUser } from "@/app/api/coockie";
 import { EmptyView } from "@/app/components/EmptyView";
 import useSWR from "swr";
 
@@ -40,6 +39,7 @@ import {
 } from "@/app/Models/User/MainUserInfo";
 import { getUserByUsername } from "@/app/api/user/getUser";
 import { GetRecentUserActivities } from "@/app/api/shikimori/anime/getAnime";
+import { getDecodedUserToken } from "@/app/utils/cookie";
 dayjs.locale("ru");
 dayjs.extend(relativeTime);
 
@@ -53,20 +53,22 @@ export default function UserPage({ params }: { params: { username: string } }) {
     const { Text, Title, Paragraph } = Typography;
 
     const getCurrentUser = async (username: string) => {
-        const user = await getUserByUsername(username);
-        if (!user) {
+        try {
+            const user = await getUserByUsername(username);
+            const token = await getDecodedUserToken();
+            setError(false);
+            setCurrentUser(token?.userName === username);
+            setUserInfo(user);
+            if (user.seriesIDS.length > 0) {
+                const animes = await GetRecentUserActivities(
+                    username,
+                    user.seriesIDS
+                );
+                setAnimes(animes);
+            }
+        } catch (error) {
             setError(true);
             return;
-        }
-        setError(false);
-        setCurrentUser(await IsCurrentUser(username));
-        setUserInfo(user);
-        if (user.seriesIDS.length > 0) {
-            const animes = await GetRecentUserActivities(
-                username,
-                user.seriesIDS
-            );
-            setAnimes(animes);
         }
     };
 
@@ -74,7 +76,7 @@ export default function UserPage({ params }: { params: { username: string } }) {
         // Опции для useSWR
         revalidateOnFocus: false, // Отключить обновление при фокусе
         revalidateOnReconnect: false, // Отключить обновление при восстановлении соединения
-        errorRetryInterval: 30000,
+        errorRetryInterval: 30000, // Тайм-аут для потоврного запроса при ошибке
     });
     const getFormatedAge = (dateBirth?: string) => {
         if (!dateBirth) {

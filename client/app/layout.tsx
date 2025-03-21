@@ -3,7 +3,6 @@ import "./globals.css";
 import React, { useEffect, useState } from "react";
 import { ConfigProvider, Divider, Layout, theme } from "antd";
 import { usePathname } from "next/navigation";
-import { GetDecodedUserToken } from "./api/coockie";
 import { Footer } from "antd/es/layout/layout";
 import siteLogo from "./img/logo.ico";
 import Loading from "./components/Loading";
@@ -12,6 +11,7 @@ import HeaderMenu from "./components/Layout/HeaderMenu";
 import SiderMenu from "./components/Layout/SiderMenu";
 import StarsBackground from "./components/StarsBackground/StarsBackground";
 import { getUserById } from "./api/user/getUser";
+import { getDecodedUserToken } from "./utils/cookie";
 const { Content } = Layout;
 
 export default function RootLayout({
@@ -26,11 +26,12 @@ export default function RootLayout({
     const [mounted, setMounted] = useState(false);
 
     const GetUser = async () => {
-        var code = await GetDecodedUserToken();
-        if (code.userId) {
-            const currentUser = await getUserById(code.userId);
-            setUser(currentUser);
+        var code = await getDecodedUserToken();
+        if (!code) {
+            return;
         }
+        const currentUser = await getUserById(code.userId);
+        setUser(currentUser);
     };
 
     useEffect(() => {

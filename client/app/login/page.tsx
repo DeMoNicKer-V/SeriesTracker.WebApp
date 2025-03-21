@@ -3,14 +3,12 @@ import "./style.css";
 import React, { useEffect, useState } from "react";
 import { MailOutlined, KeyOutlined } from "@ant-design/icons";
 import { Button, Card, Flex, Form, Input, Typography, Divider } from "antd";
-
-import { IsAuth } from "../api/coockie";
-
 import SignPageConfigProvider from "../components/SignPageConfigProvider";
 import PageErrorView from "../components/PageErrorVIew";
 import SignFormHeader from "../components/SignFormHeader";
 import { LoginRequest } from "../Models/User/Requests/LoginRequest";
 import { login } from "../api/auth";
+import { getDecodedUserToken } from "../utils/cookie";
 
 const { Text, Title, Link } = Typography;
 const LoginPage = () => {
@@ -19,8 +17,8 @@ const LoginPage = () => {
     const [auth, setAuth] = useState<boolean | null>(null);
 
     const getIsAuth = async () => {
-        const status = await IsAuth();
-        setAuth(status);
+        const status = await getDecodedUserToken();
+        setAuth(status !== null);
     };
     useEffect(() => {
         getIsAuth();
