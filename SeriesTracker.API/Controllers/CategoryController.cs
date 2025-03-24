@@ -1,39 +1,81 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SeriesTracker.API.Contracts;
 using SeriesTracker.Core.Abstractions;
+using SeriesTracker.Core.Enums;
 
 namespace SeriesTracker.API.Controllers
 {
     [ApiController]
     [Route("category")]
-    public class CategoryController : ControllerBase
+    public class CategoryController(ICategoryService categoryService, ILogger<CategoryController> logger) : ControllerBase
     {
-        private readonly ICategoryService _categoryService;
-
-
-        public CategoryController(ICategoryService categoryService)
-        {
-            _categoryService = categoryService;
-        }
+        private readonly ICategoryService _categoryService = categoryService;
+        private readonly ILogger<CategoryController> _logger = logger;
 
         [HttpGet]
-        public async Task<ActionResult<int>> GetCategoryList()
+        public async Task<IResult> GetCategoryList()
         {
-            var categoryList = await _categoryService.GetCategoryList();
-            return Ok(categoryList);
+            try
+            {
+                var categoryList = await _categoryService.GetCategoryList();
+                return Results.Ok(categoryList);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An unexpected error occurred while getting all categories");
+                return Results.BadRequest(new { ex.Message });
+            }
         }
 
-        [HttpGet("id/{id:int}")]
-        public async Task<ActionResult<int>> GetCategoryById(int id)
+
+        [HttpGet("{id:int}")]
+        public async Task<IResult> GetCategoryById(int id)
         {
-            var category = await _categoryService.GetCategoryById(id);
-            return Ok(category);
+            if (!Enum.IsDefined(typeof(Category), id))
+            {
+                _logger.LogError("Category with ID: {Id} not found", id);
+                return Results.NotFound("Category not found");
+            }
+
+            try
+            {
+                var category = await _categoryService.GetCategoryById(id);
+                return Results.Ok(category);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An unexpected error occurred while getting category with ID: {Id}", id);
+                return Results.BadRequest(new { ex.Message });
+            }
         }
 
         [HttpPut("{id:int}")]
-        public async Task<ActionResult<Guid>> UpdateCategoryColor(int id, [FromBody] string color)
+        public async Task<IResult> UpdateCategoryColor(int id, [FromBody] UpdateCategoryColorRequest request)
         {
-            var seriesId = await _categoryService.UpdateCategoryColor(id, color);
-            return Ok(seriesId);
+            if (!Enum.IsDefined(typeof(Category), id))
+            {
+                _logger.LogError("Category with ID: {Id} not found", id);
+                return Results.NotFound("Category not found");
+            }
+
+            try
+            {
+                DateTime now = DateTime.Now; // Получаем текущее время здесь
+                await _categoryService.UpdateCategoryColor(id, request.Color, now);
+                _logger.LogInformation("Category color updated successfully for ID: {Id}", id);
+                return Results.NoContent();
+            }
+            catch (ArgumentException ex)
+            {
+                _logger.LogError(ex, "Invalid color value: {Color}", request.Color);
+                return Results.BadRequest("Invalid color value.");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An unexpected error occurred while updating category color for ID: {Id}", id);
+                return Results.BadRequest(new { ex.Message });
+            }
+
         }
     }
 }

@@ -8,7 +8,6 @@ namespace SeriesTracker.Core.Abstractions
         Task<int> DeleteCategory(int id);
         Task<List<Category>> GetCategoryList();
         Task<Category> GetCategoryById(int id);
-        Task<int> UpdateCategory(int id, string title, string color);
-        Task<int> UpdateCategoryColor(int id, string color);
+        Task<int> UpdateCategoryColor(int id, string color, DateTime date);
     }
 }

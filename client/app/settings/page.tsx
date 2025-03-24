@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
     Button,
     Col,
@@ -60,17 +60,6 @@ export default function SettingsPage() {
     const [deleteUserUsername, setDeleteUserUsername] = useState<string>("");
     const [deleteStr, setDeleteStr] = useState<string>("");
     const [openDeleteUser, setOpenDeleteUser] = useState<boolean>(false);
-    const getCategories = async () => {
-        const token: UserToken | null = await getDecodedUserToken();
-
-        if (!token || !["1", "2"].includes(token.roleId)) {
-            // Куки отсутствует или токен недействителен
-            console.warn("Отсутствует JWT токен.");
-            return;
-        }
-        setError(false);
-        setUserToken(token);
-    };
 
     const handleSearch = (confirm: FilterDropdownProps["confirm"]) => {
         confirm();
@@ -106,13 +95,11 @@ export default function SettingsPage() {
         setDeleteStr("");
     };
 
-    const returnColor = async (record: Category, prevColor: string) => {
-        if (!prevColor) {
-            return;
-        }
-        await editCategoryColor(record.id, prevColor);
+    const returnColor = async (record: Category, color: string) => {
+        await editCategoryColor(record.id, color);
         window.location.reload();
     };
+
     useEffect(() => {
         const start = async () => {
             const token: UserToken | null = await getDecodedUserToken();
@@ -131,24 +118,22 @@ export default function SettingsPage() {
                 return;
             }
 
-            setError(false); // Если все проверки пройдены
             setUserToken(token);
             const category = await getAllCategoriesList();
-            const usersData = await getAllUsersList(page);
             setCategories(category);
-            setUsersData(usersData);
+            setError(false);
         };
         start();
     }, []);
 
-    useEffect(() => {
-        const updateUsers = async () => {
-            const usersData = await getAllUsersList(page);
-
-            setUsersData(usersData);
-        };
-        updateUsers();
+    const updateUsers = useCallback(async () => {
+        const usersData = await getAllUsersList(page);
+        setUsersData(usersData);
     }, [page]);
+
+    useEffect(() => {
+        updateUsers();
+    }, [updateUsers]);
 
     const onChange = async (userId: string, e: RadioChangeEvent) => {
         await changeUserRole(userId, e.target.value);
@@ -167,7 +152,6 @@ export default function SettingsPage() {
                     size="small"
                     onClick={async () => {
                         await editCategoryColor(record.id, color);
-                        await getCategories();
                         api.destroy(key);
                     }}
                 >
@@ -419,18 +403,20 @@ export default function SettingsPage() {
         },
     ];
 
-    const customizeRenderEmpty = () => (
-        <EmptyView text={"Ничего не найдено"} iconSize={20} fontSize={16} />
-    );
-
     if (error === null) {
-        return <Loading loading />; // Пока идет проверка
+        return <Loading loading />;
     }
 
     return error === false ? (
         <div className="container">
             <ConfigProvider
-                renderEmpty={customizeRenderEmpty}
+                renderEmpty={() => (
+                    <EmptyView
+                        text={"Ничего не найдено"}
+                        iconSize={20}
+                        fontSize={16}
+                    />
+                )}
                 theme={{
                     components: {
                         Tabs: { fontSize: 16 },

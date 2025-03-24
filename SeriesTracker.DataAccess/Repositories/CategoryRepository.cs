@@ -5,14 +5,9 @@ using SeriesTracker.DataAccess.Entities;
 
 namespace SeriesTracker.DataAccess.Repositories
 {
-    public class CategoryRepository : ICategoryRepository
+    public class CategoryRepository(SeriesTrackerDbContext context) : ICategoryRepository
     {
-        private readonly SeriesTrackerDbContext _context;
-
-        public CategoryRepository(SeriesTrackerDbContext context)
-        {
-            _context = context;
-        }
+        private readonly SeriesTrackerDbContext _context = context;
 
         public async Task<int> CreateCategory(Category category)
         {
@@ -55,18 +50,15 @@ namespace SeriesTracker.DataAccess.Repositories
 
             return categoryList;
         }
-        public async Task<int> UpdateCategory(int id, string title, string color)
+
+        public async Task<int> UpdateCategoryColor(int id, string color, DateTime date)
         {
-            var date = DateTime.Now.ToString("s");
+            var dateString = date.ToString("s");
+
             await _context.CategoryEntities.Where(c => c.Id == id)
-               .ExecuteUpdateAsync(c => c.SetProperty(c => c.Name, c => title).SetProperty(c => c.Color, c => color).SetProperty(c => c.PrevColor, c => c.Color).SetProperty(c => c.Date, c => date));
-            return id;
-        }
-        public async Task<int> UpdateCategoryColor(int id, string color)
-        {
-            var date = DateTime.Now.ToString("s");
-            await _context.CategoryEntities.Where(c => c.Id == id)
-               .ExecuteUpdateAsync(c => c.SetProperty(c => c.Color, c => color).SetProperty(c => c.PrevColor, c => c.Color).SetProperty(c => c.Date, c => date));
+               .ExecuteUpdateAsync(c => c.SetProperty(c => c.Color, c => color)
+                                          .SetProperty(c => c.PrevColor, c => c.Color)
+                                          .SetProperty(c => c.Date, c => dateString));
             return id;
         }
     }
