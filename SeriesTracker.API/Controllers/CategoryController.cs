@@ -2,6 +2,8 @@
 using SeriesTracker.API.Contracts;
 using SeriesTracker.Core.Abstractions;
 using SeriesTracker.Core.Enums;
+using SeriesTracker.Infrastructure.Authentication;
+using SeriesTracker.API.Extensions;
 
 namespace SeriesTracker.API.Controllers
 {
@@ -22,58 +24,49 @@ namespace SeriesTracker.API.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An unexpected error occurred while getting all categories");
-                return Results.BadRequest(new { ex.Message });
+                return _logger.InternalServerError(ex, "An unexpected error occurred while getting all categories");
             }
         }
-
 
         [HttpGet("{id:int}")]
         public async Task<IResult> GetCategoryById(int id)
         {
             if (!Enum.IsDefined(typeof(Category), id))
             {
-                _logger.LogError("Category with ID: {Id} not found", id);
-                return Results.NotFound("Category not found");
+                return _logger.NotFoundResponse($"Category with ID: {id} not found");
             }
 
             try
             {
                 var category = await _categoryService.GetCategoryById(id);
                 return Results.Ok(category);
+
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An unexpected error occurred while getting category with ID: {Id}", id);
-                return Results.BadRequest(new { ex.Message });
+                return _logger.InternalServerError(ex, $"An unexpected error occurred while getting category with ID: {id}");
             }
         }
 
+        [RequirePermission(Permission.Update)]
         [HttpPut("{id:int}")]
         public async Task<IResult> UpdateCategoryColor(int id, [FromBody] UpdateCategoryColorRequest request)
         {
             if (!Enum.IsDefined(typeof(Category), id))
             {
-                _logger.LogError("Category with ID: {Id} not found", id);
-                return Results.NotFound("Category not found");
+                return _logger.NotFoundResponse($"Category with ID: {id} not found");
             }
 
             try
             {
-                DateTime now = DateTime.Now; // Получаем текущее время здесь
+                DateTime now = DateTime.Now;
                 await _categoryService.UpdateCategoryColor(id, request.Color, now);
                 _logger.LogInformation("Category color updated successfully for ID: {Id}", id);
-                return Results.NoContent();
-            }
-            catch (ArgumentException ex)
-            {
-                _logger.LogError(ex, "Invalid color value: {Color}", request.Color);
-                return Results.BadRequest("Invalid color value.");
+                return Results.Json(new { Message = "Category color was updated successfully" }, statusCode: StatusCodes.Status204NoContent);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An unexpected error occurred while updating category color for ID: {Id}", id);
-                return Results.BadRequest(new { ex.Message });
+                return _logger.InternalServerError(ex, $"An unexpected error occurred while updating category color for ID: {id}");
             }
 
         }
