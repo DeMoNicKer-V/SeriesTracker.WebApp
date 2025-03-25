@@ -1,13 +1,5 @@
 import { Flex, Input, Modal, Typography } from "antd";
-import {
-    BorderlessTableOutlined,
-    CloseOutlined,
-    DeleteOutlined,
-    EyeOutlined,
-    QuestionCircleOutlined,
-    SearchOutlined,
-    TeamOutlined,
-} from "@ant-design/icons";
+import { QuestionCircleOutlined } from "@ant-design/icons";
 import { useState } from "react";
 interface Props {
     title: string;
@@ -23,7 +15,10 @@ const DelteUserModal = ({ title, open, onCancel, onOk }: Props) => {
         <Modal
             centered
             onOk={onOk}
-            onCancel={onCancel}
+            onCancel={() => {
+                onCancel();
+                setDeleteStr("");
+            }}
             closeIcon={false}
             open={open}
             cancelText="Нет"
@@ -34,8 +29,8 @@ const DelteUserModal = ({ title, open, onCancel, onOk }: Props) => {
             }}
             title={
                 <Flex gap={10}>
-                    <QuestionCircleOutlined style={{ color: "orange" }} />
-                    <Typography.Title level={5}>{title}</Typography.Title>
+                    <QuestionCircleOutlined />
+                    <Title level={5}>{title}</Title>
                 </Flex>
             }
             footer={(_, { OkBtn, CancelBtn }) => (
@@ -45,7 +40,7 @@ const DelteUserModal = ({ title, open, onCancel, onOk }: Props) => {
                 </>
             )}
         >
-            <Flex style={{ flexDirection: "column" }} gap={10}>
+            <Flex className="flex-column" gap={10}>
                 <Paragraph>
                     Будьте внимательны, это необратимое действие! <br />
                     Для того, чтобы удалить аккаунт, введите в поле ниже - (
