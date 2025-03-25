@@ -1,6 +1,6 @@
 export interface CreateSeriesRequest {
     animeId: number;
-    watchedEpisode: number;
     categoryId: number;
+    watchedEpisode: number;
     isFavorite: boolean;
 }

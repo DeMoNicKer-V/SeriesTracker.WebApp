@@ -5,8 +5,6 @@
         int AnimeId,
         int CategoryId,
         int WatchedEpisode,
-        string? AddedDate,
-        string? ChangedDate,
         bool IsFavorite
         );
 }
