@@ -1,97 +1,108 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SeriesTracker.API.Contracts;
-using SeriesTracker.Application.Interfaces.Auth;
+using SeriesTracker.API.Extensions;
 using SeriesTracker.Core.Abstractions;
 using SeriesTracker.Core.Enums;
-using SeriesTracker.Core.Models;
 using SeriesTracker.Infrastructure.Authentication;
-using System.Security.Claims;
-
 
 namespace SeriesTracker.API.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("series")]
-    public class SeriesController : ControllerBase
+    public class SeriesController(IUserSeriesService userSeriesService, ILogger<SeriesController> logger) : ControllerBase
     {
-        private readonly ISeriesService _seriesService;
-        private readonly IUserSeriesService _userSeriesService;
-        private readonly ICategoryService _categoryService;
-        private readonly IJwtProvider _jwtProvider;
-
-        public SeriesController(ISeriesService seriesService,
-            ICategoryService categoryService,
-            IUserSeriesService userSeriesService,
-            IJwtProvider jwtProvider)
-        {
-            _seriesService = seriesService;
-            _categoryService = categoryService;
-            _userSeriesService = userSeriesService;
-            _jwtProvider = jwtProvider;
-        }
-
-        [HttpGet]
-        public async Task<ActionResult<int>> GetAllSeriesCount()
-        {
-            var seriesCount = await _seriesService.GetAllSeriesCount();
-            return Ok(seriesCount);
-        }
-
-
-        [HttpGet("id/{id}")]
-        public async Task<ActionResult<int>> GetSeriesById(Guid id)
-        {
-            var s = await _seriesService.GetSeriesById(id);
-
-            var response = new SeriesResponse(s.Id, s.AnimeId, s.WatchedEpisode, s.AddedDate, s.ChangedDate, s.CategoryId, s.IsFavorite);
-
-            return Ok(response);
-        }
-
+        private readonly ILogger<SeriesController> _logger = logger;
+        private readonly IUserSeriesService _userSeriesService = userSeriesService;
 
 
         [RequirePermission(Permission.Read)]
         [HttpPost("create")]
-        public async Task<ActionResult<Guid>> CreateSeries([FromBody] CreateSeriesRequest request)
+        public async Task<IResult> CreateSeries([FromBody] CreateSeriesRequest request)
         {
-            var token = Request.Cookies["secretCookie"];
+            // Модель автоматически валидируется ASP.NET Core, поэтому проверка ModelState.IsValid не требуется.
 
-            // Проверка наличия токена
-            if (string.IsNullOrEmpty(token))
+            try
             {
-                return Unauthorized();
-            }
-            var principal = _jwtProvider.ValidateToken(token);
-            var userId = principal.FindFirstValue("userId");
-            var date = DateTime.Now.ToString("s");
-            var (series, error) = UserSeries.Create(Guid.NewGuid(), request.AnimeId, Guid.Parse(userId), request.CategoryId, request.WatchedEpisode, date, date, request.IsFavorite);
+                Guid userId = GetUserIdFromClaims();
+                var createdSeriesId = await _userSeriesService.CreateAsync(
+                    Guid.NewGuid(), userId, request.AnimeId, request.CategoryId,
+                    request.WatchedEpisode, request.IsFavorite);
 
-            if (!string.IsNullOrEmpty(error))
+                return _logger.CreatedResponse(
+                    logggerMessage: $"The user with ID:{userId} have added anime with ID:{request.AnimeId} to his list.",
+                    resultMessage: "You have added anime to your list.");
+            }
+            catch (UnauthorizedAccessException)
             {
-                return BadRequest(error);
+                return _logger.UnauthorizedResponse("You must be authorized to add anime to your list.", nameof(CreateSeries));
             }
-
-            var seriesId = await _userSeriesService.CreateAsync(series);
-            return Ok(seriesId);
+            catch (Exception ex)
+            {
+                return _logger.InternalServerError(ex, "An unexpected error occurred while adding anime to list.");
+            }
         }
-
 
         [RequirePermission(Permission.Read)]
         [HttpPut("update/{id:guid}")]
-        public async Task<ActionResult<Guid>> UpdateSeries(Guid id, [FromBody] SeriesRequest request)
+        public async Task<IResult> UpdateSeries(Guid id, [FromBody] CreateSeriesRequest request)
         {
-            var date = DateTime.Now.ToString("s");
-            var seriesId = await _userSeriesService.UpdateSeries(id, request.WatchedEpisode,
-               date, request.CategoryId, request.IsFavorite);
-            return Ok(seriesId);
-        }
+            // Модель автоматически валидируется ASP.NET Core, поэтому проверка ModelState.IsValid не требуется.
 
+            try
+            {
+                Guid userId = GetUserIdFromClaims();
+                var updatedSeriesId = await _userSeriesService.UpdateSeries(id, request.WatchedEpisode, 
+                    request.CategoryId, request.IsFavorite);
+
+                return _logger.NoContentResponse(
+                    logggerMessage: $"The user with ID:{userId} have updated series with animeID:{request.AnimeId}.", 
+                    resultMessage: "You have updated series.");
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return _logger.UnauthorizedResponse("You must be authorized to update series.", nameof(UpdateSeries));
+            }
+            catch (Exception ex)
+            {
+                return _logger.InternalServerError(ex, "An unexpected error occurred while updating series.");
+            }
+        }
 
         [RequirePermission(Permission.Read)]
         [HttpDelete("delete/{id:guid}")]
-        public async Task<ActionResult<Guid>> DeleteSeries(Guid id)
+        public async Task<IResult> DeleteSeries(Guid id)
         {
-            return Ok(await _userSeriesService.DeleteSeries(id));
+            try
+            {
+                Guid userId = GetUserIdFromClaims();
+                var deletedSeriesId = await _userSeriesService.DeleteSeries(id);
+
+                return _logger.NoContentResponse(
+                    logggerMessage: $"The user with ID:{userId} have deleted series with ID:{id} from his list.", 
+                    resultMessage:"You have deleted series.");
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return _logger.UnauthorizedResponse("You must be authorized to delete series.", nameof(DeleteSeries));
+            }
+            catch (Exception ex)
+            {
+                return _logger.InternalServerError(ex, "An unexpected error occurred while deleting series.");
+            }
+        }
+
+        private Guid GetUserIdFromClaims()
+        {
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == "userId")?.Value;
+
+            if (Guid.TryParse(userIdClaim, out var userId))
+            {
+                return userId;
+            }
+
+            throw new UnauthorizedAccessException("User ID not found in claims.");
         }
     }
 }

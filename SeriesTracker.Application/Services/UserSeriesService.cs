@@ -6,18 +6,12 @@ using SeriesTracker.DataAccess;
 
 namespace SeriesTracker.Application.Services
 {
-    public class UserSeriesService : IUserSeriesService
+    public class UserSeriesService(IDbContextFactory<SeriesTrackerDbContext> contextFactory, 
+        IUserSeriesRepository userSeriesRepository, ICategoryRepository categoryRepository) : IUserSeriesService
     {
-        private readonly IUserSeriesRepository _userSeriesRepository;
-        private readonly IDbContextFactory<SeriesTrackerDbContext> _contextFactory;
-        private readonly ICategoryRepository _categoryRepository;
-
-        public UserSeriesService(IDbContextFactory<SeriesTrackerDbContext> contextFactory, IUserSeriesRepository userSeriesRepository, ICategoryRepository categoryRepository)
-        {
-            _contextFactory = contextFactory;
-            _userSeriesRepository = userSeriesRepository;
-            _categoryRepository = categoryRepository;
-        }
+        private readonly IUserSeriesRepository _userSeriesRepository = userSeriesRepository;
+        private readonly ICategoryRepository _categoryRepository = categoryRepository;
+        private readonly IDbContextFactory<SeriesTrackerDbContext> _contextFactory = contextFactory;
 
         public async Task<UserSeries?> GetSeriesByAnimeIdAsync(int id, string userName)
         {
@@ -38,9 +32,10 @@ namespace SeriesTracker.Application.Services
             }
         }
 
-        public async Task<Guid> CreateAsync(UserSeries model)
+        public async Task<Guid> CreateAsync(Guid seriesId, Guid userId, int animeId, int categoryId, int watchedEpisodes, bool isFavorite)
         {
-            return await _userSeriesRepository.CreateAsync(model);
+            var dateNow = DateTime.UtcNow.ToString("s");
+            return await _userSeriesRepository.CreateAsync(seriesId, userId, animeId, categoryId, watchedEpisodes, isFavorite, dateNow);
         }
 
         public async Task<Guid> DeleteSeries(Guid id)
@@ -59,9 +54,10 @@ namespace SeriesTracker.Application.Services
         {
             return await _userSeriesRepository.GetSeriesList(id);
         }
-        public async Task<Guid> UpdateSeries(Guid id, int watched, string changed, int categoryId, bool favorite)
+        public async Task<Guid> UpdateSeries(Guid seriesDd, int watched, int categoryId, bool favorite)
         {
-            return await _userSeriesRepository.UpdateSeries(id, watched, changed, categoryId, favorite);
+            var dateNow = DateTime.UtcNow.ToString("s");
+            return await _userSeriesRepository.UpdateSeries(seriesDd, watched, categoryId, favorite, dateNow);
         }
 
         public async Task<string> GetSeriesAnimeIdsList(string userName, int categoryId)

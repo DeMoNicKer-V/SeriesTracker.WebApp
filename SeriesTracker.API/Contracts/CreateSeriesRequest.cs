@@ -1,10 +1,12 @@
-﻿namespace SeriesTracker.API.Contracts
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace SeriesTracker.API.Contracts
 {
     public record CreateSeriesRequest
     (
-        int AnimeId,
-        int CategoryId,
-        int WatchedEpisode,
-        bool IsFavorite
-        );
+       [Required] int AnimeId,
+       [Required] int CategoryId,
+       [Required] int WatchedEpisode,
+       [Required] bool IsFavorite
+    );
 }

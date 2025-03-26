@@ -5,7 +5,7 @@ namespace SeriesTracker.Core.Abstractions
 {
     public interface IUserSeriesRepository
     {
-        Task<Guid> CreateAsync(UserSeries model);
+        Task<Guid> CreateAsync(Guid seriesDd, Guid userId, int animeId, int categoryId, int watchedEpisodes, bool isFavorite, string dateNow);
         Task<Guid> DeleteSeries(Guid id);
         Task<Guid> DeleteAllSeriesByUserId(Guid userId);
         Task<int> GetAllSeriesCount();
@@ -15,7 +15,7 @@ namespace SeriesTracker.Core.Abstractions
         Task<List<SeriesGroupDto>> GetGroupSeries(Guid id);
         Task<List<SeriesGroupShortDto>> GetGroupShortSeries(Guid id);
         Task<string> GetRecentSeriesString(Guid userId);
-        Task<Guid> UpdateSeries(Guid id, int watched, string changed, int categoryId, bool favorite);
+        Task<Guid> UpdateSeries(Guid seriesId, int watched, int categoryId, bool favorite, string dateNow);
         Task<List<int>> GetSeriesAnimeIdsList(string userName, int categoryId);
     }
 }

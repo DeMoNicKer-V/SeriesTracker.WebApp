@@ -6,5 +6,5 @@ import { CREATE_SERIES_URL } from "../endpoints";
 export const createSeries = async (
     seriesRequest: CreateSeriesRequest
 ): Promise<void> => {
-    await post(CREATE_SERIES_URL, { seriesRequest });
+    await post(CREATE_SERIES_URL, seriesRequest);
 };
