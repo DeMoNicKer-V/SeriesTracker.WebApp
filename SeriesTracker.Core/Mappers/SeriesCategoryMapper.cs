@@ -13,7 +13,7 @@ namespace SeriesTracker.Core.Mappers
                 CategoryId = category.Id,
                 CategoryName = category.Name,
                 CategoryColor = category.Color,
-                WatchedEpisodes = series.WatchedEpisode,
+                WatchedEpisodes = series.WatchedEpisodes,
                 AddedDate = series.AddedDate,
                 IsFavorite = series.IsFavorite,
                 ChangedDate = series.ChangedDate

@@ -28,9 +28,10 @@ namespace SeriesTracker.Application.Services
             return await _categoryRepository.GetCategoryById(id);
         }
 
-        public async Task<int> UpdateCategoryColor(int id, string color, DateTime date)
+        public async Task<int> UpdateCategoryColor(int id, string color)
         {
-            return await _categoryRepository.UpdateCategoryColor(id, color, date);
+            var dateNow = DateTime.UtcNow.ToString("");
+            return await _categoryRepository.UpdateCategoryColor(id, color, dateNow);
         }
     }
 }

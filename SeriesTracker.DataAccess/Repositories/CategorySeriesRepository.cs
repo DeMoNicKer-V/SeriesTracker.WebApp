@@ -51,7 +51,7 @@ namespace SeriesTracker.DataAccess.Repositories
                     return null;
                 }
                 var category = Category.Create(s.Category.Id, s.Category.Name, s.Category.Color, s.Category.PrevColor, s.Category.Date).Category;
-                var userSeries = UserSeries.Create(s.Id, s.AnimeId, s.UserId, s.CategoryId, s.WatchedEpisode, s.AddedDate, s.ChangedDate, s.IsFavorite).UserSeries;
+                var userSeries = new UserSeries(s.Id, s.AnimeId, s.UserId, s.CategoryId, s.WatchedEpisode, s.AddedDate, s.ChangedDate, s.IsFavorite);
                 return userSeries.ToSeriesCategoryDTO(category);
             }
         }

@@ -11,9 +11,9 @@ namespace SeriesTracker.API.Controllers
     [Authorize]
     [ApiController]
     [Route("series")]
-    public class SeriesController(IUserSeriesService userSeriesService, ILogger<SeriesController> logger) : ControllerBase
+    public class UserSeriesController(IUserSeriesService userSeriesService, ILogger<UserSeriesController> logger) : ControllerBase
     {
-        private readonly ILogger<SeriesController> _logger = logger;
+        private readonly ILogger<UserSeriesController> _logger = logger;
         private readonly IUserSeriesService _userSeriesService = userSeriesService;
 
 

@@ -20,6 +20,7 @@ namespace SeriesTracker.API.Controllers
             try
             {
                 var categoryList = await _categoryService.GetCategoryList();
+
                 return Results.Ok(categoryList);
             }
             catch (Exception ex)
@@ -59,9 +60,9 @@ namespace SeriesTracker.API.Controllers
 
             try
             {
-                DateTime now = DateTime.Now;
-                await _categoryService.UpdateCategoryColor(id, request.Color, now);
+                await _categoryService.UpdateCategoryColor(id, request.Color);
                 _logger.LogInformation("Category color updated successfully for ID: {Id}", id);
+
                 return Results.Json(new { Message = "Category color was updated successfully" }, statusCode: StatusCodes.Status204NoContent);
             }
             catch (Exception ex)

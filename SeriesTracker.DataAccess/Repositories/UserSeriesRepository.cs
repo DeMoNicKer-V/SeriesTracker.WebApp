@@ -10,22 +10,22 @@ namespace SeriesTracker.DataAccess.Repositories
     {
         private readonly SeriesTrackerDbContext _context = context;
 
-        public async Task<Guid> CreateAsync(Guid seriesId, Guid userId, int animeId, int categoryId, int watchedEpisodes, bool isFavorite, string dateNow)
+        public async Task<Guid> AddAsync(UserSeries model)
         {
             var categoryEntity = await _context.CategoryEntities
-                .SingleOrDefaultAsync(r => r.Id == categoryId) ?? throw new KeyNotFoundException($"Category with ID {categoryId} not found.");
+                .SingleOrDefaultAsync(r => r.Id == model.CategoryId) ?? throw new KeyNotFoundException($"Category with ID {model.CategoryId} not found.");
 
             var userSeriesEntity = new UserSeriesEntity
             {
-                Id = seriesId,
-                UserId = userId,
-                AnimeId = animeId,
-                CategoryId = categoryId,
+                Id = model.Id,
+                UserId = model.UserId,
+                AnimeId = model.AnimeId,
+                CategoryId = model.CategoryId,
                 Category = categoryEntity,
-                AddedDate = dateNow,
-                ChangedDate = dateNow,
-                WatchedEpisode = watchedEpisodes,
-                IsFavorite = isFavorite,
+                AddedDate = model.AddedDate,
+                ChangedDate = model.ChangedDate,
+                WatchedEpisode = model.WatchedEpisodes,
+                IsFavorite = model.IsFavorite,
             };
 
             await _context.UserSeriesEntities.AddAsync(userSeriesEntity);
@@ -105,12 +105,12 @@ namespace SeriesTracker.DataAccess.Repositories
         {
             List<int> seriesAnimeIdsList = [];
 
-            if (string.IsNullOrEmpty(userName) == false)
+            if (!string.IsNullOrEmpty(userName))
             {
                 var user = await _context.UserEntities.AsNoTracking().Where(u => u.UserName == userName).FirstAsync();
 
                 seriesAnimeIdsList = await _context.UserSeriesEntities.AsNoTracking()
-                    .Where(s => s.UserId != user.Id || categoryId == 0 || s.CategoryId == categoryId)
+                    .Where(s => categoryId > 0 ? s.UserId == user.Id && s.CategoryId == categoryId: s.UserId == user.Id)
                     .Select(s => s.AnimeId).ToListAsync();
             }
             else
@@ -129,7 +129,7 @@ namespace SeriesTracker.DataAccess.Repositories
                 return null;
             }
 
-            var userSeries = UserSeries.Create(s.Id, s.AnimeId, s.UserId, s.CategoryId, s.WatchedEpisode, s.AddedDate, s.ChangedDate, s.IsFavorite).UserSeries;
+            var userSeries = new UserSeries(s.Id, s.AnimeId, s.UserId, s.CategoryId, s.WatchedEpisode, s.AddedDate, s.ChangedDate, s.IsFavorite);
 
             return userSeries;
         }
@@ -137,7 +137,7 @@ namespace SeriesTracker.DataAccess.Repositories
         public async Task<UserSeries> GetSeriesById(Guid id)
         {
             var s = await _context.UserSeriesEntities.AsNoTracking().Where(s => s.Id == id).FirstAsync();
-            var userSeries = UserSeries.Create(s.Id, s.AnimeId, s.UserId, s.CategoryId, s.WatchedEpisode, s.AddedDate, s.ChangedDate, s.IsFavorite).UserSeries;
+            var userSeries = new UserSeries(s.Id, s.AnimeId, s.UserId, s.CategoryId, s.WatchedEpisode, s.AddedDate, s.ChangedDate, s.IsFavorite);
 
             return userSeries;
         }
@@ -155,7 +155,7 @@ namespace SeriesTracker.DataAccess.Repositories
                 return [];
             }
 
-            var seriesList = userSeriesEntities.Select(s => UserSeries.Create(s.Id, s.AnimeId, s.UserId, s.CategoryId, s.WatchedEpisode, s.AddedDate, s.ChangedDate, s.IsFavorite).UserSeries).ToList();
+            var seriesList = userSeriesEntities.Select(s => new UserSeries(s.Id, s.AnimeId, s.UserId, s.CategoryId, s.WatchedEpisode, s.AddedDate, s.ChangedDate, s.IsFavorite)).ToList();
             
             return seriesList;
         }

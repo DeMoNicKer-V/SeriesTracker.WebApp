@@ -51,14 +51,12 @@ namespace SeriesTracker.DataAccess.Repositories
             return categoryList;
         }
 
-        public async Task<int> UpdateCategoryColor(int id, string color, DateTime date)
+        public async Task<int> UpdateCategoryColor(int id, string color, string dateNow)
         {
-            var dateString = date.ToString("s");
-
             await _context.CategoryEntities.Where(c => c.Id == id)
                .ExecuteUpdateAsync(c => c.SetProperty(c => c.Color, c => color)
                                           .SetProperty(c => c.PrevColor, c => c.Color)
-                                          .SetProperty(c => c.Date, c => dateString));
+                                          .SetProperty(c => c.Date, c => dateNow));
             return id;
         }
     }

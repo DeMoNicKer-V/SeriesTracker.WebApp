@@ -5,7 +5,7 @@ namespace SeriesTracker.Core.Abstractions
 {
     public interface IUserSeriesRepository
     {
-        Task<Guid> CreateAsync(Guid seriesDd, Guid userId, int animeId, int categoryId, int watchedEpisodes, bool isFavorite, string dateNow);
+        Task<Guid> AddAsync(UserSeries model);
         Task<Guid> DeleteSeries(Guid id);
         Task<Guid> DeleteAllSeriesByUserId(Guid userId);
         Task<int> GetAllSeriesCount();

@@ -2,16 +2,36 @@
 {
     public class UserSeries
     {
-        private UserSeries(Guid id, int animeId, Guid userId, int categoryId, int watched, string addedDate, string changedDate, bool favorite)
+        public UserSeries(Guid id, int animeId, Guid userId, int categoryId, int watchedEpisodes, string addedDate, string changedDate, bool isFavorite)
         {
+            if (animeId <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(animeId), "AnimeId должен быть больше нуля.");
+            }
+
+            if (userId == Guid.Empty)
+            {
+                throw new ArgumentException("UserId не может быть Guid.Empty.", nameof(userId));
+            }
+
+            if (categoryId <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(categoryId), "CategoryId должен быть больше нуля.");
+            }
+
+            if (watchedEpisodes < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(watchedEpisodes), "Кол-во просмотренных эпизодов не может быть меньше нуля.");
+            }
+
             Id = id;
             AnimeId = animeId;
             UserId = userId;
-            WatchedEpisode = watched;
+            CategoryId = categoryId;
+            WatchedEpisodes = watchedEpisodes;
             AddedDate = addedDate;
             ChangedDate = changedDate;
-            CategoryId = categoryId;
-            IsFavorite = favorite;
+            IsFavorite = isFavorite;
         }
 
         public Guid Id
@@ -34,7 +54,7 @@
             get;
         }
 
-        public int WatchedEpisode
+        public int WatchedEpisodes
         {
             get;
         }
@@ -52,18 +72,6 @@
         public bool IsFavorite
         {
             get;
-        }
-
-        public static (UserSeries UserSeries, string Error) Create(Guid id, int animeId, Guid userId, int categoryId, int watched, string addedDate, string changedDate, bool favorite)
-        {
-            string error = string.Empty;
-            if (watched < 0)
-            {
-                error = "Кол-во просмотренных эпизодов не может быть меньше нуля.";
-            }
-            UserSeries userSeries = new(id, animeId, userId, categoryId, watched, addedDate, changedDate, favorite);
-
-            return (userSeries, error);
         }
     }
 }
