@@ -8,21 +8,19 @@ namespace SeriesTracker.Core.Abstractions
 {
     public interface IShikimoriService
     {
-        Task<GraphQLResponse<ShikimoriAnimeBaseList>> GetAnimeById(string Id);
+        Task<ShikimoriAnimeBaseList> GetAnimeById(string Id);
 
-        Task<GraphQLResponse<ShikimoriAnimeBaseList>> GetAnimeListByIds(string Id);
+        Task<ShikimoriAnimeBaseList> GetAnimeListByIds(string Id);
 
-        Task<GraphQLResponse<ShikimoriAnimeBaseList>> GetAnimes(int page, string order);
+        Task<ShikimoriAnimeBaseList> GetAnimesByAllParams(int page, string name, string season, string status, string kind, string genre, string order, bool censored);
 
-        Task<GraphQLResponse<ShikimoriAnimeBaseList>> GetAnimesByAllParams(int page, string name, string season, string status, string kind, string genre, string order, bool censored);
+        Task<ShikimoriAnimeBaseList> GetAnimesByAllParamsAndIds(int page, string name, string ids, string season, string status, string kind, string genre, string order, bool censored);
 
-        Task<GraphQLResponse<ShikimoriAnimeBaseList>> GetAnimesByAllParamsAndIds(int page, string name, string ids, string season, string status, string kind, string genre, string order, bool censored);
+        Task<ShikimoriAnimeBaseList> GetAnimesByName(string name);
 
-        Task<GraphQLResponse<ShikimoriAnimeBaseList>> GetAnimesByName(string name);
+        Task<GenreList> GetGenres();
 
-        Task<GraphQLResponse<GenreList>> GetGenres();
-
-        Task<GraphQLResponse<ShikimoriAnimeBaseList>> GetRandomAnime();
+        Task<ShikimoriAnimeBaseList> GetRandomAnime();
 
         AnimeFullDto MapToFullDto(ShikimoriAnimeBase anime);
 

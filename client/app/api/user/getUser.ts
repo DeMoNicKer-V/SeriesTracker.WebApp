@@ -13,7 +13,6 @@ import { UsersList } from "@/app/Models/User/UsersList";
 export interface CategoryCount {
     key: string;
     value: number;
-    string: string;
 }
 
 export const getUserById = async (userId: string): Promise<User> => {

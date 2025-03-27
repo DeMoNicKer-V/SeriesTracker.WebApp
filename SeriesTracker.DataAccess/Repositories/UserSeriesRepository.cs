@@ -86,20 +86,18 @@ namespace SeriesTracker.DataAccess.Repositories
 
             // Получаем результаты группировки:
             var categoryGroup = await query
-                .GroupBy(s => new { s.Category.Id, s.Category.Name, s.AnimeId })
+                .GroupBy(s => new { s.Category.Id, s.Category.Name })
                 .Select(g => new SeriesGroupShortDto
                 {
                     Key = g.Key.Id.ToString(),
-                    Value = g.Count(),
-                    String = string.Join(",", g.Key.AnimeId.ToString()) 
+                    Value = g.Count()
                 })
                 .ToListAsync();
 
             // Создаем результат и вставляем в начало:
             var result = categoryGroup.ToList();
-            var ids = string.Join(",", await query.Select(s => s.AnimeId).ToListAsync());
 
-            result.Insert(0, new SeriesGroupShortDto { Key = "0", Value = count, String = ids });
+            result.Insert(0, new SeriesGroupShortDto { Key = "0", Value = count });
 
             return result;
         }

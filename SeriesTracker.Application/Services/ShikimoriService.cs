@@ -1,7 +1,5 @@
 ﻿using AutoMapper;
-using GraphQL;
-using GraphQL.Client.Http;
-using GraphQL.Client.Serializer.Newtonsoft;
+using Microsoft.Extensions.Logging;
 using SeriesTracker.Core.Abstractions;
 using SeriesTracker.Core.Dtos.Anime;
 using SeriesTracker.Core.Dtos.Series;
@@ -12,17 +10,13 @@ namespace SeriesTracker.Application.Services
 {
     public class ShikimoriService : IShikimoriService
     {
-        private static readonly string apiUrl = "https://shikimori.one/api/graphql";
-        private readonly GraphQLHttpClient graphQLClient;
-
+        private readonly ILogger<ShikimoriService> _logger;
         private readonly IMapper _mapper;
 
-        public ShikimoriService(IMapper mapper)
+        public ShikimoriService(IMapper mapper, ILogger<ShikimoriService> logger)
         {
             _mapper = mapper;
-
-
-            graphQLClient = new GraphQLHttpClient(apiUrl, new NewtonsoftJsonSerializer());
+            _logger = logger;
         }
 
         public AnimeFullDto MapToFullDto(ShikimoriAnimeBase anime)
@@ -66,332 +60,43 @@ namespace SeriesTracker.Application.Services
             });
         }
 
-        public async Task<GraphQLResponse<ShikimoriAnimeBaseList>> GetAnimes(int page, string order)
+        public async Task<ShikimoriAnimeBaseList> GetAnimesByName(string name)
         {
-            return await graphQLClient.SendQueryAsync<ShikimoriAnimeBaseList>(GetAnimesRequest(page, order));
+            return await GraphQLHelper.ExecuteGraphQLRequest<ShikimoriAnimeBaseList>(GraphQLQueries.GetAnimesByName(name), _logger);
         }
 
-        public async Task<GraphQLResponse<ShikimoriAnimeBaseList>> GetAnimesByName(string name)
+        public async Task<ShikimoriAnimeBaseList> GetAnimeById(string id)
         {
-            return await graphQLClient.SendQueryAsync<ShikimoriAnimeBaseList>(GetAnimeByNameRequest(name));
+            return await GraphQLHelper.ExecuteGraphQLRequest<ShikimoriAnimeBaseList>(GraphQLQueries.GetAnimeById(id), _logger);
         }
 
-        public async Task<GraphQLResponse<ShikimoriAnimeBaseList>> GetAnimeById(string Id)
+        public async Task<ShikimoriAnimeBaseList> GetAnimeListByIds(string ids)
         {
-            return await graphQLClient.SendQueryAsync<ShikimoriAnimeBaseList>(GetAnimeByIdRequest(Id));
+            return await GraphQLHelper.ExecuteGraphQLRequest<ShikimoriAnimeBaseList>(GraphQLQueries.GetRecentAnimes(ids), _logger);
         }
 
-        public async Task<GraphQLResponse<ShikimoriAnimeBaseList>> GetAnimeListByIds(string Id)
+        public async Task<ShikimoriAnimeBaseList> GetAnimesByAllParams(int page, string name, string season, 
+            string status, string kind, string genre, string order, bool censored)
         {
-            return await graphQLClient.SendQueryAsync<ShikimoriAnimeBaseList>(GetAnimeListByIdsRequest(Id));
+            return await GraphQLHelper.ExecuteGraphQLRequest<ShikimoriAnimeBaseList>(GraphQLQueries.GetAnimes(page, name, season,
+                 status, kind, genre, order, censored), _logger);
         }
 
-        public async Task<GraphQLResponse<ShikimoriAnimeBaseList>> GetAnimesByAllParams(int page, string name, string season, string status, string kind, string genre, string order, bool censored)
+        public async Task<ShikimoriAnimeBaseList> GetAnimesByAllParamsAndIds(int page, string name, string ids, string season, 
+            string status, string kind, string genre, string order, bool censored)
         {
-            return await graphQLClient.SendQueryAsync<ShikimoriAnimeBaseList>(GetAnimesParamsRequest(page, name, season, status, kind, genre, order, censored));
+            return await GraphQLHelper.ExecuteGraphQLRequest<ShikimoriAnimeBaseList>(GraphQLQueries.GetAnimesByIds(page, name, ids, season, 
+                status, kind, genre, order, censored), _logger);
         }
 
-        public async Task<GraphQLResponse<ShikimoriAnimeBaseList>> GetAnimesByAllParamsAndIds(int page, string name, string ids, string season, string status, string kind, string genre, string order, bool censored)
+        public async Task<GenreList> GetGenres()
         {
-            return await graphQLClient.SendQueryAsync<ShikimoriAnimeBaseList>(GetAnimesParamsIdsRequest(page, name, ids, season, status, kind, genre, order, censored));
+            return await GraphQLHelper.ExecuteGraphQLRequest<GenreList>(GraphQLQueries.GetGenres(), _logger);
         }
 
-        public async Task<GraphQLResponse<GenreList>> GetGenres()
+        public async Task<ShikimoriAnimeBaseList> GetRandomAnime()
         {
-            return await graphQLClient.SendQueryAsync<GenreList>(GetGenresRequest());
-        }
-
-        public async Task<GraphQLResponse<ShikimoriAnimeBaseList>> GetRandomAnime()
-        {
-            return await graphQLClient.SendQueryAsync<ShikimoriAnimeBaseList>(GetRandomAnimeRequest());
-        }
-
-        private static GraphQLRequest GetAnimesRequest(int page, string order)
-        {
-            return new GraphQLRequest
-            {
-                Query = @"query GetAll($page: Int, $order: OrderEnum) {
-                                animes(page: $page, order: $order, kind: ""!music,!pv,!cm"", status: ""!anons"",  limit: 28) {
-                                    id
-                                    russian
-                                    name
-                                    description
-                                    kind
-                                    rating
-                                    duration
-                                    genres{ id name russian }
-                                    episodes
-                                    episodesAired
-                                    status
-                                    score
-                                    airedOn {
-                                        date
-                                    }
-                                    poster {
-                                        mainUrl
-                                        originalUrl
-                                    }
-                                }
-                            }",
-                OperationName = "GetAll",
-                Variables = new
-                {
-                    page,
-                    order
-                }
-            };
-        }
-
-        private static GraphQLRequest GetGenresRequest()
-        {
-            return new GraphQLRequest
-            {
-                Query = @"query GetGenres() {
-                                genres(entryType: Anime) {
-                                    id
-                                    russian
-                                    kind
-                                }
-                            }",
-                OperationName = "GetGenres",
-            };
-        }
-
-
-        private static GraphQLRequest GetRandomAnimeRequest()
-        {
-            return new GraphQLRequest
-            {
-                Query = @"query GetRandom() {
-                                animes(order: random, score: 6, kind: ""ova,ona,tv,movie"", status: ""!anons"") {
-                                    id
-                                }
-                            }",
-                OperationName = "GetRandom",
-
-            };
-        }
-
-
-        private static GraphQLRequest GetAnimeByNameRequest(string name)
-        {
-            return new GraphQLRequest
-            {
-                Query = @"query GetByName($name: String) {
-                                animes(search: $name, kind: ""!music,!pv,!cm"", status: ""!anons"", censored: true, limit: 5) {
-                                    id
-                                    russian
-                                    name
-                                    kind
-                                    episodes
-                                    episodesAired
-                                    status
-                                    airedOn {
-                                        year
-                                    }
-                                    poster {
-                                        mainUrl
-                                    }
-                                }
-                            }",
-                OperationName = "GetByName",
-                Variables = new
-                {
-                    name,
-                }
-            };
-        }
-
-        private static GraphQLRequest GetAnimesParamsIdsRequest(int page, string name, string ids, string season, string status, string kind, string genre, string order, bool censored)
-        {
-
-            return new GraphQLRequest
-            {
-                Query = @"query GetByAllParams($page: Int, $ids: String, $name: String, $season: SeasonString, $status: AnimeStatusString, $kind: AnimeKindString, $genre: String, $order: OrderEnum, $censored: Boolean) {
-                                animes(page: $page, ids: $ids, search: $name, season: $season, status: $status, kind: $kind, genre: $genre, order: $order, censored: $censored, score: 1, limit: 28) {
-                                    id
-                                    russian
-                                    name
-                                    description
-                                    kind
-                                    rating
-                                    duration
-                                    episodes
-                                    genres{ id kind russian }
-                                    episodesAired
-                                    status
-                                    score
-                                    airedOn {
-                                        date
-                                    }
-                                    poster {
-                                        
-                                        mainUrl
-                                    }
-                                }
-                            }",
-                OperationName = "GetByAllParams",
-                Variables = new
-                {
-                    ids = ids,
-                    page = page,
-                    name = name,
-                    season = season,
-                    status = string.IsNullOrEmpty(status) ? "!anons" : status,
-                    kind = string.IsNullOrEmpty(kind) ? "!music,!pv,!cm" : kind,
-                    genre = genre,
-                    order = order,
-                    censored = censored
-                }
-            };
-        }
-
-        private static GraphQLRequest GetAnimesParamsRequest(int page, string name, string season, string status, string kind, string genre, string order, bool censored)
-        {
-
-            return new GraphQLRequest
-            {
-                Query = @"query GetByAllParams($page: Int, $name: String, $season: SeasonString, $status: AnimeStatusString, $kind: AnimeKindString, $genre: String, $order: OrderEnum, $censored: Boolean) {
-                                animes(page: $page, search: $name, season: $season, status: $status, kind: $kind, genre: $genre, order: $order, censored: $censored, score: 1, limit: 22) {
-                                    id
-                                    russian
-                                    name
-                                    description
-                                    kind
-                                    rating
-                                    duration
-                                    episodes
-                                    episodesAired
-                                    status
-                                    score
-                                    airedOn {
-                                        year
-                                    }
-                                    poster {
-                                        mainUrl
-                                        mainAltUrl
-                                    }
-                                }
-                            }",
-                OperationName = "GetByAllParams",
-                Variables = new
-                {
-                    page = page,
-                    name = name,
-                    season = season,
-                    status = string.IsNullOrEmpty(status) ? "!anons" : status,
-                    kind = string.IsNullOrEmpty(kind) ? "!music,!pv,!cm" : kind,
-                    genre = genre,
-                    order = order,
-                    censored = censored
-                }
-            };
-        }
-
-        private static GraphQLRequest GetAnimeByIdRequest(string id)
-        {
-            return new GraphQLRequest
-            {
-                Query = @"query GetById($id: String) {
-                                animes(ids: $id) {
-                                    id
-                                    russian
-                                    name
-                                    description
-                                    kind
-                                    rating
-                                    duration
-                                    episodes
-                                    genres{ id kind russian }
-                                    episodesAired
-                                    status
-                                    score
-                                    screenshots { id originalUrl}
-                                    related {
-                                      anime {
-                                        id
-                                        name
-                                        russian
-                                        poster {mini2xUrl}
-                                        kind
-                                        airedOn{year}
-                                        }
-                                      relationText
-                                    }
-                                    airedOn {
-                                        date
-                                    }
-                                    poster {
-                                        originalUrl
-                                    }
-                                }
-                            }",
-                OperationName = "GetById",
-                Variables = new
-                {
-                    id,
-                }
-            };
-        }
-
-        private static GraphQLRequest GetAnimeListByIdsRequest(string id)
-        {
-            return new GraphQLRequest
-            {
-                Query = @"query GetListById($id: String) {
-                                animes(ids: $id, limit: 28) {
-                                    id
-                                    russian
-                                    name
-                                    description
-                                    kind
-                                    rating
-                                    duration
-                                    episodes
-                                    genres{ id kind russian }
-                                    episodesAired
-                                    status
-                                    score
-                                    airedOn {
-                                        date
-                                    }
-                                    poster {
-                                        
-                                        mainUrl
-                                    }
-                                }
-                            }",
-                OperationName = "GetListById",
-                Variables = new
-                {
-                    id,
-                }
-            };
-        }
-
-        private static GraphQLRequest GetOngoingList(int page)
-        {
-            return new GraphQLRequest
-            {
-                Query = @"query GetListById($page: Int) {
-                                animes(status: ""ongoing"" limit: 50, page: $page) {
-                                    id
-                                    russian
-                                    name
-                                    episodes
-                                    episodesAired
-                                    nextEpisodeAt
-                                    poster {
-                                        mainUrl
-                                    }
-                                }
-                            }",
-                OperationName = "GetListById",
-                Variables = new
-                {
-                    page,
-                }
-            };
+            return await GraphQLHelper.ExecuteGraphQLRequest<ShikimoriAnimeBaseList>(GraphQLQueries.GetRandomAnime(), _logger);
         }
     }
 }
