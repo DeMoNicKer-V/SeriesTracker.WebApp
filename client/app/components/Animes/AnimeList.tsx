@@ -24,7 +24,7 @@ import {
 import AbsoluteImage from "../AbsoluteImage";
 import AnimeParamsMenu from "../AnimeParamsMenu";
 import { useCallback, useMemo, useState } from "react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import useSWR from "swr";
 import { EmptyView } from "../EmptyView";
 import PageNavigator from "../PageNavigator";
@@ -42,27 +42,23 @@ import { getGenres } from "@/app/api/shikimori/genre/getGenre";
 const { Text } = Typography;
 
 const AnimeList = ({}) => {
-    const router = useRouter();
     const searchParams = useSearchParams();
     const createQueryString = useMemo(
         () => (query: any) => {
-            const params = new URLSearchParams(searchParams);
+            const params = new URLSearchParams(); // Создаем новый объект без начальных значений
             for (const [name, value] of Object.entries(query)) {
                 if (name && value) {
                     params.set(name, String(value));
                 } else {
-                    params.delete(name);
+                    params.delete(name); // Удаляем параметр, если value равен null или undefined
                 }
             }
-
-            return params.toString();
+            return params.toString(); // Возвращаем только строку параметров
         },
-        [searchParams]
+        []
     );
 
     const [genres, setGenres] = useState<Genre[] | any>([]);
-    const path = usePathname();
-
     const [page, setPage] = useState<number>(
         searchParams.get("page") != null ? Number(searchParams.get("page")) : 1
     );
@@ -90,7 +86,6 @@ const AnimeList = ({}) => {
                 setPage(page);
             }
             request.page = page;
-            updateSearchParams({ page: page });
             scrollTop();
         },
         [page]
@@ -109,24 +104,16 @@ const AnimeList = ({}) => {
 
     const handlePageChange = (newPage: number) => {
         setPage(newPage); // Обновляем состояние
-        updateSearchParams({ page: newPage }); // Обновляем URL
     };
     const {
         data = Array.from({ length: 14 }).map((_, i) => defaultValues),
         isLoading,
-    } = useSWR(`${path}?${createQueryString(request)}`, getAnimesPost, {
+    } = useSWR(createQueryString(request), getAnimesPost, {
         // Опции для useSWR
         revalidateOnFocus: false, // Отключить обновление при фокусе
         revalidateOnReconnect: false, // Отключить обновление при восстановлении соединения
         errorRetryInterval: 30000,
     });
-    const updateSearchParams = useCallback(
-        (newQuery: any) => {
-            const newQueryString = createQueryString(newQuery);
-            router.push(`${path}?${newQueryString}`, { scroll: false }); // Обновляем URL
-        },
-        [createQueryString, router, path]
-    );
 
     const ListBranches = () => {
         return (

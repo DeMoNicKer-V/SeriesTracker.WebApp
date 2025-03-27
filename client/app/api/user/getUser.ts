@@ -5,6 +5,7 @@ import {
     GET_USER_BY_USERNAME_URL,
     GET_ALL_USERS_URL,
     GET_SERIES_CATEGORIES_USER_URL,
+    GET_SERIES_IDS_USER_URL,
 } from "../endpoints";
 import { get } from "../httpClient";
 import { UsersList } from "@/app/Models/User/UsersList";
@@ -12,6 +13,7 @@ import { UsersList } from "@/app/Models/User/UsersList";
 export interface CategoryCount {
     key: string;
     value: number;
+    string: string;
 }
 
 export const getUserById = async (userId: string): Promise<User> => {
@@ -46,4 +48,10 @@ export const getUserCategoriesCount = async (
     const url = GET_SERIES_CATEGORIES_USER_URL.replace("{userName}", userName); // Формируем URL
     const categoriesList = await get<CategoryCount[]>(url, {});
     return categoriesList;
+};
+
+export const getUserSeriesIds = async (userName: string): Promise<string> => {
+    const url = GET_SERIES_IDS_USER_URL.replace("{userName}", userName); // Формируем URL
+    const ids = await get<string>(url, {});
+    return ids;
 };

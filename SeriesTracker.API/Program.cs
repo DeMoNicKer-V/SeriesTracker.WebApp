@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.EntityFrameworkCore;
 using SeriesTracker.API.Extensions;
+using SeriesTracker.Application;
 using SeriesTracker.Application.Interfaces.Auth;
 using SeriesTracker.Application.Services;
 using SeriesTracker.Core.Abstractions;

@@ -13,9 +13,9 @@ namespace SeriesTracker.Core.Abstractions
         Task<UserSeries> GetSeriesById(Guid id);
         Task<List<UserSeries>> GetSeriesList(string id);
         Task<List<SeriesGroupDto>> GetGroupSeries(Guid id);
-        Task<List<SeriesGroupShortDto>> GetGroupShortSeries(Guid id);
+        Task<List<SeriesGroupShortDto>> GetGroupShortSeries(string userName);
         Task<string> GetRecentSeriesString(Guid userId);
         Task<Guid> UpdateSeries(Guid seriesId, int watched, int categoryId, bool favorite, string dateNow);
-        Task<List<int>> GetSeriesAnimeIdsList(string userName, int categoryId);
+        Task<string> GetAnimeIdsString(string userName, int categoryId);
     }
 }

@@ -18,7 +18,6 @@ async function request<T>(
         options.body = JSON.stringify(body);
     }
 
-    console.log(options);
     const response = await fetch(`${BASE_API_URL}${url}`, options);
 
     if (!response.ok) {

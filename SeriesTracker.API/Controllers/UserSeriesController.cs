@@ -8,7 +8,6 @@ using SeriesTracker.Infrastructure.Authentication;
 
 namespace SeriesTracker.API.Controllers
 {
-    [Authorize]
     [ApiController]
     [Route("series")]
     public class UserSeriesController(IUserSeriesService userSeriesService, ILogger<UserSeriesController> logger) : ControllerBase
@@ -16,6 +15,20 @@ namespace SeriesTracker.API.Controllers
         private readonly ILogger<UserSeriesController> _logger = logger;
         private readonly IUserSeriesService _userSeriesService = userSeriesService;
 
+
+        [HttpGet("categoryCount")]
+        public async Task<IResult> GetGroupedSeries(string userName)
+        {
+            var categoryGroup = await _userSeriesService.GetGroupShortSeries(userName);
+            return Results.Ok(categoryGroup);
+        }
+
+        [HttpGet("{usermame}/list")]
+        public async Task<IResult> GetAnimesByUser(string usermame, int mylist = 0)
+        {
+            string? userSeries = await _userSeriesService.GetAnimeIdsString(usermame, mylist);
+            return Results.Ok(userSeries);
+        }
 
         [RequirePermission(Permission.Read)]
         [HttpPost("create")]

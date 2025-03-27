@@ -5,7 +5,7 @@ using SeriesTracker.Core.Models.Shikimori;
 using System.Text.Json;
 using SeriesTracker.Core;
 
-namespace SeriesTracker.Application.Services
+namespace SeriesTracker.Application
 {
     public class CalendarFetcher : ICalendarFetcher
     {
@@ -41,7 +41,7 @@ namespace SeriesTracker.Application.Services
         {
             var request = new HttpRequestMessage(HttpMethod.Get, _httpClient.BaseAddress);
             request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-     
+
             try
             {
                 HttpResponseMessage response = await _httpClient.SendAsync(request);

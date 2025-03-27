@@ -49,15 +49,6 @@ namespace SeriesTracker.API.Controllers
             return Results.Ok(user.ToUserActivityDto(categoryGroup, lastActivityList));
         }
 
-        [HttpGet("categoryCount")]
-        public async Task<IResult> GetCategoriesSeriesCount(string userName)
-        {
-
-            var userId = await _userService.GetUserIdByUserName(userName);
-            var categoryGroup = await _userSeriesService.GetGroupShortSeries(userId.Value);
-            return Results.Ok(categoryGroup);
-        }
-
         [RequirePermission(Permission.Read)]
         [HttpDelete("deleteSeries/{userName}")]
         public async Task<IResult> DeleteAllSeriesByUserName(string userName)
@@ -149,18 +140,6 @@ namespace SeriesTracker.API.Controllers
             Response.Cookies.Delete("secretCookie");
             return Results.Ok();
         }
-
-        [HttpGet("{usermame}/list")]
-        public async Task<ActionResult<ShikimoriAnimeBaseList[]>> GetAnimesByUser(string usermame, [FromQuery] ShikimoriParamsRequest request, int mylist = 0)
-        {
-            string? userSeries = await _userSeriesService.GetSeriesAnimeIdsList(usermame, mylist);
-            if (string.IsNullOrEmpty(userSeries))
-            {
-                return Ok(new List<ShikimoriAnimeBaseList>());
-            }
-            GraphQLResponse<ShikimoriAnimeBaseList> graphQLResponse = await _shikimoriService.GetAnimesByAllParamsAndIds(request.Page, request.Name, userSeries, request.Season, request.Status,
-                                                           request.Kind, request.Genre, request.Order, request.Censored);
-            return new ObjectResult(graphQLResponse.Data.Animes);
-        }
+       
     }
 }

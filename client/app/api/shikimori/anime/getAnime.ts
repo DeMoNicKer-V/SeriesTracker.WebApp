@@ -9,8 +9,10 @@ import {
 import { get } from "../../httpClient";
 import { Anime } from "@/app/Models/Anime/Anime";
 
-export const getAnimes = async (fullUrl: string): Promise<SeriesAnime[]> => {
-    const url = GET_ANIMES_URL.replace("{fullUrl}", fullUrl);
+export const getAnimes = async (
+    paramString: string
+): Promise<SeriesAnime[]> => {
+    const url = GET_ANIMES_URL.replace("{query}", paramString);
     const animes = await get<SeriesAnime[]>(url, {});
     return animes;
 };

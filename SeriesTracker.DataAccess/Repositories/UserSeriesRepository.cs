@@ -76,20 +76,32 @@ namespace SeriesTracker.DataAccess.Repositories
             return categoryGroup;
         }
 
-        public async Task<List<SeriesGroupShortDto>> GetGroupShortSeries(Guid id)
+        public async Task<List<SeriesGroupShortDto>> GetGroupShortSeries(string userName)
         {
-            var userSeriesList = await _context.UserSeriesEntities.AsNoTracking().Where(s => s.UserId == id).Include(user => user.Category).ToListAsync();
+            var query = _context.UserSeriesEntities
+                .AsNoTracking().Where(s => s.User.UserName == userName);
 
-            var categoryGroup = userSeriesList.GroupBy(s => s.Category)
+            // Получаем количество:
+            var count = await query.CountAsync();
+
+            // Получаем результаты группировки:
+            var categoryGroup = await query
+                .GroupBy(s => new { s.Category.Id, s.Category.Name, s.AnimeId })
                 .Select(g => new SeriesGroupShortDto
                 {
-                    Key = g.Key?.Id.ToString() ?? default(int).ToString(),
-                    Value = g.Count()
-                }).ToList();
-           
-            categoryGroup.Insert(0, new SeriesGroupShortDto { Key = 0.ToString(), Value = userSeriesList.Count });
+                    Key = g.Key.Id.ToString(),
+                    Value = g.Count(),
+                    String = string.Join(",", g.Key.AnimeId.ToString()) 
+                })
+                .ToListAsync();
 
-            return categoryGroup;
+            // Создаем результат и вставляем в начало:
+            var result = categoryGroup.ToList();
+            var ids = string.Join(",", await query.Select(s => s.AnimeId).ToListAsync());
+
+            result.Insert(0, new SeriesGroupShortDto { Key = "0", Value = count, String = ids });
+
+            return result;
         }
 
         public async Task<string> GetRecentSeriesString(Guid userId)
@@ -101,24 +113,20 @@ namespace SeriesTracker.DataAccess.Repositories
             return userSeriesList.Count > 0 ? string.Join(",", userSeriesList) : string.Empty;
         }
 
-        public async Task<List<int>> GetSeriesAnimeIdsList(string userName, int categoryId)
+        public async Task<string> GetAnimeIdsString(string userName, int categoryId)
         {
-            List<int> seriesAnimeIdsList = [];
-
-            if (!string.IsNullOrEmpty(userName))
+            if (string.IsNullOrEmpty(userName))
             {
-                var user = await _context.UserEntities.AsNoTracking().Where(u => u.UserName == userName).FirstAsync();
-
-                seriesAnimeIdsList = await _context.UserSeriesEntities.AsNoTracking()
-                    .Where(s => categoryId > 0 ? s.UserId == user.Id && s.CategoryId == categoryId: s.UserId == user.Id)
-                    .Select(s => s.AnimeId).ToListAsync();
-            }
-            else
-            {
-                return [];
+                return string.Empty;
             }
 
-            return seriesAnimeIdsList;
+            var animeIds = await _context.UserSeriesEntities
+                .AsNoTracking()
+                .Where(s => s.User.UserName == userName && (categoryId <= 0 || s.CategoryId == categoryId))
+                .Select(s => s.AnimeId)
+                .ToListAsync();
+
+            return string.Join(",", animeIds);
         }
 
         public async Task<UserSeries?> GetSeriesByAnimeIdAsync(int id, string userName)
@@ -156,7 +164,7 @@ namespace SeriesTracker.DataAccess.Repositories
             }
 
             var seriesList = userSeriesEntities.Select(s => new UserSeries(s.Id, s.AnimeId, s.UserId, s.CategoryId, s.WatchedEpisode, s.AddedDate, s.ChangedDate, s.IsFavorite)).ToList();
-            
+
             return seriesList;
         }
 

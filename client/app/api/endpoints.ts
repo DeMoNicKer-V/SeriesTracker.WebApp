@@ -17,7 +17,8 @@ export const GET_USER_BY_USERNAME_URL = "/user/userName/{userName}";
 export const GET_USER_BY_EMAIL_URL = "/user/email/{email}";
 
 export const GET_SERIES_CATEGORIES_USER_URL =
-    "/user/categoryCount?userName={userName}";
+    "/series/categoryCount?userName={userName}";
+export const GET_SERIES_IDS_USER_URL = "/series/{userName}/list";
 // getUser endpoints
 
 // editUser endpoints
@@ -47,7 +48,7 @@ export const DELETE_SERIES_URL = "/series/delete/{id}";
 // deleteSeries endpoints
 
 // getAnime endpoints
-export const GET_ANIMES_URL = "{fullUrl}";
+export const GET_ANIMES_URL = "/shikimori?{query}";
 export const GET_ANIME_BY_ID_URL = "/shikimori/id/{id}";
 export const GET_USER_RECENT_ANIMES_URL =
     "/shikimori/activity?userName={userName}&id={id}";

@@ -35,7 +35,7 @@ export default function UserPage({ params }: { params: { username: string } }) {
     const [mylist, setMylist] = useState<string | any>(
         search.get("mylist") ? search.get("mylist")?.toString() : "0"
     );
-
+    const [ids, setIds] = useState<string>();
     const getUsersGroups = async (username: string) => {
         const response = await getUserCategoriesCount(username);
         if (response && response[0].value > 0) {
@@ -126,7 +126,7 @@ export default function UserPage({ params }: { params: { username: string } }) {
         },
     ];
 
-    const filterList = useCallback(() => {
+    const filterList = useCallback(async () => {
         router.push(`${path}?mylist=${mylist}`);
     }, [mylist]);
 
@@ -136,6 +136,7 @@ export default function UserPage({ params }: { params: { username: string } }) {
 
     const onClick: MenuProps["onSelect"] = (e) => {
         setMylist(e.key);
+        console.log(groups.get(e.key));
     };
 
     return (
