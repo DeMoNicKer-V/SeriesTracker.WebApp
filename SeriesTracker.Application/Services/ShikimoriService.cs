@@ -82,13 +82,6 @@ namespace SeriesTracker.Application.Services
                  status, kind, genre, order, censored), _logger);
         }
 
-        public async Task<ShikimoriAnimeBaseList> GetAnimesByAllParamsAndIds(int page, string name, string ids, string season, 
-            string status, string kind, string genre, string order, bool censored)
-        {
-            return await GraphQLHelper.ExecuteGraphQLRequest<ShikimoriAnimeBaseList>(GraphQLQueries.GetAnimesByIds(page, name, ids, season, 
-                status, kind, genre, order, censored), _logger);
-        }
-
         public async Task<GenreList> GetGenres()
         {
             return await GraphQLHelper.ExecuteGraphQLRequest<GenreList>(GraphQLQueries.GetGenres(), _logger);

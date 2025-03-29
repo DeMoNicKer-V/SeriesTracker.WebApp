@@ -43,6 +43,7 @@ const date = dayjs();
 
 interface Props {
     genres: Genre[] | any;
+    ids?: string;
     open: boolean;
     onClose: () => void;
     setRequest: Dispatch<SetStateAction<ShikimoriRequest>>;
@@ -50,6 +51,7 @@ interface Props {
 }
 function AnimeParamsMenu({
     genres,
+    ids,
     open,
     setPage,
     onClose,
@@ -78,6 +80,7 @@ function AnimeParamsMenu({
             censored: true,
             page: 1,
             name: "",
+            ids: ids,
             kind: "",
             status: "",
             order: "ranked",

@@ -14,8 +14,6 @@ namespace SeriesTracker.Core.Abstractions
 
         Task<ShikimoriAnimeBaseList> GetAnimesByAllParams(int page, string name, string season, string status, string kind, string genre, string order, bool censored);
 
-        Task<ShikimoriAnimeBaseList> GetAnimesByAllParamsAndIds(int page, string name, string ids, string season, string status, string kind, string genre, string order, bool censored);
-
         Task<ShikimoriAnimeBaseList> GetAnimesByName(string name);
 
         Task<GenreList> GetGenres();

@@ -24,9 +24,14 @@ namespace SeriesTracker.API.Controllers
         }
 
         [HttpGet("{usermame}/list")]
-        public async Task<IResult> GetAnimesByUser(string usermame, int mylist = 0)
+        public async Task<IResult> GetAnimesByUser([FromQuery] UserSeriesRequest request, string usermame)
         {
-            string? userSeries = await _userSeriesService.GetAnimeIdsString(usermame, mylist);
+            var userSeries = await _userSeriesService.GetAnimeIdsString(usermame, request.Page, request.MyList, request.IsFavorite);
+
+            if (userSeries == null)
+            {
+                return Results.Ok(Array.Empty<object>());
+            }
             return Results.Ok(userSeries);
         }
 

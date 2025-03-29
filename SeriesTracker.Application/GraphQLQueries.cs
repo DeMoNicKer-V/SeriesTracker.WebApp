@@ -64,14 +64,13 @@ namespace SeriesTracker.Application
             };
         }
 
-        public static GraphQLRequest GetAnimesByIds(int page, string name, string ids, string season, 
-            string status, string kind, string genre, string order, bool censored)
+        public static GraphQLRequest GetAnimesByIds(string ids)
         {
 
             return new GraphQLRequest
             {
-                Query = @"query GetAnimesByIds($page: Int, $ids: String, $name: String, $season: SeasonString, $status: AnimeStatusString, $kind: AnimeKindString, $genre: String, $order: OrderEnum, $censored: Boolean) {
-                                animes(page: $page, ids: $ids, search: $name, season: $season, status: $status, kind: $kind, genre: $genre, order: $order, censored: $censored, score: 1, limit: 22) {
+                Query = @"query GetAnimesByIds($ids: String) {
+                                animes(ids: $ids, score: 1, limit: 22) {
                                     id
                                     russian
                                     name
@@ -97,14 +96,6 @@ namespace SeriesTracker.Application
                 Variables = new
                 {
                     ids = ids,
-                    page = page,
-                    name = name,
-                    season = season,
-                    status = string.IsNullOrEmpty(status) ? "!anons" : status,
-                    kind = string.IsNullOrEmpty(kind) ? "!music,!pv,!cm" : kind,
-                    genre = genre,
-                    order = order,
-                    censored = censored
                 }
             };
         }

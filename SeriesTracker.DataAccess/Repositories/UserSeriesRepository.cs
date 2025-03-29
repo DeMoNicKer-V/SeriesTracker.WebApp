@@ -3,6 +3,7 @@ using SeriesTracker.Core.Abstractions;
 using SeriesTracker.Core.Dtos.Series;
 using SeriesTracker.Core.Models;
 using SeriesTracker.DataAccess.Entities;
+using System.Drawing;
 
 namespace SeriesTracker.DataAccess.Repositories
 {
@@ -86,18 +87,19 @@ namespace SeriesTracker.DataAccess.Repositories
 
             // Получаем результаты группировки:
             var categoryGroup = await query
-                .GroupBy(s => new { s.Category.Id, s.Category.Name })
+                .GroupBy(s => new { s.Category.Id, s.Category.Name, s.Category.Color })
                 .Select(g => new SeriesGroupShortDto
                 {
                     Key = g.Key.Id.ToString(),
-                    Value = g.Count()
+                    Value = g.Count(),
+                    Color = g.Key.Color
                 })
                 .ToListAsync();
 
             // Создаем результат и вставляем в начало:
             var result = categoryGroup.ToList();
 
-            result.Insert(0, new SeriesGroupShortDto { Key = "0", Value = count });
+            result.Insert(0, new SeriesGroupShortDto { Key = "0", Value = count, Color = "" });
 
             return result;
         }
@@ -111,7 +113,7 @@ namespace SeriesTracker.DataAccess.Repositories
             return userSeriesList.Count > 0 ? string.Join(",", userSeriesList) : string.Empty;
         }
 
-        public async Task<string> GetAnimeIdsString(string userName, int categoryId)
+        public async Task<string> GetAnimeIdsString(string userName, int page, int categoryId, bool isFavorite)
         {
             if (string.IsNullOrEmpty(userName))
             {
@@ -120,7 +122,9 @@ namespace SeriesTracker.DataAccess.Repositories
 
             var animeIds = await _context.UserSeriesEntities
                 .AsNoTracking()
-                .Where(s => s.User.UserName == userName && (categoryId <= 0 || s.CategoryId == categoryId))
+                .Where(s => s.User.UserName == userName 
+                    && (categoryId <= 0 || s.CategoryId == categoryId) && (isFavorite == false || s.IsFavorite == true))
+                .Skip((page - 1) * 22).Take(22)
                 .Select(s => s.AnimeId)
                 .ToListAsync();
 

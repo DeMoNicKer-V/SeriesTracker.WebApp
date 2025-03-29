@@ -22,10 +22,10 @@ import {
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import useSWR from "swr";
-import AnimeList from "@/app/components/Animes/AnimeList";
 import { getUserCategoriesCount } from "@/app/api/user/getUser";
 import LoadingContentHandler from "@/app/components/LoadingContentHandler";
 import PageErrorView from "@/app/components/PageErrorVIew";
+import UsersAnimeList from "@/app/components/Animes/UsersAnimeList";
 
 export default function UserPage({ params }: { params: { username: string } }) {
     const router = useRouter();
@@ -34,6 +34,9 @@ export default function UserPage({ params }: { params: { username: string } }) {
     const [empty, setEmpty] = useState<boolean | null>(null);
     const [mylist, setMylist] = useState<string | any>(
         search.get("mylist") ? search.get("mylist")?.toString() : "0"
+    );
+    const [colors, setColors] = useState<Map<string, string> | any>(
+        new Map([["0", ""]])
     );
 
     const getUsersGroups = async (username: string) => {
@@ -44,6 +47,10 @@ export default function UserPage({ params }: { params: { username: string } }) {
             setEmpty(true);
             return new Map();
         }
+        const cc = new Map<string, string>(
+            response.map((item) => [item.key, item.color])
+        );
+        setColors(cc);
         const seriesGroup = new Map<string, number>(
             response.map((item) => [item.key, item.value])
         );
@@ -61,10 +68,9 @@ export default function UserPage({ params }: { params: { username: string } }) {
             ["6", 0],
         ]),
     } = useSWR<Map<string, number>>(params.username, getUsersGroups, {
-        // Опции для useSWR
-        revalidateOnFocus: false, // Отключить обновление при фокусе
-        revalidateOnReconnect: false, // Отключить обновление при восстановлении соединения
-        errorRetryInterval: 30000, // Тайм-аут для потоврного запроса при ошибке
+        revalidateOnFocus: false,
+        revalidateOnReconnect: false,
+        errorRetryInterval: 30000,
     });
 
     type MenuItem = Required<MenuProps>["items"][number];
@@ -177,20 +183,36 @@ export default function UserPage({ params }: { params: { username: string } }) {
                     />
                     <Row gutter={[15, 15]} align={"middle"} justify={"center"}>
                         <Col span={22}>
-                            <Menu
-                                style={{
-                                    justifyContent: "center",
-                                    backgroundColor: "transparent",
+                            <ConfigProvider
+                                theme={{
+                                    components: {
+                                        Menu: {
+                                            itemSelectedColor: `${colors?.get(
+                                                mylist
+                                            )} !important`,
+                                        },
+                                    },
                                 }}
-                                onSelect={onClick}
-                                selectedKeys={[mylist]}
-                                items={sortMenuItems}
-                                mode="horizontal"
-                            />
+                            >
+                                <Menu
+                                    style={{
+                                        justifyContent: "center",
+                                        backgroundColor: "transparent",
+                                    }}
+                                    onSelect={onClick}
+                                    selectedKeys={[mylist]}
+                                    items={sortMenuItems}
+                                    mode="horizontal"
+                                />
+                            </ConfigProvider>
                         </Col>
 
                         <Col span={24}>
-                            <AnimeList />
+                            <UsersAnimeList
+                                color={colors.get(mylist)}
+                                myList={mylist}
+                                userName={params.username}
+                            />
                         </Col>
                     </Row>
                 </div>

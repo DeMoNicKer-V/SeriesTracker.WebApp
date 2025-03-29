@@ -5,18 +5,16 @@ using SeriesTracker.Core.Abstractions;
 using SeriesTracker.Core.Abstractions.UserAbastractions;
 using SeriesTracker.Core.Enums;
 using SeriesTracker.Core.Mappers;
-using SeriesTracker.Core.Models.Shikimori;
 using SeriesTracker.Infrastructure.Authentication;
 
 namespace SeriesTracker.API.Controllers
 {
     [ApiController]
     [Route("user")]
-    public class UserController(IUserService userService, IUserSeriesService userSeriesService, IShikimoriService shikimoriService, ILogger<UserController> logger) : ControllerBase
+    public class UserController(IUserService userService, IUserSeriesService userSeriesService, ILogger<UserController> logger) : ControllerBase
     {
         private readonly IUserService _userService = userService;
         private readonly IUserSeriesService _userSeriesService = userSeriesService;
-        private readonly IShikimoriService _shikimoriService = shikimoriService;
         private readonly ILogger<UserController> _logger = logger;
 
         [HttpGet("id/{id:guid}")]
