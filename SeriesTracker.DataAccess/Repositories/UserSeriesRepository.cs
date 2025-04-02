@@ -3,7 +3,6 @@ using SeriesTracker.Core.Abstractions;
 using SeriesTracker.Core.Dtos.Series;
 using SeriesTracker.Core.Models;
 using SeriesTracker.DataAccess.Entities;
-using System.Drawing;
 
 namespace SeriesTracker.DataAccess.Repositories
 {
@@ -47,11 +46,6 @@ namespace SeriesTracker.DataAccess.Repositories
             await _context.UserSeriesEntities.Where(s => s.Id == id).ExecuteDeleteAsync();
 
             return id;
-        }
-
-        public async Task<int> GetAllSeriesCount()
-        {
-            return await _context.UserSeriesEntities.CountAsync();
         }
 
         public async Task<List<SeriesGroupDto>> GetGroupSeries(Guid id)
@@ -126,45 +120,6 @@ namespace SeriesTracker.DataAccess.Repositories
                 .ToListAsync();
 
             return animeIds;
-        }
-
-        public async Task<UserSeries?> GetSeriesByAnimeIdAsync(int id, string userName)
-        {
-            var s = await _context.UserSeriesEntities.AsNoTracking().Where(s => s.AnimeId == id && s.User.UserName == userName).FirstOrDefaultAsync();
-            if (s == null)
-            {
-                return null;
-            }
-
-            var userSeries = new UserSeries(s.Id, s.AnimeId, s.UserId, s.CategoryId, s.WatchedEpisode, s.AddedDate, s.ChangedDate, s.IsFavorite);
-
-            return userSeries;
-        }
-
-        public async Task<UserSeries> GetSeriesById(Guid id)
-        {
-            var s = await _context.UserSeriesEntities.AsNoTracking().Where(s => s.Id == id).FirstAsync();
-            var userSeries = new UserSeries(s.Id, s.AnimeId, s.UserId, s.CategoryId, s.WatchedEpisode, s.AddedDate, s.ChangedDate, s.IsFavorite);
-
-            return userSeries;
-        }
-
-        public async Task<List<UserSeries>> GetSeriesList(string id)
-        {
-            List<UserSeriesEntity> userSeriesEntities = [];
-            if (string.IsNullOrEmpty(id) == false)
-            {
-                var guid = Guid.Parse(id);
-                userSeriesEntities = await _context.UserSeriesEntities.AsNoTracking().Where(s => s.UserId == guid).ToListAsync();
-            }
-            else
-            {
-                return [];
-            }
-
-            var seriesList = userSeriesEntities.Select(s => new UserSeries(s.Id, s.AnimeId, s.UserId, s.CategoryId, s.WatchedEpisode, s.AddedDate, s.ChangedDate, s.IsFavorite)).ToList();
-
-            return seriesList;
         }
 
         public async Task<Guid> UpdateSeries(Guid seriesId, int watched, int categoryId, bool favorite, string dateNow)

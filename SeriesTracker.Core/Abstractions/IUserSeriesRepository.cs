@@ -8,10 +8,6 @@ namespace SeriesTracker.Core.Abstractions
         Task<Guid> AddAsync(UserSeries model);
         Task<Guid> DeleteSeries(Guid id);
         Task<Guid> DeleteAllSeriesByUserId(Guid userId);
-        Task<int> GetAllSeriesCount();
-        Task<UserSeries?> GetSeriesByAnimeIdAsync(int id, string userName);
-        Task<UserSeries> GetSeriesById(Guid id);
-        Task<List<UserSeries>> GetSeriesList(string id);
         Task<List<SeriesGroupDto>> GetGroupSeries(Guid id);
         Task<List<SeriesGroupShortDto>> GetGroupShortSeries(string userName);
         Task<string> GetRecentSeriesString(Guid userId);

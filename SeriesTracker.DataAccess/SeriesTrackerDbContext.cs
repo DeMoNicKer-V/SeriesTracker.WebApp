@@ -16,7 +16,6 @@ namespace SeriesTracker.DataAccess
             modelBuilder.ApplyConfiguration(new RolePermissionConfiguration(authOptions.Value));
         }
 
-        public DbSet<SeriesEntity> SeriesEntities { get; set; }
         public DbSet<CategoryEntity> CategoryEntities { get; set; }
         public DbSet<UserEntity> UserEntities { get; set; }
         public DbSet<RoleEntity> RoleEntities { get; set; }

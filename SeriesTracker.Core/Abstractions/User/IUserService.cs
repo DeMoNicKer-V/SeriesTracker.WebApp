@@ -13,8 +13,6 @@ namespace SeriesTracker.Core.Abstractions.UserAbastractions
         Task<User?> GetUserByUserName(string userName);
         Task<Guid?> GetUserIdByEmail(string email);
         Task<Guid?> GetUserIdByUserName(string userName);
-        Task<ICollection<Permission>> GetUserPermissions(Guid id);
-        Task<ICollection<Role>> GetUserRoles(Guid userId);
         Task<Guid> UpdateUser(Guid id, string userName, string name, string surName, string email, string passwordHash, string avatar, string dateBirth);
         Task<bool> ChangeUserRole(Guid id, int roleId);
         Task<string> GenerateNewUserToken(string userName);

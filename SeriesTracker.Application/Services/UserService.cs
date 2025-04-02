@@ -44,16 +44,6 @@ namespace SeriesTracker.Application.Services
             return token;
         }
 
-        public async Task<ICollection<Permission>> GetUserPermissions(Guid id)
-        {
-            return await _userRepository.GetUserPermissions(id);
-        }
-
-        public async Task<ICollection<Role>> GetUserRoles(Guid id)
-        {
-            return await _userRepository.GetUserRoles(id);
-        }
-
         public async Task<Guid> DeleteUser(Guid id)
         {
             return await _userRepository.DeleteUser(id);

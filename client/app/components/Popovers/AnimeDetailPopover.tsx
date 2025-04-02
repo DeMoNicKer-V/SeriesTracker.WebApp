@@ -19,7 +19,7 @@ export const AnimeDetailPopover = ({ anime }: Props) => {
         <Row style={{ maxWidth: 600 }} justify={"start"}>
             <Col span={7}>
                 <Flex className="height-100" align="center">
-                    <Image src={anime.pictureUrl} />
+                    <Image preview={false} src={anime.pictureUrl} />
                 </Flex>
             </Col>
             <Col offset={1} span={16}>
@@ -59,13 +59,11 @@ export const AnimeDetailPopover = ({ anime }: Props) => {
                     </Col>
                     <Col span={24} style={{ marginTop: "auto" }}>
                         <Button
-                            type="primary"
+                            style={{ fontWeight: 600, fontSize: 15 }}
                             href={`/shikimori/${anime.id}`}
-                            className="width-100"
+                            block
                         >
-                            <Text strong style={{ fontSize: 15 }}>
-                                Посмотреть подробнее
-                            </Text>
+                            Посмотреть подробнее
                         </Button>
                     </Col>
                 </Row>

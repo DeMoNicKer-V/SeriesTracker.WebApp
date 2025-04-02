@@ -116,7 +116,7 @@ const UsersAnimeList = ({ myList, userName, color }: Props) => {
                 loading={isLoading}
             >
                 <PageNavigator
-                    nextButtonDisable={data.length < 2}
+                    nextButtonDisable={data.length < 22}
                     onFirstButtonCLick={() => changePage(1)}
                     onPrevButtonCLick={() => changePage(page - 1)}
                     onNextButtonCLick={() => changePage(page + 1)}
@@ -135,6 +135,14 @@ const UsersAnimeList = ({ myList, userName, color }: Props) => {
                               colorPrimary: color,
                               colorPrimaryHover: color,
                               colorFillContent: color,
+                          },
+                          Tooltip: {
+                              colorBgSpotlight: color,
+                          },
+                          Button: {
+                              defaultHoverBorderColor: color,
+
+                              colorPrimaryHover: color,
                           },
                       }
                     : {},
@@ -156,7 +164,7 @@ const UsersAnimeList = ({ myList, userName, color }: Props) => {
                     xl: 6,
                     xxl: 7,
                 }}
-                dataSource={data.length === 2 ? data.slice(0, -1) : data}
+                dataSource={data.length === 22 ? data.slice(0, -1) : data}
                 renderItem={(animes: SeriesAnime) => (
                     <List.Item>
                         <Skeleton

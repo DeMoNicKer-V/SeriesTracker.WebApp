@@ -26,9 +26,6 @@ builder.Services.AddScoped<IUserSeriesRepository, UserSeriesRepository>();
 builder.Services.AddScoped<IUserSeriesService, UserSeriesService>();
 builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 
-builder.Services.AddScoped<ISeriesService, SeriesService>();
-builder.Services.AddScoped<ISeriesRepository, SeriesRepository>();
-
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 
