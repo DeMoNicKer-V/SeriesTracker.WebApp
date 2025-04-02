@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
 using SeriesTracker.Core.Abstractions;
-using SeriesTracker.Core.Abstractions.UserAbastractions;
 using SeriesTracker.Core.Dtos.Series;
 using SeriesTracker.Core.Models;
 using SeriesTracker.Core.Models.Shikimori;
@@ -59,19 +58,18 @@ namespace SeriesTracker.Application.Services
             return await _userSeriesRepository.GetRecentSeriesString(userId);
         }
 
-        public async Task<IEnumerable<ShikimoriAnimeBase>> GetAnimeIdsString(string userName, int page, int categoryId, bool isFavorite)
+        public async Task<ShikimoriAnimeBase[]> GetUserSeriesList(string userName, int page, int categoryId, bool isFavorite)
         {
-            var ids =  await _userSeriesRepository.GetAnimeIdsString(userName, page, categoryId, isFavorite);
-            var animes = new List<ShikimoriAnimeBase>();
-            if (string.IsNullOrEmpty(ids))
+            var animeIds = await _userSeriesRepository.GetAnimeIdsList(userName, page, categoryId, isFavorite);
+
+            if (animeIds.Count == 0)
             {
-                return animes;
+                return [];
             }
 
-            var data = await GraphQLHelper.ExecuteGraphQLRequest<ShikimoriAnimeBaseList>(GraphQLQueries.GetAnimesByIds(ids), _logger);
-            animes.AddRange(data.Animes);
-
-            return animes;
+            var idsString = string.Join(",", animeIds);
+            var data = await GraphQLHelper.ExecuteGraphQLRequest<ShikimoriAnimeBaseList>(GraphQLQueries.GetAnimesByIds(idsString), _logger);
+            return data.Animes;
         }
 
         public async Task<Guid> UpdateSeries(Guid seriesDd, int watched, int categoryId, bool favorite)

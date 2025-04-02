@@ -16,9 +16,7 @@ export const GET_USER_BY_ID_URL = "/user/id/{id}";
 export const GET_USER_BY_USERNAME_URL = "/user/userName/{userName}";
 export const GET_USER_BY_EMAIL_URL = "/user/email/{email}";
 
-export const GET_SERIES_CATEGORIES_USER_URL =
-    "/series/categoryCount?userName={userName}";
-export const GET_SERIES_USER_URL = "/series/{userName}/list?{query}";
+export const GET_SERIES_CATEGORIES_USER_URL = "/series/{userName}/group";
 // getUser endpoints
 
 // editUser endpoints

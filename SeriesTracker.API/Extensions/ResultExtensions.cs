@@ -22,16 +22,25 @@ namespace SeriesTracker.API.Extensions
             return Results.Json(new { Message = resultMessage }, statusCode: StatusCodes.Status201Created);
         }
 
-        public static IResult NoContentResponse(this ILogger logger, string logggerMessage, string resultMessage)
+        public static IResult NoContentResponse(this ILogger logger, string? loggerMessage = null)
         {
-            logger.LogInformation(logggerMessage);
-            return Results.Json(new { Message = resultMessage }, statusCode: StatusCodes.Status204NoContent);
+            if(!string.IsNullOrEmpty(loggerMessage)) 
+            { 
+                logger.LogInformation(loggerMessage); 
+            }
+            return Results.NoContent();
         }
 
         public static IResult UnauthorizedResponse(this ILogger logger, string message, string methodName)
         {
             logger.LogWarning("Unauthorized access attempt to method: {methodName}.", methodName);
             return Results.Json(new { Message = message }, statusCode: StatusCodes.Status401Unauthorized);
+        }
+
+        public static IResult BadResponse(this ILogger logger, string loggerMessage, string resultMessage)
+        {
+            logger.LogInformation(loggerMessage);
+            return Results.Json(new { Message = resultMessage }, statusCode: StatusCodes.Status400BadRequest);
         }
     }
 }

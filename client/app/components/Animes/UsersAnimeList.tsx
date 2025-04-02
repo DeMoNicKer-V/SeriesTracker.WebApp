@@ -32,40 +32,31 @@ import {
     SeriesAnime,
 } from "@/app/Models/Anime/SeriesAnime";
 import AnimeDetailPopover from "../Popovers/AnimeDetailPopover";
-import { UserSeriesRequest } from "@/app/Models/Requests/UserSeriesRequest";
-import { getUserSeries } from "@/app/api/user/getUser";
+import { get } from "@/app/api/httpClient";
 
 const { Text } = Typography;
 
 interface Props {
-    myList: number;
+    myList: string;
     userName: string;
-    color: string;
+    color?: string;
 }
 const UsersAnimeList = ({ myList, userName, color }: Props) => {
     const [page, setPage] = useState<number>(1);
     const [isFavorite, setIsFavorite] = useState<boolean>(false);
-    const [request, setRequest] = useState<UserSeriesRequest>({
-        page: page,
-        myList: myList,
-        isFavorite: isFavorite,
-    });
 
     const createQueryString = useMemo(
         () => (query: any) => {
             const params = new URLSearchParams();
             for (const [name, value] of Object.entries(query)) {
-                if (name && value) {
+                if (value !== null && value !== undefined) {
                     params.set(name, String(value));
-                } else {
-                    params.delete(name);
                 }
             }
             return params.toString();
         },
         []
     );
-
     function scrollTop() {
         window.scrollTo({
             top: 0,
@@ -78,46 +69,43 @@ const UsersAnimeList = ({ myList, userName, color }: Props) => {
         setIsFavorite(!isFavorite);
     };
 
-    const changePage = useCallback(
-        (page: number) => {
-            if (page === 0) {
-                setPage(1);
-            } else {
-                setPage(page);
-            }
-            scrollTop();
-        },
-        [page]
-    );
+    const changePage = useCallback((newPage: number) => {
+        if (newPage === 0) {
+            setPage(1);
+        } else {
+            setPage(newPage);
+        }
+        scrollTop();
+    }, []);
 
     const getAnimesPost = async (url: string) => {
-        const data: SeriesAnime[] = await getUserSeries(userName, url);
-        if (data.length === 0) {
-            const prevPage = page - 1;
-            changePage(prevPage);
-        }
+        const data: SeriesAnime[] = await get(url);
         return data;
     };
+
+    const resetPage = useCallback(() => {
+        setPage(1);
+    }, [myList]);
+
+    useEffect(() => {
+        resetPage();
+    }, [resetPage]);
 
     const {
         data = Array.from({ length: 14 }).map((_, i) => defaultValues),
         isLoading,
-    } = useSWR(createQueryString(request), getAnimesPost, {
-        revalidateOnFocus: false,
-        revalidateOnReconnect: false,
-    });
-
-    const updateRequest = useCallback(() => {
-        setRequest({
-            page,
-            myList,
-            isFavorite,
-        });
-    }, [page, myList, isFavorite]);
-
-    useEffect(() => {
-        updateRequest();
-    }, [updateRequest]);
+    } = useSWR(
+        () => {
+            const query = { myList, isFavorite };
+            const queryString = createQueryString(query);
+            return `/series/${userName}/list/${page}?${queryString}`;
+        },
+        getAnimesPost,
+        {
+            revalidateOnFocus: false,
+            revalidateOnReconnect: false,
+        }
+    );
 
     const ListBranches = () => {
         return (
@@ -128,7 +116,7 @@ const UsersAnimeList = ({ myList, userName, color }: Props) => {
                 loading={isLoading}
             >
                 <PageNavigator
-                    nextButtonDisable={data.length < 22}
+                    nextButtonDisable={data.length < 2}
                     onFirstButtonCLick={() => changePage(1)}
                     onPrevButtonCLick={() => changePage(page - 1)}
                     onNextButtonCLick={() => changePage(page + 1)}
@@ -137,6 +125,7 @@ const UsersAnimeList = ({ myList, userName, color }: Props) => {
             </Skeleton>
         );
     };
+
     return (
         <ConfigProvider
             theme={{
@@ -167,7 +156,7 @@ const UsersAnimeList = ({ myList, userName, color }: Props) => {
                     xl: 6,
                     xxl: 7,
                 }}
-                dataSource={data.length === 22 ? data.slice(0, -1) : data}
+                dataSource={data.length === 2 ? data.slice(0, -1) : data}
                 renderItem={(animes: SeriesAnime) => (
                     <List.Item>
                         <Skeleton

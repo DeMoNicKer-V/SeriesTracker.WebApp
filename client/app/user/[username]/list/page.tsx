@@ -33,7 +33,7 @@ export default function UserPage({ params }: { params: { username: string } }) {
     const search = useSearchParams();
     const [empty, setEmpty] = useState<boolean | null>(null);
     const [mylist, setMylist] = useState<string | any>(
-        search.get("mylist") ? search.get("mylist")?.toString() : "0"
+        search.get("mylist") ? search.get("mylist") : "0"
     );
     const [colors, setColors] = useState<Map<string, string> | any>(
         new Map([["0", ""]])

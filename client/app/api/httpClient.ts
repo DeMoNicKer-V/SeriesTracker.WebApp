@@ -31,11 +31,18 @@ async function request<T>(
         throw new Error(errorMessage);
     }
 
-    try {
-        return (await response.json()) as T; // Try to parse as JSON
-    } catch (error) {
-        console.warn("Ответ сервера не в формате JSON", response);
-        return {} as T; // Return empty object.
+    // Проверяем код ответа перед попыткой распарсить JSON
+    if (response.status === 204) {
+        // 204 No Content: Не нужно распарсить JSON
+        return {} as T; // Или вернуть null, или значение по умолчанию
+    } else {
+        // Код ответа OK: Пытаемся распарсить JSON
+        try {
+            return (await response.json()) as T;
+        } catch (error) {
+            console.warn("Ответ сервера не в формате JSON", response);
+            return {} as T; // Return empty object.
+        }
     }
 }
 

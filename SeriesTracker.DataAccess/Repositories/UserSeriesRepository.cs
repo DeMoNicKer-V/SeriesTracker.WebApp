@@ -79,14 +79,9 @@ namespace SeriesTracker.DataAccess.Repositories
 
         public async Task<List<SeriesGroupShortDto>> GetGroupShortSeries(string userName)
         {
-            var query = _context.UserSeriesEntities
-                .AsNoTracking().Where(s => s.User.UserName == userName);
-
-            // Получаем количество:
-            var count = await query.CountAsync();
-
-            // Получаем результаты группировки:
-            var categoryGroup = await query
+            var categoryGroup = await _context.UserSeriesEntities
+                .AsNoTracking()
+                .Where(s => s.User.UserName == userName)
                 .GroupBy(s => new { s.Category.Id, s.Category.Name, s.Category.Color })
                 .Select(g => new SeriesGroupShortDto
                 {
@@ -95,6 +90,13 @@ namespace SeriesTracker.DataAccess.Repositories
                     Color = g.Key.Color
                 })
                 .ToListAsync();
+
+            if (categoryGroup.Count == 0)
+            {
+                return [];
+            }
+            // Получаем количество (если есть данные)
+            int count = categoryGroup.Count;
 
             // Создаем результат и вставляем в начало:
             var result = categoryGroup.ToList();
@@ -113,22 +115,17 @@ namespace SeriesTracker.DataAccess.Repositories
             return userSeriesList.Count > 0 ? string.Join(",", userSeriesList) : string.Empty;
         }
 
-        public async Task<string> GetAnimeIdsString(string userName, int page, int categoryId, bool isFavorite)
+        public async Task<List<int>> GetAnimeIdsList(string userName, int page, int categoryId, bool isFavorite)
         {
-            if (string.IsNullOrEmpty(userName))
-            {
-                return string.Empty;
-            }
-
             var animeIds = await _context.UserSeriesEntities
                 .AsNoTracking()
-                .Where(s => s.User.UserName == userName 
-                    && (categoryId <= 0 || s.CategoryId == categoryId) && (isFavorite == false || s.IsFavorite == true))
-                .Skip((page - 1) * 22).Take(22)
+                .Where(s => s.User.UserName == userName && (categoryId <= 0 || s.CategoryId == categoryId) && (!isFavorite || s.IsFavorite))
+                .Skip((page - 1) * 22)
+                .Take(22)
                 .Select(s => s.AnimeId)
                 .ToListAsync();
 
-            return string.Join(",", animeIds);
+            return animeIds;
         }
 
         public async Task<UserSeries?> GetSeriesByAnimeIdAsync(int id, string userName)

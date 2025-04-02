@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using SeriesTracker.API.Contracts;
 using SeriesTracker.API.Extensions;
 using SeriesTracker.Core.Abstractions;
@@ -16,23 +15,46 @@ namespace SeriesTracker.API.Controllers
         private readonly IUserSeriesService _userSeriesService = userSeriesService;
 
 
-        [HttpGet("categoryCount")]
+        [HttpGet("{userName}/group")]
         public async Task<IResult> GetGroupedSeries(string userName)
         {
-            var categoryGroup = await _userSeriesService.GetGroupShortSeries(userName);
-            return Results.Ok(categoryGroup);
+            if (string.IsNullOrEmpty(userName))
+            {
+                return _logger.BadResponse(
+                    loggerMessage: "Username is null or empty.", 
+                    resultMessage: "User name is required.");
+            }
+            try
+            {
+                var categoryGroup = await _userSeriesService.GetGroupShortSeries(userName);
+                return Results.Ok(categoryGroup);
+            }
+            catch (Exception ex)
+            {
+                return _logger.InternalServerError(ex, "An unexpected error occurred while receiving this user's list.");
+            }
+
         }
 
-        [HttpGet("{usermame}/list")]
-        public async Task<IResult> GetAnimesByUser([FromQuery] UserSeriesRequest request, string usermame)
+        [HttpGet("{userName}/list/{page}")]
+        public async Task<IResult> GetAnimesByUser(string userName, int page, [FromQuery] UserSeriesRequest request)
         {
-            var userSeries = await _userSeriesService.GetAnimeIdsString(usermame, request.Page, request.MyList, request.IsFavorite);
-
-            if (userSeries == null)
+            if (string.IsNullOrEmpty(userName))
             {
-                return Results.Ok(Array.Empty<object>());
+                return _logger.BadResponse(
+                    loggerMessage: "Username is null or empty.", 
+                    resultMessage: "User name is required.");
             }
-            return Results.Ok(userSeries);
+
+            try
+            {
+                var userSeries = await _userSeriesService.GetUserSeriesList(userName, page, request.MyList, request.IsFavorite);
+                return Results.Ok(userSeries);
+            }
+            catch (Exception ex)
+            {
+                return _logger.InternalServerError(ex, "An unexpected error occurred while receiving this user's list.");
+            }
         }
 
         [RequirePermission(Permission.Read)]
@@ -75,8 +97,7 @@ namespace SeriesTracker.API.Controllers
                     request.CategoryId, request.IsFavorite);
 
                 return _logger.NoContentResponse(
-                    logggerMessage: $"The user with ID:{userId} have updated series with animeID:{request.AnimeId}.", 
-                    resultMessage: "You have updated series.");
+                    loggerMessage: $"The user with ID:{userId} have updated series with animeID:{request.AnimeId}.");
             }
             catch (UnauthorizedAccessException)
             {
@@ -98,8 +119,7 @@ namespace SeriesTracker.API.Controllers
                 var deletedSeriesId = await _userSeriesService.DeleteSeries(id);
 
                 return _logger.NoContentResponse(
-                    logggerMessage: $"The user with ID:{userId} have deleted series with ID:{id} from his list.", 
-                    resultMessage:"You have deleted series.");
+                    loggerMessage: $"The user with ID:{userId} have deleted series with ID:{id} from his list.");
             }
             catch (UnauthorizedAccessException)
             {
