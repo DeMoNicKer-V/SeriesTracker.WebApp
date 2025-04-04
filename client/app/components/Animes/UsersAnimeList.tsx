@@ -154,7 +154,7 @@ const UsersAnimeList = ({ myList, userName, color }: Props) => {
             <List
                 className={styles["animes-list"]}
                 header={data.length > 0 && <ListBranches />}
-                footer={data.length > 7 ? <ListBranches /> : []}
+                footer={data.length > 14 ? <ListBranches /> : []}
                 grid={{
                     gutter: 30,
                     xs: 2,

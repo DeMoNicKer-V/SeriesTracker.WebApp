@@ -14,16 +14,33 @@ namespace SeriesTracker.API.Controllers
         private readonly ILogger<UserSeriesController> _logger = logger;
         private readonly IUserSeriesService _userSeriesService = userSeriesService;
 
+        [HttpGet("{userName}")]
+        public async Task<IResult> GetUserProfileInfo(string userName)
+        {
+            // Модель автоматически валидируется ASP.NET Core, поэтому проверка ModelState.IsValid не требуется.
+
+            try
+            {
+                var userProfileInfo = await _userSeriesService.GetUserProfile(userName);
+
+                if (userProfileInfo == null)
+                {
+                    return _logger.NotFoundResponse(
+                      message: $"User ({userName}) not found");
+                }
+                return Results.Ok(userProfileInfo);
+            }
+            catch (Exception ex)
+            {
+                return _logger.InternalServerError(ex, "An unexpected error occurred while getting user's profile");
+            }
+        }
 
         [HttpGet("{userName}/group")]
         public async Task<IResult> GetGroupedSeries(string userName)
         {
-            if (string.IsNullOrEmpty(userName))
-            {
-                return _logger.BadResponse(
-                    loggerMessage: "Username is null or empty.", 
-                    resultMessage: "User name is required.");
-            }
+            // Модель автоматически валидируется ASP.NET Core, поэтому проверка ModelState.IsValid не требуется.
+
             try
             {
                 var categoryGroup = await _userSeriesService.GetGroupShortSeries(userName);
@@ -33,18 +50,12 @@ namespace SeriesTracker.API.Controllers
             {
                 return _logger.InternalServerError(ex, "An unexpected error occurred while receiving this user's list.");
             }
-
         }
 
         [HttpGet("{userName}/list/{page}")]
         public async Task<IResult> GetAnimesByUser(string userName, int page, [FromQuery] UserSeriesRequest request)
         {
-            if (string.IsNullOrEmpty(userName))
-            {
-                return _logger.BadResponse(
-                    loggerMessage: "Username is null or empty.", 
-                    resultMessage: "User name is required.");
-            }
+            // Модель автоматически валидируется ASP.NET Core, поэтому проверка ModelState.IsValid не требуется.
 
             try
             {
@@ -93,7 +104,7 @@ namespace SeriesTracker.API.Controllers
             try
             {
                 Guid userId = GetUserIdFromClaims();
-                var updatedSeriesId = await _userSeriesService.UpdateSeries(id, request.WatchedEpisode, 
+                var updatedSeriesId = await _userSeriesService.UpdateSeries(id, request.WatchedEpisode,
                     request.CategoryId, request.IsFavorite);
 
                 return _logger.NoContentResponse(

@@ -31,21 +31,6 @@ namespace SeriesTracker.API.Controllers
             return Results.Ok(new { users = userList, totalCount });
         }
 
-        [HttpGet("userName/{userName}")]
-        public async Task<IResult> GetUserInfoByUserName(string userName)
-        {
-            var user = await _userService.GetUserByUserName(userName);
-            if (user == null)
-            {
-                return Results.BadRequest("Такого пользователя не существует");
-            }
-
-            var categoryGroup = await _userSeriesService.GetGroupSeries(user.Id);
-
-            var lastActivityList = await _userSeriesService.GetRecentSeriesString(user.Id);
-
-            return Results.Ok(user.ToUserActivityDto(categoryGroup, lastActivityList));
-        }
 
         [RequirePermission(Permission.Read)]
         [HttpDelete("deleteSeries/{userName}")]

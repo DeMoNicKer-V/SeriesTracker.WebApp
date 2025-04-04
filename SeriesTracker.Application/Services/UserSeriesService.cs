@@ -1,15 +1,19 @@
 ﻿using Microsoft.Extensions.Logging;
 using SeriesTracker.Core.Abstractions;
+using SeriesTracker.Core.Abstractions.UserAbastractions;
 using SeriesTracker.Core.Dtos.Series;
+using SeriesTracker.Core.Dtos.User;
+using SeriesTracker.Core.Mappers;
 using SeriesTracker.Core.Models;
 using SeriesTracker.Core.Models.Shikimori;
 
 namespace SeriesTracker.Application.Services
 {
     public class UserSeriesService(
-        IUserSeriesRepository userSeriesRepository, ILogger<UserSeriesService> logger) : IUserSeriesService
+        IUserSeriesRepository userSeriesRepository, IUserRepository userRepository, ILogger<UserSeriesService> logger) : IUserSeriesService
     {
         private readonly IUserSeriesRepository _userSeriesRepository = userSeriesRepository;
+        private readonly IUserRepository _userRepository = userRepository;
         private readonly ILogger<UserSeriesService> _logger = logger;
 
         public async Task<Guid> CreateAsync(Guid seriesId, Guid userId, int animeId, int categoryId, int watchedEpisodes, bool isFavorite)
@@ -70,6 +74,20 @@ namespace SeriesTracker.Application.Services
             var idsString = string.Join(",", animeIds);
             var data = await GraphQLHelper.ExecuteGraphQLRequest<ShikimoriAnimeBaseList>(GraphQLQueries.GetAnimesByIds(idsString), _logger);
             return data.Animes;
+        }
+
+        public async Task<UserActivityDTO?> GetUserProfile(string userName)
+        {
+            var user = await _userRepository.GetUserByUserName(userName);
+            if (user == null)
+            {
+                return null;
+            }
+
+            var seriesProfile = await _userSeriesRepository.GetUserProfile(user.Id);
+            var userActivity = user.ToUserActivityDto(seriesProfile.CategoryGroups, seriesProfile.LastFiveSeries);
+
+            return userActivity;
         }
 
         public async Task<Guid> UpdateSeries(Guid seriesDd, int watched, int categoryId, bool favorite)

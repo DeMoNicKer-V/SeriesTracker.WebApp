@@ -1,4 +1,5 @@
 ﻿using SeriesTracker.Core.Dtos.Series;
+using SeriesTracker.Core.Dtos.User;
 using SeriesTracker.Core.Models.Shikimori;
 
 namespace SeriesTracker.Core.Abstractions
@@ -13,5 +14,6 @@ namespace SeriesTracker.Core.Abstractions
         Task<List<SeriesGroupShortDto>> GetGroupShortSeries(string userName);
         Task<string> GetRecentSeriesString(Guid userId);
         Task<ShikimoriAnimeBase[]> GetUserSeriesList(string userName, int page, int categoryId, bool isFavorite);
+        Task<UserActivityDTO?> GetUserProfile(string userName);
     }
 }

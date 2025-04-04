@@ -12,16 +12,12 @@ namespace SeriesTracker.DataAccess.Repositories
 
         public async Task<Guid> AddAsync(UserSeries model)
         {
-            var categoryEntity = await _context.CategoryEntities
-                .SingleOrDefaultAsync(r => r.Id == model.CategoryId) ?? throw new KeyNotFoundException($"Category with ID {model.CategoryId} not found.");
-
             var userSeriesEntity = new UserSeriesEntity
             {
                 Id = model.Id,
                 UserId = model.UserId,
                 AnimeId = model.AnimeId,
                 CategoryId = model.CategoryId,
-                Category = categoryEntity,
                 AddedDate = model.AddedDate,
                 ChangedDate = model.ChangedDate,
                 WatchedEpisode = model.WatchedEpisodes,
@@ -53,22 +49,65 @@ namespace SeriesTracker.DataAccess.Repositories
             var userSeriesList = await _context.UserSeriesEntities.AsNoTracking().Where(s => s.UserId == id).Include(user => user.Category).ToListAsync();
 
             var categoryGroup = userSeriesList
-                .GroupBy(s => s.Category?.Id)
+                .GroupBy(s => s.Category.Id)
                 .Select(g =>
                 {
-                    var category = g.FirstOrDefault(x => x.Category?.Id == g.Key)?.Category;
+                    var category = g.First().Category;
 
                     return new SeriesGroupDto
                     {
-                        Id = g.Key ?? default,
-                        Name = category?.Name ?? string.Empty,
-                        Color = category?.Color ?? string.Empty,
+                        Id = g.Key,
+                        Name = category.Name,
+                        Color = category.Color,
                         SeriesCount = g.Count()
                     };
                 })
                 .ToList();
 
             return categoryGroup;
+        }
+
+        public async Task<SeriesProfileDTO> GetUserProfile(Guid Id)
+        {
+            var userSeriesList = await _context.UserSeriesEntities
+                .AsNoTracking()
+                .Where(s => s.UserId == Id)
+                .Include(user => user.Category)
+                .ToListAsync();
+
+            if (userSeriesList.Count == 0)
+            {
+                return new SeriesProfileDTO();
+            }
+
+            var categoryGroup = userSeriesList
+                .GroupBy(s => s.Category.Id)
+                .Select(g =>
+                {
+                    var category = g.First().Category;
+
+                    return new SeriesGroupDto
+                    {
+                        Id = g.Key,
+                        Name = category.Name,
+                        Color = category.Color,
+                        SeriesCount = g.Count()
+                    };
+                })
+                .ToList();
+
+            var lastFiveSeriesString = string.Join(",",userSeriesList
+                .OrderByDescending(s => s.ChangedDate)
+                .Take(5)
+                .Select(s => s.AnimeId)
+                .ToList());
+
+            var result = new SeriesProfileDTO
+            {
+                CategoryGroups = categoryGroup,
+                LastFiveSeries = lastFiveSeriesString,
+            };
+            return result;
         }
 
         public async Task<List<SeriesGroupShortDto>> GetGroupShortSeries(string userName)
