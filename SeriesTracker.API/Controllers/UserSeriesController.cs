@@ -38,7 +38,7 @@ namespace SeriesTracker.API.Controllers
         }
 
         [HttpGet("{userName}/group")]
-        public async Task<IResult> GetGroupedSeries(string userName)
+        public async Task<IResult> GetGroupSeries(string userName)
         {
             // Модель автоматически валидируется ASP.NET Core, поэтому проверка ModelState.IsValid не требуется.
 
@@ -143,7 +143,6 @@ namespace SeriesTracker.API.Controllers
             }
         }
 
-
         [RequirePermission(Permission.Read)]
         [HttpDelete("{userName}/deleteAll")]
         public async Task<IResult> DeleteAllSeries(string userName)
@@ -163,8 +162,8 @@ namespace SeriesTracker.API.Controllers
             catch (ValidationException ex)
             {
                 return _logger.BadResponse(
-                    ex, 
-                    message: $"User ({userName}) attempted to clear the list.", 
+                    ex,
+                    message: $"User ({userName}) attempted to clear the list.",
                     resultMessage: "You cannot perform this action. You don't have rights.");
             }
             catch (Exception ex)
@@ -175,8 +174,8 @@ namespace SeriesTracker.API.Controllers
 
         private Guid GetUserIdFromClaims(string? userName = null, bool validate = true)
         {
-            var userClaims = new 
-            { 
+            var userClaims = new
+            {
                 UserID = User.Claims.FirstOrDefault(c => c.Type == "userId")?.Value,
                 UserName = User.Claims.FirstOrDefault(c => c.Type == "userName")?.Value
             };

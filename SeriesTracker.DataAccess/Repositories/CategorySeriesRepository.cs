@@ -4,7 +4,6 @@ using SeriesTracker.Core.Dtos.Series;
 using SeriesTracker.Core.Mappers;
 using SeriesTracker.Core.Models;
 
-
 namespace SeriesTracker.DataAccess.Repositories
 {
     public class CategorySeriesRepository : ICategorySeriesRepository
@@ -15,6 +14,7 @@ namespace SeriesTracker.DataAccess.Repositories
         {
             _contextFactory = contextFactory;
         }
+
         public async Task<Category?> GetCategoryBySeriesAnimeId(Guid userId, int animeId)
         {
             using (var context = _contextFactory.CreateDbContext())

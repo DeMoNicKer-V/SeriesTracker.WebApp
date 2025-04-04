@@ -25,7 +25,7 @@ namespace SeriesTracker.API.Controllers
             }
             catch (UnauthorizedAccessException)
             {
-                return Results.BadRequest(new {Message =  "Неверный пароль"});
+                return Results.BadRequest(new { Message = "Неверный пароль" });
             }
             catch (Exception ex)
             {

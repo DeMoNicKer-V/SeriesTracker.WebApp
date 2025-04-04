@@ -2,9 +2,7 @@
 using SeriesTracker.Application.Interfaces.Auth;
 using SeriesTracker.Core.Abstractions.UserAbastractions;
 using SeriesTracker.Core.Dtos.UserDtos;
-using SeriesTracker.Core.Enums;
 using SeriesTracker.Core.Models;
-using System.Globalization;
 
 namespace SeriesTracker.Application.Services
 {

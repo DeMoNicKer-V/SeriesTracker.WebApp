@@ -1,6 +1,4 @@
-﻿using System.Reflection;
-
-namespace SeriesTracker.API.Extensions
+﻿namespace SeriesTracker.API.Extensions
 {
     public static class ResultExtensions
     {
@@ -24,9 +22,9 @@ namespace SeriesTracker.API.Extensions
 
         public static IResult NoContentResponse(this ILogger logger, string? loggerMessage = null)
         {
-            if(!string.IsNullOrEmpty(loggerMessage)) 
-            { 
-                logger.LogInformation(loggerMessage); 
+            if (!string.IsNullOrEmpty(loggerMessage))
+            {
+                logger.LogInformation(loggerMessage);
             }
             return Results.NoContent();
         }
@@ -44,4 +42,3 @@ namespace SeriesTracker.API.Extensions
         }
     }
 }
- 

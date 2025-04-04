@@ -35,7 +35,6 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ICategorySeriesRepository, CategorySeriesRepository>();
 builder.Services.AddScoped<ICategorySeriesService, CategorySeriesService>();
 
-
 builder.Services.AddAutoMapper(typeof(AnimeMappingProfile));
 builder.Services.AddScoped<IShikimoriService, ShikimoriService>();
 builder.Services.AddScoped<IJwtProvider, JwtProvider>();
@@ -52,7 +51,6 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
-
 }
 
 app.UseHttpsRedirection();
@@ -64,7 +62,6 @@ app.UseCookiePolicy(new CookiePolicyOptions
     Secure = CookieSecurePolicy.Always
 });
 
-
 app.UseAuthentication();
 
 app.UseAuthorization();
@@ -73,7 +70,7 @@ app.MapControllers();
 
 app.UseCors(x =>
 {
-    x.WithOrigins("http://localhost:3000") 
+    x.WithOrigins("http://localhost:3000")
                    .AllowAnyMethod()
                    .AllowAnyHeader()
                    .AllowCredentials();

@@ -73,9 +73,9 @@ namespace SeriesTracker.DataAccess.Repositories
                 })
                 .ToList();
 
-            var lastFiveSeriesString = string.Join(",",userSeriesList
+            var lastFiveSeriesString = string.Join(",", userSeriesList
                 .OrderByDescending(s => s.ChangedDate)
-                .Take(5) 
+                .Take(5)
                 .Select(s => s.AnimeId)
                 .ToList());
 
@@ -109,7 +109,6 @@ namespace SeriesTracker.DataAccess.Repositories
                     Color = g.Key.Color
                 })
                 .ToList();
-
 
             // Получаем количество (если есть данные)
             int count = userSeries.Count;

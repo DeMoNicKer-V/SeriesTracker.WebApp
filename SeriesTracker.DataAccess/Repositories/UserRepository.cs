@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using SeriesTracker.Core.Abstractions.UserAbastractions;
 using SeriesTracker.Core.Dtos.UserDtos;
 using SeriesTracker.Core.Enums;
@@ -109,7 +108,7 @@ namespace SeriesTracker.DataAccess.Repositories
                 .Where(c => c.UserName == userName)
                 .Select(s => s.Id)
                 .FirstOrDefaultAsync();
-        } 
+        }
 
         public async Task<(List<UserDto>, int)> GetUserList(int page)
         {

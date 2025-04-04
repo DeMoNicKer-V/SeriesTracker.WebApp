@@ -18,6 +18,7 @@ namespace SeriesTracker.Core.Mappers
                 RegDate = user.RegDate,
             };
         }
+
         public static UserDetailDto ToDetailDTO(this User user)
         {
             return new UserDetailDto

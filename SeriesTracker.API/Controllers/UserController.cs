@@ -1,5 +1,4 @@
-﻿using GraphQL;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using SeriesTracker.API.Contracts;
 using SeriesTracker.Core.Abstractions;
 using SeriesTracker.Core.Abstractions.UserAbastractions;
@@ -14,7 +13,6 @@ namespace SeriesTracker.API.Controllers
     public class UserController(IUserService userService, IUserSeriesService userSeriesService, ILogger<UserController> logger) : ControllerBase
     {
         private readonly IUserService _userService = userService;
-        private readonly IUserSeriesService _userSeriesService = userSeriesService;
         private readonly ILogger<UserController> _logger = logger;
 
         [HttpGet("id/{id:guid}")]
@@ -52,8 +50,6 @@ namespace SeriesTracker.API.Controllers
             {
                 return Results.BadRequest(new { Message = ex.Message });
             }
-
-
         }
 
         [RequirePermission(Permission.Update)]
@@ -75,7 +71,7 @@ namespace SeriesTracker.API.Controllers
             {
                 // Логирование непредвиденной ошибки
                 _logger.LogError(ex, "Ошибка при изменении роли пользователя. userId - {userId}; roleId - {roleId}", id, roleId);
-                return Results.BadRequest(ex.Message); 
+                return Results.BadRequest(ex.Message);
             }
         }
 
@@ -108,6 +104,5 @@ namespace SeriesTracker.API.Controllers
             Response.Cookies.Delete("secretCookie");
             return Results.Ok();
         }
-       
     }
 }

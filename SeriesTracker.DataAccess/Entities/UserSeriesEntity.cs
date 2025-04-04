@@ -38,9 +38,8 @@ namespace SeriesTracker.DataAccess.Entities
 
         [Required]
         public virtual UserEntity User { get; set; }
+
         [Required]
         public virtual CategoryEntity Category { get; set; }
-
-
     }
 }

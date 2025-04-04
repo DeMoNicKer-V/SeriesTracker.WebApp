@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SeriesTracker.API.Contracts;
+using SeriesTracker.API.Extensions;
 using SeriesTracker.Core.Abstractions;
 using SeriesTracker.Core.Enums;
 using SeriesTracker.Infrastructure.Authentication;
-using SeriesTracker.API.Extensions;
 
 namespace SeriesTracker.API.Controllers
 {
@@ -41,7 +41,6 @@ namespace SeriesTracker.API.Controllers
             {
                 var category = await _categoryService.GetCategoryById(id);
                 return Results.Ok(category);
-
             }
             catch (Exception ex)
             {
@@ -69,7 +68,6 @@ namespace SeriesTracker.API.Controllers
             {
                 return _logger.InternalServerError(ex, $"An unexpected error occurred while updating category color for ID: {id}");
             }
-
         }
     }
 }
