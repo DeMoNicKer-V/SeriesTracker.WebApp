@@ -4,6 +4,7 @@ using SeriesTracker.API.Extensions;
 using SeriesTracker.Core.Abstractions;
 using SeriesTracker.Core.Enums;
 using SeriesTracker.Infrastructure.Authentication;
+using System.ComponentModel.DataAnnotations;
 
 namespace SeriesTracker.API.Controllers
 {
@@ -142,11 +143,49 @@ namespace SeriesTracker.API.Controllers
             }
         }
 
-        private Guid GetUserIdFromClaims()
-        {
-            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == "userId")?.Value;
 
-            if (Guid.TryParse(userIdClaim, out var userId))
+        [RequirePermission(Permission.Read)]
+        [HttpDelete("{userName}/deleteAll")]
+        public async Task<IResult> DeleteAllSeries(string userName)
+        {
+            try
+            {
+                Guid userId = GetUserIdFromClaims(userName);
+                var deletedSeriesId = await _userSeriesService.DeleteAllSeriesByUserId(userId);
+
+                return _logger.NoContentResponse(
+                    loggerMessage: $"The user with ID:{userId} have deleted all series from his list.");
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return _logger.UnauthorizedResponse("You must be authorized to delete series.", nameof(DeleteAllSeries));
+            }
+            catch (ValidationException ex)
+            {
+                return _logger.BadResponse(
+                    ex, 
+                    message: $"User ({userName}) attempted to clear the list.", 
+                    resultMessage: "You cannot perform this action. You don't have rights.");
+            }
+            catch (Exception ex)
+            {
+                return _logger.InternalServerError(ex, "An unexpected error occurred while deleting series.");
+            }
+        }
+
+        private Guid GetUserIdFromClaims(string? userName = null, bool validate = true)
+        {
+            var userClaims = new 
+            { 
+                UserID = User.Claims.FirstOrDefault(c => c.Type == "userId")?.Value,
+                UserName = User.Claims.FirstOrDefault(c => c.Type == "userName")?.Value
+            };
+
+            validate = string.IsNullOrEmpty(userName) || userName.Equals(userClaims.UserName);
+
+            if (!validate) { throw new ValidationException($"User ({userName}) failed validation."); }
+
+            if (Guid.TryParse(userClaims.UserID, out var userId))
             {
                 return userId;
             }

@@ -31,21 +31,6 @@ namespace SeriesTracker.API.Controllers
             return Results.Ok(new { users = userList, totalCount });
         }
 
-
-        [RequirePermission(Permission.Read)]
-        [HttpDelete("deleteSeries/{userName}")]
-        public async Task<IResult> DeleteAllSeriesByUserName(string userName)
-        {
-            var userId = await _userService.GetUserIdByUserName(userName);
-            if (userId != Guid.Empty)
-            {
-                var user = await _userService.GetUserByUserName(userName);
-                await _userSeriesService.DeleteAllSeriesByUserId(user.Id);
-            }
-
-            return Results.Ok();
-        }
-
         [RequirePermission(Permission.Read)]
         [HttpPut("update/{userName}")]
         public async Task<IResult> UpdateUser(string userName, [FromBody] UserRequest request)
@@ -95,7 +80,7 @@ namespace SeriesTracker.API.Controllers
         }
 
         [RequirePermission(Permission.Delete)]
-        [HttpDelete("deleteUser/{userName}")]
+        [HttpDelete("{userName}/delete")]
         public async Task<IResult> DeleteUserByUserName(string userName)
         {
             var userId = await _userService.GetUserIdByEmail(userName);
@@ -110,7 +95,7 @@ namespace SeriesTracker.API.Controllers
         }
 
         [RequirePermission(Permission.Read)]
-        [HttpDelete("deleteSelf/{userName}")]
+        [HttpDelete("{userName}/deleteSelf")]
         public async Task<IResult> DeleteSelfAccount(string userName)
         {
             var userId = await _userService.GetUserIdByUserName(userName);

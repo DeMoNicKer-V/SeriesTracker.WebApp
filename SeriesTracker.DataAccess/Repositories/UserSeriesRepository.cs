@@ -44,29 +44,6 @@ namespace SeriesTracker.DataAccess.Repositories
             return id;
         }
 
-        public async Task<List<SeriesGroupDto>> GetGroupSeries(Guid id)
-        {
-            var userSeriesList = await _context.UserSeriesEntities.AsNoTracking().Where(s => s.UserId == id).Include(user => user.Category).ToListAsync();
-
-            var categoryGroup = userSeriesList
-                .GroupBy(s => s.Category.Id)
-                .Select(g =>
-                {
-                    var category = g.First().Category;
-
-                    return new SeriesGroupDto
-                    {
-                        Id = g.Key,
-                        Name = category.Name,
-                        Color = category.Color,
-                        SeriesCount = g.Count()
-                    };
-                })
-                .ToList();
-
-            return categoryGroup;
-        }
-
         public async Task<SeriesProfileDTO> GetUserProfile(Guid Id)
         {
             var userSeriesList = await _context.UserSeriesEntities
@@ -98,7 +75,7 @@ namespace SeriesTracker.DataAccess.Repositories
 
             var lastFiveSeriesString = string.Join(",",userSeriesList
                 .OrderByDescending(s => s.ChangedDate)
-                .Take(5)
+                .Take(5) 
                 .Select(s => s.AnimeId)
                 .ToList());
 
@@ -112,9 +89,18 @@ namespace SeriesTracker.DataAccess.Repositories
 
         public async Task<List<SeriesGroupShortDto>> GetGroupShortSeries(string userName)
         {
-            var categoryGroup = await _context.UserSeriesEntities
+            var userSeries = await _context.UserSeriesEntities
                 .AsNoTracking()
                 .Where(s => s.User.UserName == userName)
+                .Include(s => s.Category)
+                .ToListAsync();
+
+            if (userSeries.Count == 0)
+            {
+                return [];
+            }
+
+            var categoryGroup = userSeries
                 .GroupBy(s => new { s.Category.Id, s.Category.Name, s.Category.Color })
                 .Select(g => new SeriesGroupShortDto
                 {
@@ -122,14 +108,11 @@ namespace SeriesTracker.DataAccess.Repositories
                     Value = g.Count(),
                     Color = g.Key.Color
                 })
-                .ToListAsync();
+                .ToList();
 
-            if (categoryGroup.Count == 0)
-            {
-                return [];
-            }
+
             // Получаем количество (если есть данные)
-            int count = categoryGroup.Count;
+            int count = userSeries.Count;
 
             // Создаем результат и вставляем в начало:
             var result = categoryGroup.ToList();
@@ -137,15 +120,6 @@ namespace SeriesTracker.DataAccess.Repositories
             result.Insert(0, new SeriesGroupShortDto { Key = "0", Value = count, Color = "" });
 
             return result;
-        }
-
-        public async Task<string> GetRecentSeriesString(Guid userId)
-        {
-            var userSeriesList = await _context.UserSeriesEntities.AsNoTracking()
-                .Where(s => s.UserId == userId).OrderByDescending(s => s.ChangedDate)
-                .Take(5).Select(s => s.AnimeId).ToListAsync();
-
-            return userSeriesList.Count > 0 ? string.Join(",", userSeriesList) : string.Empty;
         }
 
         public async Task<List<int>> GetAnimeIdsList(string userName, int page, int categoryId, bool isFavorite)

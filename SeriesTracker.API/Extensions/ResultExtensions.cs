@@ -37,9 +37,9 @@ namespace SeriesTracker.API.Extensions
             return Results.Json(new { Message = message }, statusCode: StatusCodes.Status401Unauthorized);
         }
 
-        public static IResult BadResponse(this ILogger logger, string loggerMessage, string resultMessage)
+        public static IResult BadResponse(this ILogger logger, Exception ex, string message, string resultMessage)
         {
-            logger.LogInformation(loggerMessage);
+            logger.LogError(ex, message);
             return Results.Json(new { Message = resultMessage }, statusCode: StatusCodes.Status400BadRequest);
         }
     }

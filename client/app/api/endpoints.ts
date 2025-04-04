@@ -43,6 +43,7 @@ export const UPDATE_SERIES_URL = "/series/update/{id}";
 
 // deleteSeries endpoints
 export const DELETE_SERIES_URL = "/series/delete/{id}";
+export const DELETE_USER_SERIES_URL = "/series/{userName}/deleteAll";
 // deleteSeries endpoints
 
 // getAnime endpoints
@@ -65,5 +66,4 @@ export const GET_GENRES_URL = "/shikimori/groupGenres";
 // deleteUser endpoints
 export const DELETE_USER_URL = "/user/deleteUser/{userName}";
 export const DELETE_USER_SELF_URL = "/user/deleteSelf/{userName}";
-export const DELETE_USER_SERIES_URL = "/user/deleteSeries/{userName}";
 // deleteUser endpoints

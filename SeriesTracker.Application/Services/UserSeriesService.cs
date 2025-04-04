@@ -40,26 +40,14 @@ namespace SeriesTracker.Application.Services
             return await _userSeriesRepository.DeleteAllSeriesByUserId(userId);
         }
 
-
         public async Task<Guid> DeleteSeries(Guid id)
         {
             return await _userSeriesRepository.DeleteSeries(id);
         }
 
-
-        public async Task<List<SeriesGroupDto>> GetGroupSeries(Guid userId)
-        {
-            return await _userSeriesRepository.GetGroupSeries(userId);
-        }
-
         public async Task<List<SeriesGroupShortDto>> GetGroupShortSeries(string userName)
         {
             return await _userSeriesRepository.GetGroupShortSeries(userName);
-        }
-
-        public async Task<string> GetRecentSeriesString(Guid userId)
-        {
-            return await _userSeriesRepository.GetRecentSeriesString(userId);
         }
 
         public async Task<ShikimoriAnimeBase[]> GetUserSeriesList(string userName, int page, int categoryId, bool isFavorite)
