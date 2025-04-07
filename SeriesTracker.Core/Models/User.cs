@@ -4,7 +4,7 @@ namespace SeriesTracker.Core.Models
 {
     public class User
     {
-        private User(Guid id, string userName, string name, string surName, string email, string password, string avatar, string dateBirth, string regDate, int roleId)
+        private User(Guid id, string userName, string? name, string? surName, string email, string password, string? avatar, string? dateBirth, string regDate, int roleId)
         {
             this.Id = id;
             this.UserName = userName;
@@ -21,7 +21,7 @@ namespace SeriesTracker.Core.Models
         [Required]
         public Guid Id
         {
-            get; set;
+            get; private set;
         }
 
         [Required]
@@ -74,7 +74,8 @@ namespace SeriesTracker.Core.Models
             get; private set;
         }
 
-        public static User Create(Guid id, string userName, string name, string surName, string email, string password, string avatar, string dateBirth, string regDate, int roleId = 3)
+        // Фабричный метод. Предполагает, что входные данные уже провалидированы.
+        public static User Create(Guid id, string userName, string? name, string? surName, string email, string password, string? avatar, string? dateBirth, string regDate, int roleId = 3)
         {
             return new User(id, userName, name, surName, email, password, avatar, dateBirth, regDate, roleId);
         }

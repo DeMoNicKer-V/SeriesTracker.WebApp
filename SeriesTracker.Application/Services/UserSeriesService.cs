@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
 using SeriesTracker.Core.Abstractions;
-using SeriesTracker.Core.Abstractions.UserAbastractions;
 using SeriesTracker.Core.Dtos.Series;
 using SeriesTracker.Core.Dtos.User;
 using SeriesTracker.Core.Mappers;
@@ -83,7 +82,5 @@ namespace SeriesTracker.Application.Services
             var dateNow = DateTime.UtcNow.ToString("s");
             return await _userSeriesRepository.UpdateSeries(seriesDd, watched, categoryId, favorite, dateNow);
         }
-
-
     }
 }

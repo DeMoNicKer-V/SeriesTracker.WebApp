@@ -1,47 +1,37 @@
 using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.EntityFrameworkCore;
 using SeriesTracker.API.Extensions;
-using SeriesTracker.Application;
-using SeriesTracker.Application.Interfaces.Auth;
-using SeriesTracker.Application.Services;
-using SeriesTracker.Core.Abstractions;
-using SeriesTracker.Core.Abstractions.UserAbastractions;
+using SeriesTracker.Application.Extensions;
 using SeriesTracker.Core.Mappers;
 using SeriesTracker.DataAccess;
-using SeriesTracker.DataAccess.Repositories;
+using SeriesTracker.DataAccess.Extensions;
 using SeriesTracker.Infrastructure.Authentication;
 using SeriesTracker.Infrastructure.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
+var services = builder.Services;
+
+// Настройка логирования
 builder.Logging.AddConsole();
-builder.Services.AddApiAuthentication(builder.Configuration);
-builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection(nameof(JwtOptions)));
-builder.Services.Configure<AuthorizationOptions>(builder.Configuration.GetSection(nameof(AuthorizationOptions)));
-builder.Services.AddInfrastructure();
-builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 
-builder.Services.AddScoped<IUserSeriesRepository, UserSeriesRepository>();
-builder.Services.AddScoped<IUserSeriesService, UserSeriesService>();
-builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
+// Настройка аутентификации и авторизации
+services.AddApiAuthentication(builder.Configuration);
+services.Configure<JwtOptions>(builder.Configuration.GetSection(nameof(JwtOptions)));
+services.Configure<AuthorizationOptions>(builder.Configuration.GetSection(nameof(AuthorizationOptions)));
 
-builder.Services.AddScoped<ICategoryService, CategoryService>();
-builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+services.AddInfrastructure();
+services.AddApplication();
+services.AddDataAccess();
 
-builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<IUserRepository, UserRepository>();
+// Настройка API
+services.AddControllers(); // Добавляет поддержку контроллеров
+services.AddEndpointsApiExplorer(); // Добавляет поддержку API Explorer
+services.AddSwaggerGen(); // Добавляет поддержку Swagger для документирования API
 
-builder.Services.AddScoped<ICategorySeriesRepository, CategorySeriesRepository>();
-builder.Services.AddScoped<ICategorySeriesService, CategorySeriesService>();
+services.AddAutoMapper(typeof(AnimeMappingProfile));
+services.AddAutoMapper(typeof(UserMappingProfile));
 
-builder.Services.AddAutoMapper(typeof(AnimeMappingProfile));
-builder.Services.AddScoped<IShikimoriService, ShikimoriService>();
-builder.Services.AddScoped<IJwtProvider, JwtProvider>();
-builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
-builder.Services.AddScoped<ICalendarFetcher, CalendarFetcher>();
-
-builder.Services.AddDbContextFactory<SeriesTrackerDbContext>(options =>
+services.AddDbContextFactory<SeriesTrackerDbContext>(options =>
 {
     options.UseNpgsql(builder.Configuration.GetConnectionString(nameof(SeriesTrackerDbContext)));
 });

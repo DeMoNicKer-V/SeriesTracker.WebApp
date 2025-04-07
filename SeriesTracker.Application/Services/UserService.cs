@@ -1,25 +1,23 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using AutoMapper;
+using Microsoft.Extensions.Logging;
 using SeriesTracker.Application.Interfaces.Auth;
-using SeriesTracker.Core.Abstractions.UserAbastractions;
+using SeriesTracker.Core.Abstractions;
 using SeriesTracker.Core.Dtos.UserDtos;
-using SeriesTracker.Core.Models;
 
 namespace SeriesTracker.Application.Services
 {
-    public class UserService : IUserService
+    public class UserService(
+        IUserRepository userRepository,
+        IPasswordHasher passwordHasher,
+        IJwtProvider jwtProvider,
+        ILogger<UserService> logger,
+        IMapper mapper) : IUserService
     {
-        private readonly IUserRepository _userRepository;
-        private readonly IPasswordHasher _passwordHasher;
-        private readonly IJwtProvider _jwtProvider;
-        private readonly ILogger<UserService> _logger;
-
-        public UserService(IUserRepository userRepository, IPasswordHasher passwordHasher, IJwtProvider jwtProvider, ILogger<UserService> logger)
-        {
-            _userRepository = userRepository;
-            _passwordHasher = passwordHasher;
-            _jwtProvider = jwtProvider;
-            _logger = logger;
-        }
+        private readonly IUserRepository _userRepository = userRepository;
+        private readonly IPasswordHasher _passwordHasher = passwordHasher;
+        private readonly IJwtProvider _jwtProvider = jwtProvider;
+        private readonly ILogger<UserService> _logger = logger;
+        private readonly IMapper _mapper = mapper;
 
         public string HashPassword(string password)
         {
@@ -42,7 +40,7 @@ namespace SeriesTracker.Application.Services
             return token;
         }
 
-        public async Task<Guid> DeleteUser(Guid id)
+        public async Task<bool> DeleteUser(Guid id)
         {
             return await _userRepository.DeleteUser(id);
         }
@@ -52,27 +50,19 @@ namespace SeriesTracker.Application.Services
             return await _userRepository.GetUserList(page);
         }
 
-        public async Task<User?> GetUserById(Guid id)
+        public async Task<UserDetailDto?> GetUserById(Guid id)
         {
-            return await _userRepository.GetUserById(id);
+            var user = await _userRepository.GetUserById(id);
+            return _mapper.Map<UserDetailDto>(user);
         }
 
-        public async Task<User?> GetUserByUserName(string userName)
+        public async Task<UserDetailDto?> GetUserByUserName(string userName)
         {
-            return await _userRepository.GetUserByUserName(userName);
+            var user = await _userRepository.GetUserByUserName(userName);
+            return _mapper.Map<UserDetailDto>(user);
         }
 
-        public async Task<Guid?> GetUserIdByEmail(string email)
-        {
-            return await _userRepository.GetUserIdByEmail(email);
-        }
-
-        public async Task<Guid?> GetUserIdByUserName(string userName)
-        {
-            return await _userRepository.GetUserIdByUserName(userName);
-        }
-
-        public async Task<Guid> UpdateUser(Guid id, string userName, string name, string surName, string email, string passwordHash, string avatar, string dateBirth)
+        public async Task<bool> UpdateUser(Guid id, string userName, string name, string surName, string email, string passwordHash, string avatar, string dateBirth)
         {
             return await _userRepository.UpdateUser(id, userName, name, surName, email, passwordHash, avatar, dateBirth);
         }

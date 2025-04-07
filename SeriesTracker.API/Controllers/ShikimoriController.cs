@@ -2,7 +2,7 @@
 using SeriesTracker.API.Contracts;
 using SeriesTracker.Core.Abstractions;
 using SeriesTracker.Core.Dtos.Anime;
-using SeriesTracker.Core.Models;
+using SeriesTracker.Core.Models.Shikimori;
 
 namespace SeriesTracker.API.Controllers
 {

@@ -1,4 +1,4 @@
-﻿namespace SeriesTracker.Core.Models
+﻿namespace SeriesTracker.Core.Models.Shikimori
 {
     public class GenreList
     {

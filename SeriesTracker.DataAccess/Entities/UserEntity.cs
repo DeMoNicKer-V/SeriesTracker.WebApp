@@ -12,7 +12,7 @@
             get; set;
         }
 
-        public required string Email
+        public string Email
         {
             get; set;
         }
@@ -21,30 +21,31 @@
         {
             get; set;
         }
+
         public string? Name
         {
             get; set;
         }
 
-        public required string PasswordHash
+        public string PasswordHash
         {
             get; set;
         }
 
-        public required string RegDate
+        public string RegDate
         {
             get; set;
         }
 
         public ICollection<RoleEntity> Roles { get; set; } = [];
-        public ICollection<UserSeriesEntity> UserSeries { get; set; } = new List<UserSeriesEntity>();
+        public ICollection<UserSeriesEntity> UserSeries { get; set; } = [];
 
         public string? SurName
         {
             get; set;
         }
 
-        public required string UserName
+        public string UserName
         {
             get; set;
         }

@@ -6,7 +6,7 @@ using SeriesTracker.DataAccess.Entities;
 namespace SeriesTracker.DataAccess
 {
     /// <summary>
-    /// DbContext для приложения SeriesTracker. Отвечает за взаимодействие с базой данных.
+    /// <see cref="DbContext"/> для приложения SeriesTracker. Отвечает за взаимодействие с базой данных.
     /// </summary>
     /// <param name="options">Опции для DbContext, такие как строка подключения.</param>
     /// <param name="authOptions">Опции авторизации, используемые для конфигурации разрешений ролей.</param>
@@ -15,22 +15,22 @@ namespace SeriesTracker.DataAccess
         IOptions<AuthorizationOptions> authOptions) : DbContext(options)
     {
         /// <summary>
-        /// DbSet для сущностей <see cref="CategoryEntity"/>.
+        /// <see cref="DbSet{TEntity}"/> для сущностей <see cref="CategoryEntity"/>.
         /// </summary>
         public DbSet<CategoryEntity> CategoryEntities { get; set; }
 
         /// <summary>
-        /// DbSet для сущностей <see cref="RoleEntity"/>.
+        /// <see cref="DbSet{TEntity}"/> для сущностей <see cref="RoleEntity"/>.
         /// </summary>
         public DbSet<RoleEntity> RoleEntities { get; set; }
 
         /// <summary>
-        /// DbSet для сущностей <see cref="UserEntity"/>.
+        /// <see cref="DbSet{TEntity}"/> для сущностей <see cref="UserEntity"/>.
         /// </summary>
         public DbSet<UserEntity> UserEntities { get; set; }
 
         /// <summary>
-        /// DbSet для сущностей <see cref="UserSeriesEntity"/>.
+        /// <see cref="DbSet{TEntity}"/> для сущностей <see cref="UserSeriesEntity"/>.
         /// </summary>
         public DbSet<UserSeriesEntity> UserSeriesEntities { get; set; }
 
@@ -38,7 +38,7 @@ namespace SeriesTracker.DataAccess
         /// Конфигурирует модель базы данных.
         /// Этот метод вызывается при создании модели для контекста.
         /// </summary>
-        /// <param name="modelBuilder">ModelBuilder, используемый для создания модели.</param>
+        /// <param name="modelBuilder"><see cref="ModelBuilder"/>, используемый для создания модели.</param>
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // Применяем конфигурации сущностей из сборок (Assemblies).

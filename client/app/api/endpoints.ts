@@ -64,6 +64,6 @@ export const GET_GENRES_URL = "/shikimori/groupGenres";
 // getGenre endpoints
 
 // deleteUser endpoints
-export const DELETE_USER_URL = "/user/deleteUser/{userName}";
-export const DELETE_USER_SELF_URL = "/user/deleteSelf/{userName}";
+export const DELETE_USER_URL = "/user/{userName}/delete";
+export const DELETE_USER_SELF_URL = "/user/{userName}/deleteSelf";
 // deleteUser endpoints

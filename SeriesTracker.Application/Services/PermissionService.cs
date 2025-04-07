@@ -1,5 +1,4 @@
 ﻿using SeriesTracker.Core.Abstractions;
-using SeriesTracker.Core.Abstractions.UserAbastractions;
 using SeriesTracker.Core.Enums;
 
 namespace SeriesTracker.Application.Services

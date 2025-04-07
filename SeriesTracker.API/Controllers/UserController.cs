@@ -1,16 +1,14 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SeriesTracker.API.Contracts;
 using SeriesTracker.Core.Abstractions;
-using SeriesTracker.Core.Abstractions.UserAbastractions;
 using SeriesTracker.Core.Enums;
-using SeriesTracker.Core.Mappers;
 using SeriesTracker.Infrastructure.Authentication;
 
 namespace SeriesTracker.API.Controllers
 {
     [ApiController]
     [Route("user")]
-    public class UserController(IUserService userService, IUserSeriesService userSeriesService, ILogger<UserController> logger) : ControllerBase
+    public class UserController(IUserService userService, ILogger<UserController> logger) : ControllerBase
     {
         private readonly IUserService _userService = userService;
         private readonly ILogger<UserController> _logger = logger;
@@ -19,7 +17,7 @@ namespace SeriesTracker.API.Controllers
         public async Task<IResult> GetUserById(Guid id)
         {
             var user = await _userService.GetUserById(id);
-            return Results.Ok(user.ToDetailDTO());
+            return Results.Ok(user);
         }
 
         [HttpGet("{page:int}")]
@@ -79,13 +77,13 @@ namespace SeriesTracker.API.Controllers
         [HttpDelete("{userName}/delete")]
         public async Task<IResult> DeleteUserByUserName(string userName)
         {
-            var userId = await _userService.GetUserIdByEmail(userName);
-            if (userId == null)
+            var user = await _userService.GetUserByUserName(userName);
+            if (user == null)
             {
                 return Results.NotFound($"User with userName '{userName}' not found.");
             }
 
-            await _userService.DeleteUser(userId.Value);
+            await _userService.DeleteUser(user.Id);
             Response.Cookies.Delete("secretCookie");
             return Results.Ok();
         }
@@ -94,13 +92,13 @@ namespace SeriesTracker.API.Controllers
         [HttpDelete("{userName}/deleteSelf")]
         public async Task<IResult> DeleteSelfAccount(string userName)
         {
-            var userId = await _userService.GetUserIdByUserName(userName);
-            if (userId == null)
+            var user = await _userService.GetUserByUserName(userName);
+            if (user == null)
             {
                 return Results.NotFound($"User with userName '{userName}' not found.");
             }
 
-            await _userService.DeleteUser(userId.Value);
+            await _userService.DeleteUser(user.Id);
             Response.Cookies.Delete("secretCookie");
             return Results.Ok();
         }

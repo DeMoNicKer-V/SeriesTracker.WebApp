@@ -7,6 +7,8 @@ namespace SeriesTracker.Infrastructure.Authentication
     /// Представляет требование (Requirement) авторизации, основанное на разрешениях (Permissions).
     /// Используется для определения того, какие разрешения необходимы для доступа к ресурсу.
     /// </summary>
+    /// <param name="permissions">Список разрешений, необходимых для доступа к ресурсу.
+    /// Если указано несколько разрешений, пользователь должен обладать хотя бы одним из них.</param>
     public class PermissionRequirement(Permission[] permissions)
         : IAuthorizationRequirement
     {

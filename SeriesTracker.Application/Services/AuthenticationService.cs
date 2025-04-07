@@ -1,8 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using SeriesTracker.Application.Interfaces.Auth;
 using SeriesTracker.Application.Services;
-using SeriesTracker.Core.Abstractions.UserAbastractions;
 using SeriesTracker.Core.Models;
 
 namespace SeriesTracker.Core.Abstractions
@@ -108,7 +106,6 @@ namespace SeriesTracker.Core.Abstractions
             // 3. Создание пользователя
             try
             {
-
                 var user = User.Create(
                     Guid.NewGuid(),
                     userName,
@@ -128,7 +125,7 @@ namespace SeriesTracker.Core.Abstractions
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Ошибка при создании или сохранении пользователя {userName}.");
-                                                                                                    
+
                 throw new Exception("Не удалось зарегистрировать пользователя.", ex);
             }
         }

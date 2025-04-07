@@ -3,7 +3,6 @@ using Microsoft.Extensions.Logging;
 using SeriesTracker.Core.Abstractions;
 using SeriesTracker.Core.Dtos.Anime;
 using SeriesTracker.Core.Dtos.Series;
-using SeriesTracker.Core.Models;
 using SeriesTracker.Core.Models.Shikimori;
 
 namespace SeriesTracker.Application.Services

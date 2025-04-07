@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace SeriesTracker.Core.Models
+namespace SeriesTracker.Core.Models.Shikimori
 {
     public class Genre
     {
