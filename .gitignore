@@ -363,3 +363,5 @@ MigrationBackup/
 FodyWeavers.xsd
 /SeriesTracker.Core/FetchDomain.cs
 /SeriesTracker.Application/FetchDomain.cs
+/SeriesTracker.API/appsettings.json
+/SeriesTracker.API/appsettings.json
