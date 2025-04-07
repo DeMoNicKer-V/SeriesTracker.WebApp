@@ -1,8 +1,6 @@
-﻿
-using AutoMapper;
+﻿using AutoMapper;
 using SeriesTracker.Core.Dtos.Anime;
 using SeriesTracker.Core.Models.Shikimori;
-
 
 namespace SeriesTracker.Core.Mappers
 {

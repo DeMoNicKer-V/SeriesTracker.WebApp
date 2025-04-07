@@ -46,7 +46,6 @@ namespace SeriesTracker.Application.Services
             }
             return _mapper.Map<AnimeSeriesFullDto>(anime, opt =>
             {
-
                 opt.Items["SeriesId"] = series.SeriesId;
                 opt.Items["CategoryId"] = series.CategoryId;
                 opt.Items["CategoryName"] = series.CategoryName;
@@ -55,7 +54,6 @@ namespace SeriesTracker.Application.Services
                 opt.Items["AddedDate"] = series.AddedDate;
                 opt.Items["IsFavorite"] = series.IsFavorite;
                 opt.Items["ChangedDate"] = series.ChangedDate;
-
             });
         }
 
@@ -74,7 +72,7 @@ namespace SeriesTracker.Application.Services
             return await GraphQLHelper.ExecuteGraphQLRequest<ShikimoriAnimeBaseList>(GraphQLQueries.GetRecentAnimes(ids), _logger);
         }
 
-        public async Task<ShikimoriAnimeBaseList> GetAnimesByAllParams(int page, string name, string season, 
+        public async Task<ShikimoriAnimeBaseList> GetAnimesByAllParams(int page, string name, string season,
             string status, string kind, string genre, string order, bool censored)
         {
             return await GraphQLHelper.ExecuteGraphQLRequest<ShikimoriAnimeBaseList>(GraphQLQueries.GetAnimes(page, name, season,

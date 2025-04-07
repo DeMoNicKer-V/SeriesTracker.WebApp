@@ -11,11 +11,13 @@ namespace SeriesTracker.Application.Services
         private readonly ICategorySeriesRepository _categorySeriesRepository;
 
         private readonly IDbContextFactory<SeriesTrackerDbContext> _contextFactory;
+
         public CategorySeriesService(IDbContextFactory<SeriesTrackerDbContext> contextFactory, ICategorySeriesRepository categorySeriesRepository)
         {
             _contextFactory = contextFactory;
             _categorySeriesRepository = categorySeriesRepository;
         }
+
         public async Task<Category?> GetCategoryBySeriesAnimeId(Guid userId, int animeId)
         {
             using (var context = _contextFactory.CreateDbContext())

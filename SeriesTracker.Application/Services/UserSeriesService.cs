@@ -1,19 +1,20 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using AutoMapper;
+using Microsoft.Extensions.Logging;
 using SeriesTracker.Core.Abstractions;
 using SeriesTracker.Core.Dtos.Series;
 using SeriesTracker.Core.Dtos.User;
-using SeriesTracker.Core.Mappers;
 using SeriesTracker.Core.Models;
 using SeriesTracker.Core.Models.Shikimori;
 
 namespace SeriesTracker.Application.Services
 {
     public class UserSeriesService(
-        IUserSeriesRepository userSeriesRepository, IUserRepository userRepository, ILogger<UserSeriesService> logger) : IUserSeriesService
+        IUserSeriesRepository userSeriesRepository, IUserRepository userRepository, ILogger<UserSeriesService> logger, IMapper mapper) : IUserSeriesService
     {
         private readonly IUserSeriesRepository _userSeriesRepository = userSeriesRepository;
         private readonly IUserRepository _userRepository = userRepository;
         private readonly ILogger<UserSeriesService> _logger = logger;
+        private readonly IMapper _mapper = mapper;
 
         public async Task<Guid> CreateAsync(Guid seriesId, Guid userId, int animeId, int categoryId, int watchedEpisodes, bool isFavorite)
         {
@@ -72,8 +73,11 @@ namespace SeriesTracker.Application.Services
             }
 
             var seriesProfile = await _userSeriesRepository.GetUserProfile(user.Id);
-            var userActivity = user.ToUserActivityDto(seriesProfile.CategoryGroups, seriesProfile.LastFiveSeries);
-
+            var userActivity = _mapper.Map<UserActivityDTO>(user, opt =>
+            {
+                opt.Items["SeriesGroup"] = seriesProfile.CategoryGroups;
+                opt.Items["SeriesIDS"] = seriesProfile.LastFiveSeries;
+            });
             return userActivity;
         }
 

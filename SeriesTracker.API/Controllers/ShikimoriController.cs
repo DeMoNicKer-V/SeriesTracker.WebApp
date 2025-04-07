@@ -13,20 +13,21 @@ namespace SeriesTracker.API.Controllers
         private readonly ICategorySeriesService _categorySeriesService;
         private readonly IShikimoriService _shikimoriService;
         private readonly ICalendarFetcher _fetcher;
+
         public ShikimoriController(ICategorySeriesService categorySeriesService,
          IShikimoriService shikimoriService,
          ICalendarFetcher fetcher)
         {
             _categorySeriesService = categorySeriesService;
             _shikimoriService = shikimoriService;
-            _fetcher = fetcher; 
+            _fetcher = fetcher;
         }
 
         [HttpGet("calendar")]
         public async Task<IActionResult> GetOngoings()
         {
-                var data = await _fetcher.FetchData();
-                return new OkObjectResult(data);
+            var data = await _fetcher.FetchData();
+            return new OkObjectResult(data);
         }
 
         [HttpGet("id/{id}")]
@@ -42,7 +43,6 @@ namespace SeriesTracker.API.Controllers
         [HttpGet("activity")]
         public async Task<ActionResult> GetLastAnimesById(string userName, string id)
         {
-
             var graphQLResponse = await _shikimoriService.GetAnimeListByIds(id);
             var animeTasks = graphQLResponse.Animes
                 .Select(async item =>
@@ -72,8 +72,6 @@ namespace SeriesTracker.API.Controllers
                 });
             var animeResponses = await Task.WhenAll(animeTasks);
             return Ok(animeResponses);
-
-
         }
 
         [HttpGet("{name}")]
@@ -102,7 +100,7 @@ namespace SeriesTracker.API.Controllers
         [HttpGet("groupGenres")]
         public async Task<ActionResult> GetGroupGenres()
         {
-            var graphQLResponse  = await _shikimoriService.GetGenres();
+            var graphQLResponse = await _shikimoriService.GetGenres();
 
             var groupedRecords = graphQLResponse.Genres
         .GroupBy(r => r.Kind)

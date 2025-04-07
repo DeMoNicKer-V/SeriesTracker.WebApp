@@ -1,19 +1,16 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using SeriesTracker.Core.Abstractions;
 using SeriesTracker.Core.Dtos.Series;
-using SeriesTracker.Core.Mappers;
+
 using SeriesTracker.Core.Models;
 
 namespace SeriesTracker.DataAccess.Repositories
 {
-    public class CategorySeriesRepository : ICategorySeriesRepository
+    public class CategorySeriesRepository(IDbContextFactory<SeriesTrackerDbContext> contextFactory, IMapper mapper) : ICategorySeriesRepository
     {
-        private readonly IDbContextFactory<SeriesTrackerDbContext> _contextFactory;
-
-        public CategorySeriesRepository(IDbContextFactory<SeriesTrackerDbContext> contextFactory)
-        {
-            _contextFactory = contextFactory;
-        }
+        private readonly IDbContextFactory<SeriesTrackerDbContext> _contextFactory = contextFactory;
+        private readonly IMapper _mapper = mapper;
 
         public async Task<Category?> GetCategoryBySeriesAnimeId(Guid userId, int animeId)
         {
@@ -52,7 +49,14 @@ namespace SeriesTracker.DataAccess.Repositories
                 }
                 var category = Category.Create(s.Category.Id, s.Category.Name, s.Category.Color, s.Category.PrevColor, s.Category.Date).Category;
                 var userSeries = new UserSeries(s.Id, s.AnimeId, s.UserId, s.CategoryId, s.WatchedEpisode, s.AddedDate, s.ChangedDate, s.IsFavorite);
-                return userSeries.ToSeriesCategoryDTO(category);
+
+                var result = _mapper.Map<SeriesCategoryDto>(userSeries, opt =>
+                {
+                    opt.Items["CategoryId"] = category.Id;
+                    opt.Items["CategoryName"] = category.Name;
+                    opt.Items["CategoryColor"] = category.Color;
+                });
+                return result;
             }
         }
     }
