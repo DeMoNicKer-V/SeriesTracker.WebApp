@@ -38,7 +38,7 @@ namespace SeriesTracker.DataAccess.Repositories
             {
                 var s = await context.UserSeriesEntities
                 .AsNoTracking()
-                .Where(s => s.UserId == userId && s.AnimeId == animeId)
+                .Where(s => s.User.Id == userId && s.AnimeId == animeId)
                 .Include(s => s.Category)
                 .FirstOrDefaultAsync();
 

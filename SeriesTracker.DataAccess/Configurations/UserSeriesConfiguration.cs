@@ -10,6 +10,9 @@ namespace SeriesTracker.DataAccess.Configurations
         {
             builder.HasKey(r => r.Id);
 
+            builder.HasIndex(us => us.UserId) // Добавляем индекс на UserId
+              .HasDatabaseName("IX_UserSeriesEntities_UserId"); // Указываем имя индекса
+
             builder
                 .HasOne(us => us.User)
                 .WithMany(u => u.UserSeries)

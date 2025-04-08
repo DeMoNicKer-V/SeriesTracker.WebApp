@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SeriesTracker.API.Contracts;
 using SeriesTracker.Core.Abstractions;
+using SeriesTracker.Core.Dtos.Anime;
 using SeriesTracker.Core.Models.Shikimori;
+using System.ComponentModel.DataAnnotations;
 
 namespace SeriesTracker.API.Controllers
 {
@@ -32,15 +34,39 @@ namespace SeriesTracker.API.Controllers
             return new OkObjectResult(data);
         }
 
-        [HttpGet("activity")]
-
-        [HttpGet]
-        public async Task<ActionResult> GetAnimesByAllParams([FromQuery] ShikimoriParamsRequest request)
+        [HttpGet("id/{id}")]
+        public async Task<IResult> GetAnimeById(string id)
         {
             var userId = GetUserIdFromClaims();
-            var animeShorts = await _shikimoriService.GetAnimesByAllParams(userId, request.Page, request.Name, request.Season, request.Status,
+            var animeResponse = await _shikimoriService.GetAnimeById(userId, id);
+
+            return Results.Ok(animeResponse);
+        }
+
+        [HttpGet("activity")]
+        public async Task<IResult> GetLastAnimesById(string userName, string id)
+        {
+            var animeResponse = await _shikimoriService.GetAnimeListByIds(userName, id);
+
+            return Results.Ok(animeResponse);
+        }
+
+        [HttpGet]
+        public async Task<IResult> GetAnimesByAllParams([FromQuery] ShikimoriParamsRequest request)
+        {
+            var userId = GetUserIdFromClaims();
+            var animeResponse = await _shikimoriService.GetAnimesByAllParams(userId, request.Page, request.Name, request.Season, request.Status,
                                                            request.Kind, request.Genre, request.Order, request.Censored);
-            return Ok(animeShorts);
+            return Results.Ok(animeResponse);
+        }
+
+        [HttpGet("{name}")]
+        public async Task<IResult> GetAnimesByName(string name)
+        {
+            var userId = GetUserIdFromClaims();
+            var animeResponse = await _shikimoriService.GetAnimesByName(userId, name);
+
+            return Results.Ok(animeResponse);
         }
 
         [HttpGet("genres")]
@@ -80,6 +106,7 @@ namespace SeriesTracker.API.Controllers
         private Guid GetUserIdFromClaims()
         {
             var userClaims = User.Claims.FirstOrDefault(c => c.Type == "userId")?.Value;
+
 
             if (Guid.TryParse(userClaims, out var userId))
             {

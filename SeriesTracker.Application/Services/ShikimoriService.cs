@@ -1,31 +1,59 @@
 ﻿using AutoMapper;
 using Microsoft.Extensions.Logging;
+using SeriesTracker.Application.Extensions;
 using SeriesTracker.Core.Abstractions;
 using SeriesTracker.Core.Dtos.Anime;
 using SeriesTracker.Core.Dtos.Series;
+using SeriesTracker.Core.Models;
 using SeriesTracker.Core.Models.Shikimori;
 
 namespace SeriesTracker.Application.Services
 {
-    public class ShikimoriService(IMapper mapper, ILogger<ShikimoriService> logger, ICategorySeriesRepository categorySeriesRepository) : IShikimoriService
+    public class ShikimoriService(IMapper mapper, ILogger<ShikimoriService> logger, ICategorySeriesRepository categorySeriesRepository, IUserRepository userRepository) : IShikimoriService
     {
         private readonly ILogger<ShikimoriService> _logger = logger;
         private readonly IMapper _mapper = mapper;
         private readonly ICategorySeriesRepository _categorySeriesRepository = categorySeriesRepository;
+        private readonly IUserRepository _userRepository = userRepository;
 
-        public async Task<ShikimoriAnimeBaseList> GetAnimesByName(string name)
+        public async Task<AnimeShortDto[]> GetAnimesByName(Guid userId, string animeName)
         {
-            return await GraphQLHelper.ExecuteGraphQLRequest<ShikimoriAnimeBaseList>(GraphQLQueries.GetAnimesByName(name), _logger);
+            var animeResponse = await GraphQLHelper.ExecuteGraphQLRequest<ShikimoriAnimeBaseList>(GraphQLQueries.GetAnimesByName(animeName), _logger);
+
+            var animeTasks = animeResponse.Animes
+            .Select(async item =>
+            {
+                var response = await _categorySeriesRepository.GetSeriesAnimeId(userId, item.Id);
+                return _mapper.MapToShortAnimeDTO(item);
+            });
+
+            var mappedAnimes = await Task.WhenAll(animeTasks);
+            return mappedAnimes;
         }
 
-        public async Task<ShikimoriAnimeBaseList> GetAnimeById(string id)
+        public async Task<AnimeSeriesFullDto> GetAnimeById(Guid userId, string animeId)
         {
-            return await GraphQLHelper.ExecuteGraphQLRequest<ShikimoriAnimeBaseList>(GraphQLQueries.GetAnimeById(id), _logger);
+            var animeResponse =  await GraphQLHelper.ExecuteGraphQLRequest<ShikimoriAnimeBaseList>(GraphQLQueries.GetAnimeById(animeId), _logger);
+            var series = await _categorySeriesRepository.GetSeriesAnimeId(userId, animeResponse.Animes[0].Id);
+
+            return _mapper.MapToFullSeriesDto(animeResponse.Animes[0], series);
         }
 
-        public async Task<ShikimoriAnimeBaseList> GetAnimeListByIds(string ids)
+        public async Task<AnimeSeriesFullDto[]> GetAnimeListByIds(string userName, string Ids)
         {
-            return await GraphQLHelper.ExecuteGraphQLRequest<ShikimoriAnimeBaseList>(GraphQLQueries.GetRecentAnimes(ids), _logger);
+            var animeResponse = await GraphQLHelper.ExecuteGraphQLRequest<ShikimoriAnimeBaseList>(GraphQLQueries.GetRecentAnimes(Ids), _logger);
+
+            var user = await _userRepository.GetUserByUserName(userName);
+            var animeTasks = animeResponse.Animes
+                .Select(async item =>
+                {
+                    var response = await _categorySeriesRepository.GetSeriesAnimeId(user.Id, item.Id);
+                    return _mapper.MapToFullSeriesDto(item, response);
+                });
+
+            AnimeSeriesFullDto[] mappedAnimes = await Task.WhenAll(animeTasks);
+
+            return [.. mappedAnimes.OrderByDescending(m => m.ChangedDate)];
         }
 
         public async Task<AnimeSeriesDto[]> GetAnimesByAllParams(Guid userId, int page, string name, string season,
@@ -38,7 +66,7 @@ namespace SeriesTracker.Application.Services
             .Select(async item =>
             {
                 var response = await _categorySeriesRepository.GetSeriesAnimeId(userId, item.Id);
-                return MapToShortSeriesDto(item, response);
+                return _mapper.MapToShortSeriesDto(item, response);
             });
 
             var mappedAnimes = await Task.WhenAll(animeTasks);
@@ -53,26 +81,6 @@ namespace SeriesTracker.Application.Services
         public async Task<ShikimoriAnimeBaseList> GetRandomAnime()
         {
             return await GraphQLHelper.ExecuteGraphQLRequest<ShikimoriAnimeBaseList>(GraphQLQueries.GetRandomAnime(), _logger);
-        }
-
-        public AnimeSeriesDto MapToShorSeriesDto(ShikimoriAnimeBase anime, SeriesCategoryDto? series)
-        {
-            if (series == null)
-            {
-                return _mapper.Map<AnimeSeriesDto>(anime, opt => { });
-            }
-
-            return _mapper.Map<AnimeSeriesDto>(anime, opt =>
-            {
-                opt.Items["CategoryId"] = series.CategoryId;
-                opt.Items["CategoryName"] = series.CategoryName;
-                opt.Items["CategoryColor"] = series.CategoryColor;
-            });
-        }
-
-        private AnimeShortDto MapToShorAnimeDto(ShikimoriAnimeBase anime)
-        {
-            return _mapper.Map<AnimeShortDto>(anime);
         }
     }
 }

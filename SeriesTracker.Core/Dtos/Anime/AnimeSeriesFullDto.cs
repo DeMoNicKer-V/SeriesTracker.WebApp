@@ -19,13 +19,13 @@ namespace SeriesTracker.Core.Dtos.Anime
         public string? Rating { get; set; }
         public IEnumerable<Related>? Relateds { get; set; } = [];
         public Screenshot[]? Screenshots { get; set; } = [];
-        public Guid? SeriesId { get; set; } = Guid.Empty;
-        public int? CategoryId { get; set; } = 0;
-        public string? CategoryName { get; set; } = string.Empty;
-        public string? CategoryColor { get; set; } = string.Empty;
-        public int WatchedEpisodes { get; set; } = 0;
-        public string? AddedDate { get; set; } = string.Empty;
-        public string? ChangedDate { get; set; } = string.Empty;
-        public bool IsFavorite { get; set; } = false;
+        public Guid? SeriesId { get; set; } = null;
+        public int? CategoryId { get; set; } = null;
+        public string? CategoryName { get; set; } = null;
+        public string? CategoryColor { get; set; } = null;
+        public int? WatchedEpisodes { get; set; } = null;
+        public string? AddedDate { get; set; } = null;
+        public string? ChangedDate { get; set; } = null;
+        public bool? IsFavorite { get; set; } = null;
     }
 }

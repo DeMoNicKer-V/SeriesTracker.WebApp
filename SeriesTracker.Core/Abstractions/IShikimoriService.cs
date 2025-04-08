@@ -6,13 +6,13 @@ namespace SeriesTracker.Core.Abstractions
 {
     public interface IShikimoriService
     {
-        Task<ShikimoriAnimeBaseList> GetAnimeById(string Id);
+        Task<AnimeSeriesFullDto> GetAnimeById(Guid userId, string animeId);
 
-        Task<ShikimoriAnimeBaseList> GetAnimeListByIds(string Id);
+        Task<AnimeSeriesFullDto[]> GetAnimeListByIds(string userName, string Ids);
 
         Task<AnimeSeriesDto[]> GetAnimesByAllParams(Guid userId, int page, string name, string season, string status, string kind, string genre, string order, bool censored);
 
-        Task<ShikimoriAnimeBaseList> GetAnimesByName(string name);
+        Task<AnimeShortDto[]> GetAnimesByName(Guid userId, string animeName);
 
         Task<GenreList> GetGenres();
 
