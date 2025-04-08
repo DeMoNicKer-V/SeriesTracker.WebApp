@@ -16,7 +16,7 @@ namespace SeriesTracker.DataAccess.Entities
         [ForeignKey("Category")]
         public int CategoryId { get; set; }
 
-        public int WatchedEpisode
+        public int WatchedEpisodes
         {
             get; set;
         } = 0;

@@ -17,11 +17,11 @@ namespace SeriesTracker.DataAccess.Repositories
             using (var context = _contextFactory.CreateDbContext())
             {
                 var s = await context.UserSeriesEntities
-               .AsNoTracking()
-              .Include(c => c.Category)
-             .AsSplitQuery()
-             .Where(s => s.AnimeId == animeId && s.UserId == userId)
-             .FirstOrDefaultAsync();
+                    .AsNoTracking()
+                    .Include(c => c.Category)
+                    .AsSplitQuery()
+                    .Where(s => s.AnimeId == animeId && s.UserId == userId)
+                    .FirstOrDefaultAsync();
 
                 if (s == null)
                 {
@@ -32,29 +32,27 @@ namespace SeriesTracker.DataAccess.Repositories
             }
         }
 
-        public async Task<SeriesCategoryDto?> GetSeriesAnimeId(string userName, int animeId)
+        public async Task<SeriesCategoryDto?> GetSeriesAnimeId(Guid userId, int animeId)
         {
             using (var context = _contextFactory.CreateDbContext())
             {
                 var s = await context.UserSeriesEntities
-               .AsNoTracking()
-              .Include(c => c.Category)
-             .AsSplitQuery()
-             .Where(s => s.AnimeId == animeId && s.User.UserName == userName)
-             .FirstOrDefaultAsync();
+                .AsNoTracking()
+                .Where(s => s.UserId == userId && s.AnimeId == animeId)
+                .Include(s => s.Category)
+                .FirstOrDefaultAsync();
 
                 if (s == null)
                 {
                     return null;
                 }
-                var category = Category.Create(s.Category.Id, s.Category.Name, s.Category.Color, s.Category.PrevColor, s.Category.Date).Category;
-                var userSeries = new UserSeries(s.Id, s.AnimeId, s.UserId, s.CategoryId, s.WatchedEpisode, s.AddedDate, s.ChangedDate, s.IsFavorite);
 
+                var userSeries = new UserSeries(s.Id, s.AnimeId, s.UserId, s.CategoryId, s.WatchedEpisodes, s.AddedDate, s.ChangedDate, s.IsFavorite);
                 var result = _mapper.Map<SeriesCategoryDto>(userSeries, opt =>
                 {
-                    opt.Items["CategoryId"] = category.Id;
-                    opt.Items["CategoryName"] = category.Name;
-                    opt.Items["CategoryColor"] = category.Color;
+                    opt.Items["CategoryId"] = s.Category.Id;
+                    opt.Items["CategoryName"] = s.Category.Name;
+                    opt.Items["CategoryColor"] = s.Category.Color;
                 });
                 return result;
             }

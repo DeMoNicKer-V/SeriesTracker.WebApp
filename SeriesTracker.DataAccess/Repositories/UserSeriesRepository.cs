@@ -20,7 +20,7 @@ namespace SeriesTracker.DataAccess.Repositories
                 CategoryId = model.CategoryId,
                 AddedDate = model.AddedDate,
                 ChangedDate = model.ChangedDate,
-                WatchedEpisode = model.WatchedEpisodes,
+                WatchedEpisodes = model.WatchedEpisodes,
                 IsFavorite = model.IsFavorite,
             };
 
@@ -137,7 +137,7 @@ namespace SeriesTracker.DataAccess.Repositories
         public async Task<Guid> UpdateSeries(Guid seriesId, int watched, int categoryId, bool favorite, string dateNow)
         {
             await _context.UserSeriesEntities.Where(s => s.Id == seriesId)
-                .ExecuteUpdateAsync(s => s.SetProperty(s => s.WatchedEpisode, s => watched)
+                .ExecuteUpdateAsync(s => s.SetProperty(s => s.WatchedEpisodes, s => watched)
                 .SetProperty(s => s.CategoryId, s => categoryId)
                 .SetProperty(s => s.IsFavorite, s => favorite)
                 .SetProperty(s => s.ChangedDate, s => dateNow));

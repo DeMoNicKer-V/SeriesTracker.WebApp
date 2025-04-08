@@ -7,55 +7,11 @@ using SeriesTracker.Core.Models.Shikimori;
 
 namespace SeriesTracker.Application.Services
 {
-    public class ShikimoriService : IShikimoriService
+    public class ShikimoriService(IMapper mapper, ILogger<ShikimoriService> logger, ICategorySeriesRepository categorySeriesRepository) : IShikimoriService
     {
-        private readonly ILogger<ShikimoriService> _logger;
-        private readonly IMapper _mapper;
-
-        public ShikimoriService(IMapper mapper, ILogger<ShikimoriService> logger)
-        {
-            _mapper = mapper;
-            _logger = logger;
-        }
-
-        public AnimeFullDto MapToFullDto(ShikimoriAnimeBase anime)
-        {
-            return _mapper.Map<AnimeFullDto>(anime);
-        }
-
-        public AnimeShortDto MapToShortDto(ShikimoriAnimeBase anime)
-        {
-            return _mapper.Map<AnimeShortDto>(anime);
-        }
-
-        public AnimeSeriesDto MapToAnimeSeriesDto(ShikimoriAnimeBase anime, int categoryId, string categoryName, string categoryColor)
-        {
-            return _mapper.Map<AnimeSeriesDto>(anime, opt =>
-            {
-                opt.Items["CategoryId"] = categoryId;
-                opt.Items["CategoryName"] = categoryName;
-                opt.Items["CategoryColor"] = categoryColor;
-            });
-        }
-
-        public object MapToAnimeSeriesFullDto(ShikimoriAnimeBase anime, SeriesCategoryDto? series, bool isFull)
-        {
-            if (series == null)
-            {
-                return isFull ? _mapper.Map<AnimeFullDto>(anime) : _mapper.Map<AnimeShortDto>(anime);
-            }
-            return _mapper.Map<AnimeSeriesFullDto>(anime, opt =>
-            {
-                opt.Items["SeriesId"] = series.SeriesId;
-                opt.Items["CategoryId"] = series.CategoryId;
-                opt.Items["CategoryName"] = series.CategoryName;
-                opt.Items["CategoryColor"] = series.CategoryColor;
-                opt.Items["WatchedEpisodes"] = series.WatchedEpisodes;
-                opt.Items["AddedDate"] = series.AddedDate;
-                opt.Items["IsFavorite"] = series.IsFavorite;
-                opt.Items["ChangedDate"] = series.ChangedDate;
-            });
-        }
+        private readonly ILogger<ShikimoriService> _logger = logger;
+        private readonly IMapper _mapper = mapper;
+        private readonly ICategorySeriesRepository _categorySeriesRepository = categorySeriesRepository;
 
         public async Task<ShikimoriAnimeBaseList> GetAnimesByName(string name)
         {
@@ -72,11 +28,21 @@ namespace SeriesTracker.Application.Services
             return await GraphQLHelper.ExecuteGraphQLRequest<ShikimoriAnimeBaseList>(GraphQLQueries.GetRecentAnimes(ids), _logger);
         }
 
-        public async Task<ShikimoriAnimeBaseList> GetAnimesByAllParams(int page, string name, string season,
+        public async Task<AnimeSeriesDto[]> GetAnimesByAllParams(Guid userId, int page, string name, string season,
             string status, string kind, string genre, string order, bool censored)
         {
-            return await GraphQLHelper.ExecuteGraphQLRequest<ShikimoriAnimeBaseList>(GraphQLQueries.GetAnimes(page, name, season,
+            var response = await GraphQLHelper.ExecuteGraphQLRequest<ShikimoriAnimeBaseList>(GraphQLQueries.GetAnimes(page, name, season,
                  status, kind, genre, order, censored), _logger);
+
+            var animeTasks = response.Animes
+            .Select(async item =>
+            {
+                var response = await _categorySeriesRepository.GetSeriesAnimeId(userId, item.Id);
+                return MapToShortSeriesDto(item, response);
+            });
+
+            var mappedAnimes = await Task.WhenAll(animeTasks);
+            return mappedAnimes;
         }
 
         public async Task<GenreList> GetGenres()
@@ -87,6 +53,26 @@ namespace SeriesTracker.Application.Services
         public async Task<ShikimoriAnimeBaseList> GetRandomAnime()
         {
             return await GraphQLHelper.ExecuteGraphQLRequest<ShikimoriAnimeBaseList>(GraphQLQueries.GetRandomAnime(), _logger);
+        }
+
+        public AnimeSeriesDto MapToShorSeriesDto(ShikimoriAnimeBase anime, SeriesCategoryDto? series)
+        {
+            if (series == null)
+            {
+                return _mapper.Map<AnimeSeriesDto>(anime, opt => { });
+            }
+
+            return _mapper.Map<AnimeSeriesDto>(anime, opt =>
+            {
+                opt.Items["CategoryId"] = series.CategoryId;
+                opt.Items["CategoryName"] = series.CategoryName;
+                opt.Items["CategoryColor"] = series.CategoryColor;
+            });
+        }
+
+        private AnimeShortDto MapToShorAnimeDto(ShikimoriAnimeBase anime)
+        {
+            return _mapper.Map<AnimeShortDto>(anime);
         }
     }
 }

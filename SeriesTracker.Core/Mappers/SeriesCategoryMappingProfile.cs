@@ -10,6 +10,7 @@ namespace SeriesTracker.Core.Mappers
         {
             CreateMap<UserSeries, SeriesCategoryDto>().AfterMap((src, dest, context) =>
             {
+                dest.SeriesId = src.Id;
                 dest.CategoryId = (int)context.Items["CategoryId"];
                 dest.CategoryName = (string)context.Items["CategoryName"];
                 dest.CategoryColor = (string)context.Items["CategoryColor"];
