@@ -1,4 +1,6 @@
-﻿namespace SeriesTracker.Core.Dtos.Series
+﻿using System.Text.Json.Serialization;
+
+namespace SeriesTracker.Core.Dtos.Series
 {
     public class SeriesCategoryDto
     {
@@ -6,6 +8,13 @@
         {
             get; set;
         }
+
+        [JsonIgnore]
+        public int AnimeId
+        {
+            get; set;
+        }
+
         public int CategoryId
         {
             get; set;

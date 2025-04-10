@@ -16,27 +16,28 @@ namespace SeriesTracker.Application.Services
         private readonly ICategorySeriesRepository _categorySeriesRepository = categorySeriesRepository;
         private readonly IUserRepository _userRepository = userRepository;
 
-        public async Task<AnimeShortDto[]> GetAnimesByName(Guid userId, string animeName)
+        public async Task<AnimeSeriesDto[]> GetAnimesByName(Guid userId, string animeName)
         {
             var animeResponse = await GraphQLHelper.ExecuteGraphQLRequest<ShikimoriAnimeBaseList>(GraphQLQueries.GetAnimesByName(animeName), _logger);
+            var animeIds = animeResponse.Animes.Select(s => s.Id).ToList();
+
+            var response = await _categorySeriesRepository.GetSeriesAnimeId(userId, animeIds);
 
             var animeTasks = animeResponse.Animes
-            .Select(async item =>
+            .Select(item =>
             {
-                var response = await _categorySeriesRepository.GetSeriesAnimeId(userId, item.Id);
-                return _mapper.MapToShortAnimeDTO(item);
-            });
+                return _mapper.MapToShortSeriesDto(item, response.FirstOrDefault(c => c.AnimeId == item.Id));
+            }).ToArray();
 
-            var mappedAnimes = await Task.WhenAll(animeTasks);
-            return mappedAnimes;
+            return animeTasks;
         }
 
         public async Task<AnimeSeriesFullDto> GetAnimeById(Guid userId, string animeId)
         {
-            var animeResponse =  await GraphQLHelper.ExecuteGraphQLRequest<ShikimoriAnimeBaseList>(GraphQLQueries.GetAnimeById(animeId), _logger);
-            var series = await _categorySeriesRepository.GetSeriesAnimeId(userId, animeResponse.Animes[0].Id);
+            var animeResponse = await GraphQLHelper.ExecuteGraphQLRequest<ShikimoriAnimeBaseList>(GraphQLQueries.GetAnimeById(animeId), _logger);
+            var series = await _categorySeriesRepository.GetSeriesAnimeId(userId, [animeResponse.Animes[0].Id]);
 
-            return _mapper.MapToFullSeriesDto(animeResponse.Animes[0], series);
+            return _mapper.MapToFullSeriesDto(animeResponse.Animes[0], series.FirstOrDefault());
         }
 
         public async Task<AnimeSeriesFullDto[]> GetAnimeListByIds(string userName, string Ids)
@@ -44,33 +45,37 @@ namespace SeriesTracker.Application.Services
             var animeResponse = await GraphQLHelper.ExecuteGraphQLRequest<ShikimoriAnimeBaseList>(GraphQLQueries.GetRecentAnimes(Ids), _logger);
 
             var user = await _userRepository.GetUserByUserName(userName);
+            var animeIds = animeResponse.Animes.Select(s => s.Id).ToList();
+
+            var response = await _categorySeriesRepository.GetSeriesAnimeId(user.Id, animeIds);
+
             var animeTasks = animeResponse.Animes
-                .Select(async item =>
-                {
-                    var response = await _categorySeriesRepository.GetSeriesAnimeId(user.Id, item.Id);
-                    return _mapper.MapToFullSeriesDto(item, response);
-                });
+            .Select(item =>
+            {
+                return _mapper.MapToFullSeriesDto(item, response.FirstOrDefault(c => c.AnimeId == item.Id));
+            }).ToArray();
 
-            AnimeSeriesFullDto[] mappedAnimes = await Task.WhenAll(animeTasks);
-
-            return [.. mappedAnimes.OrderByDescending(m => m.ChangedDate)];
+            return animeTasks.OrderByDescending(m => m.ChangedDate).ToArray();
         }
 
         public async Task<AnimeSeriesDto[]> GetAnimesByAllParams(Guid userId, int page, string name, string season,
             string status, string kind, string genre, string order, bool censored)
         {
-            var response = await GraphQLHelper.ExecuteGraphQLRequest<ShikimoriAnimeBaseList>(GraphQLQueries.GetAnimes(page, name, season,
+            var animeResponse = await GraphQLHelper.ExecuteGraphQLRequest<ShikimoriAnimeBaseList>(GraphQLQueries.GetAnimes(page, name, season,
                  status, kind, genre, order, censored), _logger);
 
-            var animeTasks = response.Animes
-            .Select(async item =>
-            {
-                var response = await _categorySeriesRepository.GetSeriesAnimeId(userId, item.Id);
-                return _mapper.MapToShortSeriesDto(item, response);
-            });
+            var animeIds = animeResponse.Animes.Select(s => s.Id).ToList();
 
-            var mappedAnimes = await Task.WhenAll(animeTasks);
-            return mappedAnimes;
+            var response = await _categorySeriesRepository.GetSeriesAnimeId(userId, animeIds);
+
+            var animeTasks = animeResponse.Animes
+            .Select(item =>
+            {
+
+                return _mapper.MapToShortSeriesDto(item, response.FirstOrDefault(c => c.AnimeId == item.Id));
+            }).ToArray();
+
+            return animeTasks;
         }
 
         public async Task<GenreList> GetGenres()

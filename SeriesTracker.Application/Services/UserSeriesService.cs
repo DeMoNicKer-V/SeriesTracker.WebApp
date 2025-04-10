@@ -20,7 +20,7 @@ namespace SeriesTracker.Application.Services
         {
             var dateNow = DateTime.UtcNow.ToString("s");
 
-            var userSeries = new UserSeries
+            var userSeries = UserSeries.Create
                 (
                     seriesId,
                     animeId,

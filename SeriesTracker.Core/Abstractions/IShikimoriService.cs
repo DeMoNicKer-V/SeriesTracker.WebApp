@@ -12,7 +12,7 @@ namespace SeriesTracker.Core.Abstractions
 
         Task<AnimeSeriesDto[]> GetAnimesByAllParams(Guid userId, int page, string name, string season, string status, string kind, string genre, string order, bool censored);
 
-        Task<AnimeShortDto[]> GetAnimesByName(Guid userId, string animeName);
+        Task<AnimeSeriesDto[]> GetAnimesByName(Guid userId, string animeName);
 
         Task<GenreList> GetGenres();
 

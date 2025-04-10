@@ -7,6 +7,6 @@ namespace SeriesTracker.Core.Abstractions
     {
         Task<Category?> GetCategoryBySeriesAnimeId(Guid userId, int animeId);
 
-        Task<SeriesCategoryDto?> GetSeriesAnimeId(Guid userId, int animeId);
+        Task<List<SeriesCategoryDto>?> GetSeriesAnimeId(Guid userId, int animeId);
     }
 }

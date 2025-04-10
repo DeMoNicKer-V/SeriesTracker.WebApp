@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 using SeriesTracker.Core.Abstractions;
 using SeriesTracker.Core.Dtos.Series;
 using SeriesTracker.Core.Models;
@@ -6,9 +8,26 @@ using SeriesTracker.DataAccess.Entities;
 
 namespace SeriesTracker.DataAccess.Repositories
 {
-    public class UserSeriesRepository(SeriesTrackerDbContext context) : IUserSeriesRepository
+    public class UserSeriesRepository(SeriesTrackerDbContext context, IMapper mapper) : IUserSeriesRepository
     {
         private readonly SeriesTrackerDbContext _context = context;
+        private readonly IMapper _mapper = mapper;
+
+        public async Task<Category?> GetCategoryBySeriesAnimeId(Guid userId, int animeId)
+        {
+            var s = await _context.UserSeriesEntities
+                .AsNoTracking()
+                .Include(c => c.Category)
+                .Where(s => s.AnimeId == animeId && s.UserId == userId)
+                .FirstOrDefaultAsync();
+
+            if (s == null)
+            {
+                return null;
+            }
+            var category = Category.Create(s.Category.Id, s.Category.Name, s.Category.Color, s.Category.PrevColor, s.Category.Date);
+            return category;
+        }
 
         public async Task<Guid> AddAsync(UserSeries model)
         {

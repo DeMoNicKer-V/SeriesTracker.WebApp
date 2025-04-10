@@ -37,7 +37,7 @@ namespace SeriesTracker.DataAccess.Repositories
         {
             var categoryEntity = await _context.CategoryEntities.AsNoTracking().Where(c => c.Id == id).FirstAsync();
 
-            var category = Category.Create(categoryEntity.Id, categoryEntity.Name, categoryEntity.Color, categoryEntity.PrevColor, categoryEntity.Date).Category;
+            var category = Category.Create(categoryEntity.Id, categoryEntity.Name, categoryEntity.Color, categoryEntity.PrevColor, categoryEntity.Date);
 
             return category;
         }
@@ -46,7 +46,7 @@ namespace SeriesTracker.DataAccess.Repositories
         {
             var categoryEntities = await _context.CategoryEntities.AsNoTracking().ToListAsync();
 
-            var categoryList = categoryEntities.Select(c => Category.Create(c.Id, c.Name, c.Color, c.PrevColor, c.Date).Category).OrderBy(c => c.Id).ToList();
+            var categoryList = categoryEntities.Select(c => Category.Create(c.Id, c.Name, c.Color, c.PrevColor, c.Date)).OrderBy(c => c.Id).ToList();
 
             return categoryList;
         }

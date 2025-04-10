@@ -35,20 +35,22 @@
             get;
         }
 
-        public static (Category Category, string Error) Create(int id, string name, string color, string prevColor, string date)
+        // Фабричный метод 
+        public static Category Create(int id, string name, string color, string prevColor, string date)
         {
-            string error = string.Empty;
+            // Валидация входных параметров
             if (string.IsNullOrEmpty(name))
             {
-                error = "Название это обязательное поле";
+                throw new ArgumentException("Name cannot be null or empty.", nameof(name));
             }
+
             if (string.IsNullOrEmpty(color))
             {
-                error = "Цвет это обязательное поле";
+                throw new ArgumentException("Color cannot be null or empty.", nameof(color));
             }
-            Category category = new Category(id, name, color, prevColor, date);
+            Category category = new(id, name, color, prevColor, date);
 
-            return (category, error);
+            return category;
         }
 
     }
