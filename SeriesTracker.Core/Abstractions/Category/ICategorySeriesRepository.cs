@@ -1,14 +1,9 @@
-﻿
-
-using SeriesTracker.Core.Dtos.Series;
-using SeriesTracker.Core.Models;
+﻿using SeriesTracker.Core.Dtos.Series;
 
 namespace SeriesTracker.Core.Abstractions
 {
     public interface ICategorySeriesRepository
     {
-        Task<Category?> GetCategoryBySeriesAnimeId(Guid userId, int animeId);
-
-        Task<List<SeriesCategoryDto>> GetSeriesAnimeId(Guid userId, List<int> animeIds);
+        Task<Dictionary<int, SeriesCategoryDto>> GetSeriesAnimeId(Guid userId, List<int> animeIds);
     }
 }

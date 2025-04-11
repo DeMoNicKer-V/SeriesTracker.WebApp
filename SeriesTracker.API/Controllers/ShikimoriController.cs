@@ -1,9 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SeriesTracker.API.Contracts;
 using SeriesTracker.Core.Abstractions;
-using SeriesTracker.Core.Dtos.Anime;
 using SeriesTracker.Core.Models.Shikimori;
-using System.ComponentModel.DataAnnotations;
 
 namespace SeriesTracker.API.Controllers
 {
@@ -11,20 +9,15 @@ namespace SeriesTracker.API.Controllers
     [Route("shikimori")]
     public class ShikimoriController : ControllerBase
     {
-        private readonly ICategorySeriesService _categorySeriesService;
-        private readonly IUserService _userService;
         private readonly IShikimoriService _shikimoriService;
         private readonly ICalendarFetcher _fetcher;
 
-        public ShikimoriController(ICategorySeriesService categorySeriesService,
+        public ShikimoriController(
          IShikimoriService shikimoriService,
-         ICalendarFetcher fetcher,
-         IUserService userService)
+         ICalendarFetcher fetcher)
         {
-            _categorySeriesService = categorySeriesService;
             _shikimoriService = shikimoriService;
             _fetcher = fetcher;
-            _userService = userService;
         }
 
         [HttpGet("calendar")]
@@ -106,7 +99,6 @@ namespace SeriesTracker.API.Controllers
         private Guid GetUserIdFromClaims()
         {
             var userClaims = User.Claims.FirstOrDefault(c => c.Type == "userId")?.Value;
-
 
             if (Guid.TryParse(userClaims, out var userId))
             {

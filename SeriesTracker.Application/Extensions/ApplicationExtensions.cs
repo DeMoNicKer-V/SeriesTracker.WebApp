@@ -19,7 +19,6 @@ namespace SeriesTracker.Application.Extensions
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IUserSeriesService, UserSeriesService>();
             services.AddScoped<ICategoryService, CategoryService>();
-            services.AddScoped<ICategorySeriesService, CategorySeriesService>();
 
             // Регистрация сервиса аутентификации.
             services.AddScoped<IAuthenticationService, AuthenticationService>();

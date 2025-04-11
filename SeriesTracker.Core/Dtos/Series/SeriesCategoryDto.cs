@@ -20,12 +20,12 @@ namespace SeriesTracker.Core.Dtos.Series
             get; set;
         }
 
-        public required string CategoryName
+        public string CategoryName
         {
             get; set;
         }
 
-        public required string CategoryColor
+        public string CategoryColor
         {
             get; set;
         }
@@ -35,7 +35,7 @@ namespace SeriesTracker.Core.Dtos.Series
             get; set;
         }
 
-        public required string AddedDate
+        public string AddedDate
         {
             get; set;
         }
