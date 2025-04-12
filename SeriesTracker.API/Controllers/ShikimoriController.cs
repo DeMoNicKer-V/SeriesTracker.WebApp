@@ -39,7 +39,7 @@ namespace SeriesTracker.API.Controllers
         [HttpGet("activity")]
         public async Task<IResult> GetLastAnimesById(string userName, string id)
         {
-            var animeResponse = await _shikimoriService.GetAnimeListByIds(userName, id);
+            var animeResponse = await _shikimoriService.GetRecentAnimesByIds(userName, id);
 
             return Results.Ok(animeResponse);
         }
@@ -65,28 +65,16 @@ namespace SeriesTracker.API.Controllers
         [HttpGet("genres")]
         public async Task<ActionResult> GetGenres()
         {
-            var graphQLResponse = await _shikimoriService.GetGenres();
-            return Ok(graphQLResponse.Genres);
+            var genres = await _shikimoriService.GetGenres();
+            return Ok(genres);
         }
 
         [HttpGet("groupGenres")]
         public async Task<ActionResult> GetGroupGenres()
         {
-            var graphQLResponse = await _shikimoriService.GetGenres();
+            var groupingGenres = await _shikimoriService.GetGroupingGenres();
 
-            var groupedRecords = graphQLResponse.Genres
-        .GroupBy(r => r.Kind)
-        .ToDictionary(g => g.Key, g => g.ToList());
-
-            // Создание объекта для хранения результатов
-            var result = new
-            {
-                theme = groupedRecords.ContainsKey("theme") ? groupedRecords["theme"] : new List<Genre>(),
-                genre = groupedRecords.ContainsKey("genre") ? groupedRecords["genre"] : new List<Genre>(),
-                demographic = groupedRecords.ContainsKey("demographic") ? groupedRecords["demographic"] : new List<Genre>()
-            };
-
-            return Ok(result);
+            return Ok(groupingGenres);
         }
 
         [HttpGet("random")]

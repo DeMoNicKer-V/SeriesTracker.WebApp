@@ -10,7 +10,8 @@ namespace SeriesTracker.Application.Services
 {
     /// <summary>
     /// Сервис для работы с данными аниме из Shikimori API.
-    /// Предоставляет методы для получения и обработки данных об аниме;
+    /// Предоставляет методы для получения и обработки данных об аниме.
+    /// Реализует интерфейс <see cref="IShikimoriService"/>
     /// </summary>
     public class ShikimoriService : IShikimoriService
     {
@@ -35,12 +36,6 @@ namespace SeriesTracker.Application.Services
             _userRepository = userRepository;
         }
 
-        /// <summary>
-        /// Получает список аниме по Id
-        /// </summary>
-        /// <param name="userId">Идентификатор пользователя.</param>
-        /// <param name="animeId">Id аниме для поиска.</param>
-        /// <returns>Массив <see cref="AnimeSeriesFullDto"/>, соответствующих запросу.</returns>
         public async Task<AnimeSeriesFullDto> GetAnimeById(Guid userId, string animeId)
         {
             var result = await GetAndMapAnimeData(
@@ -51,57 +46,17 @@ namespace SeriesTracker.Application.Services
             return result.Single(); // Используем Single() для получения одного элемента
         }
 
-        /// <summary>
-        /// Получает список аниме конкретного пользователя в порядке изменения
-        /// </summary>
-        /// <param name="userName">Никнейм пользователя.</param>
-        /// <param name="Ids">Список id последних измененных аниме пользователя</param>
-        /// <returns>Массив <see cref="AnimeSeriesFullDto"/>, соответствующих запросу.</returns>
-        public async Task<AnimeSeriesFullDto[]> GetAnimeListByIds(string userName, string Ids)
-        {
-            // 1. Получаем пользователя по никнейму
-            var user = await _userRepository.GetUserByUserName(userName);
-
-            var a = GraphQLQueries.GetRecentAnimes(Ids);
-            var result = await GetAndMapAnimeData(
-                userId: user != null ? user.Id : Guid.Empty,
-                request: GraphQLQueries.GetRecentAnimes(Ids),
-                mapFunc: _mapper.MapToFullSeriesDto);
-
-            // 2. Сортируем по убыванию даты изменения
-            return [.. result.OrderByDescending(m => m.ChangedDate)]; // Преобразуем в массив
-        }
-
-        /// <summary>
-        /// Получает список по входным параметрам
-        /// </summary>
-        /// <param name="userId">Идентификатор пользователя.</param>
-        /// <param name="page">Текущая страница.</param>
-        /// <param name="name">Название аниме.</param>
-        /// <param name="season">Сезон выхода.</param>
-        /// <param name="status">Статус выхода.</param>
-        /// <param name="kind">Тип аниме.</param>
-        /// <param name="genre">Жанры аниме.</param>
-        /// <param name="order">Порядок сортировки.</param>
-        /// <param name="censored">Безопасный поиск.</param>
-        /// <returns>Массив <see cref="AnimeSeriesDto"/>, соответствующих запросу.</returns>
         public async Task<AnimeSeriesDto[]> GetAnimesByAllParams(Guid userId, int page, string name, string season,
             string status, string kind, string genre, string order, bool censored)
         {
             var result = await GetAndMapAnimeData(
-               userId: userId,
+                userId: userId,
                 request: GraphQLQueries.GetAnimes(page, name, season, status, kind, genre, order, censored),
                 mapFunc: _mapper.MapToShortSeriesDto);
 
             return result.ToArray(); // Преобразуем в массив
         }
 
-        /// <summary>
-        /// Получает список аниме по названию
-        /// </summary>
-        /// <param name="userId">Идентификатор пользователя.</param>
-        /// <param name="animeName">Имя аниме для поиска.</param>
-        /// <returns>Массив <see cref="AnimeSeriesDto"/>, соответствующих запросу.</returns>
         public async Task<AnimeSeriesDto[]> GetAnimesByName(Guid userId, string animeName)
         {
             var result = await GetAndMapAnimeData(
@@ -112,22 +67,49 @@ namespace SeriesTracker.Application.Services
             return result.ToArray(); // Преобразуем в массив
         }
 
-        /// <summary>
-        /// Получает список всех жанров аниме
-        /// </summary>
-        /// <returns>Объект <see cref="GenreList"/>, содержащий массив объектов <see cref="Genre"/>.</returns>
         public async Task<GenreList> GetGenres()
         {
             return await GraphQLHelper.ExecuteGraphQLRequest<GenreList>(GraphQLQueries.GetGenres(), _logger);
         }
 
-        /// <summary>
-        /// Получает случайное аниме
-        /// </summary>
-        /// <returns>Объект <see cref="ShikimoriAnimeBaseList"/>, содержащий массив объектов <see cref="ShikimoriAnimeBase"/>.</returns>
+        public async Task<GenreGroupingDTO> GetGroupingGenres()
+        {
+            // 1. Получаем список жанров через GraphQL
+            var genreResponse = await GraphQLHelper.ExecuteGraphQLRequest<GenreList>(GraphQLQueries.GetGenres(), _logger);
+
+            // 2. Группируем жанры.  Учитываем, что Kind может быть null
+            var groupedRecords = genreResponse.Genres
+                .GroupBy(r => r.Kind)
+                .ToDictionary(g => g.Key, g => g.ToList());
+
+            // 3. Создание объекта для хранения результатов
+            var result = new GenreGroupingDTO
+            {
+                Theme = groupedRecords.GetValueOrDefault("theme") ?? [], // Используем GetValueOrDefault и обеспечиваем, что не будет ошибки, если группы "theme" нет
+                Genre = groupedRecords.GetValueOrDefault("genre") ?? [], // анологично, но с "genre"
+                Demographic = groupedRecords.GetValueOrDefault("demographic") ?? []  // анологично, но с "demographic"
+            };
+
+            return result;
+        }
+
         public async Task<ShikimoriAnimeBaseList> GetRandomAnime()
         {
             return await GraphQLHelper.ExecuteGraphQLRequest<ShikimoriAnimeBaseList>(GraphQLQueries.GetRandomAnime(), _logger);
+        }
+
+        public async Task<AnimeSeriesFullDto[]> GetRecentAnimesByIds(string userName, string Ids)
+        {
+            // 1. Получаем пользователя по никнейму
+            var user = await _userRepository.GetUserByUserName(userName);
+
+            var result = await GetAndMapAnimeData(
+                userId: user != null ? user.Id : Guid.Empty,
+                request: GraphQLQueries.GetRecentAnimes(Ids),
+                mapFunc: _mapper.MapToFullSeriesDto);
+
+            // 2. Сортируем по убыванию даты изменения
+            return [.. result.OrderByDescending(m => m.ChangedDate)]; // Преобразуем в массив
         }
 
         /// <summary>
