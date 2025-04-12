@@ -162,9 +162,9 @@ namespace SeriesTracker.API.Controllers
             catch (ValidationException ex)
             {
                 return _logger.BadResponse(
-                    ex,
                     message: $"User ({userName}) attempted to clear the list.",
-                    resultMessage: "You cannot perform this action. You don't have rights.");
+                    resultMessage: "You cannot perform this action. You don't have rights.",
+                    exeption: ex);
             }
             catch (Exception ex)
             {

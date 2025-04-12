@@ -93,9 +93,13 @@ namespace SeriesTracker.Application.Services
             return result;
         }
 
-        public async Task<ShikimoriAnimeBaseList> GetRandomAnime()
+        public async Task<ShikimoriAnimeBase> GetRandomAnime()
         {
-            return await GraphQLHelper.ExecuteGraphQLRequest<ShikimoriAnimeBaseList>(GraphQLQueries.GetRandomAnime(), _logger);
+            // 1. Получаем список аниме через GraphQL (предполагаем, что только 1 элемент)
+            var animeResponse =  await GraphQLHelper.ExecuteGraphQLRequest<ShikimoriAnimeBaseList>(GraphQLQueries.GetRandomAnime(), _logger);
+
+            // 2. Возвращаем единственный элемент, или выбрасываем InvalidOperationException
+            return animeResponse.Animes.Single();
         }
 
         public async Task<AnimeSeriesFullDto[]> GetRecentAnimesByIds(string userName, string Ids)
@@ -105,7 +109,7 @@ namespace SeriesTracker.Application.Services
 
             var result = await GetAndMapAnimeData(
                 userId: user != null ? user.Id : Guid.Empty,
-                request: GraphQLQueries.GetRecentAnimes(Ids),
+                request: GraphQLQueries.GetAnimesByIds(Ids),
                 mapFunc: _mapper.MapToFullSeriesDto);
 
             // 2. Сортируем по убыванию даты изменения

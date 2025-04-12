@@ -26,8 +26,8 @@ namespace SeriesTracker.Infrastructure.Authentication
             // Claims - это пары "ключ-значение", содержащие информацию о пользователе, которая будет включена в токен.
             Claim[] claims = [
                 new("userName", user.UserName), // Имя пользователя
-            new("userId", user.Id.ToString()), // Уникальный идентификатор пользователя
-            new("roleId", user.RoleId.ToString())]; // Идентификатор роли пользователя
+                new("userId", user.Id.ToString()), // Уникальный идентификатор пользователя
+                new("roleId", user.RoleId.ToString())]; // Идентификатор роли пользователя
 
             // Создаем SigningCredentials (учетные данные для подписи).
             // SigningCredentials используются для подписи токена с использованием секретного ключа и алгоритма шифрования.
@@ -38,6 +38,8 @@ namespace SeriesTracker.Infrastructure.Authentication
             // Создаем JwtSecurityToken (JSON Web Token).
             // JwtSecurityToken - это объект, представляющий JWT.
             var token = new JwtSecurityToken(
+                issuer: _jwtOptions.Issuer, // Указываем издателя
+                audience: _jwtOptions.Audience, // Указываем аудиторию
                 claims: claims, // Утверждения, которые будут включены в токен.
                 signingCredentials: signingCredentials, // Учетные данные для подписи токена.
                 expires: DateTime.UtcNow.AddHours(_jwtOptions.ExpiresHours)); // Время истечения срока действия токена (получено из настроек).
@@ -73,8 +75,8 @@ namespace SeriesTracker.Infrastructure.Authentication
             {
                 ValidateIssuerSigningKey = true, // Указываем, что нужно проверять ключ подписи.
                 IssuerSigningKey = key, // Указываем ключ подписи.
-                ValidateIssuer = false, // Отключаем проверку издателя (Issuer).
-                ValidateAudience = false, // Отключаем проверку аудитории (Audience).
+                ValidateIssuer = true, // Включаем проверку издателя (Issuer).
+                ValidateAudience = true, // Включаем проверку аудитории (Audience).
                 ValidateLifetime = true, // Указываем, что нужно проверять срок действия токена.
                 ClockSkew = TimeSpan.Zero // Устанавливаем ClockSkew (разницу во времени между серверами) в ноль.
             };
