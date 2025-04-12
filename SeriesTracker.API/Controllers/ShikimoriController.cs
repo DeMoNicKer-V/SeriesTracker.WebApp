@@ -214,7 +214,7 @@ namespace SeriesTracker.API.Controllers
         private Guid GetUserIdFromClaims()
         {
             // Получаем значение claim "userId" из claims пользователя.
-            var userClaims = User.Claims.FirstOrDefault(c => c.Type == "userId")?.Value;
+            string? userClaims = User.Claims.FirstOrDefault(c => c.Type == "userId")?.Value;
 
             // Проверяем, удалось ли преобразовать значение claim в Guid.
             if (Guid.TryParse(userClaims, out var userId))

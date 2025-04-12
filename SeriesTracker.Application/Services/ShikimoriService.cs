@@ -96,7 +96,7 @@ namespace SeriesTracker.Application.Services
         public async Task<ShikimoriAnimeBase> GetRandomAnime()
         {
             // 1. Получаем список аниме через GraphQL (предполагаем, что только 1 элемент)
-            var animeResponse =  await GraphQLHelper.ExecuteGraphQLRequest<ShikimoriAnimeBaseList>(GraphQLQueries.GetRandomAnime(), _logger);
+            var animeResponse = await GraphQLHelper.ExecuteGraphQLRequest<ShikimoriAnimeBaseList>(GraphQLQueries.GetRandomAnime(), _logger);
 
             // 2. Возвращаем единственный элемент, или выбрасываем InvalidOperationException
             return animeResponse.Animes.Single();

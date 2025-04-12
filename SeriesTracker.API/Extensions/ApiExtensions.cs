@@ -38,7 +38,7 @@ namespace SeriesTracker.API.Extensions
                         ValidateIssuer = true, // Включаем валидацию издателя.
                         ValidateAudience = true, // Включаем валидацию аудитории.
                         ValidIssuer = jwtOptions!.Issuer,
-                        ValidAudience = jwtOptions!.Audience, 
+                        ValidAudience = jwtOptions!.Audience,
                         ValidateLifetime = true,
                         ValidateIssuerSigningKey = true,
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions!.SecretKey))
