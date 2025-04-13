@@ -25,7 +25,7 @@ namespace SeriesTracker.Application.Services
         /// </summary>
         /// <param name="mapper">Экземпляр IMapper для маппинга объектов.</param>
         /// <param name="logger">Экземпляр ILogger для логирования.</param>
-        /// <param name="categorySeriesRepository">Репозиторий для работы с категориями и сериями.</param>
+        /// <param name="categorySeriesRepository">Репозиторий для работы с категориями и записями пользователя.</param>
         /// <param name="userRepository">Репозиторий для работы с пользователями.</param>
         public ShikimoriService(IMapper mapper, ILogger<ShikimoriService> logger,
             ICategorySeriesRepository categorySeriesRepository, IUserRepository userRepository)

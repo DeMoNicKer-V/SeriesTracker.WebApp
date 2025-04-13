@@ -6,12 +6,64 @@ namespace SeriesTracker.Core.Abstractions
 {
     public interface IUserSeriesService
     {
-        Task<Guid> CreateAsync(Guid seriesDd, Guid userId, int animeId, int categoryId, int watchedEpisodes, bool isFavorite);
-        Task<Guid> DeleteSeries(Guid id);
-        Task<Guid> DeleteAllSeriesByUserId(Guid userId);
-        Task<Guid> UpdateSeries(Guid seriesId, int watched, int categoryId, bool favorite);
+        /// <summary>
+        /// Создает новую запись о просмотре аниме в списке пользователя.
+        /// </summary>
+        /// <param name="seriesId">Уникальный идентификатор записи.</param>
+        /// <param name="userId">Идентификатор пользователя.</param>
+        /// <param name="animeId">Идентификатор аниме.</param>
+        /// <param name="categoryId">Идентификатор категории.</param>
+        /// <param name="watchedEpisodes">Количество просмотренных эпизодов.</param>
+        /// <param name="isFavorite">Признак избранного.</param>
+        /// <returns>Guid идентификатор созданной записи.</returns>
+        Task<Guid> Create(Guid seriesDd, Guid userId, int animeId, int categoryId, int watchedEpisodes, bool isFavorite);
+
+        /// <summary>
+        /// Удаляет все записи о просмотре аниме из списка пользователя.
+        /// </summary>
+        /// <param name="userId">Идентификатор пользователя.</param>
+        /// <returns>Кол-во удаленных записей.</returns>
+        Task<int> DeleteAllSeries(Guid userId);
+
+        /// <summary>
+        /// Удаляет запись о просмотре аниме из списка пользователя.
+        /// </summary>
+        /// <param name="id">Идентификатор записи, которую необходимо удалить.</param>
+        /// <returns>Task, представляющий асинхронную операцию удаления.</returns>
+        Task DeleteSeries(Guid id);
+
+        /// <summary>
+        /// Получает сгруппированный список аниме пользователя по категориям.
+        /// </summary>
+        /// <param name="userName">Имя пользователя.</param>
+        /// <returns>Список, сгруппированых по категорям, <see cref="SeriesGroupShortDto"/></returns>
         Task<List<SeriesGroupShortDto>> GetGroupShortSeries(string userName);
-        Task<ShikimoriAnimeBase[]> GetUserSeriesList(string userName, int page, int categoryId, bool isFavorite);
+
+        /// <summary>
+        /// Получает профиль пользователя с информацией о его активности.
+        /// </summary>
+        /// <param name="userName">Имя пользователя.</param>
+        /// <returns>DTO с информацией о профиле пользователя или null, если пользователь не найден.</returns>
         Task<UserActivityDTO?> GetUserProfile(string userName);
+
+        /// <summary>
+        /// Получает список аниме пользователя с использованием GraphQL API.
+        /// </summary>
+        /// <param name="userName">Имя пользователя.</param>
+        /// <param name="page">Номер страницы списка.</param>
+        /// <param name="categoryId">Идентификатор категории.</param>
+        /// <param name="isFavorite">Признак избранного.</param>
+        /// <returns>Массив базовых DTO с информацией об аниме.</returns>
+        Task<ShikimoriAnimeBase[]> GetUserSeriesList(string userName, int page, int categoryId, bool isFavorite);
+
+        /// <summary>
+        /// Обновляет информацию о просмотре аниме в списке пользователя.
+        /// </summary>
+        /// <param name="seriesDd">Идентификатор записи о просмотре.</param>
+        /// <param name="watched">Количество просмотренных эпизодов.</param>
+        /// <param name="categoryId">Идентификатор категории.</param>
+        /// <param name="favorite">Признак избранного.</param>
+        /// <returns>Guid идентификатор обновленной записи.</returns>
+        Task<Guid> UpdateSeries(Guid seriesId, int watched, int categoryId, bool favorite);
     }
 }

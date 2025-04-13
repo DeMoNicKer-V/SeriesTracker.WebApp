@@ -5,9 +5,15 @@ using SeriesTracker.DataAccess.Entities;
 
 namespace SeriesTracker.DataAccess.Repositories
 {
-    public class CategoryRepository(SeriesTrackerDbContext context) : ICategoryRepository
+    public class CategoryRepository : ICategoryRepository
     {
-        private readonly SeriesTrackerDbContext _context = context;
+        private readonly SeriesTrackerDbContext _context;
+
+        public CategoryRepository(SeriesTrackerDbContext context)
+        {
+            // Внедряем зависимость (Dependency Injection) контекста базы данных и проверяем на null
+            _context = context ?? throw new ArgumentNullException(nameof(context));
+        }
 
         public async Task<int> CreateCategory(Category category)
         {

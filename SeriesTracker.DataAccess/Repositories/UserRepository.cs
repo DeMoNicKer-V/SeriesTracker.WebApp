@@ -7,16 +7,23 @@ using SeriesTracker.DataAccess.Entities;
 
 namespace SeriesTracker.DataAccess.Repositories
 {
-    public class UserRepository(SeriesTrackerDbContext context) : IUserRepository
+    /// <summary>
+    /// Репозиторий для работы с данными о пользователях в базе данных.
+    /// </summary>
+    public class UserRepository : IUserRepository
     {
-        private readonly SeriesTrackerDbContext _context = context;
+        private readonly SeriesTrackerDbContext _context;
 
         /// <summary>
-        /// Изменяет роль пользователя.
+        /// Инициализирует новый экземпляр класса <see cref="UserRepository"/>.
         /// </summary>
-        /// <param name="userId">Идентификатор пользователя.</param>
-        /// <param name="roleId">Идентификатор новой роли.</param>
-        /// <returns><see langword="true"/>, если роль успешно изменена, иначе <see langword="false"/>.</returns>
+        /// <param name="context">Контекст базы данных для доступа к данным.</param>
+        public UserRepository(SeriesTrackerDbContext context)
+        {
+            // Внедряем зависимость (Dependency Injection) контекста базы данных и проверяем на null
+            _context = context ?? throw new ArgumentNullException(nameof(context));
+        }
+
         public async Task<bool> ChangeUserRole(Guid userId, int roleId)
         {
             // Получаем сущность роли по идентификатору.
@@ -47,11 +54,6 @@ namespace SeriesTracker.DataAccess.Repositories
             return true;
         }
 
-        /// <summary>
-        /// Создает нового пользователя.
-        /// </summary>
-        /// <param name="user">Объект пользователя для создания.</param>
-        /// <returns>Идентификатор созданного пользователя (<see cref="Guid"/>).</returns>
         public async Task<Guid> CreateUser(User user)
         {
             // Получаем сущность роли "User" по умолчанию.
@@ -84,11 +86,6 @@ namespace SeriesTracker.DataAccess.Repositories
             return userEntity.Id;
         }
 
-        /// <summary>
-        /// Удаляет пользователя по идентификатору.
-        /// </summary>
-        /// <param name="id">Идентификатор пользователя для удаления.</param>
-        /// <returns><see langword="true"/>, если пользователь удален, иначе <see langword="false"/>.</returns>
         public async Task<bool> DeleteUser(Guid id)
         {
             // Удаляем пользователя с указанным идентификатором.
@@ -98,11 +95,6 @@ namespace SeriesTracker.DataAccess.Repositories
             return rowsAffected > 0;
         }
 
-        /// <summary>
-        /// Получает пользователя по email.
-        /// </summary>
-        /// <param name="email">Email пользователя.</param>
-        /// <returns>Объект пользователя или <see langword="null"/>, если пользователь не найден.</returns>
         public async Task<User?> GetUserByEmail(string email)
         {
             // Получаем сущность пользователя по email, включая его роли.
@@ -116,11 +108,6 @@ namespace SeriesTracker.DataAccess.Repositories
             return MapUser(userEntity);
         }
 
-        /// <summary>
-        /// Получает пользователя по идентификатору.
-        /// </summary>
-        /// <param name="id">Идентификатор пользователя.</param>
-        /// <returns>Объект пользователя или <see langword="null"/>, если пользователь не найден.</returns>
         public async Task<User?> GetUserById(Guid id)
         {
             // Получаем сущность пользователя по идентификатору, включая его роли.
@@ -134,11 +121,6 @@ namespace SeriesTracker.DataAccess.Repositories
             return MapUser(userEntity);
         }
 
-        /// <summary>
-        /// Получает пользователя по никнейму.
-        /// </summary>
-        /// <param name="userName">Никнейм пользователя.</param>
-        /// <returns>Объект пользователя или <see langword="null"/>, если пользователь не найден.</returns>
         public async Task<User?> GetUserByUserName(string userName)
         {
             // Получаем сущность пользователя по никнейму, включая его роли.
@@ -152,11 +134,6 @@ namespace SeriesTracker.DataAccess.Repositories
             return MapUser(userEntity);
         }
 
-        /// <summary>
-        /// Получает список пользователей с пагинацией.
-        /// </summary>
-        /// <param name="page">Номер страницы.</param>
-        /// <returns>Кортеж, содержащий список пользователей (<see cref="UserDto"/>) и общее количество пользователей (<see cref="int"/>).</returns>
         public async Task<(List<UserDto>, int)> GetUserList(int page)
         {
             // Получаем общее количество пользователей.
@@ -181,13 +158,6 @@ namespace SeriesTracker.DataAccess.Repositories
             return (users, totalCount);
         }
 
-        /// <summary>
-        /// Получает набор разрешений для указанного пользователя.
-        /// </summary>
-        /// <param name="userId">Идентификатор пользователя.</param>
-        /// <returns>
-        /// Набор разрешений, которыми обладает пользователь.
-        /// Возвращает пустой HashSet, если пользователь не найден или у него нет разрешений.
         /// </returns>
         public async Task<HashSet<Permission>> GetUserPermissions(Guid userId)
         {
@@ -207,21 +177,9 @@ namespace SeriesTracker.DataAccess.Repositories
                 .ToListAsync();
 
             // 4. Возвращаем набор разрешений
-            return [.. permissions]; // Создаем HashSet из списка разрешений
+            return [.. permissions];
         }
 
-        /// <summary>
-        /// Изменяет данные пользователя.
-        /// </summary>
-        /// <param name="id">Идентификатор пользователя.</param>
-        /// <param name="userName">Никнейм пользователя.</param>
-        /// <param name="name">Имя пользователя.</param>
-        /// <param name="surName">Фамилия пользователя.</param>
-        /// <param name="email">Email пользователя.</param>
-        /// <param name="passwordHash">Хэш пароля пользователя.</param>
-        /// <param name="avatar">Url аватара пользователя.</param>
-        /// <param name="dateBirth">Дата рождения пользователя.</param>
-        /// <returns><see langword="true"/>, если пользователь изменен, иначе <see langword="false"/>.</returns>
         public async Task<bool> UpdateUser(Guid id, string userName, string name, string surName, string email, string passwordHash, string avatar, string dateBirth)
         {
             var rowsAffected = await _context.UserEntities.Where(s => s.Id == id)
@@ -237,12 +195,6 @@ namespace SeriesTracker.DataAccess.Repositories
             return rowsAffected > 0;
         }
 
-        // Приватный метод для преобразования UserEntity в User
-        /// <summary>
-        /// Преобразует сущность <see cref="UserEntity"/> в модель <see cref="User"/>
-        /// </summary>
-        /// <param name="userEntity">Сущность для преобразования.</param>
-        /// <returns><see cref="User"/>, если userEntity != <see langword="null"/>, иначе <see langword="null"/>.</returns>
         private static User? MapUser(UserEntity? userEntity)
         {
             // если userEntity отсуствует - возвращаем null

@@ -1,17 +1,34 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SeriesTracker.Core.Abstractions;
 using SeriesTracker.Core.Dtos.Series;
+using SeriesTracker.Core.Exceptions;
 using SeriesTracker.Core.Models;
 using SeriesTracker.DataAccess.Entities;
 
 namespace SeriesTracker.DataAccess.Repositories
 {
-    public class UserSeriesRepository(SeriesTrackerDbContext context) : IUserSeriesRepository
+    /// <summary>
+    /// Репозиторий для работы с пользовательскими списками  в базе данных.
+    /// Предоставляет методы для добавления, удаления, получения и обновления информации о списках пользователей.
+    /// </summary>
+    public class UserSeriesRepository : IUserSeriesRepository
     {
-        private readonly SeriesTrackerDbContext _context = context;
+        private readonly SeriesTrackerDbContext _context;
 
-        public async Task<Guid> AddAsync(UserSeries model)
+        /// <summary>
+        /// Инициализирует новый экземпляр класса <see cref="UserSeriesRepository"/>.
+        /// </summary>
+        /// <param name="context">Контекст базы данных SeriesTrackerDbContext для доступа к данным.</param>
+
+        public UserSeriesRepository(SeriesTrackerDbContext context)
         {
+            // Внедряем зависимость (Dependency Injection) контекста базы данных и проверяем на null
+            _context = context ?? throw new ArgumentNullException(nameof(context));
+        }
+
+        public async Task<Guid> Add(UserSeries model)
+        {
+            // Преобразуем модель домена в Entity для базы данных
             var userSeriesEntity = new UserSeriesEntity
             {
                 Id = model.Id,
@@ -24,71 +41,52 @@ namespace SeriesTracker.DataAccess.Repositories
                 IsFavorite = model.IsFavorite,
             };
 
+            // Добавляем Entity в контекст и сохраняем изменения
             await _context.UserSeriesEntities.AddAsync(userSeriesEntity);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(); // Сохраняем изменения в базе данных
 
-            return userSeriesEntity.Id;
+            return userSeriesEntity.Id; // Возвращаем ID созданной записи
         }
 
-        public async Task<Guid> DeleteAllSeriesByUserId(Guid userId)
+        public async Task<int> DeleteAllSeriesByUserId(Guid userId)
         {
-            await _context.UserSeriesEntities.Where(s => s.UserId == userId).ExecuteDeleteAsync();
-
-            return userId;
+            // Удаляем все записи для указанного UserId
+            return await _context.UserSeriesEntities
+                .Where(s => s.UserId == userId)
+                .ExecuteDeleteAsync();
         }
 
-        public async Task<Guid> DeleteSeries(Guid id)
+        public async Task DeleteSeriesById(Guid seriesId)
         {
-            await _context.UserSeriesEntities.Where(s => s.Id == id).ExecuteDeleteAsync();
+            // Удаляем запись по указанному ID
+            var rowsAffected = await _context.UserSeriesEntities
+                .Where(s => s.Id == seriesId)
+                .ExecuteDeleteAsync();
 
-            return id;
+            if (rowsAffected == 0)
+            {
+                // Выбрасываем исключение, если запись не была найдена
+                throw new NotFoundException();
+            }
         }
 
-        public async Task<SeriesProfileDTO> GetUserProfile(Guid Id)
+        public async Task<List<int>> GetAnimeIdsList(string userName, int page, int categoryId, bool isFavorite)
         {
-            var userSeriesList = await _context.UserSeriesEntities
+            // Получаем список AnimeId пользователя с учетом пагинации, категории и избранного
+            var animeIds = await _context.UserSeriesEntities
                 .AsNoTracking()
-                .Where(s => s.UserId == Id)
-                .Include(user => user.Category)
+                .Where(s => s.User.UserName == userName && (categoryId <= 0 || s.CategoryId == categoryId) && (!isFavorite || s.IsFavorite))
+                .Skip((page - 1) * 22)
+                .Take(22)
+                .Select(s => s.AnimeId)
                 .ToListAsync();
 
-            if (userSeriesList.Count == 0)
-            {
-                return new SeriesProfileDTO();
-            }
-
-            var categoryGroup = userSeriesList
-                .GroupBy(s => s.Category.Id)
-                .Select(g =>
-                {
-                    var category = g.First().Category;
-
-                    return new SeriesGroupDto
-                    {
-                        Id = g.Key,
-                        Name = category.Name,
-                        Color = category.Color,
-                        SeriesCount = g.Count()
-                    };
-                })
-                .ToList();
-
-            var lastFiveSeriesString = string.Join(",", userSeriesList
-                .OrderByDescending(s => s.ChangedDate)
-                .Take(5)
-                .Select(s => s.AnimeId)
-                .ToList());
-
-            var result = new SeriesProfileDTO
-            {
-                CategoryGroups = categoryGroup,
-                LastFiveSeries = lastFiveSeriesString,
-            };
-            return result;
+            return animeIds; // Возвращаем список AnimeId
         }
 
         public async Task<List<SeriesGroupShortDto>> GetGroupShortSeries(string userName)
         {
+            // Получаем список записей пользователя и группируем их по категориям (для краткого представления)
             var userSeries = await _context.UserSeriesEntities
                 .AsNoTracking()
                 .Where(s => s.User.UserName == userName)
@@ -97,12 +95,13 @@ namespace SeriesTracker.DataAccess.Repositories
 
             if (userSeries.Count == 0)
             {
-                return [];
+                return []; // Возвращаем пустой список, если у пользователя нет записей
             }
 
+            // Группируем записи по категориям
             var categoryGroup = userSeries
                 .GroupBy(s => new { s.Category.Id, s.Category.Name, s.Category.Color })
-                .Select(g => new SeriesGroupShortDto
+                .Select(g => new SeriesGroupShortDto  // Создаем DTO для каждой группы
                 {
                     Key = g.Key.Id.ToString(),
                     Value = g.Count(),
@@ -118,31 +117,67 @@ namespace SeriesTracker.DataAccess.Repositories
 
             result.Insert(0, new SeriesGroupShortDto { Key = "0", Value = count, Color = "" });
 
-            return result;
+            return result; // Возвращаем список сгруппированных записей
         }
 
-        public async Task<List<int>> GetAnimeIdsList(string userName, int page, int categoryId, bool isFavorite)
+        public async Task<SeriesProfileDTO> GetUserProfile(Guid userId)
         {
-            var animeIds = await _context.UserSeriesEntities
+            // Получаем профиль пользователя (список записей, сгруппированных по категориям, и 5 последних измененных записей)
+            var userSeriesList = await _context.UserSeriesEntities
                 .AsNoTracking()
-                .Where(s => s.User.UserName == userName && (categoryId <= 0 || s.CategoryId == categoryId) && (!isFavorite || s.IsFavorite))
-                .Skip((page - 1) * 22)
-                .Take(22)
-                .Select(s => s.AnimeId)
+                .Where(s => s.UserId == userId)
+                .Include(user => user.Category)
                 .ToListAsync();
 
-            return animeIds;
+            if (userSeriesList.Count == 0)
+            {
+                return new SeriesProfileDTO(); // Возвращаем пустой DTO, если у пользователя нет записей
+            }
+
+            // Группируем список записей по категориям
+            var categoryGroup = userSeriesList
+                .GroupBy(s => s.Category.Id) // Группируем по ID категории
+                .Select(g =>
+                {
+                    var category = g.First().Category; // Получаем информацию о категории
+
+                    return new SeriesGroupDto
+                    {
+                        Id = g.Key,
+                        Name = category.Name,
+                        Color = category.Color,
+                        SeriesCount = g.Count() // Количество записей в категории
+                    };
+                })
+                .ToList(); // Преобразуем в список
+
+            // Формируем строку с ID последних 5 измененных записей
+            var lastFiveSeriesString = string.Join(",", userSeriesList
+                .OrderByDescending(s => s.ChangedDate) // Сортируем по дате изменения в обратном порядке
+                .Take(5)
+                .Select(s => s.AnimeId)
+                .ToList());
+
+            // Создаем и заполняем DTO с результатами
+            var result = new SeriesProfileDTO
+            {
+                CategoryGroups = categoryGroup, // Группы записей по категориям
+                LastFiveSeries = lastFiveSeriesString, // Строка с ID последних 5 измененных записей
+            };
+            return result; // Возвращаем DTO
         }
 
         public async Task<Guid> UpdateSeries(Guid seriesId, int watched, int categoryId, bool favorite, string dateNow)
         {
+            // Обновляем информацию о записи
+
             await _context.UserSeriesEntities.Where(s => s.Id == seriesId)
                 .ExecuteUpdateAsync(s => s.SetProperty(s => s.WatchedEpisodes, s => watched)
                 .SetProperty(s => s.CategoryId, s => categoryId)
                 .SetProperty(s => s.IsFavorite, s => favorite)
                 .SetProperty(s => s.ChangedDate, s => dateNow));
 
-            return seriesId;
+            return seriesId; // Возвращаем ID записи
         }
     }
 }

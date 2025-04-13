@@ -4,9 +4,15 @@ using SeriesTracker.Core.Dtos.Series;
 
 namespace SeriesTracker.DataAccess.Repositories
 {
-    public class CategorySeriesRepository(SeriesTrackerDbContext context) : ICategorySeriesRepository
+    public class CategorySeriesRepository : ICategorySeriesRepository
     {
-        private readonly SeriesTrackerDbContext _context = context;
+        private readonly SeriesTrackerDbContext _context;
+
+        public CategorySeriesRepository(SeriesTrackerDbContext context)
+        {
+            // Внедряем зависимость (Dependency Injection) контекста базы данных и проверяем на null
+            _context = context ?? throw new ArgumentNullException(nameof(context));
+        }
 
         public async Task<Dictionary<int, SeriesCategoryDto>> GetSeriesAnimeId(Guid userId, List<int> animeIds)
         {

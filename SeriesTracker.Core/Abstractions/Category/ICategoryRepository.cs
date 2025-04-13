@@ -2,6 +2,9 @@
 
 namespace SeriesTracker.Core.Abstractions
 {
+    /// <summary>
+    /// Интерфейс для репозитория, предоставляющего доступ к данным о категориях
+    /// </summary>
     public interface ICategoryRepository
     {
         Task<int> CreateCategory(Category category);
