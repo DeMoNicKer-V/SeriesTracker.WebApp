@@ -4,6 +4,9 @@ using SeriesTracker.Core.Models.Shikimori;
 
 namespace SeriesTracker.Core.Abstractions
 {
+    /// <summary>
+    /// Интерфейс для сервиса, предоставляющего доступ к пользовательским спискам аниме.
+    /// </summary>
     public interface IUserSeriesService
     {
         /// <summary>
@@ -16,21 +19,21 @@ namespace SeriesTracker.Core.Abstractions
         /// <param name="watchedEpisodes">Количество просмотренных эпизодов.</param>
         /// <param name="isFavorite">Признак избранного.</param>
         /// <returns>Guid идентификатор созданной записи.</returns>
-        Task<Guid> Create(Guid seriesDd, Guid userId, int animeId, int categoryId, int watchedEpisodes, bool isFavorite);
+        Task<Guid> Create(Guid seriesId, Guid userId, int animeId, int categoryId, int watchedEpisodes, bool isFavorite);
 
         /// <summary>
         /// Удаляет все записи о просмотре аниме из списка пользователя.
         /// </summary>
         /// <param name="userId">Идентификатор пользователя.</param>
-        /// <returns>Кол-во удаленных записей.</returns>
-        Task<int> DeleteAllSeries(Guid userId);
+        /// <returns><see langword="true"/>, если данные удалены, иначе - <see langword="false"/></returns>
+        Task<bool> DeleteAllSeries(Guid userId);
 
         /// <summary>
         /// Удаляет запись о просмотре аниме из списка пользователя.
         /// </summary>
-        /// <param name="id">Идентификатор записи, которую необходимо удалить.</param>
+        /// <param name="seriesId">Идентификатор записи, которую необходимо удалить.</param>
         /// <returns>Task, представляющий асинхронную операцию удаления.</returns>
-        Task DeleteSeries(Guid id);
+        Task DeleteSeries(Guid seriesId);
 
         /// <summary>
         /// Получает сгруппированный список аниме пользователя по категориям.
@@ -59,11 +62,11 @@ namespace SeriesTracker.Core.Abstractions
         /// <summary>
         /// Обновляет информацию о просмотре аниме в списке пользователя.
         /// </summary>
-        /// <param name="seriesDd">Идентификатор записи о просмотре.</param>
+        /// <param name="seriesId">Идентификатор записи о просмотре.</param>
         /// <param name="watched">Количество просмотренных эпизодов.</param>
         /// <param name="categoryId">Идентификатор категории.</param>
         /// <param name="favorite">Признак избранного.</param>
-        /// <returns>Guid идентификатор обновленной записи.</returns>
-        Task<Guid> UpdateSeries(Guid seriesId, int watched, int categoryId, bool favorite);
+        /// <returns><see langword="true"/>, если данные обновлены, иначе - <see langword="false"/></returns>
+        Task<bool> UpdateSeries(Guid seriesId, int watched, int categoryId, bool favorite);
     }
 }

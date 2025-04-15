@@ -2,7 +2,7 @@
 {
     public class Category
     {
-        private Category(int id, string name, string color, string prevColor, string date)
+        private Category(int id, string name, string color, string? prevColor, string date)
         {
             Id = id;
             Name = name;
@@ -10,6 +10,7 @@
             PrevColor = prevColor;
             Date = date;
         }
+
         public int Id
         {
             get;
@@ -25,7 +26,7 @@
             get;
         }
 
-        public string PrevColor
+        public string? PrevColor
         {
             get;
         }
@@ -35,8 +36,8 @@
             get;
         }
 
-        // Фабричный метод 
-        public static Category Create(int id, string name, string color, string prevColor, string date)
+        // Фабричный метод
+        public static Category Create(int id, string name, string color, string? prevColor, string date)
         {
             // Валидация входных параметров
             if (string.IsNullOrEmpty(name))
@@ -52,6 +53,5 @@
 
             return category;
         }
-
     }
 }

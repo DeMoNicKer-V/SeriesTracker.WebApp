@@ -16,12 +16,13 @@
         {
             get; set;
         }
+
         public string? PrevColor
         {
             get; set;
         }
 
-        public ICollection<UserSeriesEntity> Series { get; set; } = new List<UserSeriesEntity>();
+        public ICollection<UserSeriesEntity> Series { get; set; } = [];
 
         public required string Date
         {

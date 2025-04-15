@@ -3,14 +3,30 @@
 namespace SeriesTracker.Core.Abstractions
 {
     /// <summary>
-    /// Интерфейс для репозитория, предоставляющего доступ к данным о категориях
+    /// Интерфейс для репозитория, предоставляющего доступ к данным о категориях.
     /// </summary>
     public interface ICategoryRepository
     {
-        Task<int> CreateCategory(Category category);
-        Task<int> DeleteCategory(int id);
+        /// <summary>
+        /// Получает список всех категорий.
+        /// </summary>
+        /// <returns>Список всех категорий.</returns>
         Task<List<Category>> GetCategoryList();
+
+        /// <summary>
+        /// Получает категорию по ее идентификатору.
+        /// </summary>
+        /// <param name="id">Идентификатор категории.</param>
+        /// <returns>Категория с указанным идентификатором.</returns>
         Task<Category> GetCategoryById(int id);
-        Task<int> UpdateCategoryColor(int id, string color, string dateNow);
+
+        /// <summary>
+        /// Обновляет цвет категории.
+        /// </summary>
+        /// <param name="id">Идентификатор категории.</param>
+        /// <param name="color">Новый цвет категории.</param>
+        /// <param name="dateNow">Дата и время обновления.</param>
+        /// <returns><see langword="true"/>, если данные обновлены, иначе - <see langword="false"/></returns>
+        Task<bool> UpdateCategoryColor(int id, string color, string dateNow);
     }
 }

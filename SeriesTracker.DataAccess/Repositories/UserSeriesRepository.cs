@@ -29,7 +29,7 @@ namespace SeriesTracker.DataAccess.Repositories
         public async Task<Guid> Add(UserSeries model)
         {
             // Преобразуем модель домена в Entity для базы данных
-            var userSeriesEntity = new UserSeriesEntity
+            UserSeriesEntity userSeriesEntity = new()
             {
                 Id = model.Id,
                 UserId = model.UserId,
@@ -48,18 +48,20 @@ namespace SeriesTracker.DataAccess.Repositories
             return userSeriesEntity.Id; // Возвращаем ID созданной записи
         }
 
-        public async Task<int> DeleteAllSeriesByUserId(Guid userId)
+        public async Task<bool> DeleteAllSeriesByUserId(Guid userId)
         {
             // Удаляем все записи для указанного UserId
-            return await _context.UserSeriesEntities
-                .Where(s => s.UserId == userId)
-                .ExecuteDeleteAsync();
+            int rowsAffected = await _context.UserSeriesEntities
+                 .Where(s => s.UserId == userId)
+                 .ExecuteDeleteAsync();
+
+            return rowsAffected > 0;  // Возвращаем true, если кол-во затронутых записей больше нуля, иначе - false
         }
 
         public async Task DeleteSeriesById(Guid seriesId)
         {
             // Удаляем запись по указанному ID
-            var rowsAffected = await _context.UserSeriesEntities
+            int rowsAffected = await _context.UserSeriesEntities
                 .Where(s => s.Id == seriesId)
                 .ExecuteDeleteAsync();
 
@@ -73,7 +75,7 @@ namespace SeriesTracker.DataAccess.Repositories
         public async Task<List<int>> GetAnimeIdsList(string userName, int page, int categoryId, bool isFavorite)
         {
             // Получаем список AnimeId пользователя с учетом пагинации, категории и избранного
-            var animeIds = await _context.UserSeriesEntities
+            List<int> animeIds = await _context.UserSeriesEntities
                 .AsNoTracking()
                 .Where(s => s.User.UserName == userName && (categoryId <= 0 || s.CategoryId == categoryId) && (!isFavorite || s.IsFavorite))
                 .Skip((page - 1) * 22)
@@ -87,7 +89,7 @@ namespace SeriesTracker.DataAccess.Repositories
         public async Task<List<SeriesGroupShortDto>> GetGroupShortSeries(string userName)
         {
             // Получаем список записей пользователя и группируем их по категориям (для краткого представления)
-            var userSeries = await _context.UserSeriesEntities
+            List<UserSeriesEntity> userSeries = await _context.UserSeriesEntities
                 .AsNoTracking()
                 .Where(s => s.User.UserName == userName)
                 .Include(s => s.Category)
@@ -99,7 +101,7 @@ namespace SeriesTracker.DataAccess.Repositories
             }
 
             // Группируем записи по категориям
-            var categoryGroup = userSeries
+            List<SeriesGroupShortDto> categoryGroup = userSeries
                 .GroupBy(s => new { s.Category.Id, s.Category.Name, s.Category.Color })
                 .Select(g => new SeriesGroupShortDto  // Создаем DTO для каждой группы
                 {
@@ -113,7 +115,7 @@ namespace SeriesTracker.DataAccess.Repositories
             int count = userSeries.Count;
 
             // Создаем результат и вставляем в начало:
-            var result = categoryGroup.ToList();
+            List<SeriesGroupShortDto> result = categoryGroup.ToList();
 
             result.Insert(0, new SeriesGroupShortDto { Key = "0", Value = count, Color = "" });
 
@@ -123,7 +125,7 @@ namespace SeriesTracker.DataAccess.Repositories
         public async Task<SeriesProfileDTO> GetUserProfile(Guid userId)
         {
             // Получаем профиль пользователя (список записей, сгруппированных по категориям, и 5 последних измененных записей)
-            var userSeriesList = await _context.UserSeriesEntities
+            List<UserSeriesEntity> userSeriesList = await _context.UserSeriesEntities
                 .AsNoTracking()
                 .Where(s => s.UserId == userId)
                 .Include(user => user.Category)
@@ -135,11 +137,11 @@ namespace SeriesTracker.DataAccess.Repositories
             }
 
             // Группируем список записей по категориям
-            var categoryGroup = userSeriesList
+            List<SeriesGroupDto> categoryGroup = userSeriesList
                 .GroupBy(s => s.Category.Id) // Группируем по ID категории
                 .Select(g =>
                 {
-                    var category = g.First().Category; // Получаем информацию о категории
+                    CategoryEntity category = g.First().Category; // Получаем информацию о категории
 
                     return new SeriesGroupDto
                     {
@@ -152,14 +154,14 @@ namespace SeriesTracker.DataAccess.Repositories
                 .ToList(); // Преобразуем в список
 
             // Формируем строку с ID последних 5 измененных записей
-            var lastFiveSeriesString = string.Join(",", userSeriesList
+            string lastFiveSeriesString = string.Join(",", userSeriesList
                 .OrderByDescending(s => s.ChangedDate) // Сортируем по дате изменения в обратном порядке
                 .Take(5)
                 .Select(s => s.AnimeId)
                 .ToList());
 
             // Создаем и заполняем DTO с результатами
-            var result = new SeriesProfileDTO
+            SeriesProfileDTO result = new()
             {
                 CategoryGroups = categoryGroup, // Группы записей по категориям
                 LastFiveSeries = lastFiveSeriesString, // Строка с ID последних 5 измененных записей
@@ -167,17 +169,16 @@ namespace SeriesTracker.DataAccess.Repositories
             return result; // Возвращаем DTO
         }
 
-        public async Task<Guid> UpdateSeries(Guid seriesId, int watched, int categoryId, bool favorite, string dateNow)
+        public async Task<bool> UpdateSeries(Guid seriesId, int watched, int categoryId, bool favorite, string dateNow)
         {
             // Обновляем информацию о записи
-
-            await _context.UserSeriesEntities.Where(s => s.Id == seriesId)
+            int rowsAffected = await _context.UserSeriesEntities.Where(s => s.Id == seriesId)
                 .ExecuteUpdateAsync(s => s.SetProperty(s => s.WatchedEpisodes, s => watched)
                 .SetProperty(s => s.CategoryId, s => categoryId)
                 .SetProperty(s => s.IsFavorite, s => favorite)
                 .SetProperty(s => s.ChangedDate, s => dateNow));
 
-            return seriesId; // Возвращаем ID записи
+            return rowsAffected > 0;  // Возвращаем true, если кол-во затронутых записей больше нуля, иначе - false
         }
     }
 }

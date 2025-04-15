@@ -10,17 +10,17 @@
         /// Возвращает ответ с кодом состояния HTTP 400 Bad Request.
         /// </summary>
         /// <param name="logger">Логгер для записи информации об ошибке.</param>
-        /// <param name="message">Сообщение для логгера.</param>
+        /// <param name="logMessage">Сообщение для логгера.</param>
         /// <param name="resultMessage">Сообщение, которое будет возвращено в теле ответа клиенту.</param>
         /// <param name="exeption">Исключение, которое необходимо залогировать (опционально).</param>
         /// <returns>IResult с кодом состояния 400 Bad Request и JSON-сообщением.</returns>
-        public static IResult BadResponse(this ILogger logger, string message, string resultMessage, Exception? exeption = null)
+        public static IResult BadResponse(this ILogger logger, string logMessage, string resultMessage, Exception? exeption = null)
         {
             if (exeption != null)
             {
-                logger.LogError(exeption, message);
+                logger.LogError(exeption, logMessage);
             }
-            else { logger.LogError(message); }
+            else { logger.LogError(logMessage); }
 
             return Results.Json(new { Message = resultMessage }, statusCode: StatusCodes.Status400BadRequest);
         }
@@ -29,12 +29,12 @@
         /// Возвращает ответ с кодом состояния HTTP 201 Created.
         /// </summary>
         /// <param name="logger">Логгер для записи информации об успешном создании ресурса.</param>
-        /// <param name="logggerMessage">Сообщение для логгера.</param>
+        /// <param name="logMessage">Сообщение для логгера.</param>
         /// <param name="resultMessage">Сообщение, которое будет возвращено в теле ответа клиенту.</param>
         /// <returns>IResult с кодом состояния 201 Created и JSON-сообщением.</returns>
-        public static IResult CreatedResponse(this ILogger logger, string logggerMessage, string resultMessage)
+        public static IResult CreatedResponse(this ILogger logger, string logMessage, string resultMessage)
         {
-            logger.LogInformation(logggerMessage);
+            logger.LogInformation(logMessage);
             return Results.Json(new { Message = resultMessage }, statusCode: StatusCodes.Status201Created);
         }
 
@@ -42,12 +42,12 @@
         /// Возвращает ответ с кодом состояния HTTP 500 Internal Server Error.
         /// </summary>
         /// <param name="logger">Логгер для записи информации о критической ошибке.</param>
-        /// <param name="ex">Исключение, которое необходимо залогировать.</param>
-        /// <param name="message">Сообщение для логгера.</param>
+        /// <param name="exception">Исключение, которое необходимо залогировать.</param>
+        /// <param name="logMessage">Сообщение для логгера.</param>
         /// <returns>IResult с кодом состояния 500 Internal Server Error и JSON-сообщением.</returns>
-        public static IResult InternalServerError(this ILogger logger, Exception ex, string message)
+        public static IResult InternalServerError(this ILogger logger, Exception exception, string logMessage)
         {
-            logger.LogCritical(ex, message);
+            logger.LogCritical(exception, logMessage);
             return Results.Json(new { Message = "An unexpected error has occurred. Try again later." }, statusCode: StatusCodes.Status500InternalServerError);
         }
 

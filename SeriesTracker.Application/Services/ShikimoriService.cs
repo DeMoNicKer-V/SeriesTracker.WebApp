@@ -23,21 +23,29 @@ namespace SeriesTracker.Application.Services
         /// <summary>
         /// Инициализирует новый экземпляр класса <see cref="ShikimoriService"/>.
         /// </summary>
-        /// <param name="mapper">Экземпляр IMapper для маппинга объектов.</param>
-        /// <param name="logger">Экземпляр ILogger для логирования.</param>
         /// <param name="categorySeriesRepository">Репозиторий для работы с категориями и записями пользователя.</param>
+        /// <param name="logger">Экземпляр ILogger для логирования.</param>
+        /// <param name="mapper">Экземпляр IMapper для маппинга объектов.</param>
         /// <param name="userRepository">Репозиторий для работы с пользователями.</param>
-        public ShikimoriService(IMapper mapper, ILogger<ShikimoriService> logger,
-            ICategorySeriesRepository categorySeriesRepository, IUserRepository userRepository)
+        public ShikimoriService(
+            ICategorySeriesRepository categorySeriesRepository,
+            ILogger<ShikimoriService> logger,
+            IMapper mapper,
+            IUserRepository userRepository)
         {
-            _logger = logger;
-            _mapper = mapper;
-            _categorySeriesRepository = categorySeriesRepository;
-            _userRepository = userRepository;
+            // Внедряем зависимости (Dependency Injection) и проверяем на null
+            _categorySeriesRepository = categorySeriesRepository ?? throw new ArgumentNullException(nameof(categorySeriesRepository));
+
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+
+            _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
         }
 
         public async Task<AnimeSeriesFullDto> GetAnimeById(Guid userId, string animeId)
         {
+            // Выполняем GraphQL запрос к Api
             var result = await GetAndMapAnimeData(
                 userId: userId,
                 request: GraphQLQueries.GetAnimeById(animeId),
@@ -49,6 +57,7 @@ namespace SeriesTracker.Application.Services
         public async Task<AnimeSeriesDto[]> GetAnimesByAllParams(Guid userId, int page, string name, string season,
             string status, string kind, string genre, string order, bool censored)
         {
+            // Выполняем GraphQL запрос к Api
             var result = await GetAndMapAnimeData(
                 userId: userId,
                 request: GraphQLQueries.GetAnimes(page, name, season, status, kind, genre, order, censored),
@@ -59,6 +68,7 @@ namespace SeriesTracker.Application.Services
 
         public async Task<AnimeSeriesDto[]> GetAnimesByName(Guid userId, string animeName)
         {
+            // Выполняем GraphQL запрос к Api
             var result = await GetAndMapAnimeData(
                 userId: userId,
                 request: GraphQLQueries.GetAnimesByName(animeName),
@@ -69,6 +79,7 @@ namespace SeriesTracker.Application.Services
 
         public async Task<GenreList> GetGenres()
         {
+            // Выполняем GraphQL запрос к Api и возвращаем список жанров
             return await GraphQLHelper.ExecuteGraphQLRequest<GenreList>(GraphQLQueries.GetGenres(), _logger);
         }
 

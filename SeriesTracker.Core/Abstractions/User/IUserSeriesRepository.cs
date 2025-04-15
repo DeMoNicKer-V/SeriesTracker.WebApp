@@ -19,8 +19,8 @@ namespace SeriesTracker.Core.Abstractions
         /// Удаляет все записи о просмотре аниме для указанного пользователя.
         /// </summary>
         /// <param name="userId">Идентификатор пользователя, для которого необходимо удалить все записи.</param>
-        /// <returns>Количество удаленных записей.</returns>
-        Task<int> DeleteAllSeriesByUserId(Guid userId);
+        /// <returns><see langword="true"/>, если данные удалены, иначе - <see langword="false"/></returns>
+        Task<bool> DeleteAllSeriesByUserId(Guid userId);
 
         /// <summary>
         /// Удаляет запись о просмотре аниме из списка пользователя по ее идентификатору.
@@ -60,7 +60,7 @@ namespace SeriesTracker.Core.Abstractions
         /// <param name="categoryId">Идентификатор категории.</param>
         /// <param name="favorite">Признак избранного.</param>
         /// <param name="dateNow">Дата и время изменения записи.</param>
-        /// <returns>Идентификатор обновленной записи.</returns>
-        Task<Guid> UpdateSeries(Guid seriesId, int watched, int categoryId, bool favorite, string dateNow);
+        /// <returns><see langword="true"/>, если данные обновлены, иначе - <see langword="false"/></returns>
+        Task<bool> UpdateSeries(Guid seriesId, int watched, int categoryId, bool favorite, string dateNow);
     }
 }
