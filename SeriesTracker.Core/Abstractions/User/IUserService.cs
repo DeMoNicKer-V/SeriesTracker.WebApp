@@ -4,9 +4,7 @@ namespace SeriesTracker.Core.Abstractions
 {
     public interface IUserService
     {
-        string HashPassword(string password);
-
-        Task<bool> UpdateUser(Guid id, string userName, string name, string surName, string email, string passwordHash, string avatar, string dateBirth);
+        Task<bool> UpdateUser(Guid id, string? userName, string? name, string? surName, string? email, string? password, string? avatar, string? dateBirth);
 
         Task<bool> DeleteUser(Guid id);
 

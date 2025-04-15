@@ -19,12 +19,6 @@ namespace SeriesTracker.Application.Services
         private readonly ILogger<UserService> _logger = logger;
         private readonly IMapper _mapper = mapper;
 
-        public string HashPassword(string password)
-        {
-            var hashedPassword = _passwordHasher.Generate(password);
-            return hashedPassword;
-        }
-
         public async Task<string> GenerateNewUserToken(string userName)
         {
             var user = await _userRepository.GetUserByUserName(userName);
@@ -62,8 +56,9 @@ namespace SeriesTracker.Application.Services
             return _mapper.Map<UserDetailDto>(user);
         }
 
-        public async Task<bool> UpdateUser(Guid id, string userName, string name, string surName, string email, string passwordHash, string avatar, string dateBirth)
+        public async Task<bool> UpdateUser(Guid id, string? userName, string? name, string? surName, string? email, string? password, string? avatar, string? dateBirth)
         {
+            string passwordHash = !string.IsNullOrEmpty(password) ? _passwordHasher.Generate(password) : string.Empty;
             return await _userRepository.UpdateUser(id, userName, name, surName, email, passwordHash, avatar, dateBirth);
         }
 

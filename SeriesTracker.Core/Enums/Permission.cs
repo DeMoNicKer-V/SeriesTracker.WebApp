@@ -4,9 +4,9 @@
     {
         Create = 1,
 
-        Update = 2,
+        Delete = 2,
 
-        Delete = 3,
+        Update = 3,
 
         Read = 4,
 

@@ -180,19 +180,65 @@ namespace SeriesTracker.DataAccess.Repositories
             return [.. permissions];
         }
 
-        public async Task<bool> UpdateUser(Guid id, string userName, string name, string surName, string email, string passwordHash, string avatar, string dateBirth)
+        public async Task<bool> UpdateUser(Guid id, string? userName, string? name, string? surName, string? email, string? passwordHash, string? avatar, string? dateBirth)
         {
-            var rowsAffected = await _context.UserEntities.Where(s => s.Id == id)
-                .ExecuteUpdateAsync(s => s
-                .SetProperty(s => s.UserName, s => userName)
-                .SetProperty(s => s.Name, s => name)
-                .SetProperty(s => s.SurName, s => surName)
-                .SetProperty(s => s.Email, s => email ?? s.Email) // если email отсутсвует - не меняем значение
-                .SetProperty(s => s.PasswordHash, s => passwordHash ?? s.PasswordHash) // то же самое и с passwordHash
-                .SetProperty(s => s.DateBirth, s => dateBirth)
-                .SetProperty(s => s.Avatar, s => avatar));
+            // Обновляем данные
+            // Если значение отсутствует - присваиваем существующее значение
+            // 1. Загружаем сущность из базы данных
+            UserEntity? user = await _context.UserEntities.Where(u => u.Id == id).FirstOrDefaultAsync();
 
-            return rowsAffected > 0;
+            if (user == null)
+            {
+                return false; // Пользователь не найден
+            }
+
+            // 2. Обновляем свойства, если они были предоставлены
+            if (!string.IsNullOrEmpty(userName))
+            {
+                user.UserName = userName;
+            }
+
+            if (!string.IsNullOrEmpty(name))
+            {
+                user.Name = name;
+            }
+
+            if (!string.IsNullOrEmpty(surName))
+            {
+                user.SurName = surName;
+            }
+
+            if (!string.IsNullOrEmpty(email))
+            {
+                user.Email = email;
+            }
+
+            if (!string.IsNullOrEmpty(passwordHash))
+            {
+                user.PasswordHash = passwordHash;
+            }
+
+            if (!string.IsNullOrEmpty(dateBirth))
+            {
+                user.DateBirth = dateBirth;
+            }
+
+            if (!string.IsNullOrEmpty(avatar))
+            {
+                user.Avatar = avatar;
+            }
+
+            // 3. Сохраняем изменения в базе данных
+            try
+            {
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                // Обработка конфликтов конкурентного доступа
+                return false;
+            }
         }
 
         private static User? MapUser(UserEntity? userEntity)

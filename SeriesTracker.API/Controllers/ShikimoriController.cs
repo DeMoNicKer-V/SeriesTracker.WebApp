@@ -54,8 +54,8 @@ namespace SeriesTracker.API.Controllers
         /// Получает информацию об аниме по его ID.
         /// </summary>
         /// <param name="id">ID аниме.</param>
-        /// <returns>Результат выполнения запроса. Возвращает 200 OK с данными аниме, 
-        /// 400 Bad Request, если ID имеет неверный формат, 404 Not Found, если аниме с указанным ID не найдено, 
+        /// <returns>Результат выполнения запроса. Возвращает 200 OK с данными аниме,
+        /// 400 Bad Request, если ID имеет неверный формат, 404 Not Found, если аниме с указанным ID не найдено,
         /// или 500 Internal Server Error в случае непредвиденной ошибки.</returns>
         [HttpGet("id/{id}")]
         public async Task<IResult> GetAnimeById(string id)

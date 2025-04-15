@@ -50,12 +50,12 @@ namespace SeriesTracker.DataAccess.Repositories
         public async Task<bool> UpdateCategoryColor(int id, string color, string dateNow)
         {
             // Обновляем цвет категории в базе данных
-           var rowsAffected =  await _context.CategoryEntities
-                .Where(c => c.Id == id)
-                .ExecuteUpdateAsync(c => c // Выполняем операцию обновления
-                    .SetProperty(c => c.Color, c => color)
-                    .SetProperty(c => c.PrevColor, c => c.Color)
-                    .SetProperty(c => c.Date, c => dateNow));
+            var rowsAffected = await _context.CategoryEntities
+                 .Where(c => c.Id == id)
+                 .ExecuteUpdateAsync(c => c // Выполняем операцию обновления
+                     .SetProperty(c => c.Color, c => color)
+                     .SetProperty(c => c.PrevColor, c => c.Color)
+                     .SetProperty(c => c.Date, c => dateNow));
 
             return rowsAffected > 0; // Возвращаем true, если кол-во затронутых записей больше нуля, иначе - false
         }

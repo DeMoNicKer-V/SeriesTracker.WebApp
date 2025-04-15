@@ -1,13 +1,18 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SeriesTracker.API.Contracts;
+using SeriesTracker.API.Extensions;
 using SeriesTracker.Core.Abstractions;
 using SeriesTracker.Core.Enums;
 using SeriesTracker.Infrastructure.Authentication;
 
 namespace SeriesTracker.API.Controllers
 {
+    /// <summary>
+    /// Контроллер для работы с пользователями.
+    /// Предоставляет методы для работы с пользователями (CRUD).
+    /// </summary>
     [ApiController]
-    [Route("user")]
+    [Route("user")] // Атрибут, определяющий маршрут для контроллера
     public class UserController(IUserService userService, ILogger<UserController> logger) : ControllerBase
     {
         private readonly IUserService _userService = userService;
@@ -16,15 +21,36 @@ namespace SeriesTracker.API.Controllers
         [HttpGet("id/{id:guid}")]
         public async Task<IResult> GetUserById(Guid id)
         {
-            var user = await _userService.GetUserById(id);
-            return Results.Ok(user);
+            try
+            {
+                var user = await _userService.GetUserById(id);
+
+                if (user == null)
+                {
+                    _logger.NotFoundResponse("The user not found.");
+                }
+                return Results.Ok(user);
+            }
+            catch (Exception ex)
+            {
+                // Логируем ошибку и возвращаем 500 Internal Server Error
+                return _logger.InternalServerError(ex, "An unexpected error while getting user.");
+            }
         }
 
         [HttpGet("{page:int}")]
         public async Task<IResult> GetUsersList(int page = 1)
         {
-            var (userList, totalCount) = await _userService.GetUserList(page);
-            return Results.Ok(new { users = userList, totalCount });
+            try
+            {
+                var (userList, totalCount) = await _userService.GetUserList(page);
+                return Results.Ok(new { users = userList, totalCount });
+            }
+            catch (Exception ex)
+            {
+                // Логируем ошибку и возвращаем 500 Internal Server Error
+                return _logger.InternalServerError(ex, "An unexpected error while getting user.");
+            }
         }
 
         [RequirePermission(Permission.Read)]
@@ -36,8 +62,16 @@ namespace SeriesTracker.API.Controllers
                 var user = await _userService.GetUserByUserName(userName);
                 if (user != null)
                 {
-                    string passwordHash = string.IsNullOrEmpty(request.Password) ? string.Empty : _userService.HashPassword(request.Password);
-                    await _userService.UpdateUser(user.Id, request.UserName, request.Name, request.SurName, request.Email, passwordHash, request.Avatar, request.DateBirth);
+                    var isUpdated = await _userService.UpdateUser(
+                        user.Id, 
+                        request.UserName, 
+                        request.Name, 
+                        request.SurName, 
+                        request.Email, 
+                        request.Password, 
+                        request.Avatar, 
+                        request.DateBirth);
+
                     string token = await _userService.GenerateNewUserToken(request.UserName);
                     Response.Cookies.Append("secretCookie", token, new CookieOptions { HttpOnly = true, Secure = true });
                     return Results.Ok();

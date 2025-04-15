@@ -81,6 +81,6 @@ namespace SeriesTracker.Core.Abstractions
         /// <param name="avatar">Url аватара пользователя.</param>
         /// <param name="dateBirth">Дата рождения пользователя.</param>
         /// <returns><see langword="true"/>, если пользователь изменен, иначе <see langword="false"/>.</returns>
-        Task<bool> UpdateUser(Guid id, string userName, string name, string surName, string email, string passwordHash, string avatar, string dateBirth);
+        Task<bool> UpdateUser(Guid id, string? userName, string? name, string? surName, string? email, string? passwordHash, string? avatar, string? dateBirth);
     }
 }

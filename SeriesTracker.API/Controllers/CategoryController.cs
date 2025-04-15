@@ -100,7 +100,7 @@ namespace SeriesTracker.API.Controllers
         /// <returns>Результат выполнения запроса. Возвращает 204 No Content в случае успеха,
         /// 404 No Found, если такой категории не существует,
         /// или 500 Internal Server Error в случае непредвиденной ошибки.</returns>
-        [RequirePermission(Permission.Update)] // Атрибут, указывающий, что для доступа к методу требуется разрешение 'Update'
+        [RequirePermission(Permission.Delete)] // Атрибут, указывающий, что для доступа к методу требуется разрешение 'Delete'
         [HttpPut("{id:int}")]
         public async Task<IResult> UpdateCategoryColor(int id, [FromBody] UpdateCategoryColorRequest request)
         {
@@ -122,7 +122,7 @@ namespace SeriesTracker.API.Controllers
                     throw new Exception();
                 }
 
-                // Логируем информацию об успешном обновлении цвета категории и возвращаем 204 No Content 
+                // Логируем информацию об успешном обновлении цвета категории и возвращаем 204 No Content
                 return _logger.NoContentResponse($"Category ({id}) color was updated successfully");
             }
             catch (Exception ex)

@@ -54,7 +54,7 @@ namespace SeriesTracker.Application.Services
             return await _userSeriesRepository.Add(userSeries); // Добавляем запись в репозиторий и возвращаем ее идентификатор
         }
 
-        public async Task<int> DeleteAllSeries(Guid userId)
+        public async Task<bool> DeleteAllSeries(Guid userId)
         {
             return await _userSeriesRepository.DeleteAllSeriesByUserId(userId); // Удаляем записи пользователя и возвращаем их количество
         }
@@ -100,7 +100,7 @@ namespace SeriesTracker.Application.Services
             return data.Animes; // Возвращаем массив DTO с информацией об аниме
         }
 
-        public async Task<Guid> UpdateSeries(Guid seriesDd, int watched, int categoryId, bool favorite)
+        public async Task<bool> UpdateSeries(Guid seriesDd, int watched, int categoryId, bool favorite)
         {
             var dateNow = DateTime.UtcNow.ToString("s"); // Получаем текущую дату и время в формате "s" (ISO 8601)
             return await _userSeriesRepository.UpdateSeries(seriesDd, watched, categoryId, favorite, dateNow); // Обновляем запись в репозитории и возвращаем ее идентификатор
