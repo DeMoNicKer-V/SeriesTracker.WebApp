@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace SeriesTracker.API.Contracts
+﻿namespace SeriesTracker.API.Contracts
 {
     public record UserRequest
       (

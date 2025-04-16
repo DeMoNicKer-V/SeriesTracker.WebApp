@@ -98,7 +98,7 @@ namespace SeriesTracker.API.Controllers
 
                 // Логируем информацию об успешном удалении всех записей и возвращаем 204 No Content
                 return _logger.NoContentResponse(
-                    loggerMessage: $"The user with ID:{userId} have deleted all series from his list.");
+                    loggerMessage: $"The user with ID:{userId} has deleted all series from his list.");
             }
             catch (UnauthorizedAccessException)
             {
@@ -124,7 +124,7 @@ namespace SeriesTracker.API.Controllers
         /// Удаляет запись о просмотре аниме из списка пользователя.
         /// </summary>
         /// <param name="id">ID записи, которую необходимо удалить.</param>
-        /// <returns>Результат выполнения запроса. Возвращает 204 No Content в случае успеха, 
+        /// <returns>Результат выполнения запроса. Возвращает 204 No Content в случае успеха,
         /// 401 Unauthorized, если пользователь не авторизован, или 500 Internal Server Error в случае непредвиденной ошибки.</returns>
         [RequirePermission(Permission.Update)] // Атрибут, указывающий, что для доступа к методу требуется разрешение 'Update'
         [HttpDelete("delete/{id:guid}")]
@@ -140,7 +140,7 @@ namespace SeriesTracker.API.Controllers
 
                 // Логируем информацию об успешном удалении серии и возвращаем 204 No Content
                 return _logger.NoContentResponse(
-                    loggerMessage: $"The user with ID:{userId} have deleted series with ID:{id} from his list.");
+                    loggerMessage: $"The user with ID:{userId} has deleted series with ID:{id} from his list.");
             }
             catch (UnauthorizedAccessException)
             {
@@ -244,7 +244,7 @@ namespace SeriesTracker.API.Controllers
         /// </summary>
         /// <param name="id">ID записи, которую необходимо обновить.</param>
         /// <param name="request">Данные для обновления записи (WatchedEpisode, CategoryId, IsFavorite).</param>
-        /// <returns>Результат выполнения запроса. Возвращает 204 No Content в случае успеха, 
+        /// <returns>Результат выполнения запроса. Возвращает 204 No Content в случае успеха,
         /// 401 Unauthorized, если пользователь не авторизован, или 500 Internal Server Error в случае непредвиденной ошибки.</returns>
         [RequirePermission(Permission.Update)] // Атрибут, указывающий, что для доступа к методу требуется разрешение 'Update'
         [HttpPut("update/{id:guid}")]
@@ -255,19 +255,19 @@ namespace SeriesTracker.API.Controllers
                 // Получаем идентификатор пользователя из утверждений (claims)
                 Guid userId = GetUserIdFromClaims();
 
-                // Обновляем информацию о просмотренной серии через сервис
+                // Обновляем информацию об аниме в списке пользователя через сервис
                 var isUpdated = await _userSeriesService.UpdateSeries(id, request.WatchedEpisode,
                     request.CategoryId, request.IsFavorite);
 
                 // Если обновление не произошло - выбрасываем исключение
                 if (isUpdated == false)
                 {
-                    throw new Exception();
+                    throw new Exception($"Failed to update user: ({userId}) series with Id: {id}.");
                 }
 
                 // Логируем информацию об успешном обновлении серии и возвращаем 204 No Content
                 return _logger.NoContentResponse(
-                    loggerMessage: $"The user with ID:{userId} have updated series with animeID:{request.AnimeId}.");
+                    loggerMessage: $"The user with ID:{userId} has updated series with animeID:{request.AnimeId}.");
             }
             catch (UnauthorizedAccessException)
             {

@@ -30,28 +30,21 @@ namespace SeriesTracker.DataAccess.Repositories
             // AsNoTracking используется, так как мы не планируем изменять эту сущность.
             var roleEntity = await _context.RoleEntities
                 .AsNoTracking()
-                .FirstOrDefaultAsync(r => r.Id == roleId);
+                .SingleOrDefaultAsync(r => r.Id == roleId);
 
-            // Получаем сущность пользователя по идентификатору, включая его роли.
-            var userEntity = await _context.UserEntities
-               .Include(u => u.Roles)
-               .FirstOrDefaultAsync(u => u.Id == userId);
-
-            // Если пользователь или роль не найдены, возвращаем False.
-            if (userEntity == null || roleEntity == null)
+            // Если роль не найдена - то констатируем, что изменение прошло неудачно
+            if (roleEntity == null)
             {
                 return false;
             }
 
-            // Очищаем текущие роли пользователя.
-            userEntity.Roles.Clear();
+            // Изменяем роли пользователя
+            var rowsAffected = await _context.UserEntities
+                .Where(u => u.Id == userId)
+                .ExecuteUpdateAsync(u => u.SetProperty(u => u.Roles, u => new List<RoleEntity> { roleEntity }));
 
-            // Добавляем новую роль пользователю.
-            userEntity.Roles.Add(roleEntity);
-
-            // Сохраняем изменения в базе данных.
-            await _context.SaveChangesAsync();
-            return true;
+            // Возвращаем true, если была изменена хотя бы одна строка, иначе false.
+            return rowsAffected > 0;
         }
 
         public async Task<Guid> CreateUser(User user)
@@ -261,6 +254,7 @@ namespace SeriesTracker.DataAccess.Repositories
                     userEntity.DateBirth,
                     userEntity.RegDate,
                     userEntity.Roles.First().Id);
+
                 return user;
             }
         }

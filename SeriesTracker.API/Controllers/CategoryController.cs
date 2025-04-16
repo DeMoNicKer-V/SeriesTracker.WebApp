@@ -119,7 +119,7 @@ namespace SeriesTracker.API.Controllers
                 // Если обновление не произошло - выбрасываем исключение
                 if (isUpdated == false)
                 {
-                    throw new Exception();
+                    throw new Exception($"Failed to update category: ({id}).");
                 }
 
                 // Логируем информацию об успешном обновлении цвета категории и возвращаем 204 No Content
