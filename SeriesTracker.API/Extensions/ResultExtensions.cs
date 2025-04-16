@@ -85,10 +85,10 @@
         /// <param name="message">Сообщение, которое будет возвращено в теле ответа клиенту.</param>
         /// <param name="methodName">Название метода, к которому была предпринята попытка неавторизованного доступа.</param>
         /// <returns>IResult с кодом состояния 401 Unauthorized и JSON-сообщением.</returns>
-        public static IResult UnauthorizedResponse(this ILogger logger, string message, string methodName)
+        public static IResult UnauthorizedResponse(this ILogger logger, string resultMessage, string methodName)
         {
             logger.LogWarning("Unauthorized access attempt to method: {methodName}.", methodName);
-            return Results.Json(new { Message = message }, statusCode: StatusCodes.Status401Unauthorized);
+            return Results.Json(new { Message = resultMessage }, statusCode: StatusCodes.Status401Unauthorized);
         }
     }
 }

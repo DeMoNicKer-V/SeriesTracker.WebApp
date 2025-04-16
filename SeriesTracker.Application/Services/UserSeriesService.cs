@@ -59,9 +59,9 @@ namespace SeriesTracker.Application.Services
             return await _userSeriesRepository.DeleteAllSeriesByUserId(userId); // Удаляем записи пользователя и возвращаем их количество
         }
 
-        public async Task DeleteSeries(Guid seriesId)
+        public async Task<bool> DeleteSeries(Guid seriesId)
         {
-            await _userSeriesRepository.DeleteSeriesById(seriesId); // Удаляем запись по Id
+           return await _userSeriesRepository.DeleteSeriesById(seriesId); // Удаляем запись по Id
         }
 
         public async Task<List<SeriesGroupShortDto>> GetGroupShortSeries(string userName)

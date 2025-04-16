@@ -58,18 +58,14 @@ namespace SeriesTracker.DataAccess.Repositories
             return rowsAffected > 0;  // Возвращаем true, если кол-во затронутых записей больше нуля, иначе - false
         }
 
-        public async Task DeleteSeriesById(Guid seriesId)
+        public async Task<bool> DeleteSeriesById(Guid seriesId)
         {
             // Удаляем запись по указанному ID
             int rowsAffected = await _context.UserSeriesEntities
                 .Where(s => s.Id == seriesId)
                 .ExecuteDeleteAsync();
 
-            if (rowsAffected == 0)
-            {
-                // Выбрасываем исключение, если запись не была найдена
-                throw new NotFoundException();
-            }
+            return rowsAffected > 0; // Возвращаем true, если кол-во затронутых записей больше нуля, иначе - false
         }
 
         public async Task<List<int>> GetAnimeIdsList(string userName, int page, int categoryId, bool isFavorite)

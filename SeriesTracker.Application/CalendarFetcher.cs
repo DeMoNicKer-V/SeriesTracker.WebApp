@@ -2,7 +2,6 @@
 using SeriesTracker.Core.Models.Shikimori;
 using SeriesTracker.Core;
 using System.Net;
-
 using System.Net.Http.Headers;
 using System.Text.Json;
 
@@ -58,42 +57,23 @@ namespace SeriesTracker.Application {
             // Добавляем заголовок Accept для указания, что мы ожидаем получить JSON-ответ.
             request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-            try
-            {
-                // Отправляем HTTP-запрос и получаем ответ.
-                HttpResponseMessage response = await _httpClient.SendAsync(request);
+            // Отправляем HTTP-запрос и получаем ответ.
+            HttpResponseMessage response = await _httpClient.SendAsync(request);
 
-                // Проверяем, успешно ли выполнен запрос (код состояния HTTP 2xx).
-                response.EnsureSuccessStatusCode(); //  Проверяем статус
+            // Проверяем, успешно ли выполнен запрос (код состояния HTTP 2xx).
+            response.EnsureSuccessStatusCode();
 
-                // Читаем содержимое ответа в виде строки.
-                string jsonString = await response.Content.ReadAsStringAsync();
+            // Читаем содержимое ответа в виде строки.
+            string jsonString = await response.Content.ReadAsStringAsync();
 
-                // Десериализуем JSON-строку в коллекцию объектов CalendarAnimeItem.
-                var result = JsonSerializer.Deserialize<IEnumerable<CalendarAnimeItem>>(jsonString) ?? throw new JsonException("JSON deserialization returned null.");
+            // Десериализуем JSON-строку в коллекцию объектов CalendarAnimeItem.
+            var result = JsonSerializer.Deserialize<IEnumerable<CalendarAnimeItem>>(jsonString) ?? throw new JsonException("JSON deserialization returned null.");
 
-                // Фильтруем элементы, чтобы вернуть только те, у которых дата следующего эпизода находится в пределах следующих 7 дней.
-                var filteredItems = result.Where(i => DateTime.Parse(i.NextEpisodeDate).Date < DateTime.Now.AddDays(7).Date);
+            // Фильтруем элементы, чтобы вернуть только те, у которых дата следующего эпизода находится в пределах следующих 7 дней.
+            var filteredItems = result.Where(i => DateTime.Parse(i.NextEpisodeDate).Date < DateTime.Now.AddDays(7).Date);
 
-                // Возвращаем отфильтрованную коллекцию элементов.
-                return filteredItems;
-            }
-
-            catch (HttpRequestException ex)
-            {
-                // Обрабатываем ошибки, связанные с запросом
-                throw new Exception($"HTTP error! Status: {ex.StatusCode}, Message: {ex.Message}", ex);
-            }
-            catch (JsonException ex)
-            {
-                // Обрабатываем ошибки при десериализации JSON
-                throw new Exception($"JSON deserialization error: {ex.Message}", ex);
-            }
-            catch (Exception ex)
-            {
-                // Обрабатываем другие ошибки
-                throw new Exception($"An unexpected error occurred: {ex.Message}", ex);
-            }
+            // Возвращаем отфильтрованную коллекцию элементов.
+            return filteredItems;
         }
     }
 }

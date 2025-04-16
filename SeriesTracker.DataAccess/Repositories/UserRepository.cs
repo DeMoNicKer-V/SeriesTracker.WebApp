@@ -84,8 +84,7 @@ namespace SeriesTracker.DataAccess.Repositories
             // Удаляем пользователя с указанным идентификатором.
             var rowsAffected = await _context.UserEntities.Where(c => c.Id == id).ExecuteDeleteAsync();
 
-            // Возвращаем true, если была удалена хотя бы одна строка, иначе false.
-            return rowsAffected > 0;
+            return rowsAffected > 0; // Возвращаем true, если кол-во затронутых записей больше нуля, иначе - false
         }
 
         public async Task<User?> GetUserByEmail(string email)

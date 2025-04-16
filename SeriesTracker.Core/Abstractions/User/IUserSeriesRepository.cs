@@ -26,7 +26,8 @@ namespace SeriesTracker.Core.Abstractions
         /// Удаляет запись о просмотре аниме из списка пользователя по ее идентификатору.
         /// </summary>
         /// <param name="seriesId">Идентификатор записи, которую необходимо удалить.</param>
-        Task DeleteSeriesById(Guid seriesId);
+        /// <returns><see langword="true"/>, если данные удалены, иначе - <see langword="false"/></returns>
+        Task<bool> DeleteSeriesById(Guid seriesId);
 
         /// <summary>
         /// Получает список идентификаторов аниме пользователя с учетом параметров фильтрации и пагинации.

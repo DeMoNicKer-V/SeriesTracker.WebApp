@@ -14,6 +14,7 @@ namespace SeriesTracker.Core.Abstractions
 
         public AuthenticationService(IUserRepository userRepository, IPasswordHasher passwordHasher, IJwtProvider jwtProvider, ILogger<AuthenticationService> logger)
         {
+            // Внедряем зависимости (Dependency Injection) и проверяем на null
             _userRepository = userRepository;
             _passwordHasher = passwordHasher;
             _jwtProvider = jwtProvider;
@@ -38,32 +39,40 @@ namespace SeriesTracker.Core.Abstractions
 
         public async Task<bool> Verify(string email, string password)
         {
+            // 1. Валидация входных данных
             if (string.IsNullOrWhiteSpace(email))
             {
+                _logger.LogWarning("Attempt to login with empty or whitespace email.");
                 throw new ArgumentException("Email не может быть пустым или пробелом.", nameof(email));
             }
 
             if (string.IsNullOrWhiteSpace(password))
             {
+                _logger.LogWarning("Attempt to login with empty or whitespace password for email: {email}", email);
                 throw new ArgumentException("Пароль не может быть пустым или пробелом.", nameof(password));
             }
 
+            // 2. Получение пользователя из репозитория
             var user = await _userRepository.GetUserByEmail(email);
 
+            // 3. Проверка существования пользователя
             if (user == null)
             {
-                _logger.LogWarning("Попытка входа с несуществующим email: {email}", email);
+                _logger.LogWarning("Attempt to login with non-existent email: {email}", email);
                 throw new UnauthorizedAccessException("Неверный email или пароль.");
             }
 
+            // 4. Проверка пароля (хешированный пароль)
             bool passwordMatches = _passwordHasher.Verify(password, user.PasswordHash);
 
-            if (!passwordMatches)
+            if (passwordMatches == false)
             {
-                _logger.LogWarning("Неудачная попытка входа для пользователя: {Email}", email);
+                _logger.LogWarning("Failed login attempt for user: {Email}", email);
                 throw new UnauthorizedAccessException("Неверный email или пароль.");
             }
 
+            // 5. Успешная аутентификация
+            _logger.LogInformation("Successful login for user: {email}", email);
             return true;
         }
 

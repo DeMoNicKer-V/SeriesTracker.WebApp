@@ -26,8 +26,11 @@ namespace SeriesTracker.API.Controllers
         /// <param name="logger">Логгер для записи информации о работе контроллера.</param>
         public UserController(IUserService userService, ILogger<UserController> logger)
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger)); // Добавлена проверка на null
-            _userService = userService ?? throw new ArgumentNullException(nameof(userService)); // Добавлена проверка на null
+            // Внедряем зависимость (Dependency Injection) логгера и проверяем на null.
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+
+            // Внедряем зависимость (Dependency Injection) сервиса пользователей и проверяем на null.
+            _userService = userService ?? throw new ArgumentNullException(nameof(userService));
         }
 
         /// <summary>
@@ -35,7 +38,8 @@ namespace SeriesTracker.API.Controllers
         /// </summary>
         /// <param name="id">Идентификатор пользователя, роль которого необходимо изменить.</param>
         /// <param name="roleId">Идентификатор новой роли пользователя.</param>
-        /// <returns>Результат выполнения операции.</returns>
+        /// <returns>Результат выполнения запроса. Возвращает 204 No Content в случае успеха
+        /// или 500 Internal Server Error в случае непредвиденной ошибки.</returns>
         [RequirePermission(Permission.Create)] // Атрибут, указывающий, что для доступа к методу требуется разрешение 'Create'
         [HttpPut("changeRole/{id}")]
         public async Task<IResult> ChangeUserRole(Guid id, [FromBody] int roleId)
@@ -45,15 +49,13 @@ namespace SeriesTracker.API.Controllers
                 // Обновляем информацию о пользователе через сервис
                 bool isUpdated = await _userService.ChangeUserRole(id, roleId);
 
-                // Если обновление не произошло - логируем ошибку и возвращаем 400 Bad Request
+                // Если обновление не произошло - выбрасываем исключение
                 if (isUpdated == false)
                 {
-                    return _logger.BadResponse( 
-                        logMessage: $"Failed to update user with Id: {id} to role ({roleId}).",
-                        resultMessage: "Failed to update user role. Possible reasons: invalid roleId or user not found.");
+                    throw new Exception($"Failed to update user with Id: {id} to role ({roleId}).");
                 }
 
-                // Логируем информацию об успешном обновлении серии и возвращаем 204 No Content
+                // Логируем информацию об успешном обновлении роли и возвращаем 204 No Content
                 return _logger.NoContentResponse(
                     loggerMessage: $"The role of user with ID:{id} has updated to: {roleId}.");
             }
@@ -68,7 +70,9 @@ namespace SeriesTracker.API.Controllers
         /// Удаляет аккаунт пользователя.
         /// </summary>
         /// <param name="userName">Имя пользователя, аккаунт которого необходимо удалить.</param>
-        /// <returns>Результат выполнения операции.</returns>
+        /// <returns>Результат выполнения запроса. Возвращает 204 No Content в случае успеха,
+        /// 404 Not Found, если пользователь не найден,
+        /// или 500 Internal Server Error в случае непредвиденной ошибки.</returns>
         [RequirePermission(Permission.Update)] // Атрибут, указывающий, что для доступа к методу требуется разрешение 'Update'
         [HttpDelete("{userName}/deleteSelf")]
         public async Task<IResult> DeleteSelfAccount(string userName)
@@ -81,7 +85,7 @@ namespace SeriesTracker.API.Controllers
                 // Если пользователь не найден - логируем предупреждение и возвращаем 404 Not Found
                 if (user == null)
                 {
-                   return _logger.NotFoundResponse($"The user ({userName}) not found.");
+                    return _logger.NotFoundResponse($"The user ({userName}) not found.");
                 }
 
                 // Удаляем пользователя через сервис
@@ -110,7 +114,9 @@ namespace SeriesTracker.API.Controllers
         /// Удаляет аккаунт пользователя по имени пользователя.
         /// </summary>
         /// <param name="userName">Имя пользователя, аккаунт которого необходимо удалить.</param>
-        /// <returns>Результат выполнения операции.</returns>
+        /// <returns>Результат выполнения запроса. Возвращает 204 No Content в случае успеха,
+        /// 404 Not Found, если пользователь не найден,
+        /// или 500 Internal Server Error в случае непредвиденной ошибки.</returns>
         [RequirePermission(Permission.Delete)] // Атрибут, указывающий, что для доступа к методу требуется разрешение 'Delete'
         [HttpDelete("{userName}/delete")]
         public async Task<IResult> DeleteUserByUserName(string userName)
@@ -151,7 +157,9 @@ namespace SeriesTracker.API.Controllers
         /// Получает информацию о пользователе по его идентификатору.
         /// </summary>
         /// <param name="id">Идентификатор пользователя.</param>
-        /// <returns>Результат выполнения операции.</returns>
+        /// <returns>Результат выполнения запроса. Возвращает пользователя с кодом 200 OK в случае успеха,
+        /// 404 Not Found, если пользователь не найден,
+        /// или 500 Internal Server Error в случае непредвиденной ошибки.</returns>
         [HttpGet("id/{id:guid}")]
         public async Task<IResult> GetUserById(Guid id)
         {
@@ -176,18 +184,27 @@ namespace SeriesTracker.API.Controllers
             }
         }
 
+        /// <summary>
+        /// Получает список пользователей с пагинацией.
+        /// </summary>
+        /// <param name="page">Номер страницы (по умолчанию 1).</param>
+        /// <returns>Результат выполнения запроса. Возвращает список пользователей и общее количество пользователей с кодом  204 No Content в случае успеха,
+        /// или 500 Internal Server Error в случае непредвиденной ошибки.</returns>
         [HttpGet("{page:int}")]
         public async Task<IResult> GetUsersList(int page = 1)
         {
             try
             {
+                // Получаем список пользователей и общее количество пользователей через сервис
                 var (userList, totalCount) = await _userService.GetUserList(page);
+
+                // Возвращаем список пользователей и общее количество пользователей с кодом 200 OK
                 return Results.Ok(new { users = userList, totalCount });
             }
             catch (Exception ex)
             {
                 // Логируем ошибку и возвращаем 500 Internal Server Error
-                return _logger.InternalServerError(ex, "An unexpected error while getting user.");
+                return _logger.InternalServerError(ex, "An unexpected error occurred while getting list of all users.");
             }
         }
 
@@ -196,7 +213,9 @@ namespace SeriesTracker.API.Controllers
         /// </summary>
         /// <param name="userName">Имя пользователя, информацию о котором необходимо обновить.</param>
         /// <param name="request">Запрос, содержащий данные для обновления пользователя.</param>
-        /// <returns>Результат выполнения операции.</returns>
+        /// <returns>Результат выполнения запроса. Возвращает пользователя с кодом 200 OK в случае успеха,
+        /// 404 Not Found, если пользователь не найден,
+        /// или 500 Internal Server Error в случае непредвиденной ошибки.</returns>
         [RequirePermission(Permission.Update)] // Атрибут, указывающий, что для доступа к методу требуется разрешение 'Update'
         [HttpPut("update/{userName}")]
         public async Task<IResult> UpdateUser(string userName, [FromBody] UserRequest request)
@@ -223,10 +242,9 @@ namespace SeriesTracker.API.Controllers
                     request.Avatar,
                     request.DateBirth);
 
-                // Если обновление не произошло - логируем ошибку и выбрасываем исключение
-                if (!isUpdated) // Инвертирована логика, т.к. isUpdated == false означает, что обновление не удалось
+                // Если обновление не произошло - выбрасываем исключение
+                if (isUpdated == false)
                 {
-                    _logger.LogError($"Failed to update user ({userName})."); // Логируем ошибку перед выбрасыванием исключения
                     throw new Exception($"Failed to update user ({userName}).");
                 }
 

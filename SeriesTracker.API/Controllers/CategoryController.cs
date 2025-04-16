@@ -72,7 +72,7 @@ namespace SeriesTracker.API.Controllers
         /// <summary>
         /// Получает список всех категорий.
         /// </summary>
-        /// <returns>Результат выполнения запроса. Возвращает 200 OK со списком всех категорий,
+        /// <returns>Результат выполнения запроса. Возвращает 200 OK со списком всех категорий
         /// или 500 Internal Server Error в случае непредвиденной ошибки.</returns>
         [HttpGet]
         public async Task<IResult> GetCategoryList()

@@ -33,7 +33,8 @@ namespace SeriesTracker.Core.Abstractions
         /// </summary>
         /// <param name="seriesId">Идентификатор записи, которую необходимо удалить.</param>
         /// <returns>Task, представляющий асинхронную операцию удаления.</returns>
-        Task DeleteSeries(Guid seriesId);
+        /// <returns><see langword="true"/>, если данные удалены, иначе - <see langword="false"/></returns>
+        Task<bool> DeleteSeries(Guid seriesId);
 
         /// <summary>
         /// Получает сгруппированный список аниме пользователя по категориям.
