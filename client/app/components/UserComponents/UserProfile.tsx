@@ -21,7 +21,7 @@ import {
 import Link from "next/link";
 import { logout } from "@/app/api/auth";
 interface Props {
-    user?: User;
+    user: User;
 }
 
 const UserProfile = ({ user }: Props) => {
@@ -70,7 +70,7 @@ const UserProfile = ({ user }: Props) => {
             label: "Выйти",
             key: "4",
             onClick: async () => {
-                await logout();
+                await logout(user?.userName);
             },
             icon: <LogoutOutlined />,
         },

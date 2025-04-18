@@ -5,138 +5,117 @@ using SeriesTracker.Core.Models;
 
 namespace SeriesTracker.Core.Abstractions
 {
+    /// <summary>
+    /// Сервис для выполнения операций аутентификации, таких как вход, регистрация, проверка email и userName.
+    /// </summary>
     public class AuthenticationService : IAuthenticationService
     {
-        private readonly IUserRepository _userRepository;
-        private readonly IPasswordHasher _passwordHasher;
         private readonly IJwtProvider _jwtProvider;
         private readonly ILogger<AuthenticationService> _logger;
+        private readonly IPasswordHasher _passwordHasher;
+        private readonly IUserRepository _userRepository;
 
+        /// <summary>
+        /// Инициализирует новый экземпляр класса <see cref="AuthenticationService"/>.
+        /// </summary>
+        /// <param name="userRepository">Репозиторий для работы с пользователями.</param>
+        /// <param name="passwordHasher">Сервис для хеширования паролей.</param>
+        /// <param name="jwtProvider">Провайдер для генерации JWT-токенов.</param>
+        /// <param name="logger">Логгер для записи информации о работе сервиса.</param>
         public AuthenticationService(IUserRepository userRepository, IPasswordHasher passwordHasher, IJwtProvider jwtProvider, ILogger<AuthenticationService> logger)
         {
             // Внедряем зависимости (Dependency Injection) и проверяем на null
-            _userRepository = userRepository;
-            _passwordHasher = passwordHasher;
-            _jwtProvider = jwtProvider;
-            _logger = logger;
-        }
+            _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
 
-        public async Task<string> Login(string email, string password)
-        {
-            var user = await _userRepository.GetUserByEmail(email);
+            _passwordHasher = passwordHasher ?? throw new ArgumentNullException(nameof(passwordHasher));
 
-            // Объединяем проверки email и пароля в одно условие и одно сообщение об ошибке
-            if (user == null || !_passwordHasher.Verify(password, user.PasswordHash))
-            {
-                // Логируем попытку входа с неверными данными (без указания конкретной причины)
-                _logger.LogInformation($"Неудачная попытка входа: {email}");  // Используем LogInformation для логирования события
-                throw new ArgumentException("Неправильный адрес почты или пароль");
-            }
+            _jwtProvider = jwtProvider ?? throw new ArgumentNullException(nameof(jwtProvider));
 
-            var token = _jwtProvider.GenerateToken(user);
-            return token;
-        }
-
-        public async Task<bool> Verify(string email, string password)
-        {
-            // 1. Валидация входных данных
-            if (string.IsNullOrWhiteSpace(email))
-            {
-                _logger.LogWarning("Attempt to login with empty or whitespace email.");
-                throw new ArgumentException("Email не может быть пустым или пробелом.", nameof(email));
-            }
-
-            if (string.IsNullOrWhiteSpace(password))
-            {
-                _logger.LogWarning("Attempt to login with empty or whitespace password for email: {email}", email);
-                throw new ArgumentException("Пароль не может быть пустым или пробелом.", nameof(password));
-            }
-
-            // 2. Получение пользователя из репозитория
-            var user = await _userRepository.GetUserByEmail(email);
-
-            // 3. Проверка существования пользователя
-            if (user == null)
-            {
-                _logger.LogWarning("Attempt to login with non-existent email: {email}", email);
-                throw new UnauthorizedAccessException("Неверный email или пароль.");
-            }
-
-            // 4. Проверка пароля (хешированный пароль)
-            bool passwordMatches = _passwordHasher.Verify(password, user.PasswordHash);
-
-            if (passwordMatches == false)
-            {
-                _logger.LogWarning("Failed login attempt for user: {Email}", email);
-                throw new UnauthorizedAccessException("Неверный email или пароль.");
-            }
-
-            // 5. Успешная аутентификация
-            _logger.LogInformation("Successful login for user: {email}", email);
-            return true;
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         public async Task<bool> EmailExists(string email)
         {
+            // Получаем пользователя из репозитория по email
             var user = await _userRepository.GetUserByEmail(email);
 
-            return user != null; // Возвращаем true, если email занят, и false, если свободен
+            // Возвращаем true, если email занят, и false, если свободен
+            return user != null;
         }
 
-        public async Task<bool> UserNameExists(string userName)
+        public async Task<string> Login(string email, string password)
         {
-            var user = await _userRepository.GetUserByUserName(userName);
+            // 1. Получаем пользователя из репозитория по email
+            var user = await _userRepository.GetUserByEmail(email);
 
-            return user != null; // Возвращаем true, если userName занят, и false, если свободен
+            // 2. Проверяем, существует ли пользователь и совпадает ли пароль
+            if (user == null || !_passwordHasher.Verify(password, user.PasswordHash))
+            {
+                // Если пользователь не найден или пароль не совпадает, возвращаем пустую строку
+                return string.Empty;
+            }
+
+            // 3. Генерируем JWT-токен для пользователя
+            var token = _jwtProvider.GenerateToken(user);
+
+            return token;
         }
 
         public async Task Register(string email, string password, string userName, string? avatar, string? name, string? surName, string? dateBirth)
         {
-            // 1. Валидация данных
-            if (string.IsNullOrWhiteSpace(userName)) // Используем IsNullOrWhiteSpace
-            {
-                _logger.LogWarning("Попытка регистрации с пустым userName.");
-                throw new ArgumentException("Никнейм не может быть пустым.", nameof(userName)); // nameof() для лучшей информации об ошибке
-            }
-            if (string.IsNullOrWhiteSpace(email))
-            {
-                _logger.LogWarning("Попытка регистрации с пустым email.");
-                throw new ArgumentException("Эл. почта не может быть пустым.", nameof(email));
-            }
-            if (string.IsNullOrWhiteSpace(password))
-            {
-                _logger.LogWarning("Попытка регистрации с пустым password.");
-                throw new ArgumentException("Пароль не может быть пустым.", nameof(password));
-            }
-
-            // 2. Хеширование пароля
+            // 1. Хеширование пароля
             string hashedPassword = _passwordHasher.Generate(password);
 
-            // 3. Создание пользователя
-            try
-            {
-                var user = User.Create(
-                    Guid.NewGuid(),
-                    userName,
-                    name,
-                    surName,
-                    email,
-                    hashedPassword,
-                    avatar,
-                    dateBirth,
-                    DateTime.UtcNow.ToString("s") // Используем UTC время
-                );
+            // 2. Создание пользователя
+            var user = User.Create(
+                Guid.NewGuid(), // Генерируем уникальный идентификатор для пользователя
+                userName,
+                name,
+                surName,
+                email,
+                hashedPassword,
+                avatar,
+                dateBirth,
+                DateTime.UtcNow.ToString("s") // Дата создания пользователя в формате ISO 8601
+            );
 
-                // 4. Сохранение пользователя в репозитории
-                await _userRepository.CreateUser(user);
-                _logger.LogInformation($"Пользователь {userName} зарегистрирован успешно.");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, $"Ошибка при создании или сохранении пользователя {userName}.");
+            // 3. Сохранение пользователя в репозитории
+            await _userRepository.CreateUser(user);
+        }
 
-                throw new Exception("Не удалось зарегистрировать пользователя.", ex);
+        public async Task<bool> UserNameExists(string userName)
+        {
+            // Получаем пользователя из репозитория по userName
+            var user = await _userRepository.GetUserByUserName(userName);
+
+            // Возвращаем true, если userName занят, и false, если свободен
+            return user != null;
+        }
+
+        public async Task<bool> Verify(string email, string password)
+        {
+            // 1. Получение пользователя из репозитория
+            var user = await _userRepository.GetUserByEmail(email);
+
+            // 2. Проверка существования пользователя
+            if (user == null)
+            {
+                // Если пользователь не найден, логируем предупреждение и выбрасываем исключение
+                _logger.LogWarning("Attempt to login with non-existent email: {email}", email);
+                throw new UnauthorizedAccessException("Неверный email или пароль.");
             }
+
+            // 3. Проверка пароля (хешированный пароль)
+            bool passwordMatches = _passwordHasher.Verify(password, user.PasswordHash); // Проверяем пароль
+
+            if (!passwordMatches)
+            {
+                // Если пароль не совпадает, выбрасываем исключение
+                throw new UnauthorizedAccessException("Неверный email или пароль."); // Сообщаем о неверном email или пароле
+            }
+
+            // 4. Успешная аутентификация
+            return true;
         }
     }
 }

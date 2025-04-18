@@ -57,11 +57,11 @@
         /// <param name="logger">Логгер для записи информации об успешном выполнении запроса (опционально).</param>
         /// <param name="loggerMessage">Сообщение для логгера (опционально).</param>
         /// <returns>IResult с кодом состояния 204 No Content.</returns>
-        public static IResult NoContentResponse(this ILogger logger, string? loggerMessage = null)
+        public static IResult NoContentResponse(this ILogger logger, string? logMessage = null)
         {
-            if (!string.IsNullOrEmpty(loggerMessage))
+            if (!string.IsNullOrEmpty(logMessage))
             {
-                logger.LogInformation(loggerMessage);
+                logger.LogInformation(logMessage);
             }
             return Results.NoContent();
         }

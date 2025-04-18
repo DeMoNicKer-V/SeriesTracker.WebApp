@@ -29,27 +29,33 @@ namespace SeriesTracker.API.Controllers
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
+        /// <summary>
+        /// Проверяет, существует ли указанный email в системе.
+        /// </summary>
+        /// <param name="email">Email для проверки.</param>
         /// <returns>
-        ///   Возвращает  `204 No Content`, если email не существует.
-        ///   Возвращает  `400 Bad Request`, если email уже существует.
+        ///   Возвращает  `204 No Content`, если email не существует (свободен).
+        ///   Возвращает  `400 Bad Request`, если email уже существует (занят).
         ///   Возвращает  `500 Internal Server Error`, если произошла непредвиденная ошибка.
         /// </returns>
-        [HttpGet("email")]
+        [HttpGet("email")] // Атрибут, определяющий маршрут для HTTP GET-запроса проверки email
         public async Task<IResult> CheckEmail(string email)
         {
             try
             {
-                // Проверка email на существование
+                // Вызываем метод сервиса для проверки существования email
                 bool emailExists = await _authenticationService.EmailExists(email);
 
                 // Если email уже существует
-                if (emailExists == true)
+                if (emailExists == false)
                 {
-                    // Логируем информацию о занятом email и возвращаем 400 Bad Response
-                    return _logger.BadResponse(logMessage: $"Attempt to create account with non-free Email: {email}", resultMessage: "Адрес эл. почты уже используется.");
+                    // Логируем информацию о занятом email и возвращаем 400 Bad Request
+                    return _logger.BadResponse(
+                        logMessage: $"Attempt to create account with non-free Email: {email}",
+                        resultMessage: "Адрес эл. почты уже используется.");
                 }
 
-                // Возвращаем 204 No Content
+                // Возвращаем 204 No Content, если email свободен
                 return Results.NoContent();
             }
             catch (Exception ex)
@@ -59,9 +65,13 @@ namespace SeriesTracker.API.Controllers
             }
         }
 
+        /// <summary>
+        /// Проверяет, существует ли указанный никнейм (userName) в системе.
+        /// </summary>
+        /// <param name="userName">Никнейм для проверки.</param>
         /// <returns>
-        ///   Возвращает  `204 No Content`, если userName не существует.
-        ///   Возвращает  `400 Bad Request`, если userName уже существует.
+        ///   Возвращает  `204 No Content`, если userName не существует (свободен).
+        ///   Возвращает  `400 Bad Request`, если userName уже существует (занят).
         ///   Возвращает  `500 Internal Server Error`, если произошла непредвиденная ошибка.
         /// </returns>
         [HttpGet("userName")]
@@ -69,17 +79,19 @@ namespace SeriesTracker.API.Controllers
         {
             try
             {
-                // Проверка userName на существование
+                // Вызываем метод сервиса для проверки существования никнейма
                 bool userNameExists = await _authenticationService.UserNameExists(userName);
 
-                // Если userName уже существует
-                if (userNameExists == true)
+                // Если никнейм уже существует
+                if (userNameExists == false)
                 {
-                    // Логируем информацию о занятом userName и возвращаем 400 Bad Response
-                    return _logger.BadResponse(logMessage: $"Attempt to create account with non-free UserName: {userName}", resultMessage: "Этот никнейм уже используется.");
+                    // Логируем информацию о занятом никнейме и возвращаем 400 Bad Request
+                    return _logger.BadResponse(
+                        logMessage: $"Attempt to create account with non-free UserName: {userName}",
+                        resultMessage: "Этот никнейм уже используется.");
                 }
 
-                // Возвращаем 204 No Content
+                // Возвращаем 204 No Content, если никнейм свободен
                 return Results.NoContent();
             }
             catch (Exception ex)
@@ -89,53 +101,114 @@ namespace SeriesTracker.API.Controllers
             }
         }
 
+        /// <summary>
+        /// Аутентифицирует пользователя и возвращает токен.
+        /// </summary>
+        /// <param name="request">Запрос, содержащий email и пароль пользователя.</param>
+        /// <returns>
+        ///   Возвращает  `200 OK`  с токеном в случае успешной аутентификации.
+        ///   Возвращает  `400 Bad Request`, если учетные данные неверны.
+        ///   Возвращает  `500 Internal Server Error`, если произошла непредвиденная ошибка.
+        /// </returns>
         [HttpPost("login")]
         public async Task<IResult> Login([FromBody] LoginUserRequest request)
         {
             try
             {
+                // Вызываем метод сервиса для аутентификации пользователя и получения токена
                 string token = await _authenticationService.Login(request.Email, request.Password);
 
+                // Если токен не получен (неверные учетные данные)
+                if (string.IsNullOrEmpty(token))
+                {
+                    // Логируем информацию о неудачной попытке входа и возвращаем 400 Bad Request
+                    return _logger.BadResponse(
+                        logMessage: $"Failed login attempt for email: {request.Email}",
+                        resultMessage: "Неправильный адрес почты или пароль");
+                }
+
                 // Успешный вход: устанавливаем cookie и возвращаем токен
-                Response.Cookies.Append("secretCookie", token, new CookieOptions { HttpOnly = true, Secure = true, SameSite = SameSiteMode.Strict });
-                return Results.Ok(new { Token = token });
-            }
-            catch (ArgumentException ex) // Неверный email или пароль
-            {
-                _logger.LogWarning(ex, $"Неудачная попытка входа для email: {request.Email}.  Причина: {ex.Message}"); // Добавляем информацию об ошибке
-                return Results.BadRequest(new { ex.Message }); // Возвращаем JSON-объект с сообщением
-            }
-            catch (Exception ex) // Непредвиденная ошибка
-            {
-                _logger.LogError(ex, $"Непредвиденная ошибка входа для email: {request.Email}");
-                return Results.Json(new { Message = "Произошла непредвиденная ошибка. Попробуйте позже." }, statusCode: StatusCodes.Status500InternalServerError);
-            }
-        }
+                Response.Cookies.Append("secretCookie", token, new CookieOptions // Добавляем токен в cookie
+                {
+                    HttpOnly = true, // Запрещаем доступ к cookie из JavaScript
+                    Secure = true, // Cookie передается только по HTTPS
+                    SameSite = SameSiteMode.Strict // Cookie отправляется только с запросами с того же сайта
+                });
 
-        [HttpPost("logout")]
-        public IResult Logout()
-        {
-            try
-            {
-                Response.Cookies.Delete("secretCookie"); // Удаляем cookie
-
-                // Логируем выход пользователя
-                _logger.LogInformation("Пользователь успешно вышел из системы.");
-
-                return Results.Ok(new { Message = "Вы успешно вышли из системы." }); // Используем Ok()
+                // Возвращаем 200 OK с токеном
+                return Results.Ok(token);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Ошибка при выходе из системы.");
-                return Results.Json(new { Message = "Произошла непредвиденная ошибка. Попробуйте позже." }, statusCode: StatusCodes.Status500InternalServerError);
+                // Логируем общую ошибку и возвращаем 500 Internal Server Error
+                return _logger.InternalServerError(exception: ex, logMessage: "An unexpected error occurred while user login.");
             }
         }
 
-        [HttpPost("register")]
-        public async Task<IResult> Register([FromBody] UserRequest request)
+        /// <summary>
+        /// Выполняет выход пользователя из системы.
+        /// </summary>
+        /// <param name="userName">Имя пользователя, выполняющего выход.</param>
+        /// <returns>
+        ///   Возвращает  `204 No Content`  в случае успешного выхода.
+        ///   Возвращает  `500 Internal Server Error`, если произошла непредвиденная ошибка.
+        /// </returns>
+        [HttpPost("logout/{userName}")] // Атрибут, определяющий маршрут для HTTP POST-запроса выхода пользователя
+        public IResult Logout(string userName)
         {
             try
             {
+                // Удаляем cookie с токеном
+                Response.Cookies.Delete("secretCookie");
+
+                // Логируем информацию об успешном выходе и возвращаем 204 No Content
+                return _logger.NoContentResponse($"The user ({userName}) has successfully logged out.");
+            }
+            catch (Exception ex)
+            {
+                // Логируем общую ошибку и возвращаем 500 Internal Server Error
+                return _logger.InternalServerError(exception: ex, logMessage: "An unexpected error occurred while user logged out.");
+            }
+        }
+
+        /// <summary>
+        /// Регистрирует нового пользователя.
+        /// </summary>
+        /// <param name="request">Запрос, содержащий данные для регистрации пользователя.</param>
+        /// <returns>
+        ///   Возвращает  `204 No Content`  в случае успешной регистрации.
+        ///   Возвращает  `400 Bad Request`, если данные не валидны.
+        ///   Возвращает  `500 Internal Server Error`, если произошла непредвиденная ошибка.
+        /// </returns>
+        [HttpPost("register")] // Атрибут, указывающий, что это POST-запрос на эндпоинт /auth/register
+        public async Task<IResult> Register([FromBody] UserRequest request)
+        {
+            // 1. Валидация входных данных (проверка на null и пустые строки)
+            if (string.IsNullOrWhiteSpace(request.Email))
+            {
+                // Если email пустой, возвращаем 400 Bad Request
+                return _logger.BadResponse(
+                    logMessage: "Attempt to sign up with empty or whitespace email.",
+                    resultMessage: "Эл. почта не может быть пустой.");
+            }
+            if (string.IsNullOrWhiteSpace(request.UserName))
+            {
+                // Если никнейм пустой, возвращаем 400 Bad Request
+                return _logger.BadResponse(
+                    logMessage: "Attempt to sign up with empty or whitespace userName.",
+                    resultMessage: "Никнейм не может быть пустым.");
+            }
+            if (string.IsNullOrWhiteSpace(request.Password))
+            {
+                // Если пароль пустой, возвращаем 400 Bad Request
+                return _logger.BadResponse(
+                    logMessage: "Attempt to sign up with empty or whitespace password.",
+                    resultMessage: "Пароль не может быть пустым.");
+            }
+
+            try
+            {
+                // 2. Вызываем метод сервиса для регистрации пользователя
                 await _authenticationService.Register(
                     request.Email,
                     request.Password,
@@ -145,18 +218,17 @@ namespace SeriesTracker.API.Controllers
                     request.SurName,
                     request.DateBirth);
 
-                // Успешная регистрация:
-                return Results.Ok(new { Message = "Регистрация прошла успешно." }); // Возвращаем JSON-объект с сообщением
+                // 3. Возвращаем 204 No Content в случае успешной регистрации
+                return _logger.NoContentResponse(
+                    logMessage: $"The user ({request.UserName}) has been successfully registered.");
             }
-            catch (ArgumentException ex) // Пример: Обработка исключения, если что-то не так с данными
+            catch (Exception ex)
             {
-                _logger.LogWarning(ex, $"Ошибка регистрации для email: {request.Email}. Причина: {ex.Message}");
-                return Results.BadRequest(new { ex.Message }); // Возвращаем JSON-объект с сообщением об ошибке
-            }
-            catch (Exception ex) // Ловим все остальные исключения
-            {
-                _logger.LogError(ex, $"Непредвиденная ошибка регистрации для email: {request.Email}");
-                return Results.Json(new { Message = "Произошла непредвиденная ошибка. Попробуйте позже." }, statusCode: StatusCodes.Status500InternalServerError);
+                // 4. Обрабатываем непредвиденные ошибки
+                // Логируем общую ошибку и возвращаем 500 Internal Server Error
+                return _logger.InternalServerError(
+                    exception: ex,
+                    logMessage: $"An unexpected error occurred while registration for email: {request.Email}");
             }
         }
 
@@ -173,18 +245,26 @@ namespace SeriesTracker.API.Controllers
         [HttpPost("verify")]
         public async Task<IResult> Verify([FromBody] LoginUserRequest request)
         {
+            if (string.IsNullOrWhiteSpace(request.Email))
+            {
+                // Логируем информацию о неавторизованном доступе и возвращаем 400 Bad Response
+                return _logger.BadResponse(logMessage: "Incorrect verification data (email, password).",
+                    resultMessage: "Эл. почта не может быть пустой.");
+            }
+
+            if (string.IsNullOrWhiteSpace(request.Password))
+            {
+                // Логируем информацию о неавторизованном доступе и возвращаем 400 Bad Response
+                return _logger.BadResponse(logMessage: "Incorrect verification data (email, password).",
+                    resultMessage: "Пароль не может быть пыстым.");
+            }
             try
             {
                 // Проверяем учетные данные через сервис аутентификации
                 bool isVerified = await _authenticationService.Verify(request.Email, request.Password);
 
                 // Если проверка успешна, возвращаем 200 OK с результатом (true)
-                return Results.Ok(isVerified);
-            }
-            catch (ArgumentException ex)
-            {
-                // Логируем информацию о неавторизованном доступе и возвращаем 400 Bad Response
-                return _logger.BadResponse(logMessage: "Incorrect verification data (email, password).", resultMessage: ex.Message, exeption: ex);
+                return _logger.NoContentResponse(logMessage: $"Successful login for user: {request.Email}");
             }
             catch (UnauthorizedAccessException ex)
             {

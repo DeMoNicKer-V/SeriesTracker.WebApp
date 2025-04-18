@@ -25,8 +25,9 @@ export const register = async (userData: UserRequest): Promise<void> => {
     return await post(REGISTER_URL, userData);
 };
 
-export const logout = async (): Promise<void> => {
-    await post<void>(LOGOUT_URL, {});
+export const logout = async (userName: string): Promise<void> => {
+    const url = LOGOUT_URL.replace("{userName}", userName);
+    await post<void>(url, {});
 };
 
 export const isEmailExists = async (email: string) => {

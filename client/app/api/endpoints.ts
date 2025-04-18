@@ -4,7 +4,7 @@ export const BASE_API_URL = "http://localhost:5125";
 // auth endpoints
 export const LOGIN_URL = "/auth/login";
 export const REGISTER_URL = "/auth/register";
-export const LOGOUT_URL = "/auth/logout";
+export const LOGOUT_URL = "/auth/logout/{userName}";
 export const VERIFY_URL = "/auth/verify";
 export const IS_EMAIL_URL = "/auth/email?email={email}";
 export const IS_USERNAME_URL = "/auth/userName?userName={userName}";

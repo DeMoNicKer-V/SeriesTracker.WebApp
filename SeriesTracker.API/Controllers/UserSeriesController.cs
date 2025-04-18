@@ -37,8 +37,8 @@ namespace SeriesTracker.API.Controllers
         /// Создает новую запись о просмотре аниме в списке пользователя.
         /// </summary>
         /// <param name="request">Данные для создания записи (AnimeId, CategoryId, WatchedEpisode, IsFavorite).</param>
-        /// <returns>Результат выполнения запроса. Возвращает 201 Created в случае успеха, 
-        /// 401 Unauthorized, если пользователь не авторизован, 
+        /// <returns>Результат выполнения запроса. Возвращает 201 Created в случае успеха,
+        /// 401 Unauthorized, если пользователь не авторизован,
         /// или 500 Internal Server Error в случае непредвиденной ошибки.</returns>
         [RequirePermission(Permission.Add)] // Атрибут, указывающий, что для доступа к методу требуется разрешение 'Add'
         [HttpPost("create")]
@@ -76,9 +76,9 @@ namespace SeriesTracker.API.Controllers
         /// Требует разрешения Permission.Read.
         /// </summary>
         /// <param name="userName">Имя пользователя, для которого необходимо удалить все записи.</param>
-        /// <returns>Результат выполнения запроса. Возвращает 204 No Content в случае успеха, 
+        /// <returns>Результат выполнения запроса. Возвращает 204 No Content в случае успеха,
         /// 401 Unauthorized, если пользователь не авторизован,
-        /// 400 Bad Request, если валидация не прошла, 
+        /// 400 Bad Request, если валидация не прошла,
         /// или 500 Internal Server Error в случае непредвиденной ошибки.</returns>
         [RequirePermission(Permission.Update)] // Атрибут, указывающий, что для доступа к методу требуется разрешение 'Update'
         [HttpDelete("{userName}/deleteAll")]
@@ -101,7 +101,7 @@ namespace SeriesTracker.API.Controllers
 
                 // Логируем информацию об успешном удалении всех записей и возвращаем 204 No Content
                 return _logger.NoContentResponse(
-                    loggerMessage: $"The user with ID:{userId} has deleted all series from his list.");
+                    logMessage: $"The user with ID:{userId} has deleted all series from his list.");
             }
             catch (UnauthorizedAccessException)
             {
@@ -128,7 +128,7 @@ namespace SeriesTracker.API.Controllers
         /// </summary>
         /// <param name="id">ID записи, которую необходимо удалить.</param>
         /// <returns>Результат выполнения запроса. Возвращает 204 No Content в случае успеха,
-        /// 401 Unauthorized, если пользователь не авторизован, 
+        /// 401 Unauthorized, если пользователь не авторизован,
         /// или 500 Internal Server Error в случае непредвиденной ошибки.</returns>
         [RequirePermission(Permission.Update)] // Атрибут, указывающий, что для доступа к методу требуется разрешение 'Update'
         [HttpDelete("delete/{id:guid}")]
@@ -151,7 +151,7 @@ namespace SeriesTracker.API.Controllers
 
                 // Логируем информацию об успешном удалении аниме из спика и возвращаем 204 No Content
                 return _logger.NoContentResponse(
-                    loggerMessage: $"The user with ID:{userId} has deleted series with ID:{id} from his list.");
+                    logMessage: $"The user with ID:{userId} has deleted series with ID:{id} from his list.");
             }
             catch (UnauthorizedAccessException)
             {
@@ -171,7 +171,7 @@ namespace SeriesTracker.API.Controllers
         /// <param name="userName">Имя пользователя.</param>
         /// <param name="page">Номер страницы списка.</param>
         /// <param name="request">Параметры запроса для фильтрации списка аниме.</param>
-        /// <returns>Результат выполнения запроса. Возвращает 200 OK со списком аниме 
+        /// <returns>Результат выполнения запроса. Возвращает 200 OK со списком аниме
         /// или 500 Internal Server Error в случае непредвиденной ошибки.</returns>
         [HttpGet("{userName}/list/{page}")]
         public async Task<IResult> GetAnimesByUser(string userName, int page, [FromQuery] UserSeriesRequest request)
@@ -220,7 +220,7 @@ namespace SeriesTracker.API.Controllers
         /// </summary>
         /// <param name="userName">Имя пользователя.</param>
         /// <returns>Результат выполнения запроса. Возвращает 200 OK с данными профиля пользователя,
-        /// 404 Not Found, если пользователь не найден, 
+        /// 404 Not Found, если пользователь не найден,
         /// или 500 Internal Server Error в случае непредвиденной ошибки.</returns>
         [HttpGet("{userName}")]
         public async Task<IResult> GetUserProfileInfo(string userName)
@@ -253,7 +253,7 @@ namespace SeriesTracker.API.Controllers
         /// <param name="id">ID записи, которую необходимо обновить.</param>
         /// <param name="request">Данные для обновления записи (WatchedEpisode, CategoryId, IsFavorite).</param>
         /// <returns>Результат выполнения запроса. Возвращает 204 No Content в случае успеха,
-        /// 401 Unauthorized, если пользователь не авторизован, 
+        /// 401 Unauthorized, если пользователь не авторизован,
         /// или 500 Internal Server Error в случае непредвиденной ошибки.</returns>
         [RequirePermission(Permission.Update)] // Атрибут, указывающий, что для доступа к методу требуется разрешение 'Update'
         [HttpPut("update/{id:guid}")]
@@ -277,7 +277,7 @@ namespace SeriesTracker.API.Controllers
 
                 // Логируем информацию об успешном обновлении аниме в списке пользователя и возвращаем 204 No Content
                 return _logger.NoContentResponse(
-                    loggerMessage: $"The user with ID:{userId} has updated series with animeID:{request.AnimeId}.");
+                    logMessage: $"The user with ID:{userId} has updated series with animeID:{request.AnimeId}.");
             }
             catch (UnauthorizedAccessException)
             {
