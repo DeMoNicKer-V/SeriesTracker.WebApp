@@ -15,11 +15,6 @@ namespace SeriesTracker.Infrastructure.Authentication
     {
         private readonly JwtOptions _jwtOptions = jwtOptions.Value;
 
-        /// <summary>
-        /// Генерирует JWT для указанного пользователя.
-        /// </summary>
-        /// <param name="user">Пользователь, для которого генерируется токен.</param>
-        /// <returns>JWT в виде строки (<see cref="string"/>).</returns>
         public string GenerateToken(User user)
         {
             // Формируем Claims (утверждения) из нужных полей пользователя.
@@ -51,12 +46,6 @@ namespace SeriesTracker.Infrastructure.Authentication
             return tokenValue; // Возвращаем JWT в виде строки.
         }
 
-        /// <summary>
-        /// Валидирует JWT и возвращает ClaimsPrincipal (набор утверждений пользователя).
-        /// </summary>
-        /// <param name="token">JWT в виде строки.</param>
-        /// <returns><see cref="ClaimsPrincipal"/>, представляющий пользователя, если токен действителен, иначе исключение.</returns>
-        /// <exception cref="ArgumentException">Выбрасывается, если токен отсутствует.</exception>
         public ClaimsPrincipal ValidateToken(string token)
         {
             // Проверка наличия токена.

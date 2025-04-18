@@ -30,12 +30,16 @@
         /// </summary>
         /// <param name="logger">Логгер для записи информации об успешном создании ресурса.</param>
         /// <param name="logMessage">Сообщение для логгера.</param>
-        /// <param name="resultMessage">Сообщение, которое будет возвращено в теле ответа клиенту.</param>
+        /// <param name="location">Url созданного ресурса.</param>
         /// <returns>IResult с кодом состояния 201 Created и JSON-сообщением.</returns>
-        public static IResult CreatedResponse(this ILogger logger, string logMessage, string resultMessage)
+        public static IResult CreatedResponse(this ILogger logger, string location, string? logMessage = null)
         {
-            logger.LogInformation(logMessage);
-            return Results.Json(new { Message = resultMessage }, statusCode: StatusCodes.Status201Created);
+            if (!string.IsNullOrEmpty(logMessage))
+            {
+                logger.LogInformation(logMessage);
+            }
+
+            return Results.Created(location, null);
         }
 
         /// <summary>
@@ -48,6 +52,7 @@
         public static IResult InternalServerError(this ILogger logger, Exception exception, string logMessage)
         {
             logger.LogCritical(exception, logMessage);
+
             return Results.Json(new { Message = "An unexpected error has occurred. Try again later." }, statusCode: StatusCodes.Status500InternalServerError);
         }
 
@@ -63,6 +68,7 @@
             {
                 logger.LogInformation(logMessage);
             }
+
             return Results.NoContent();
         }
 
@@ -75,6 +81,7 @@
         public static IResult NotFoundResponse(this ILogger logger, string message)
         {
             logger.LogWarning(message);
+
             return Results.Json(new { Message = message }, statusCode: StatusCodes.Status404NotFound);
         }
 
@@ -88,6 +95,7 @@
         public static IResult UnauthorizedResponse(this ILogger logger, string resultMessage, string methodName)
         {
             logger.LogWarning("Unauthorized access attempt to method: {methodName}.", methodName);
+
             return Results.Json(new { Message = resultMessage }, statusCode: StatusCodes.Status401Unauthorized);
         }
     }

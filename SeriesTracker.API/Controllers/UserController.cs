@@ -38,8 +38,10 @@ namespace SeriesTracker.API.Controllers
         /// </summary>
         /// <param name="id">Идентификатор пользователя, роль которого необходимо изменить.</param>
         /// <param name="roleId">Идентификатор новой роли пользователя.</param>
-        /// <returns>Результат выполнения запроса. Возвращает 204 No Content в случае успеха
-        /// или 500 Internal Server Error в случае непредвиденной ошибки.</returns>
+        /// <returns>
+        ///   Возвращает  `204 No Content`  в случае успеха.
+        ///   Возвращает  `500 Internal Server Error`, если произошла непредвиденная ошибка.
+        /// </returns>
         [RequirePermission(Permission.Create)] // Атрибут, указывающий, что для доступа к методу требуется разрешение 'Create'
         [HttpPut("changeRole/{id}")]
         public async Task<IResult> ChangeUserRole(Guid id, [FromBody] int roleId)
@@ -57,7 +59,7 @@ namespace SeriesTracker.API.Controllers
 
                 // Логируем информацию об успешном обновлении роли и возвращаем 204 No Content
                 return _logger.NoContentResponse(
-                    loggerMessage: $"The role of user with ID:{id} has updated to: {roleId}.");
+                    logMessage: $"The role of user with ID:{id} has updated to: {roleId}.");
             }
             catch (Exception ex)
             {
@@ -70,9 +72,11 @@ namespace SeriesTracker.API.Controllers
         /// Удаляет аккаунт пользователя.
         /// </summary>
         /// <param name="userName">Имя пользователя, аккаунт которого необходимо удалить.</param>
-        /// <returns>Результат выполнения запроса. Возвращает 204 No Content в случае успеха,
-        /// 404 Not Found, если пользователь не найден,
-        /// или 500 Internal Server Error в случае непредвиденной ошибки.</returns>
+        /// <returns>
+        ///   Возвращает  `204 No Content`  в случае успеха.
+        ///   Возвращает  `404 Not Found`, если пользователь не найден.
+        ///   Возвращает  `500 Internal Server Error`, если произошла непредвиденная ошибка.
+        /// </returns>
         [RequirePermission(Permission.Update)] // Атрибут, указывающий, что для доступа к методу требуется разрешение 'Update'
         [HttpDelete("{userName}/deleteSelf")]
         public async Task<IResult> DeleteSelfAccount(string userName)
@@ -101,7 +105,7 @@ namespace SeriesTracker.API.Controllers
 
                 // Логируем информацию об успешном удалении аккаунта и возвращаем 204 No Content
                 return _logger.NoContentResponse(
-                    loggerMessage: $"The user ({userName}) deleted his account.");
+                    logMessage: $"The user ({userName}) deleted his account.");
             }
             catch (Exception ex)
             {
@@ -114,9 +118,11 @@ namespace SeriesTracker.API.Controllers
         /// Удаляет аккаунт пользователя по имени пользователя.
         /// </summary>
         /// <param name="userName">Имя пользователя, аккаунт которого необходимо удалить.</param>
-        /// <returns>Результат выполнения запроса. Возвращает 204 No Content в случае успеха,
-        /// 404 Not Found, если пользователь не найден,
-        /// или 500 Internal Server Error в случае непредвиденной ошибки.</returns>
+        /// <returns>
+        ///   Возвращает  `204 No Content`  в случае успеха.
+        ///   Возвращает  `404 Not Found`, если пользователь не найден.
+        ///   Возвращает  `500 Internal Server Error`, если произошла непредвиденная ошибка.
+        /// </returns>
         [RequirePermission(Permission.Delete)] // Атрибут, указывающий, что для доступа к методу требуется разрешение 'Delete'
         [HttpDelete("{userName}/delete")]
         public async Task<IResult> DeleteUserByUserName(string userName)
@@ -144,7 +150,7 @@ namespace SeriesTracker.API.Controllers
 
                 // Логируем информацию об успешном удалении аккаунта и возвращаем 204 No Content
                 return _logger.NoContentResponse(
-                    loggerMessage: $"The user ({userName}) deleted his account.");
+                    logMessage: $"The user ({userName}) deleted his account.");
             }
             catch (Exception ex)
             {
@@ -157,9 +163,11 @@ namespace SeriesTracker.API.Controllers
         /// Получает информацию о пользователе по его идентификатору.
         /// </summary>
         /// <param name="id">Идентификатор пользователя.</param>
-        /// <returns>Результат выполнения запроса. Возвращает пользователя с кодом 200 OK в случае успеха,
-        /// 404 Not Found, если пользователь не найден,
-        /// или 500 Internal Server Error в случае непредвиденной ошибки.</returns>
+        /// <returns>
+        ///   Возвращает пользователя с кодом  `200 OK`  в случае успеха.
+        ///   Возвращает  `404 Not Found`, если пользователь не найден.
+        ///   Возвращает  `500 Internal Server Error`, если произошла непредвиденная ошибка.
+        /// </returns>
         [HttpGet("id/{id:guid}")]
         public async Task<IResult> GetUserById(Guid id)
         {
@@ -188,8 +196,10 @@ namespace SeriesTracker.API.Controllers
         /// Получает список пользователей с пагинацией.
         /// </summary>
         /// <param name="page">Номер страницы (по умолчанию 1).</param>
-        /// <returns>Результат выполнения запроса. Возвращает список пользователей и общее количество пользователей с кодом  204 No Content в случае успеха,
-        /// или 500 Internal Server Error в случае непредвиденной ошибки.</returns>
+        /// <returns>
+        ///   Возвращает список пользователей и общее количество пользователей с кодом  `200 OK` в случае успеха.
+        ///   Возвращает  `500 Internal Server Error`, если произошла непредвиденная ошибка.
+        /// </returns>
         [HttpGet("{page:int}")]
         public async Task<IResult> GetUsersList(int page = 1)
         {
@@ -213,9 +223,11 @@ namespace SeriesTracker.API.Controllers
         /// </summary>
         /// <param name="userName">Имя пользователя, информацию о котором необходимо обновить.</param>
         /// <param name="request">Запрос, содержащий данные для обновления пользователя.</param>
-        /// <returns>Результат выполнения запроса. Возвращает пользователя с кодом 200 OK в случае успеха,
-        /// 404 Not Found, если пользователь не найден,
-        /// или 500 Internal Server Error в случае непредвиденной ошибки.</returns>
+        /// <returns>
+        ///   Возвращает пользователя с кодом  `200 OK`  в случае успеха.
+        ///   Возвращает  `404 Not Found`, если пользователь не найден.
+        ///   Возвращает  `500 Internal Server Error`, если произошла непредвиденная ошибка.
+        /// </returns>
         [RequirePermission(Permission.Update)] // Атрибут, указывающий, что для доступа к методу требуется разрешение 'Update'
         [HttpPut("update/{userName}")]
         public async Task<IResult> UpdateUser(string userName, [FromBody] UserRequest request)
@@ -252,6 +264,13 @@ namespace SeriesTracker.API.Controllers
                 if (!string.IsNullOrEmpty(request.UserName))
                 {
                     string token = await _userService.GenerateNewUserToken(request.UserName);
+
+                    // Если token пуст - выбрасываем исключение
+                    if (string.IsNullOrEmpty(token))
+                    {
+                        throw new Exception($"Failed to update token for user ({userName}).");
+                    }
+
                     Response.Cookies.Append("secretCookie", token, new CookieOptions { HttpOnly = true, Secure = true }); // Обновляем куки
                 }
 

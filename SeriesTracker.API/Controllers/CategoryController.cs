@@ -36,9 +36,11 @@ namespace SeriesTracker.API.Controllers
         /// Получает категорию по ее идентификатору.
         /// </summary>
         /// <param name="id">Идентификатор категории.</param>
-        /// <returns>Результат выполнения запроса. Возвращает 200 OK с категорией с заданным id,
-        /// 404 No Found, если такой категории не существует,
-        /// или 500 Internal Server Error в случае непредвиденной ошибки.</returns>
+        /// <returns>
+        ///   Возвращает  `200 OK`  с категорией с заданным id.
+        ///   Возвращает  `404 Not Found`, если такой категории не существует.
+        ///   Возвращает  `500 Internal Server Error`, если произошла непредвиденная ошибка.
+        /// </returns>
         [HttpGet("{id:int}")]
         public async Task<IResult> GetCategoryById(int id)
         {
@@ -72,8 +74,10 @@ namespace SeriesTracker.API.Controllers
         /// <summary>
         /// Получает список всех категорий.
         /// </summary>
-        /// <returns>Результат выполнения запроса. Возвращает 200 OK со списком всех категорий
-        /// или 500 Internal Server Error в случае непредвиденной ошибки.</returns>
+        /// <returns>
+        ///   Возвращает  `200 OK`  со списком всех категорий.
+        ///   Возвращает  `500 Internal Server Error`, если произошла непредвиденная ошибка.
+        /// </returns>
         [HttpGet]
         public async Task<IResult> GetCategoryList()
         {
@@ -97,9 +101,11 @@ namespace SeriesTracker.API.Controllers
         /// </summary>
         /// <param name="id">Идентификатор категории.</param>
         /// <param name="request">Запрос на обновление цвета категории.</param>
-        /// <returns>Результат выполнения запроса. Возвращает 204 No Content в случае успеха,
-        /// 404 No Found, если такой категории не существует,
-        /// или 500 Internal Server Error в случае непредвиденной ошибки.</returns>
+        /// <returns>
+        ///   Возвращает  `204 No Content`  в случае успеха.
+        ///   Возвращает  `404 Not Found`, если такой категории не существует.
+        ///   Возвращает  `500 Internal Server Error`, если произошла непредвиденная ошибка.
+        /// </returns>
         [RequirePermission(Permission.Delete)] // Атрибут, указывающий, что для доступа к методу требуется разрешение 'Delete'
         [HttpPut("{id:int}")]
         public async Task<IResult> UpdateCategoryColor(int id, [FromBody] UpdateCategoryColorRequest request)

@@ -39,8 +39,10 @@ namespace SeriesTracker.API.Controllers
         /// <summary>
         /// Получает список аниме, которые выйдут или выходят в ближайшие 7 дней.
         /// </summary>
-        /// <returns>Результат выполнения запроса. Возвращает 200 OK с массивом аниме из календаря
-        /// или 500 Internal Server Error в случае непредвиденной ошибки.</returns>
+        /// <returns>
+        ///   Возвращает  `200 OK`  с массивом аниме из календаря.
+        ///   Возвращает  `500 Internal Server Error`, если произошла непредвиденная ошибка.
+        /// </returns>
         [HttpGet("calendar")]
         public async Task<IResult> GetAiredAnimes()
         {
@@ -73,9 +75,12 @@ namespace SeriesTracker.API.Controllers
         /// Получает информацию об аниме по его ID.
         /// </summary>
         /// <param name="id">ID аниме.</param>
-        /// <returns>Результат выполнения запроса. Возвращает 200 OK с данными аниме,
-        /// 400 Bad Request, если ID имеет неверный формат, 404 Not Found, если аниме с указанным ID не найдено,
-        /// или 500 Internal Server Error в случае непредвиденной ошибки.</returns>
+        /// <returns>
+        ///   Возвращает  `200 OK`  с данными аниме.
+        ///   Возвращает  `400 Bad Request`, если ID имеет неверный формат.
+        ///   Возвращает  `404 Not Found`, если аниме с указанным ID не найдено.
+        ///   Возвращает  `500 Internal Server Error`, если произошла непредвиденная ошибка.
+        /// </returns>
         [HttpGet("id/{id}")]
         public async Task<IResult> GetAnimeById(string id)
         {
@@ -116,8 +121,10 @@ namespace SeriesTracker.API.Controllers
         /// Получает список аниме с учетом указанных параметров запроса.
         /// </summary>
         /// <param name="request">Параметры запроса для фильтрации и сортировки аниме.</param>
-        /// <returns>Результат выполнения запроса.  Возвращает 200 OK с массивом AnimeSeriesDto
-        /// или 500 Internal Server Error в случае непредвиденной ошибки.</returns>
+        /// <returns>
+        ///   Возвращает  `200 OK`  с массивом AnimeSeriesDto.
+        ///   Возвращает  `500 Internal Server Error`, если произошла непредвиденная ошибка.
+        /// </returns>
         [HttpGet]
         public async Task<IResult> GetAnimesByAllParams([FromQuery] ShikimoriParamsRequest request)
         {
@@ -152,8 +159,10 @@ namespace SeriesTracker.API.Controllers
         /// Получает список аниме по названию.
         /// </summary>
         /// <param name="name">Имя аниме для поиска.</param>
-        /// <returns>Результат выполнения запроса.  Возвращает 200 OK с массивом AnimeSeriesDto
-        /// или 500 Internal Server Error в случае непредвиденной ошибки.</returns>
+        /// <returns>
+        ///   Возвращает  `200 OK`  с массивом AnimeSeriesDto.
+        ///   Возвращает  `500 Internal Server Error`, если произошла непредвиденная ошибка.
+        /// </returns>
         [HttpGet("{name}")]
         public async Task<IResult> GetAnimesByName(string name)
         {
@@ -178,8 +187,10 @@ namespace SeriesTracker.API.Controllers
         /// <summary>
         /// Получает список всех жанров аниме.
         /// </summary>
-        /// <returns>Результат выполнения запроса. Возвращает 200 OK с массивом жанров
-        /// или 500 Internal Server Error в случае непредвиденной ошибки.</returns>
+        /// <returns>
+        ///   Возвращает  `200 OK`  с массивом жанров.
+        ///   Возвращает  `500 Internal Server Error`, если произошла непредвиденная ошибка.
+        /// </returns>
         [HttpGet("genres")]
         public async Task<IResult> GetGenres()
         {
@@ -201,8 +212,10 @@ namespace SeriesTracker.API.Controllers
         /// <summary>
         /// Получает список сгруппированных жанров аниме.
         /// </summary>
-        /// <returns>Результат выполнения запроса. Возвращает 200 OK с данными сгруппированных жанров
-        /// или 500 Internal Server Error в случае непредвиденной ошибки.</returns>
+        /// <returns>
+        ///   Возвращает  `200 OK`  с данными сгруппированных жанров.
+        ///   Возвращает  `500 Internal Server Error`, если произошла непредвиденная ошибка.
+        /// </returns>
         [HttpGet("groupGenres")]
         public async Task<IResult> GetGroupGenres()
         {
@@ -224,8 +237,10 @@ namespace SeriesTracker.API.Controllers
         /// <summary>
         /// Получает случайное аниме.
         /// </summary>
-        /// <returns>Результат выполнения запроса. Возвращает 200 OK с ID случайного аниме
-        /// или 500 Internal Server Error в случае непредвиденной ошибки.</returns>
+        /// <returns>
+        ///   Возвращает  `200 OK`  с ID случайного аниме.
+        ///   Возвращает  `500 Internal Server Error`, если произошла непредвиденная ошибка.
+        /// </returns>
         [HttpGet("random")]
         public async Task<IResult> GetRandomAnime()
         {
@@ -249,8 +264,10 @@ namespace SeriesTracker.API.Controllers
         /// </summary>
         /// <param name="userName">Имя пользователя Shikimori.</param>
         /// <param name="id">ID пользователя Shikimori.</param>
-        /// <returns>Результат выполнения запроса. Возвращает 200 OK с массивом недавно изменненых аниме пользователя
-        /// или 500 Internal Server Error в случае непредвиденной ошибки.</returns>
+        /// <returns>
+        ///   Возвращает  `200 OK`  с массивом недавно измененных аниме пользователя.
+        ///   Возвращает  `500 Internal Server Error`, если произошла непредвиденная ошибка.
+        /// </returns>
         [HttpGet("activity")]
         public async Task<IResult> GetRecentAnimes(string userName, string id)
         {
@@ -264,6 +281,7 @@ namespace SeriesTracker.API.Controllers
             }
             catch (Exception ex)
             {
+                // Логируем ошибку и возвращаем 500 Internal Server Error
                 return _logger.InternalServerError(ex, "An unexpected error occurred while getting animes.");
             }
         }

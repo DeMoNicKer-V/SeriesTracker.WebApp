@@ -4,6 +4,10 @@ using SeriesTracker.Infrastructure.Authentication;
 
 namespace SeriesTracker.Infrastructure.Extensions
 {
+    /// <summary>
+    /// Расширения для конфигурации инфраструктурных сервисов приложения.
+    /// Предоставляет методы для регистрации сервисов инфраструктуры в контейнере DI.
+    /// </summary>
     public static class InfrastructureExtensions
     {
         /// <summary>
@@ -13,7 +17,10 @@ namespace SeriesTracker.Infrastructure.Extensions
         /// <returns>Коллекция сервисов с зарегистрированными сервисами инфраструктуры.</returns>
         public static IServiceCollection AddInfrastructure(this IServiceCollection services)
         {
+            // Регистрируем JwtProvider как scoped сервис для генерации JWT-токенов.
             services.AddScoped<IJwtProvider, JwtProvider>();
+
+            // Регистрируем PasswordHasher как scoped сервис для хеширования паролей.
             services.AddScoped<IPasswordHasher, PasswordHasher>();
 
             return services;

@@ -42,11 +42,9 @@ namespace SeriesTracker.DataAccess
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // Применяем конфигурации сущностей из сборок (Assemblies).
-            // Это позволяет разделить конфигурацию сущностей на отдельные классы.
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(SeriesTrackerDbContext).Assembly);
 
             // Применяем конфигурацию разрешений ролей (Role Permissions).
-            // Эта конфигурация может включать в себя начальные данные для ролей и разрешений.
             modelBuilder.ApplyConfiguration(new RolePermissionConfiguration(authOptions.Value));
         }
     }

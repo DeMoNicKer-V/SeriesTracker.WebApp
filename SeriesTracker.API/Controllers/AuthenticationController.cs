@@ -2,6 +2,7 @@
 using SeriesTracker.API.Contracts;
 using SeriesTracker.API.Extensions;
 using SeriesTracker.Application.Services;
+using SeriesTracker.Core.Models;
 
 namespace SeriesTracker.API.Controllers
 {
@@ -219,8 +220,7 @@ namespace SeriesTracker.API.Controllers
                     request.DateBirth);
 
                 // 3. Возвращаем 204 No Content в случае успешной регистрации
-                return _logger.NoContentResponse(
-                    logMessage: $"The user ({request.UserName}) has been successfully registered.");
+                return _logger.CreatedResponse($"/user/{request.UserName}", logMessage: $"User with email {request.Email} has been successfully registered.");
             }
             catch (Exception ex)
             {

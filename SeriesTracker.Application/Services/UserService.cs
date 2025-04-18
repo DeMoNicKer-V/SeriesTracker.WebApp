@@ -1,70 +1,104 @@
 ﻿using AutoMapper;
-using Microsoft.Extensions.Logging;
 using SeriesTracker.Application.Interfaces.Auth;
 using SeriesTracker.Core.Abstractions;
 using SeriesTracker.Core.Dtos.UserDtos;
+using SeriesTracker.Core.Models;
 
 namespace SeriesTracker.Application.Services
 {
-    public class UserService(
-        IUserRepository userRepository,
-        IPasswordHasher passwordHasher,
-        IJwtProvider jwtProvider,
-        ILogger<UserService> logger,
-        IMapper mapper) : IUserService
+    /// <summary>
+    /// Сервис для работы с пользователями.  Предоставляет методы для получения, создания, обновления и удаления пользователей.
+    /// </summary>
+    public class UserService : IUserService
     {
-        private readonly IUserRepository _userRepository = userRepository;
-        private readonly IPasswordHasher _passwordHasher = passwordHasher;
-        private readonly IJwtProvider _jwtProvider = jwtProvider;
-        private readonly ILogger<UserService> _logger = logger;
-        private readonly IMapper _mapper = mapper;
+        private readonly IJwtProvider _jwtProvider;
+        private readonly IMapper _mapper;
+        private readonly IPasswordHasher _passwordHasher;
+        private readonly IUserRepository _userRepository;
 
-        public async Task<string> GenerateNewUserToken(string userName)
+        /// <summary>
+        /// Инициализирует новый экземпляр класса <see cref="UserService"/>.
+        /// </summary>
+        /// <param name="userRepository">Репозиторий для работы с пользователями.</param>
+        /// <param name="passwordHasher">Сервис для хеширования паролей.</param>
+        /// <param name="jwtProvider">Провайдер для генерации JWT-токенов.</param>
+        /// <param name="mapper">AutoMapper для преобразования объектов.</param>
+        public UserService(
+            IUserRepository userRepository,
+            IPasswordHasher passwordHasher,
+            IJwtProvider jwtProvider,
+            IMapper mapper)
         {
-            var user = await _userRepository.GetUserByUserName(userName);
+            // Внедряем зависимости (Dependency Injection) и проверяем на null
+            _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
 
-            if (user == null)
-            {
-                // Логируем попытку входа с неверными данными (без указания конкретной причины)
-                _logger.LogInformation($"Ошибка при генерации токена для userName: {userName}");
-                throw new ArgumentException("Пользователь не найден");
-            }
+            _passwordHasher = passwordHasher ?? throw new ArgumentNullException(nameof(passwordHasher));
 
-            var token = _jwtProvider.GenerateToken(user);
-            return token;
+            _jwtProvider = jwtProvider ?? throw new ArgumentNullException(nameof(jwtProvider));
+
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+        }
+
+        public async Task<bool> ChangeUserRole(Guid id, int roleId)
+        {
+            // Изменяем роль пользователя в репозитории
+            return await _userRepository.ChangeUserRole(id, roleId);
         }
 
         public async Task<bool> DeleteUser(Guid id)
         {
+            // Удаляем пользователя из репозитория
             return await _userRepository.DeleteUser(id);
         }
 
-        public async Task<(List<UserDto>, int)> GetUserList(int page)
+        public async Task<string> GenerateNewUserToken(string userName)
         {
-            return await _userRepository.GetUserList(page);
-        }
+            // 1. Получаем пользователя из репозитория по имени пользователя
+            User? user = await _userRepository.GetUserByUserName(userName);
 
+            // 2. Проверяем, существует ли пользователь
+            if (user == null)
+            {
+                // Если пользователь не найден, возвращаем пустую строку
+                return string.Empty;
+            }
+
+            // 3. Генерируем JWT-токен для пользователя
+            string token = _jwtProvider.GenerateToken(user);
+
+            // 4. Возвращаем токен
+            return token;
+        }
         public async Task<UserDetailDto?> GetUserById(Guid id)
         {
+            // 1. Получаем пользователя из репозитория по ID
             var user = await _userRepository.GetUserById(id);
+
+            // 2. Преобразуем объект User в объект UserDetailDto с помощью AutoMapper
             return _mapper.Map<UserDetailDto>(user);
         }
 
         public async Task<UserDetailDto?> GetUserByUserName(string userName)
         {
-            var user = await _userRepository.GetUserByUserName(userName);
+            // 1. Получаем пользователя из репозитория по имени пользователя
+            User? user = await _userRepository.GetUserByUserName(userName);
+
+            // 2. Преобразуем объект User в объект UserDetailDto с помощью AutoMapper
             return _mapper.Map<UserDetailDto>(user);
         }
 
+        public async Task<(List<UserDto>, int)> GetUserList(int page)
+        {
+            // Получаем список пользователей из репозитория
+            return await _userRepository.GetUserList(page);
+        }
         public async Task<bool> UpdateUser(Guid id, string? userName, string? name, string? surName, string? email, string? password, string? avatar, string? dateBirth)
         {
+            // 1. Хешируем новый пароль, если он был указан
             string passwordHash = !string.IsNullOrEmpty(password) ? _passwordHasher.Generate(password) : string.Empty;
-            return await _userRepository.UpdateUser(id, userName, name, surName, email, passwordHash, avatar, dateBirth);
-        }
 
-        public async Task<bool> ChangeUserRole(Guid id, int roleId)
-        {
-            return await _userRepository.ChangeUserRole(id, roleId);
+            // 2. Обновляем информацию о пользователе в репозитории
+            return await _userRepository.UpdateUser(id, userName, name, surName, email, passwordHash, avatar, dateBirth);
         }
     }
 }

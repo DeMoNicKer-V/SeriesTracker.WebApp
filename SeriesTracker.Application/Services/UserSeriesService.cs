@@ -29,9 +29,13 @@ namespace SeriesTracker.Application.Services
         public UserSeriesService(
             IUserSeriesRepository userSeriesRepository, IUserRepository userRepository, ILogger<UserSeriesService> logger, IMapper mapper)
         {
+            // Внедряем зависимости (Dependency Injection) и проверяем на null
             _userSeriesRepository = userSeriesRepository ?? throw new ArgumentNullException(nameof(userSeriesRepository));
+
             _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
+
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 

@@ -15,14 +15,22 @@ namespace SeriesTracker.Application.Services
         /// Инициализирует новый экземпляр класса <see cref="PermissionService"/>.
         /// </summary>
         /// <param name="usersRepository">Репозиторий для доступа к данным пользователей.</param>
+        /// <exception cref="ArgumentNullException">Выбрасывается, если <paramref name="usersRepository"/> равен null.</exception>
         public PermissionService(IUserRepository usersRepository)
         {
-            _usersRepository = usersRepository;
+            // Внедряем зависимости (Dependency Injection) и проверяем на null
+            _usersRepository = usersRepository ?? throw new ArgumentNullException(nameof(usersRepository));
         }
 
-        public Task<HashSet<Permission>> GetPermissionsAsync(Guid userId)
+        /// <summary>
+        /// Получает асинхронно набор разрешений для указанного пользователя.
+        /// </summary>
+        /// <param name="userId">Идентификатор пользователя, для которого необходимо получить разрешения.</param>
+        /// <returns>Задача, представляющая асинхронную операцию. Результатом задачи является HashSet разрешений.</returns>
+        public async Task<HashSet<Permission>> GetPermissionsAsync(Guid userId)
         {
-            return _usersRepository.GetUserPermissions(userId);
+            // Получаем разрешения пользователя из репозитория
+            return await _usersRepository.GetUserPermissions(userId);
         }
     }
 }
