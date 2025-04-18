@@ -1,53 +1,75 @@
-﻿namespace SeriesTracker.DataAccess.Entities
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace SeriesTracker.DataAccess.Entities
 {
+    /// <summary>
+    /// Представляет информацию о пользователе.
+    /// </summary>
+    [Table("Users")]
     public class UserEntity
     {
-        public string? Avatar
-        {
-            get; set;
-        }
+        /// <summary>
+        /// URL аватара пользователя.
+        /// </summary>
+        public string? Avatar { get; set; }
 
-        public string? DateBirth
-        {
-            get; set;
-        }
+        /// <summary>
+        /// Дата рождения пользователя.
+        /// </summary>
+        public string? DateBirth { get; set; }
 
-        public string Email
-        {
-            get; set;
-        }
+        /// <summary>
+        /// Адрес электронной почты пользователя.
+        /// </summary>
+        [Required]
+        [MaxLength(255)]
+        public string Email { get; set; } = string.Empty;
 
-        public Guid Id
-        {
-            get; set;
-        }
+        /// <summary>
+        /// Уникальный идентификатор пользователя.
+        /// </summary>
+        [Key]
+        public Guid Id { get; set; }
 
-        public string? Name
-        {
-            get; set;
-        }
+        /// <summary>
+        /// Имя пользователя.
+        /// </summary>
+        [MaxLength(255)]
+        public string? Name { get; set; }
 
-        public string PasswordHash
-        {
-            get; set;
-        }
+        /// <summary>
+        /// Хеш пароля пользователя.
+        /// </summary>
+        [Required]
+        public string PasswordHash { get; set; } = string.Empty;
 
-        public string RegDate
-        {
-            get; set;
-        }
+        /// <summary>
+        /// Дата регистрации пользователя.
+        /// </summary>
+        public string RegDate { get; set; } = string.Empty;
 
+        /// <summary>
+        /// Навигационное свойство, представляющее список ролей пользователя.
+        /// </summary>
         public ICollection<RoleEntity> Roles { get; set; } = [];
+
+        /// <summary>
+        /// Фамилия пользователя.
+        /// </summary>
+        [MaxLength(255)]
+        public string? SurName { get; set; }
+
+        /// <summary>
+        /// Имя пользователя (логин).
+        /// </summary>
+        [Required]
+        [MaxLength(255)]
+        public string UserName { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Навигационное свойство, представляющее список аниме, которые смотрит пользователь.
+        /// </summary>
         public ICollection<UserSeriesEntity> UserSeries { get; set; } = [];
-
-        public string? SurName
-        {
-            get; set;
-        }
-
-        public string UserName
-        {
-            get; set;
-        }
     }
 }

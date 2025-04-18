@@ -1,32 +1,48 @@
-﻿namespace SeriesTracker.DataAccess.Entities
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace SeriesTracker.DataAccess.Entities
 {
+    /// <summary>
+    /// Представляет информацию о категории для аниме пользователя.
+    /// </summary>
+    [Table("Categories")]
     public class CategoryEntity
     {
-        public int Id
-        {
-            get; set;
-        }
+        /// <summary>
+        /// Цвет категории.
+        /// </summary>
+        [Required]
+        [MaxLength(7)]
+        public string Color { get; set; } = string.Empty;
 
-        public required string Name
-        {
-            get; set;
-        }
+        /// <summary>
+        /// Дата изменение категории.
+        /// </summary>
+        [Required]
+        public string Date { get; set; } = string.Empty;
 
-        public required string Color
-        {
-            get; set;
-        }
+        /// <summary>
+        /// Уникальный идентификатор категории.
+        /// </summary>
+        [Key]
+        public int Id { get; set; }
 
-        public string? PrevColor
-        {
-            get; set;
-        }
+        /// <summary>
+        /// Название категории.
+        /// </summary>
+        [Required]
+        [MaxLength(255)]
+        public string Name { get; set; } = string.Empty;
+        /// <summary>
+        /// Предыдущий цвет категории.
+        /// </summary>
+        [MaxLength(7)]
+        public string? PrevColor { get; set; }
 
+        /// <summary>
+        /// Навигационное свойство, представляющее список аниме, относящихся к данной категории.
+        /// </summary>
         public ICollection<UserSeriesEntity> Series { get; set; } = [];
-
-        public required string Date
-        {
-            get; set;
-        }
     }
 }
