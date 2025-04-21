@@ -61,7 +61,7 @@ namespace SeriesTracker.Core.Abstractions
             return token;
         }
 
-        public async Task Register(string email, string password, string userName, string? avatar, string? name, string? surName, string? dateBirth)
+        public async Task Register(string userName, string email, string password, string? avatar, string? name, string? surName, string? dateBirth)
         {
             // 1. Хеширование пароля
             string hashedPassword = _passwordHasher.Generate(password);
@@ -70,10 +70,10 @@ namespace SeriesTracker.Core.Abstractions
             var user = User.Create(
                 Guid.NewGuid(), // Генерируем уникальный идентификатор для пользователя
                 userName,
-                name,
-                surName,
                 email,
                 hashedPassword,
+                name,
+                surName,
                 avatar,
                 dateBirth,
                 DateTime.UtcNow.ToString("s") // Дата создания пользователя в формате ISO 8601

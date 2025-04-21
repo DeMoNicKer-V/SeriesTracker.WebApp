@@ -211,9 +211,9 @@ namespace SeriesTracker.API.Controllers
             {
                 // 2. Вызываем метод сервиса для регистрации пользователя
                 await _authenticationService.Register(
+                    request.UserName,
                     request.Email,
                     request.Password,
-                    request.UserName,
                     request.Avatar,
                     request.Name,
                     request.SurName,

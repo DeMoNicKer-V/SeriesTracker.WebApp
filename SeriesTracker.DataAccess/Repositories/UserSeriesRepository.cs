@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SeriesTracker.Core.Abstractions;
 using SeriesTracker.Core.Dtos.Series;
-using SeriesTracker.Core.Exceptions;
 using SeriesTracker.Core.Models;
 using SeriesTracker.DataAccess.Entities;
 

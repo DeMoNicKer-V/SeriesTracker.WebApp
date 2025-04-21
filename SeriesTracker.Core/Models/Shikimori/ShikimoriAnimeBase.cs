@@ -1,46 +1,98 @@
 ﻿using Newtonsoft.Json;
+using System.Collections.ObjectModel;
 
 namespace SeriesTracker.Core.Models.Shikimori
 {
-    public partial class ShikimoriAnimeBase
+
+    public partial class ShikimoriAnimeBase : AnimeBase
     {
-        private static readonly string[] sourceArray = ["MUSIC", "PV", "CM"];
+        private static readonly ReadOnlyCollection<string> sourceArray = new ReadOnlyCollection<string>(new string[] { "MUSIC", "PV", "CM" });
 
-        [JsonProperty("poster")] public Poster Poster { get; set; } = new();
-        [JsonProperty("airedOn")] public AiredDate AiredDate { get; set; } = new();
-        [JsonProperty("genres")] public Genre[]? Genre { get; set; }
-        [JsonProperty("id")] public int Id { get; set; }
-        [JsonProperty("name")] public string? SubTitle { get; set; }
-        [JsonProperty("russian")] public string? Title { get; set; }
-        [JsonProperty("score")] public double Score { get; set; }
-        [JsonProperty("description")] private string? DescriptionInfo { get; set; }
-        [JsonProperty("duration")] public int Duration { get; set; }
-        [JsonProperty("episodes")] public int EpisodesInfo { get; set; }
-        [JsonProperty("episodesAired")] public int EpisodesAired { get; set; }
-        [JsonProperty("kind")] private string? kindInfo { get; set; }
-        [JsonProperty("status")] private string? StatuscInfo { get; set; }
-        [JsonProperty("rating")] private string? RatingInfo { get; set; }
-        [JsonProperty("screenshots")] public Screenshot[]? Screenshots { get; set; }
-        [JsonProperty("related")] private Related[]? RelatedData { get; set; }
+        [JsonProperty("airedOn")]
+        public AiredDate AiredDate { get; set; } = new();
 
-        [JsonIgnore] public string Genres => Genre != null ? string.Join(", ", Genre.Select(l => l.Russian)) : "";
-        [JsonIgnore] public int Episodes { get { return StatuscInfo == "ongoing" ? EpisodesAired : EpisodesInfo; } set { } }
-        [JsonIgnore] public string? PictureUrl { get { return Poster?.Url; } }
+        [JsonProperty("genres")]
+        public Genre[]? Genre { get; set; }
+
+        [JsonProperty("score")]
+        public double Score { get; set; }
+
+        [JsonProperty("description")]
+        private string? DescriptionInfo { get; set; }
+
+        [JsonProperty("duration")]
+        public int Duration { get; set; }
+
+        [JsonProperty("episodes")]
+        public int EpisodesInfo { get; set; }
+
+        [JsonProperty("episodesAired")]
+        public int EpisodesAired { get; set; }
+
+        [JsonProperty("kind")]
+        private string? kindInfo { get; set; }
+
+        [JsonProperty("status")]
+        private string? StatuscInfo { get; set; }
+
+        [JsonProperty("rating")]
+        private string? RatingInfo { get; set; }
+
+        [JsonProperty("screenshots")]
+        public Screenshot[]? Screenshots { get; set; }
+
+        [JsonProperty("related")]
+        private Related[]? RelatedData { get; set; }
 
         [JsonIgnore]
-        public string? StartDate
+        public string Genres => Genre != null ? string.Join(", ", Genre.Select(l => l.Russian)) : "";
+
+        [JsonIgnore]
+        public int Episodes => EpisodesInfo == 0 ? EpisodesAired : EpisodesInfo;
+
+        [JsonIgnore]
+        public string? StartDate => AiredDate.Date ?? AiredDate.Year;
+
+        [JsonIgnore]
+        public string? Description => ConvertDescription(DescriptionInfo);
+
+        [JsonIgnore]
+        public string Rating => ConvertRating(RatingInfo);
+
+        [JsonIgnore]
+        public string Kind => ConvertKind(kindInfo);
+
+        [JsonIgnore]
+        public string Status => ConvertStatus(StatuscInfo);
+
+        [JsonIgnore]
+        public IEnumerable<Related>? Relateds => GetRelateds(RelatedData);
+
+        private string? ConvertDescription(string? descriptionInfo)
         {
-            get
-            {
-                return AiredDate.Date != null ? AiredDate.Date : AiredDate.Year;
-            }
-            set { }
+            return string.IsNullOrEmpty(descriptionInfo) ? null : AnimeConverter.ConvertDescriptionWithRegex(descriptionInfo);
         }
 
-        [JsonIgnore] public string? Description { get { return string.IsNullOrEmpty(DescriptionInfo) ? null : AnimeConverter.ConvertDescriptionWithRegex(DescriptionInfo); } }
-        [JsonIgnore] public string Rating => AnimeConverter.ConvertRatingToImageName(RatingInfo);
-        [JsonIgnore] public string Kind => AnimeConverter.ConvertKindToRussian(kindInfo);
-        [JsonIgnore] public string Status => AnimeConverter.ConvertStatusToDefault(StatuscInfo);
-        [JsonIgnore] public IEnumerable<Related>? Relateds => RelatedData?.Where(a => a.Anime != null && !sourceArray.Any(c => a.Anime.Kind.Contains(c)));
+        private string ConvertRating(string? ratingInfo)
+        {
+            return AnimeConverter.ConvertRatingToImageName(ratingInfo);
+        }
+
+        private string ConvertKind(string? kindInfo)
+        {
+            return AnimeConverter.ConvertKindToRussian(kindInfo);
+        }
+
+        private string ConvertStatus(string? statuscInfo)
+        {
+            return AnimeConverter.ConvertStatusToDefault(statuscInfo);
+        }
+
+        private IEnumerable<Related>? GetRelateds(Related[]? relatedData)
+        {
+            if (relatedData == null) return null;
+
+            return relatedData.Where(a => a.Anime != null && !sourceArray.Any(c => a.Anime.Kind?.Contains(c) == true));
+        }
     }
 }

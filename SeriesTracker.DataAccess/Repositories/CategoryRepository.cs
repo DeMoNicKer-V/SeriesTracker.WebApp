@@ -47,15 +47,23 @@ namespace SeriesTracker.DataAccess.Repositories
             return categories; // Возвращаем список категорий
         }
 
-        public async Task<bool> UpdateCategoryColor(int id, string color, string dateNow)
+        public async Task<bool> UpdateCategoryColor(Category category)
         {
-            // Обновляем цвет категории в базе данных
-            var rowsAffected = await _context.CategoryEntities
-                 .Where(c => c.Id == id)
-                 .ExecuteUpdateAsync(c => c // Выполняем операцию обновления
-                     .SetProperty(c => c.Color, c => color)
-                     .SetProperty(c => c.PrevColor, c => c.Color)
-                     .SetProperty(c => c.Date, c => dateNow));
+            // 1. Получаем CategoryEntity из базы данных по ID категории
+            var categoryEntity = await _context.CategoryEntities.FindAsync(category.Id);
+
+            if (categoryEntity == null)
+            {
+                return false; // Если категория не найдена
+            }
+
+            // 2. Обновляем CategoryEntity данными из Model Category
+            categoryEntity.Color = category.Color;
+            categoryEntity.PrevColor = category.PrevColor;
+            categoryEntity.Date = category.Date;
+
+            // 3. Сохраняем изменения в базе данных
+            var rowsAffected = await _context.SaveChangesAsync();
 
             return rowsAffected > 0; // Возвращаем true, если кол-во затронутых записей больше нуля, иначе - false
         }

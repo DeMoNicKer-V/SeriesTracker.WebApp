@@ -1,14 +1,25 @@
-﻿using System.Text.Json.Serialization;
+﻿using Newtonsoft.Json;
 
 namespace SeriesTracker.Core.Models.Shikimori
 {
     public class CalendarAnime
     {
-        [JsonPropertyName("id")] public int Id { get; set; }
-        [JsonPropertyName("name")] public string Name { get; set; }
-        [JsonPropertyName("russian")] public string Russian { get; set; }
-        [JsonPropertyName("image")] public CalendarImage Image { get; set; } = new();
-        [JsonPropertyName("episodes")] public int Episodes { get; set; }
-        [JsonPropertyName("episodes_aired")] public int EpisodesAired { get; set; }
+        [JsonProperty("id")]
+        public int Id { get; set; }
+
+        [JsonProperty("name")]
+        public string Name { get; set; }
+
+        [JsonProperty("russian")]
+        public string Russian { get; set; }
+
+        [JsonProperty("image")]
+        public CalendarImage Image { get; set; } = new();
+
+        [JsonProperty("episodes")]
+        public int Episodes { get; set; }
+
+        [JsonProperty("episodes_aired")]
+        public int EpisodesAired { get; set; }
     }
 }

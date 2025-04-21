@@ -245,10 +245,10 @@ namespace SeriesTracker.DataAccess.Repositories
                 // используем фабричный метод модели User для создания экземпляра
                 var user = User.Create(userEntity.Id,
                     userEntity.UserName,
-                    userEntity.Name,
-                    userEntity.SurName,
                     userEntity.Email,
                     userEntity.PasswordHash,
+                    userEntity.Name,
+                    userEntity.SurName,
                     userEntity.Avatar,
                     userEntity.DateBirth,
                     userEntity.RegDate,

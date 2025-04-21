@@ -126,7 +126,7 @@ export default function CalendarPage() {
             }
 
             const filteredData = items.filter((item: CalendarAnimeItem) => {
-                return isDateEqual(new Date(item.next_episode_at), filterDate);
+                return isDateEqual(new Date(item.nextEpisodeAt), filterDate);
             });
             setFilterAnimes(filteredData);
         },
@@ -190,7 +190,7 @@ export default function CalendarPage() {
                                             <Badge.Ribbon
                                                 color="volcano"
                                                 style={
-                                                    item.next_episode ===
+                                                    item.nextEpisode ===
                                                     item.anime.episodes
                                                         ? {}
                                                         : {
@@ -255,7 +255,7 @@ export default function CalendarPage() {
                                                                                         {
                                                                                             item
                                                                                                 .anime
-                                                                                                .episodes_aired
+                                                                                                .episodesAired
                                                                                         }
                                                                                     </Text>
                                                                                     <Text>
@@ -299,12 +299,12 @@ export default function CalendarPage() {
                                                             xxl={2}
                                                         >
                                                             <Title level={4}>
-                                                                {`${item.next_episode} эп.`}
+                                                                {`${item.nextEpisode} эп.`}
                                                             </Title>
                                                             <Flex gap={5}>
                                                                 <Text>
                                                                     {new Date(
-                                                                        item.next_episode_at
+                                                                        item.nextEpisodeAt
                                                                     ).toLocaleTimeString(
                                                                         "ru-RU",
                                                                         {
@@ -317,7 +317,7 @@ export default function CalendarPage() {
                                                                 {dateComparer(
                                                                     new Date(),
                                                                     new Date(
-                                                                        item.next_episode_at
+                                                                        item.nextEpisodeAt
                                                                     )
                                                                 )}
                                                             </Flex>

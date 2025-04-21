@@ -32,13 +32,17 @@ namespace SeriesTracker.Application.Services
             // Получаем список категорий из репозитория
             return await _categoryRepository.GetCategoryList();
         }
+
         public async Task<bool> UpdateCategoryColor(int id, string color)
         {
-            // Получаем текущую дату и время в формате UTC
-            var dateNow = DateTime.UtcNow.ToString("");
+            // 1. Получаем категорию (модель) из репозитория
+            Category category = await _categoryRepository.GetCategoryById(id);
 
-            // Обновляем цвет категории в репозитории
-            return await _categoryRepository.UpdateCategoryColor(id, color, dateNow);
+            // 2. Меняем цвет категории в сервисе (вызываем метод ChangeColor)
+            category.ChangeColor(color);
+
+            // 3. Передаем обновленную категорию (модель) в репозиторий для обновления
+            return await _categoryRepository.UpdateCategoryColor(category);
         }
     }
 }

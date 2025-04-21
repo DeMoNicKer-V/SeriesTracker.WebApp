@@ -1,6 +1,6 @@
 export interface CalendarAnimeItem {
-    next_episode: number;
-    next_episode_at: string;
+    nextEpisode: number;
+    nextEpisodeAt: string;
     duration: number;
     anime: CalendarAnime;
 }
@@ -15,9 +15,9 @@ interface CalendarAnime {
     score: string;
     status: string;
     episodes: number;
-    episodes_aired: number;
-    aired_on: string;
-    released_on: string;
+    episodesAired: number;
+    airedOn: string;
+    releasedOn: string;
 }
 
 interface CalendarAnimeImage {
@@ -26,8 +26,8 @@ interface CalendarAnimeImage {
 }
 
 export const defaultCalendarAnimeValues: CalendarAnimeItem = {
-    next_episode: 0,
-    next_episode_at: "",
+    nextEpisode: 0,
+    nextEpisodeAt: "",
     duration: 0,
     anime: {
         id: 0,
@@ -42,9 +42,9 @@ export const defaultCalendarAnimeValues: CalendarAnimeItem = {
         score: "",
         status: "",
         episodes: 0,
-        episodes_aired: 0,
-        aired_on: "",
-        released_on: "",
+        episodesAired: 0,
+        airedOn: "",
+        releasedOn: "",
     },
     //  дефолтные значения для полей CalendarAnimeItem
 };

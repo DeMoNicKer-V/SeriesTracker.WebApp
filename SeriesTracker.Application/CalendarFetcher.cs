@@ -3,7 +3,8 @@ using SeriesTracker.Core.Models.Shikimori;
 using SeriesTracker.Core;
 using System.Net;
 using System.Net.Http.Headers;
-using System.Text.Json;
+using Newtonsoft.Json;
+
 
 namespace SeriesTracker.Application {
     /// <summary>
@@ -67,10 +68,10 @@ namespace SeriesTracker.Application {
             string jsonString = await response.Content.ReadAsStringAsync();
 
             // Десериализуем JSON-строку в коллекцию объектов CalendarAnimeItem.
-            var result = JsonSerializer.Deserialize<IEnumerable<CalendarAnimeItem>>(jsonString) ?? throw new JsonException("JSON deserialization returned null.");
+            var result = JsonConvert.DeserializeObject<IEnumerable<CalendarAnimeItem>>(jsonString) ?? throw new JsonException("JSON deserialization returned null.");
 
             // Фильтруем элементы, чтобы вернуть только те, у которых дата следующего эпизода находится в пределах следующих 7 дней.
-            var filteredItems = result.Where(i => DateTime.Parse(i.NextEpisodeDate).Date < DateTime.Now.AddDays(7).Date);
+            var filteredItems = result.Where(i => DateTime.Parse(i.NextEpisodeAt).Date < DateTime.Now.AddDays(7).Date);
 
             // Возвращаем отфильтрованную коллекцию элементов.
             return filteredItems;

@@ -23,10 +23,10 @@ namespace SeriesTracker.Core.Abstractions
         /// <summary>
         /// Обновляет цвет категории.
         /// </summary>
-        /// <param name="id">Идентификатор категории.</param>
+        /// <param name="category">Категория, цвет которой нужно изменить.</param>
         /// <param name="color">Новый цвет категории.</param>
         /// <param name="dateNow">Дата и время обновления.</param>
         /// <returns><see langword="true"/>, если данные обновлены, иначе - <see langword="false"/></returns>
-        Task<bool> UpdateCategoryColor(int id, string color, string dateNow);
+        Task<bool> UpdateCategoryColor(Category category);
     }
 }
