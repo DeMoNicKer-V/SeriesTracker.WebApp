@@ -1,14 +1,15 @@
 ﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SeriesTracker.Core.Models.Shikimori
 {
     public abstract class AnimeBase
     {
+        [JsonProperty("airedOn")]
+        private AiredDate AiredOn { get; set; } = new();
+
+        [JsonProperty("poster")]
+        private Poster? Poster { get; set; } = new();
+
         [JsonProperty("id")]
         public int Id { get; set; }
 
@@ -18,10 +19,16 @@ namespace SeriesTracker.Core.Models.Shikimori
         [JsonProperty("russian")]
         public string? Title { get; set; }
 
-        [JsonProperty("poster")]
-        public Poster? Poster { get; set; } = new();
+        [JsonProperty("episodes")]
+        public int Episodes { get; set; }
+
+        [JsonProperty("episodesAired")]
+        public int EpisodesAired { get; set; }
 
         [JsonIgnore]
         public string? PictureUrl => Poster?.Url;
+
+        [JsonIgnore]
+        public string? StartDate => AiredOn.Date ?? AiredOn.Year;
     }
 }

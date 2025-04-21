@@ -36,6 +36,8 @@ services.AddDataAccess();
 services.AddDbContextFactory<SeriesTrackerDbContext>(options =>
 {
     options.UseNpgsql(builder.Configuration.GetConnectionString(nameof(SeriesTrackerDbContext)));
+   /* options.UseNpgsql().LogTo(Console.WriteLine, LogLevel.Information)
+                  .EnableSensitiveDataLogging(); // Только для разработки!*/
 });
 
 // Добавляем AutoMapper для маппинга объектов.

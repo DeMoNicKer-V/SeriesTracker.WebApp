@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.Extensions.Logging;
 using SeriesTracker.Application.Extensions;
+using SeriesTracker.Core;
 using SeriesTracker.Core.Abstractions;
 using SeriesTracker.Core.Dtos.Anime;
 using SeriesTracker.Core.Dtos.Series;
@@ -107,10 +108,11 @@ namespace SeriesTracker.Application.Services
         public async Task<ShikimoriAnimeBase> GetRandomAnime()
         {
             // 1. Получаем список аниме через GraphQL (предполагаем, что только 1 элемент)
-            var animeResponse = await GraphQLHelper.ExecuteGraphQLRequest<ShikimoriAnimeBaseList>(GraphQLQueries.GetRandomAnime(), _logger);
+            var animeResponse = await GraphQLHelper.ExecuteGraphQLRequest<ShikimoriAnimeBaseList, ShikimoriAnimeBase>(GraphQLQueries.GetRandomAnime(),
+                _logger, dto => ShikimoriAnimeConverter.ConvertFromDto(dto.Animes[0]));
 
             // 2. Возвращаем единственный элемент, или выбрасываем InvalidOperationException
-            return animeResponse.Animes.Single();
+            return animeResponse;
         }
 
         public async Task<AnimeSeriesFullDto[]> GetRecentAnimesByIds(string userName, string Ids)
@@ -141,16 +143,17 @@ namespace SeriesTracker.Application.Services
             Func<ShikimoriAnimeBase, SeriesCategoryDto?, TResult> mapFunc)
         {
             // 1. Получаем список аниме через GraphQL
-            var animeResponse = await GraphQLHelper.ExecuteGraphQLRequest<ShikimoriAnimeBaseList>(request, _logger);
+            var animeResponse = await GraphQLHelper.ExecuteGraphQLRequest<ShikimoriAnimeBaseList, ShikimoriAnimeBase[]>(request, _logger,
+                dto => ShikimoriAnimeConverter.ConvertListFromDto(dto.Animes));
 
             // 2. Формируем список ID аниме
-            List<int> animeIds = animeResponse.Animes.Select(s => s.Id).ToList();
+            List<int> animeIds = animeResponse.Select(s => s.Id).ToList();
 
             // 3. Получаем пользовательские записи, которые совпадают с animeIds
             var seriesCategoriesDictionary = await _categorySeriesRepository.GetSeriesAnimeId(userId, animeIds);
 
             // 4. Маппим данные, используя предоставленную функцию маппинга
-            var mappedAnimes = animeResponse.Animes
+            var mappedAnimes = animeResponse
                 .Select(item =>
                 {
                     // Пытаемся получить SeriesCategoryDTO из словаря

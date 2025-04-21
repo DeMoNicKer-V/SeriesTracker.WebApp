@@ -24,4 +24,8 @@
     <ProjectReference Include="..\SeriesTracker.Core\SeriesTracker.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Migrations\" />
+  </ItemGroup>
+
 </Project>

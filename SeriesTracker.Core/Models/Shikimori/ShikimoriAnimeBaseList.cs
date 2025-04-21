@@ -2,6 +2,6 @@
 {
     public class ShikimoriAnimeBaseList
     {
-        public required ShikimoriAnimeBase[] Animes { get; set; }
+        public ShikimoriAnimeDto[] Animes { get; set; } = [];
     }
 }

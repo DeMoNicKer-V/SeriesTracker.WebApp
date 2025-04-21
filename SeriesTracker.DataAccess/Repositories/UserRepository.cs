@@ -44,16 +44,17 @@ namespace SeriesTracker.DataAccess.Repositories
                 .ExecuteUpdateAsync(u => u.SetProperty(u => u.Roles, u => new List<RoleEntity> { roleEntity }));
 
             // Возвращаем true, если была изменена хотя бы одна строка, иначе false.
-            return rowsAffected > 0;
+            return rowsAffected > 0;    
         }
 
         public async Task<Guid> CreateUser(User user)
         {
             // Получаем сущность роли "User" по умолчанию.
-            // AsNoTracking используется, так как мы не планируем изменять эту сущность.
             var roleEntity = await _context.RoleEntities
-                .AsNoTracking()
                 .SingleAsync(r => r.Id == (int)Role.User);
+
+            // Присоединяем сущность к контексту в состоянии Unchanged (на всякий случай)
+            _context.Attach(roleEntity);
 
             // Создаем новую сущность пользователя на основе объекта User.
             var userEntity = new UserEntity
@@ -61,7 +62,6 @@ namespace SeriesTracker.DataAccess.Repositories
                 Id = user.Id,
                 UserName = user.UserName,
                 Name = user.Name,
-                Roles = [roleEntity], // Устанавливаем роль по умолчанию "User"
                 SurName = user.SurName,
                 Email = user.Email,
                 PasswordHash = user.PasswordHash,
@@ -69,6 +69,9 @@ namespace SeriesTracker.DataAccess.Repositories
                 DateBirth = user.DateBirth,
                 RegDate = user.RegDate,
             };
+
+            // Добавляем роль в навигационное свойство
+            userEntity.Roles.Add(roleEntity);
 
             // Добавляем сущность пользователя в контекст.
             await _context.UserEntities.AddAsync(userEntity);

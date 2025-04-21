@@ -41,7 +41,6 @@ namespace SeriesTracker.Core
 
                 // Заменяем весь тег на текст внутри
                 result = result.Replace(matchedString, insideBrackets);
-
             }
 
             // Удаляем множественные пробелы и обрезаем лишние пробелы в начале и конце строки

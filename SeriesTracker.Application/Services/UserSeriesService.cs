@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.Extensions.Logging;
+using SeriesTracker.Core;
 using SeriesTracker.Core.Abstractions;
 using SeriesTracker.Core.Dtos.Series;
 using SeriesTracker.Core.Dtos.User;
@@ -100,8 +101,12 @@ namespace SeriesTracker.Application.Services
             }
 
             var idsString = string.Join(",", animeIds); // Преобразуем список идентификаторов в строку, разделенную запятыми
-            var data = await GraphQLHelper.ExecuteGraphQLRequest<ShikimoriAnimeBaseList>(GraphQLQueries.GetAnimesByIds(idsString), _logger); // Выполняем GraphQL-запрос для получения информации об аниме
-            return data.Animes; // Возвращаем массив DTO с информацией об аниме
+            var animes = await GraphQLHelper.ExecuteGraphQLRequest<ShikimoriAnimeBaseList, ShikimoriAnimeBase[]>(
+                GraphQLQueries.GetAnimesByIds(idsString),
+                _logger,
+                dto => ShikimoriAnimeConverter.ConvertListFromDto(dto.Animes));
+
+            return animes; // Возвращаем массив DTO с информацией об аниме
         }
 
         public async Task<bool> UpdateSeries(Guid seriesDd, int watched, int categoryId, bool favorite)

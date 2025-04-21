@@ -48,7 +48,7 @@ namespace SeriesTracker.API.Controllers
                 bool emailExists = await _authenticationService.EmailExists(email);
 
                 // Если email уже существует
-                if (emailExists == false)
+                if (emailExists == true)
                 {
                     // Логируем информацию о занятом email и возвращаем 400 Bad Request
                     return _logger.BadResponse(
@@ -84,7 +84,7 @@ namespace SeriesTracker.API.Controllers
                 bool userNameExists = await _authenticationService.UserNameExists(userName);
 
                 // Если никнейм уже существует
-                if (userNameExists == false)
+                if (userNameExists == true)
                 {
                     // Логируем информацию о занятом никнейме и возвращаем 400 Bad Request
                     return _logger.BadResponse(
