@@ -10,7 +10,6 @@ namespace SeriesTracker.Core.Mappers
         public AnimeMappingProfile()
         {
             CreateMap<ShikimoriAnimeBase, AnimeShortDto>();
-            CreateMap<ShikimoriAnimeBase, AnimeFullDto>();
 
             CreateMap<ShikimoriAnimeBase, AnimeSeriesDto>()
                 .BeforeMap((src, dest, context) =>

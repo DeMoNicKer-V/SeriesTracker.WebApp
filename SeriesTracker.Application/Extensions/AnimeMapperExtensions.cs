@@ -42,11 +42,6 @@ namespace SeriesTracker.Application.Extensions
             });
         }
 
-        public static AnimeFullDto MapToFullAnimeDTO(this IMapper mapper, ShikimoriAnimeBase anime)
-        {
-            return mapper.Map<AnimeFullDto>(anime);
-        }
-
         public static AnimeShortDto MapToShortAnimeDTO(this IMapper mapper, ShikimoriAnimeBase anime)
         {
             return mapper.Map<AnimeShortDto>(anime);

@@ -2,7 +2,7 @@
 
 namespace SeriesTracker.Core.Dtos.Anime
 {
-    public class AnimeSeriesFullDto : ShikimoriAnimeBase
+    public class AnimeSeriesFullDto : ShikimoriAnimeBaseFull
     {
         public Guid? SeriesId { get; set; } = null;
         public int? CategoryId { get; set; } = null;

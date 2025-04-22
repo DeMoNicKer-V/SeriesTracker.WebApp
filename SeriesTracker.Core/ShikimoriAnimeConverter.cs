@@ -24,6 +24,13 @@ namespace SeriesTracker.Core
                 Kind = ConvertKind(dto.Kind),
                 Status = ConvertStatus(dto.Status),
                 PictureUrl = dto.PictureUrl,
+            };
+        }
+
+        public static ShikimoriAnimeBaseFull ConvertFromDtoFull(ShikimoriAnimeFullDto dto)
+        {
+            return new ShikimoriAnimeBaseFull
+            {
                 Relateds = GetRelateds(dto.Relatedes),
                 Screenshots = dto.Screenshots,
             };
@@ -68,6 +75,12 @@ namespace SeriesTracker.Core
 
         // НОВЫЙ метод для преобразования списка DTO в список ShikimoriAnimeBase
         public static ShikimoriAnimeBase[] ConvertListFromDto(ShikimoriAnimeDto[] dtos)
+        {
+            return dtos.Select(ConvertFromDto).ToArray(); // Используем LINQ для преобразования каждого элемента
+        }
+
+        // НОВЫЙ метод для преобразования списка DTO в список ShikimoriAnimeBase
+        public static ShikimoriAnimeBase[] ConvertListFromDtoFull(ShikimoriAnimeFullDto[] dtos)
         {
             return dtos.Select(ConvertFromDto).ToArray(); // Используем LINQ для преобразования каждого элемента
         }

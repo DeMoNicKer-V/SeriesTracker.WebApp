@@ -25,10 +25,5 @@ namespace SeriesTracker.Core.Models.Shikimori
         [JsonProperty("rating")]
         public string? Rating { get; set; }
 
-        [JsonProperty("screenshots")]
-        public Screenshot[]? Screenshots { get; set; }
-
-        [JsonProperty("related")]
-        public Related[]? Relatedes { get; set; }
     }
 }
