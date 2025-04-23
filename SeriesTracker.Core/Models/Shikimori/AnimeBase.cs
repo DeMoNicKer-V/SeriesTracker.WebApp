@@ -1,8 +1,9 @@
 ﻿using Newtonsoft.Json;
+using SeriesTracker.Core.Abstractions;
 
 namespace SeriesTracker.Core.Models.Shikimori
 {
-    public abstract class AnimeBase
+    public abstract class AnimeBase : IAnime
     {
         [JsonProperty("airedOn")]
         private AiredDate AiredOn { get; set; } = new();
@@ -26,9 +27,9 @@ namespace SeriesTracker.Core.Models.Shikimori
         public int EpisodesAired { get; set; }
 
         [JsonIgnore]
-        public string? PictureUrl => Poster?.Url;
+        public string? PictureUrl => Poster?.Url; // Вычисляемое свойство
 
         [JsonIgnore]
-        public string? StartDate => AiredOn.Date ?? AiredOn.Year;
+        public string? StartDate => AiredOn.Date ?? AiredOn.Year; // Вычисляемое свойство
     }
 }

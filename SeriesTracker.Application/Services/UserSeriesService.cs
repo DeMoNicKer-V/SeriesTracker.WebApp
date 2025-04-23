@@ -101,12 +101,11 @@ namespace SeriesTracker.Application.Services
             }
 
             var idsString = string.Join(",", animeIds); // Преобразуем список идентификаторов в строку, разделенную запятыми
-            var animes = await GraphQLHelper.ExecuteGraphQLRequest<ShikimoriAnimeBaseList, ShikimoriAnimeBase[]>(
-                GraphQLQueries.GetAnimesByIds(idsString),
-                _logger,
-                dto => ShikimoriAnimeConverter.ConvertListFromDto(dto.Animes));
+            var animesResponse = await GraphQLHelper.ExecuteGraphQLRequest<ShikimoriAnimeBaseList<ShikimoriAnimeDto>>(GraphQLQueries.GetAnimesByIds(idsString), _logger);
 
-            return animes; // Возвращаем массив DTO с информацией об аниме
+            var animeBaseArray = _mapper.Map<ShikimoriAnimeBase[]>(animesResponse.Animes);
+
+            return animeBaseArray; // Возвращаем массив DTO с информацией об аниме
         }
 
         public async Task<bool> UpdateSeries(Guid seriesDd, int watched, int categoryId, bool favorite)

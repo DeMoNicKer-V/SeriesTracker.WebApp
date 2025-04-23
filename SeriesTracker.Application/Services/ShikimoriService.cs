@@ -5,7 +5,9 @@ using SeriesTracker.Core;
 using SeriesTracker.Core.Abstractions;
 using SeriesTracker.Core.Dtos.Anime;
 using SeriesTracker.Core.Dtos.Series;
+using SeriesTracker.Core.Models;
 using SeriesTracker.Core.Models.Shikimori;
+using System.Xml.Linq;
 
 namespace SeriesTracker.Application.Services
 {
@@ -46,36 +48,61 @@ namespace SeriesTracker.Application.Services
 
         public async Task<AnimeSeriesFullDto> GetAnimeById(Guid userId, string animeId)
         {
-            // Выполняем GraphQL запрос к Api
-            var result = await GetAndMapAnimeData(
-                userId: userId,
-                request: GraphQLQueries.GetAnimeById(animeId),
-                mapFunc: _mapper.MapToFullSeriesDto);
+            var result = await GetAndMapAnimeData<ShikimoriAnimeFullDto,
+                ShikimoriAnimeBaseFull, AnimeSeriesFullDto>(userId, GraphQLQueries.GetAnimeById(animeId), _mapper.MapToFullSeriesDto);
 
-            return result.Single(); // Используем Single() для получения одного элемента
+            return result.Single();
         }
 
         public async Task<AnimeSeriesDto[]> GetAnimesByAllParams(Guid userId, int page, string name, string season,
             string status, string kind, string genre, string order, bool censored)
         {
             // Выполняем GraphQL запрос к Api
-            var result = await GetAndMapAnimeData(
-                userId: userId,
-                request: GraphQLQueries.GetAnimes(page, name, season, status, kind, genre, order, censored),
-                mapFunc: _mapper.MapToShortSeriesDto);
+            var animeResponse = await GraphQLHelper.ExecuteGraphQLRequest<ShikimoriAnimeBaseList<ShikimoriAnimeBase>>(GraphQLQueries.GetAnimes(page, name, season, status, kind, genre, order, censored), _logger);
 
-            return result.ToArray(); // Преобразуем в массив
+            List<int> animeIds = animeResponse.Animes.Select(s => s.Id).ToList();
+
+            // 3. Получаем пользовательские записи, которые совпадают с animeIds
+            var seriesCategoriesDictionary = await _categorySeriesRepository.GetSeriesAnimeId(userId, animeIds);
+
+            // 4. Маппим данные, используя предоставленную функцию маппинга
+            var mappedAnimes = animeResponse.Animes
+                .Select(item =>
+                {
+                    // Пытаемся получить SeriesCategoryDTO из словаря
+                    seriesCategoriesDictionary.TryGetValue(item.Id, out var categorySeries);
+
+                    // Передаем SeriesCategoryDTO (или null, если не найдено) в функцию маппинга
+                    return _mapper.MapToShortSeriesDto(item, categorySeries);
+                });
+
+            return mappedAnimes.ToArray(); // Преобразуем в массив
         }
 
         public async Task<AnimeSeriesDto[]> GetAnimesByName(Guid userId, string animeName)
         {
             // Выполняем GraphQL запрос к Api
-            var result = await GetAndMapAnimeData(
-                userId: userId,
-                request: GraphQLQueries.GetAnimesByName(animeName),
-                mapFunc: _mapper.MapToShortSeriesDto);
+            var animeResponse = await GraphQLHelper.ExecuteGraphQLRequest<ShikimoriAnimeBaseList<ShikimoriAnimeDto>>(GraphQLQueries.GetAnimesByName(animeName), _logger);
 
-            return result.ToArray(); // Преобразуем в массив
+            var animeBaseArray = _mapper.Map<ShikimoriAnimeBase[]>(animeResponse.Animes);
+
+            List<int> animeIds = animeResponse.Animes.Select(s => s.Id).ToList();
+
+            // 3. Получаем пользовательские записи, которые совпадают с animeIds
+            var seriesCategoriesDictionary = await _categorySeriesRepository.GetSeriesAnimeId(userId, animeIds);
+
+            // 4. Маппим данные, используя предоставленную функцию маппинга
+            var mappedAnimes = animeBaseArray
+                .Select(item =>
+                {
+                    // Пытаемся получить SeriesCategoryDTO из словаря
+                    seriesCategoriesDictionary.TryGetValue(item.Id, out var categorySeries);
+
+                    // Передаем SeriesCategoryDTO (или null, если не найдено) в функцию маппинга
+                    return _mapper.MapToShortSeriesDto(item, categorySeries);
+                });
+
+            return mappedAnimes.ToArray(); // Преобразуем в массив
         }
 
         public async Task<GenreList> GetGenres()
@@ -108,11 +135,10 @@ namespace SeriesTracker.Application.Services
         public async Task<ShikimoriAnimeBase> GetRandomAnime()
         {
             // 1. Получаем список аниме через GraphQL (предполагаем, что только 1 элемент)
-            var animeResponse = await GraphQLHelper.ExecuteGraphQLRequest<ShikimoriAnimeBaseList, ShikimoriAnimeBase>(GraphQLQueries.GetRandomAnime(),
-                _logger, dto => ShikimoriAnimeConverter.ConvertFromDto(dto.Animes[0]));
+            var animeResponse = await GraphQLHelper.ExecuteGraphQLRequest<ShikimoriAnimeBaseList<ShikimoriAnimeBase>>(GraphQLQueries.GetRandomAnime(), _logger);
 
             // 2. Возвращаем единственный элемент, или выбрасываем InvalidOperationException
-            return animeResponse;
+            return animeResponse.Animes.Single();
         }
 
         public async Task<AnimeSeriesFullDto[]> GetRecentAnimesByIds(string userName, string Ids)
@@ -120,40 +146,47 @@ namespace SeriesTracker.Application.Services
             // 1. Получаем пользователя по никнейму
             var user = await _userRepository.GetUserByUserName(userName);
 
-            var result = await GetAndMapAnimeData(
-                userId: user != null ? user.Id : Guid.Empty,
-                request: GraphQLQueries.GetAnimesByIds(Ids),
-                mapFunc: _mapper.MapToFullSeriesDto);
+            // Выполняем GraphQL запрос к Api
+            var animeResponse = await GraphQLHelper.ExecuteGraphQLRequest<ShikimoriAnimeBaseList<ShikimoriAnimeBaseFull>>(GraphQLQueries.GetAnimesByIds(Ids), _logger);
+
+            List<int> animeIds = animeResponse.Animes.Select(s => s.Id).ToList();
+
+            // 3. Получаем пользовательские записи, которые совпадают с animeIds
+            var seriesCategoriesDictionary = await _categorySeriesRepository.GetSeriesAnimeId(user.Id, animeIds);
+
+            // 4. Маппим данные, используя предоставленную функцию маппинга
+            var mappedAnimes = animeResponse.Animes
+                .Select(item =>
+                {
+                    // Пытаемся получить SeriesCategoryDTO из словаря
+                    seriesCategoriesDictionary.TryGetValue(item.Id, out var categorySeries);
+
+                    // Передаем SeriesCategoryDTO (или null, если не найдено) в функцию маппинга
+                    return _mapper.MapToFullSeriesDto(item, categorySeries);
+                });
 
             // 2. Сортируем по убыванию даты изменения
-            return [.. result.OrderByDescending(m => m.ChangedDate)]; // Преобразуем в массив
+            return [.. mappedAnimes.OrderByDescending(m => m.ChangedDate)]; // Преобразуем в массив
         }
 
-        /// <summary>
-        /// Получает и маппит данные об аниме, используя предоставленные функции для получения данных и маппинга.
-        /// </summary>
-        /// <typeparam name="TResult">Тип результата маппинга.</typeparam>
-        /// <param name="request">Запрос на получение аниме из набора GraphQLQueries (GraphQL).</param>
-        /// <param name="userId">Идентификатор пользователя.</param>
-        /// <param name="mapFunc">Функция для маппинга данных об аниме в целевой тип TResult.  Принимает данные об аниме (ShikimoriAnimeBase) и опциональные данные о пользовательской категории (SeriesCategoryDto?), возвращает результат маппинга (TResult).</param>
-        /// <returns>Коллекция смаппленных данных об аниме типа TResult.</returns>
-        private async Task<IEnumerable<TResult>> GetAndMapAnimeData<TResult>(
-            Guid userId,
-            GraphQL.GraphQLRequest request,
-            Func<ShikimoriAnimeBase, SeriesCategoryDto?, TResult> mapFunc)
+        private async Task<IEnumerable<TResult>> GetAndMapAnimeData<TSource, TIntermediate, TResult>(
+     Guid userId,
+     GraphQL.GraphQLRequest request,
+     Func<TIntermediate, SeriesCategoryDto?, TResult> mapFunc)
+     where TSource : IAnime
+     where TIntermediate : IAnime
         {
-            // 1. Получаем список аниме через GraphQL
-            var animeResponse = await GraphQLHelper.ExecuteGraphQLRequest<ShikimoriAnimeBaseList, ShikimoriAnimeBase[]>(request, _logger,
-                dto => ShikimoriAnimeConverter.ConvertListFromDto(dto.Animes));
+            var animeList = await GraphQLHelper.ExecuteGraphQLRequest<ShikimoriAnimeBaseList<TSource>>(request, _logger);
+            var animeBaseArray = _mapper.Map<TIntermediate[]>(animeList.Animes);
 
             // 2. Формируем список ID аниме
-            List<int> animeIds = animeResponse.Select(s => s.Id).ToList();
+            List<int> animeIds = animeBaseArray.Select(s => s.Id).ToList();
 
             // 3. Получаем пользовательские записи, которые совпадают с animeIds
             var seriesCategoriesDictionary = await _categorySeriesRepository.GetSeriesAnimeId(userId, animeIds);
 
             // 4. Маппим данные, используя предоставленную функцию маппинга
-            var mappedAnimes = animeResponse
+            var mappedAnimes = animeBaseArray
                 .Select(item =>
                 {
                     // Пытаемся получить SeriesCategoryDTO из словаря
@@ -163,7 +196,6 @@ namespace SeriesTracker.Application.Services
                     return mapFunc(item, categorySeries);
                 });
 
-            // 5. Возвращаем результат
             return mappedAnimes;
         }
     }

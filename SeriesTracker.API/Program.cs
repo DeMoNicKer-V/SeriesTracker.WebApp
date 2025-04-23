@@ -42,7 +42,7 @@ services.AddDbContextFactory<SeriesTrackerDbContext>(options =>
 
 // Добавляем AutoMapper для маппинга объектов.
 // Указываем типы профилей маппинга, которые будут использоваться.
-
+services.AddAutoMapper(typeof(AnimeMappingProfile));
 services.AddAutoMapper(typeof(UserMappingProfile));
 services.AddAutoMapper(typeof(SeriesCategoryMappingProfile));
 

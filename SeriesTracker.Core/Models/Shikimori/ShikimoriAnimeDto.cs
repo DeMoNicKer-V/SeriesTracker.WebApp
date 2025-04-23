@@ -1,12 +1,10 @@
 ﻿using Newtonsoft.Json;
+using SeriesTracker.Core.Abstractions;
 
 namespace SeriesTracker.Core.Models.Shikimori
 {
-    public class ShikimoriAnimeDto : AnimeBase
+    public class ShikimoriAnimeDto : AnimeBase, IShikimoriAnime
     {
-        [JsonProperty("genres")]
-        public Genre[]? Genre { get; set; }
-
         [JsonProperty("score")]
         public double Score { get; set; }
 
@@ -24,6 +22,5 @@ namespace SeriesTracker.Core.Models.Shikimori
 
         [JsonProperty("rating")]
         public string? Rating { get; set; }
-
     }
 }

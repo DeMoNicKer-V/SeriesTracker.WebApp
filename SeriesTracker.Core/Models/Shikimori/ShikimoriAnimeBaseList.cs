@@ -1,7 +1,9 @@
-﻿namespace SeriesTracker.Core.Models.Shikimori
+﻿using SeriesTracker.Core.Abstractions;
+
+namespace SeriesTracker.Core.Models.Shikimori
 {
-    public class ShikimoriAnimeBaseList
+    public class ShikimoriAnimeBaseList<T> where T : IAnime
     {
-        public ShikimoriAnimeDto[] Animes { get; set; } = [];
+        public T[] Animes { get; set; } = [];
     }
 }

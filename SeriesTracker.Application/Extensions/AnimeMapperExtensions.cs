@@ -22,7 +22,7 @@ namespace SeriesTracker.Application.Extensions
             });
         }
 
-        public static AnimeSeriesFullDto MapToFullSeriesDto(this IMapper mapper, ShikimoriAnimeBase anime, SeriesCategoryDto? series)
+        public static AnimeSeriesFullDto MapToFullSeriesDto(this IMapper mapper, ShikimoriAnimeBaseFull anime, SeriesCategoryDto? series)
         {
             if (series == null)
             {
