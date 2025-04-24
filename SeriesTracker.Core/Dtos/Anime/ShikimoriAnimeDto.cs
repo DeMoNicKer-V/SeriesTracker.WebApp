@@ -4,7 +4,7 @@ using SeriesTracker.Core.Models.Shikimori;
 
 namespace SeriesTracker.Core.Dtos
 {
-    public class ShikimoriAnimeDto : AnimeBase, IShikimoriAnime
+    public class ShikimoriAnimeDto : AnimeBaseDto, IShikimoriAnime
     {
         [JsonProperty("score")]
         public double Score { get; set; }
