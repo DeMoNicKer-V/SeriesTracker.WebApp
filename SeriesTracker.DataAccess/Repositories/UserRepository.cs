@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SeriesTracker.Core.Abstractions;
-using SeriesTracker.Core.Dtos.UserDtos;
+using SeriesTracker.Core.Dtos;
 using SeriesTracker.Core.Enums;
 using SeriesTracker.Core.Models;
 using SeriesTracker.DataAccess.Entities;
@@ -44,7 +44,7 @@ namespace SeriesTracker.DataAccess.Repositories
                 .ExecuteUpdateAsync(u => u.SetProperty(u => u.Roles, u => new List<RoleEntity> { roleEntity }));
 
             // Возвращаем true, если была изменена хотя бы одна строка, иначе false.
-            return rowsAffected > 0;    
+            return rowsAffected > 0;
         }
 
         public async Task<Guid> CreateUser(User user)

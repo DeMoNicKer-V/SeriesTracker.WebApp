@@ -1,4 +1,4 @@
-﻿using SeriesTracker.Core.Dtos.UserDtos;
+﻿using SeriesTracker.Core.Dtos;
 using SeriesTracker.Core.Enums;
 using SeriesTracker.Core.Models;
 

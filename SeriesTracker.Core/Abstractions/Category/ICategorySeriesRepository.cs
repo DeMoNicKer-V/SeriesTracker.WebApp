@@ -1,4 +1,4 @@
-﻿using SeriesTracker.Core.Dtos.Series;
+﻿using SeriesTracker.Core.Dtos;
 
 namespace SeriesTracker.Core.Abstractions
 {

@@ -1,11 +1,6 @@
 ﻿using SeriesTracker.Core.Models.Shikimori;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace SeriesTracker.Core.Abstractions
+namespace SeriesTracker.Core.Interfaces
 {
     public interface IShikimoriAnimeFull : IShikimoriAnime
     {

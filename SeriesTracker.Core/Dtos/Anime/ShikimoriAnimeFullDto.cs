@@ -1,12 +1,8 @@
 ﻿using Newtonsoft.Json;
-using SeriesTracker.Core.Abstractions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using SeriesTracker.Core.Interfaces;
+using SeriesTracker.Core.Models.Shikimori;
 
-namespace SeriesTracker.Core.Models.Shikimori
+namespace SeriesTracker.Core.Dtos
 {
     public class ShikimoriAnimeFullDto : ShikimoriAnimeDto, IShikimoriAnimeFull
     {

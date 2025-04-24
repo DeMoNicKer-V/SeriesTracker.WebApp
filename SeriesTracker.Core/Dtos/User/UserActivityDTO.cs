@@ -1,6 +1,4 @@
-﻿using SeriesTracker.Core.Dtos.Series;
-
-namespace SeriesTracker.Core.Dtos.User
+﻿namespace SeriesTracker.Core.Dtos
 {
     public class UserActivityDTO
     {

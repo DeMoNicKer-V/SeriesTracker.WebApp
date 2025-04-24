@@ -1,4 +1,4 @@
-﻿using SeriesTracker.Core.Dtos.Anime;
+﻿using SeriesTracker.Core.Dtos;
 using SeriesTracker.Core.Models.Shikimori;
 
 namespace SeriesTracker.Core.Abstractions

@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SeriesTracker.Core.Abstractions;
-using SeriesTracker.Core.Dtos.Series;
+using SeriesTracker.Core.Dtos;
 
 namespace SeriesTracker.DataAccess.Repositories
 {
@@ -32,15 +32,15 @@ namespace SeriesTracker.DataAccess.Repositories
                 .Include(s => s.Category)
                 .Select(s => new SeriesCategoryDto
                 {
-                     SeriesId = s.Id,
-                     AnimeId = s.AnimeId,
-                     CategoryId = s.CategoryId,
-                     CategoryName = s.Category.Name,
-                     CategoryColor = s.Category.Color,
-                     WatchedEpisodes = s.WatchedEpisodes,
-                     AddedDate = s.AddedDate,
-                     ChangedDate = s.ChangedDate,
-                     IsFavorite = s.IsFavorite
+                    SeriesId = s.Id,
+                    AnimeId = s.AnimeId,
+                    CategoryId = s.CategoryId,
+                    CategoryName = s.Category.Name,
+                    CategoryColor = s.Category.Color,
+                    WatchedEpisodes = s.WatchedEpisodes,
+                    AddedDate = s.AddedDate,
+                    ChangedDate = s.ChangedDate,
+                    IsFavorite = s.IsFavorite
                 })
                 .ToListAsync();
 

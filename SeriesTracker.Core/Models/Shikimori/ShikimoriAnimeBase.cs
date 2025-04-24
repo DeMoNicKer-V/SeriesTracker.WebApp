@@ -1,8 +1,8 @@
-﻿using SeriesTracker.Core.Abstractions;
+﻿using SeriesTracker.Core.Interfaces;
 
 namespace SeriesTracker.Core.Models.Shikimori
 {
-    public partial class ShikimoriAnimeBase : IShikimoriAnime
+    public partial class ShikimoriAnimeBase :  IShikimoriAnime
     {
         public int Id { get; set; }
         public string? SubTitle { get; set; }

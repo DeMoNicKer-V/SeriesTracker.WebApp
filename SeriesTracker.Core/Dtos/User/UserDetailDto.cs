@@ -1,4 +1,4 @@
-﻿namespace SeriesTracker.Core.Dtos.UserDtos
+﻿namespace SeriesTracker.Core.Dtos
 {
     public class UserDetailDto
     {

@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
-using SeriesTracker.Core.Dtos.Anime;
-using SeriesTracker.Core.Dtos.Series;
+using SeriesTracker.Core.Dtos;
 using SeriesTracker.Core.Models.Shikimori;
 
 namespace SeriesTracker.Application.Extensions
@@ -40,11 +39,6 @@ namespace SeriesTracker.Application.Extensions
                 opt.Items["IsFavorite"] = series.IsFavorite;
                 opt.Items["ChangedDate"] = series.ChangedDate;
             });
-        }
-
-        public static AnimeShortDto MapToShortAnimeDTO(this IMapper mapper, ShikimoriAnimeBase anime)
-        {
-            return mapper.Map<AnimeShortDto>(anime);
         }
     }
 }

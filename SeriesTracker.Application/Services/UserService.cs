@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using SeriesTracker.Application.Interfaces.Auth;
 using SeriesTracker.Core.Abstractions;
-using SeriesTracker.Core.Dtos.UserDtos;
+using SeriesTracker.Core.Dtos;
 using SeriesTracker.Core.Models;
 
 namespace SeriesTracker.Application.Services
@@ -69,6 +69,7 @@ namespace SeriesTracker.Application.Services
             // 4. Возвращаем токен
             return token;
         }
+
         public async Task<UserDetailDto?> GetUserById(Guid id)
         {
             // 1. Получаем пользователя из репозитория по ID
@@ -92,6 +93,7 @@ namespace SeriesTracker.Application.Services
             // Получаем список пользователей из репозитория
             return await _userRepository.GetUserList(page);
         }
+
         public async Task<bool> UpdateUser(Guid id, string? userName, string? name, string? surName, string? email, string? password, string? avatar, string? dateBirth)
         {
             // 1. Хешируем новый пароль, если он был указан

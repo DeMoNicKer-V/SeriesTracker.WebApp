@@ -2,7 +2,7 @@
 using SeriesTracker.API.Contracts;
 using SeriesTracker.API.Extensions;
 using SeriesTracker.Core.Abstractions;
-using SeriesTracker.Core.Dtos.UserDtos;
+using SeriesTracker.Core.Dtos;
 using SeriesTracker.Core.Enums;
 using SeriesTracker.Infrastructure.Authentication;
 

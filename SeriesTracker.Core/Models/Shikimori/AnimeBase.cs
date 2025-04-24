@@ -1,5 +1,5 @@
 ﻿using Newtonsoft.Json;
-using SeriesTracker.Core.Abstractions;
+using SeriesTracker.Core.Interfaces;
 
 namespace SeriesTracker.Core.Models.Shikimori
 {

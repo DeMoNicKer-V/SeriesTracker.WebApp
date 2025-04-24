@@ -1,9 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.Extensions.Logging;
-using SeriesTracker.Core;
 using SeriesTracker.Core.Abstractions;
-using SeriesTracker.Core.Dtos.Series;
-using SeriesTracker.Core.Dtos.User;
+using SeriesTracker.Core.Dtos;
 using SeriesTracker.Core.Models;
 using SeriesTracker.Core.Models.Shikimori;
 

@@ -1,5 +1,4 @@
-﻿using SeriesTracker.Core.Dtos.Series;
-using SeriesTracker.Core.Dtos.User;
+﻿using SeriesTracker.Core.Dtos;
 using SeriesTracker.Core.Models.Shikimori;
 
 namespace SeriesTracker.Core.Abstractions

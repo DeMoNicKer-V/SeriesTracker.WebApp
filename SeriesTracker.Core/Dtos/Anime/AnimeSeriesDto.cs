@@ -1,7 +1,6 @@
-﻿
-using SeriesTracker.Core.Models.Shikimori;
+﻿using SeriesTracker.Core.Models.Shikimori;
 
-namespace SeriesTracker.Core.Dtos.Anime
+namespace SeriesTracker.Core.Dtos
 {
     public class AnimeSeriesDto : ShikimoriAnimeBase
     {
@@ -9,5 +8,4 @@ namespace SeriesTracker.Core.Dtos.Anime
         public string? CategoryName { get; set; } = string.Empty;
         public string? CategoryColor { get; set; } = string.Empty;
     }
-
 }

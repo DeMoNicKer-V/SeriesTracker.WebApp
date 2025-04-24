@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using SeriesTracker.Core.Dtos.Anime;
+using SeriesTracker.Core.Dtos;
 using SeriesTracker.Core.Models.Shikimori;
 using System.Collections.ObjectModel;
 
@@ -9,6 +9,7 @@ namespace SeriesTracker.Core.Mappers
 
     {
         private static readonly ReadOnlyCollection<string> _sourceArray = new(["MUSIC", "PV", "CM"]);
+
         public AnimeMappingProfile()
         {
             CreateMap<ShikimoriAnimeDto, ShikimoriAnimeBase>()

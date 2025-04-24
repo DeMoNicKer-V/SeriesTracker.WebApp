@@ -1,6 +1,6 @@
 ﻿using SeriesTracker.Core.Models.Shikimori;
 
-namespace SeriesTracker.Core.Dtos.Anime
+namespace SeriesTracker.Core.Dtos
 {
     public class GenreGroupingDTO
     {

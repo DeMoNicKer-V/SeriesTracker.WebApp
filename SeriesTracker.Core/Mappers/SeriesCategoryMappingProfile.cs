@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using SeriesTracker.Core.Dtos.Series;
+using SeriesTracker.Core.Dtos;
 using SeriesTracker.Core.Models;
 
 namespace SeriesTracker.Core.Mappers
