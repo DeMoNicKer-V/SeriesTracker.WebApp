@@ -1,16 +1,16 @@
-﻿using SeriesTracker.Core.Models.Shikimori;
+﻿using SeriesTracker.Core.Interfaces;
+using SeriesTracker.Core.Models.Shikimori;
 
 namespace SeriesTracker.Core.Dtos
 {
-    public class AnimeSeriesFullDto : ShikimoriAnimeBaseFull
+    public class AnimeSeriesFullDto : ShikimoriAnimeBaseFull, IAnimeSeries
     {
-        public Guid? SeriesId { get; set; } = null;
-        public int? CategoryId { get; set; } = null;
-        public string? CategoryName { get; set; } = null;
-        public string? CategoryColor { get; set; } = null;
-        public int? WatchedEpisodes { get; set; } = null;
-        public string? AddedDate { get; set; } = null;
-        public string? ChangedDate { get; set; } = null;
-        public bool? IsFavorite { get; set; } = null;
+        public Guid? SeriesId { get; set; }
+        public int CategoryId { get; set; }
+        public string CategoryName { get; set; }
+        public string CategoryColor { get; set; }
+        public int WatchedEpisodes { get; set; }
+        public string ChangedDate { get; set; }
+        public bool IsFavorite { get; set; }
     }
 }

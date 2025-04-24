@@ -5,27 +5,7 @@ namespace SeriesTracker.Core.Models.Shikimori
     public class Poster
     {
         [JsonIgnore]
-        public string? Url
-        {
-            get
-            {
-
-                if (MainUrl != null)
-                {
-                    return MainUrl;
-                }
-                if (MainAltUrl != null)
-                {
-                    return MainAltUrl;
-                }
-                if (OriginalUrl != null)
-                {
-                    return OriginalUrl;
-                }
-                else if (MiniUrl != null) { return MiniUrl; }
-                return null;
-            }
-        }
+        public string? Url => MainUrl ?? MainAltUrl ?? OriginalUrl ?? MiniUrl;
 
         [JsonProperty("mainUrl")] private string? MainUrl { get; set; }
         [JsonProperty("mini2xUrl")] private string? MiniUrl { get; set; }

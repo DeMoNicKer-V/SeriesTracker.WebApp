@@ -1,11 +1,12 @@
-﻿using SeriesTracker.Core.Models.Shikimori;
+﻿using SeriesTracker.Core.Interfaces;
+using SeriesTracker.Core.Models.Shikimori;
 
 namespace SeriesTracker.Core.Dtos
 {
-    public class AnimeSeriesDto : ShikimoriAnimeBase
+    public class AnimeSeriesDto : ShikimoriAnimeBase, IAnimeSeries
     {
-        public int? CategoryId { get; set; } = 0;
-        public string? CategoryName { get; set; } = string.Empty;
-        public string? CategoryColor { get; set; } = string.Empty;
+        public int CategoryId { get; set; }
+        public string CategoryName { get; set; }
+        public string CategoryColor { get; set; }
     }
 }

@@ -12,6 +12,9 @@ namespace SeriesTracker.Core.Dtos
         [JsonProperty("poster")]
         private Poster? Poster { get; set; } = new();
 
+        [JsonProperty("kind")]
+        private string? KindInfo { get; set; }
+
         [JsonProperty("id")]
         public int Id { get; set; }
 
@@ -21,16 +24,13 @@ namespace SeriesTracker.Core.Dtos
         [JsonProperty("russian")]
         public string? Title { get; set; }
 
-        [JsonProperty("episodes")]
-        public int Episodes { get; set; }
-
-        [JsonProperty("episodesAired")]
-        public int EpisodesAired { get; set; }
+        [JsonIgnore]
+        public string Kind => AnimeConverter.ConvertKindToRussian(KindInfo); // Вычисляемое свойство
 
         [JsonIgnore]
         public string? PictureUrl => Poster?.Url; // Вычисляемое свойство
 
         [JsonIgnore]
-        public string? StartDate => AiredOn.Date ?? AiredOn.Year; // Вычисляемое свойство
+        public string? StartDate => AiredOn.StartDate ?? "Неизвестно"; // Вычисляемое свойство
     }
 }

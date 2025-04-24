@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using SeriesTracker.Core.Dtos;
+using SeriesTracker.Core.Interfaces;
 using SeriesTracker.Core.Models.Shikimori;
 using System.Collections.ObjectModel;
 
@@ -12,50 +13,42 @@ namespace SeriesTracker.Core.Mappers
 
         public AnimeMappingProfile()
         {
-            CreateMap<ShikimoriAnimeDto, ShikimoriAnimeBase>()
-                               .ForMember(dest => dest.StartDate, opt => opt.MapFrom(src => src.StartDate ?? "Неизвестно"))
-                               .ForMember(dest => dest.Description, opt => opt.MapFrom(src => ConvertDescription(src.Description)))
-                               .ForMember(dest => dest.Rating, opt => opt.MapFrom(src => ConvertRating(src.Rating)))
-                               .ForMember(dest => dest.Kind, opt => opt.MapFrom(src => ConvertKind(src.Kind)))
-                               .ForMember(dest => dest.Status, opt => opt.MapFrom(src => ConvertStatus(src.Status)));
-
+            CreateMap<ShikimoriAnimeDto, ShikimoriAnimeBase>();
             CreateMap<ShikimoriAnimeFullDto, ShikimoriAnimeBaseFull>()
-                .ForMember(dest => dest.StartDate, opt => opt.MapFrom(src => src.StartDate ?? "Неизвестно"))
-                .ForMember(dest => dest.Description, opt => opt.MapFrom(src => ConvertDescription(src.Description)))
-                .ForMember(dest => dest.Rating, opt => opt.MapFrom(src => ConvertRating(src.Rating)))
-                .ForMember(dest => dest.Kind, opt => opt.MapFrom(src => ConvertKind(src.Kind)))
-                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => ConvertStatus(src.Status)))
+                .AfterMap((src, dest) =>
+                {
+                    dest.Description = ConvertDescription(src.Description);
+                    dest.Rating = ConvertRating(src.Rating);
+                    dest.Kind = ConvertKind(src.Kind);
+                    dest.Status = ConvertStatus(src.Status);
+                })
                 .ForMember(dest => dest.Genres, opt => opt.MapFrom(src => src.Genres))
                 .ForMember(dest => dest.Relateds, opt => opt.MapFrom(src => GetRelateds(src.Relateds)));
 
             CreateMap<ShikimoriAnimeBase, AnimeSeriesDto>()
-                .BeforeMap((src, dest, context) =>
-                {
-                    if (context.Items.Count == 0)
-                    {
-                        return;
-                    }
-                    dest.CategoryId = (int)context.Items["CategoryId"];
-                    dest.CategoryName = (string)context.Items["CategoryName"];
-                    dest.CategoryColor = (string)context.Items["CategoryColor"];
-                });
+              .BeforeMap((_, dest, context) => MapCategoryProperties(dest, context));
 
             CreateMap<ShikimoriAnimeBaseFull, AnimeSeriesFullDto>()
-              .BeforeMap((src, dest, context) =>
-              {
-                  if (context.Items.Count == 0)
-                  {
-                      return;
-                  }
-                  dest.SeriesId = (Guid)context.Items["SeriesId"];
-                  dest.CategoryId = (int)context.Items["CategoryId"];
-                  dest.CategoryName = (string)context.Items["CategoryName"];
-                  dest.CategoryColor = (string)context.Items["CategoryColor"];
-                  dest.WatchedEpisodes = (int)context.Items["WatchedEpisodes"];
-                  dest.AddedDate = (string)context.Items["AddedDate"];
-                  dest.ChangedDate = (string)context.Items["ChangedDate"];
-                  dest.IsFavorite = (bool)context.Items["IsFavorite"];
-              });
+                .BeforeMap((_, dest, context) =>
+                {
+                    dest.SeriesId = (Guid)context.Items["SeriesId"];
+                    dest.WatchedEpisodes = (int)context.Items["WatchedEpisodes"];
+                    dest.ChangedDate = (string)context.Items["ChangedDate"];
+                    dest.IsFavorite = (bool)context.Items["IsFavorite"];
+                    MapCategoryProperties(dest, context); // Вызываем общий метод
+                });
+        }
+
+        private void MapCategoryProperties(IAnimeSeries dest, ResolutionContext context)
+        {
+            if (dest is null || context is null || context.Items is null) return;
+
+            if (context.Items.ContainsKey("CategoryId"))
+                dest.CategoryId = (int)context.Items["CategoryId"];
+            if (context.Items.ContainsKey("CategoryName"))
+                dest.CategoryName = (string)context.Items["CategoryName"];
+            if (context.Items.ContainsKey("CategoryColor"))
+                dest.CategoryColor = (string)context.Items["CategoryColor"];
         }
 
         private static string? ConvertDescription(string? descriptionInfo)
@@ -63,14 +56,14 @@ namespace SeriesTracker.Core.Mappers
             return string.IsNullOrEmpty(descriptionInfo) ? null : AnimeConverter.ConvertDescriptionWithRegex(descriptionInfo);
         }
 
-        private static string ConvertRating(string? ratingInfo)
-        {
-            return AnimeConverter.ConvertRatingToImageName(ratingInfo);
-        }
-
         private static string ConvertKind(string? kindInfo)
         {
             return AnimeConverter.ConvertKindToRussian(kindInfo);
+        }
+
+        private static string ConvertRating(string? ratingInfo)
+        {
+            return AnimeConverter.ConvertRatingToImageName(ratingInfo);
         }
 
         private static string ConvertStatus(string? statusInfo)
