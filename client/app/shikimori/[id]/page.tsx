@@ -216,6 +216,7 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                         Select: {
                             colorText: anime.categoryColor,
                             activeBorderColor: anime.categoryColor,
+                            hoverBorderColor: anime.categoryColor,
                         },
                     },
                 }}
@@ -248,7 +249,7 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                                         justify={"center"}
                                     >
                                         <Col lg={24} xl={6} xxl={5}>
-                                            <Flex justify="center">
+                                            <Flex justify="center" align="end">
                                                 <Image
                                                     style={{
                                                         maxHeight: "380px",
@@ -257,6 +258,31 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                                                     src={anime.pictureUrl}
                                                     fallback={noFoundImage.src}
                                                 />
+                                                {anime.categoryId > 0 && (
+                                                    <Text
+                                                        strong
+                                                        italic
+                                                        style={{
+                                                            position:
+                                                                "absolute",
+                                                            fontSize: 13,
+                                                            textShadow:
+                                                                "1px 1px 2px black",
+                                                            top: -25,
+                                                        }}
+                                                    >
+                                                        {`Добавлено: ${new Date(
+                                                            anime.addedDate
+                                                        ).toLocaleString(
+                                                            "ru-Ru",
+                                                            {
+                                                                year: "numeric",
+                                                                month: "short",
+                                                                day: "numeric",
+                                                            }
+                                                        )}`}
+                                                    </Text>
+                                                )}
                                             </Flex>
                                         </Col>
                                         <Col
@@ -280,7 +306,7 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                                                 </Text>
 
                                                 <GenreDescription
-                                                    genresString={anime.genres}
+                                                    genresList={anime.genres}
                                                 />
                                                 <InfoDescription
                                                     items={[

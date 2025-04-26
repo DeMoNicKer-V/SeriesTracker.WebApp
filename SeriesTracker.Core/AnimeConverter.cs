@@ -9,18 +9,6 @@ namespace SeriesTracker.Core
     public static partial class AnimeConverter
     {
         /// <summary>
-        /// Регулярное выражение для поиска тегов форматирования в описании.
-        /// </summary>
-        [GeneratedRegex(@"\[.*?\]")]
-        private static partial Regex DescriptionFormatRegex();
-
-        /// <summary>
-        /// Регулярное выражение для удаления множественных пробелов.
-        /// </summary>
-        [GeneratedRegex(@"\s+")]
-        private static partial Regex MultipleSpacesFormatRegex();
-
-        /// <summary>
         /// Преобразует описание аниме, удаляя теги форматирования и множественные пробелы.
         /// </summary>
         /// <param name="description">Описание аниме, которое необходимо преобразовать.</param>
@@ -37,7 +25,7 @@ namespace SeriesTracker.Core
                 string matchedString = match.Value;
 
                 // Извлекаем текст внутри скобок
-                var insideBrackets = Regex.Match(matchedString, @"\=(.*?)\/").Groups[1].Value;
+                var insideBrackets = InsideBracketsRegex().Match(matchedString).Groups[1].Value;
 
                 // Заменяем весь тег на текст внутри
                 result = result.Replace(matchedString, insideBrackets);
@@ -45,6 +33,43 @@ namespace SeriesTracker.Core
 
             // Удаляем множественные пробелы и обрезаем лишние пробелы в начале и конце строки
             return MultipleSpacesFormatRegex().Replace(result, " ").Trim();
+        }
+
+        /// <summary>
+        /// Преобразует тип аниме из английского в русский.
+        /// </summary>
+        /// <param name="kindName">Тип аниме на английском языке.</param>
+        /// <returns>Тип аниме на русском языке или "Неизвестно", если тип не распознан.</returns>
+        public static string ConvertKindToRussian(string? kindName)
+        {
+            return kindName switch
+            {
+                "tv" => "TV-Сериал",
+                "movie" => "Фильм",
+                "special" => "Спешл",
+                "tv_special" => "TV-Спешл",
+                null => "Неизвестно",
+                _ => kindName,
+            };
+        }
+
+        /// <summary>
+        /// Преобразует рейтинг аниме в название файла изображения рейтинга.
+        /// </summary>
+        /// <param name="ratingName">Рейтинг аниме на английском языке.</param>
+        /// <returns>Рейтинг в общем формате или "Неизвестно", если рейтинг не распознан.</returns>
+        public static string ConvertRatingToImageName(string? ratingName)
+        {
+            return ratingName switch
+            {
+                "pg_13" => "PG-13",
+                "pg" => "PG",
+                "g" => "G",
+                "r" => "R-16",
+                "r_plus" => "R+",
+                null => "Неизвестно",
+                _ => ratingName,
+            };
         }
 
         /// <summary>
@@ -64,41 +89,16 @@ namespace SeriesTracker.Core
             };
         }
 
-        /// <summary>
-        /// Преобразует рейтинг аниме в название файла изображения рейтинга.
-        /// </summary>
-        /// <param name="ratingName">Рейтинг аниме на английском языке.</param>
-        /// <returns>Название файла изображения рейтинга или "Неизвестно", если рейтинг не распознан.</returns>
-        public static string ConvertRatingToImageName(string? ratingName)
-        {
-            return ratingName switch
-            {
-                "pg_13" => "PG-13",
-                "pg" => "PG",
-                "g" => "G",
-                "r" => "R-16",
-                "r_plus" => "R+",
-                null => "Неизвестно",
-                _ => ratingName,
-            };
-        }
+        // Регулярное выражение для поиска тегов форматирования в описании.
+        [GeneratedRegex(@"\[.*?\]")]
+        private static partial Regex DescriptionFormatRegex();
 
-        /// <summary>
-        /// Преобразует тип аниме из английского в русский.
-        /// </summary>
-        /// <param name="kindName">Тип аниме на английском языке.</param>
-        /// <returns>Тип аниме на русском языке или в верхнем регистре, если тип не распознан.</returns>
-        public static string ConvertKindToRussian(string? kindName)
-        {
-            return kindName switch
-            {
-                "tv" => "TV-Сериал",
-                "movie" => "Фильм",
-                "special" => "Спешл",
-                "tv_special" => "TV-Спешл",
-                null => "Неизвестно",
-                _ => kindName.ToUpper(),
-            };
-        }
+        // Регулярное выражение для извлечения текста из скобок.
+        [GeneratedRegex(@"\=(.*?)\/")]
+        private static partial Regex InsideBracketsRegex();
+
+        // Регулярное выражение для удаления множественных пробелов.
+        [GeneratedRegex(@"\s+")]
+        private static partial Regex MultipleSpacesFormatRegex();
     }
 }

@@ -89,7 +89,7 @@ namespace SeriesTracker.Application.Services
             return userActivity; // Возвращаем DTO с информацией о профиле пользователя
         }
 
-        public async Task<ShikimoriAnimeBase[]> GetUserSeriesList(string userName, int page, int categoryId, bool isFavorite)
+        public async Task<ShikimoriAnime[]> GetUserSeriesList(string userName, int page, int categoryId, bool isFavorite)
         {
             var animeIds = await _userSeriesRepository.GetAnimeIdsList(userName, page, categoryId, isFavorite); // Получаем список идентификаторов аниме из репозитория
 
@@ -99,9 +99,9 @@ namespace SeriesTracker.Application.Services
             }
 
             var idsString = string.Join(",", animeIds); // Преобразуем список идентификаторов в строку, разделенную запятыми
-            var animesResponse = await GraphQLHelper.ExecuteGraphQLRequest<ShikimoriAnimeBaseList<ShikimoriAnimeDto>>(GraphQLQueries.GetAnimesByIds(idsString), _logger);
+            var animesResponse = await GraphQLHelper.ExecuteGraphQLRequest<ShikimoriAnimeList<ShikimoriAnimeDto>>(GraphQLQueries.GetAnimesByIds(idsString), _logger);
 
-            var animeBaseArray = _mapper.Map<ShikimoriAnimeBase[]>(animesResponse.Animes);
+            var animeBaseArray = _mapper.Map<ShikimoriAnime[]>(animesResponse.Animes);
 
             return animeBaseArray; // Возвращаем массив DTO с информацией об аниме
         }

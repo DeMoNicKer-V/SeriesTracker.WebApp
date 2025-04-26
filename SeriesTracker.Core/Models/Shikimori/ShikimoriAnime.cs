@@ -1,43 +1,46 @@
-﻿namespace SeriesTracker.Core.Interfaces
+﻿using SeriesTracker.Core.Interfaces;
+
+namespace SeriesTracker.Core.Models.Shikimori
 {
     /// <summary>
-    /// Расширяет интерфейс <see cref="IAnime"/>, добавляя новые свойства.
+    /// Реализует интерфейс <see cref="IShikimoriAnime"/>.
+    /// Наследуется от <see cref="AnimeBase"/>, чтобы унаследовать общие свойства.
     /// </summary>
-    public interface IShikimoriAnime : IAnime
+    public partial class ShikimoriAnime : AnimeBase, IShikimoriAnime
     {
         /// <summary>
         /// Описание аниме.
         /// </summary>
-        string? Description { get; set; }
+        public string? Description { get; set; }
 
         /// <summary>
         /// Продолжительность одного эпизода аниме в минутах.
         /// </summary>
-        int Duration { get; set; }
+        public int Duration { get; set; }
 
         /// <summary>
         /// Общее количество эпизодов в аниме.
         /// </summary>
-        int Episodes { get; set; }
+        public int Episodes { get; set; }
 
         /// <summary>
-        /// Количество вышедших эпизодов аниме.
+        /// Количество вышедших в эфир эпизодов аниме.
         /// </summary>
-        int EpisodesAired { get; set; }
+        public int EpisodesAired { get; set; }
 
         /// <summary>
         /// Рейтинг возрастного ограничения аниме (например, "PG-13", "R-17").
         /// </summary>
-        string? Rating { get; set; }
+        public string? Rating { get; set; }
 
         /// <summary>
         /// Рейтинг аниме на Shikimori.
         /// </summary>
-        double Score { get; set; }
+        public double Score { get; set; }
 
         /// <summary>
         /// Статус аниме (например, "Онгоинг", "Вышел").
         /// </summary>
-        string? Status { get; set; }
+        public string? Status { get; set; }
     }
 }

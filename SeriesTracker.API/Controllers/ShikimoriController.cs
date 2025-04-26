@@ -247,7 +247,7 @@ namespace SeriesTracker.API.Controllers
             try
             {
                 // Получаем случайное аниме через сервис
-                ShikimoriAnimeBase anime = await _shikimoriService.GetRandomAnime();
+                ShikimoriAnime anime = await _shikimoriService.GetRandomAnime();
 
                 // Возвращаем ID случайного аниме с кодом 200 OK
                 return Results.Ok(anime.Id);

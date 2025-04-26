@@ -183,6 +183,7 @@ const AnimeList = ({}) => {
                             >
                                 <Link href={`/shikimori/${animes.id}`}>
                                     <Badge.Ribbon
+                                        color={animes.categoryColor}
                                         text={
                                             <Flex
                                                 justify="center"

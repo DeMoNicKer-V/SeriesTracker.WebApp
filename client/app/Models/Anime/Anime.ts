@@ -4,7 +4,7 @@ export interface Anime {
     subTitle: string;
     description?: string;
     duration: number;
-    genres: string;
+    genres: [];
     startDate: string;
     episodes: number;
     score: number;
@@ -38,7 +38,7 @@ export const defaultAnimeValues: Anime = {
     title: "",
     subTitle: "",
     description: "",
-    genres: "",
+    genres: [],
     startDate: "",
     score: 0,
     episodes: 0,

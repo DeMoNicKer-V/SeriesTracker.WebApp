@@ -57,7 +57,7 @@ namespace SeriesTracker.Core.Abstractions
         /// <param name="categoryId">Идентификатор категории.</param>
         /// <param name="isFavorite">Признак избранного.</param>
         /// <returns>Массив базовых DTO с информацией об аниме.</returns>
-        Task<ShikimoriAnimeBase[]> GetUserSeriesList(string userName, int page, int categoryId, bool isFavorite);
+        Task<ShikimoriAnime[]> GetUserSeriesList(string userName, int page, int categoryId, bool isFavorite);
 
         /// <summary>
         /// Обновляет информацию о просмотре аниме в списке пользователя.

@@ -3,12 +3,11 @@ import React from "react";
 
 import styles from "./component.module.css";
 interface Props {
-    genresString: string;
+    genresList: [];
     size?: [number, number];
 }
 
-const GenreDescription = ({ genresString, size = [0, 0] }: Props) => {
-    const genresList = genresString.split(",");
+const GenreDescription = ({ genresList, size = [0, 0] }: Props) => {
     return (
         <Space
             className={styles["genre-list"]}
@@ -16,7 +15,7 @@ const GenreDescription = ({ genresString, size = [0, 0] }: Props) => {
             size={size}
             wrap
         >
-            {genresList.map((item: string, index) => (
+            {genresList.map((item: Genre, index) => (
                 <Tag
                     key={`tag-${index}`}
                     className="tag"
@@ -24,7 +23,7 @@ const GenreDescription = ({ genresString, size = [0, 0] }: Props) => {
                         backgroundColor: "transparent",
                     }}
                 >
-                    {item}
+                    {item.russian}
                 </Tag>
             ))}
         </Space>

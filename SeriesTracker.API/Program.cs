@@ -44,7 +44,6 @@ services.AddDbContextFactory<SeriesTrackerDbContext>(options =>
 // Указываем типы профилей маппинга, которые будут использоваться.
 services.AddAutoMapper(typeof(AnimeMappingProfile));
 services.AddAutoMapper(typeof(UserMappingProfile));
-services.AddAutoMapper(typeof(SeriesCategoryMappingProfile));
 
 // ---- Настройка аутентификации и авторизации ----
 // Добавляем сервисы аутентификации, используя конфигурацию.

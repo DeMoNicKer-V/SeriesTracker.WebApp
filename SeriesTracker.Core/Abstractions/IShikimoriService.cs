@@ -51,9 +51,9 @@ namespace SeriesTracker.Core.Abstractions
         /// <summary>
         /// Получает случайное аниме.
         /// </summary>
-        /// <returns>Объект <see cref="ShikimoriAnimeBase"/>.</returns>
+        /// <returns>Объект <see cref="ShikimoriAnime"/>.</returns>
         /// <exception cref="InvalidOperationException"/>
-        Task<ShikimoriAnimeBase> GetRandomAnime();
+        Task<ShikimoriAnime> GetRandomAnime();
 
         /// <summary>
         /// Получает список аниме конкретного пользователя в порядке изменения.

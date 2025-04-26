@@ -47,7 +47,7 @@ namespace SeriesTracker.Application.Services
         {
             // Выполняем GraphQL запрос к Api
             var result = await GetAndMapAnimeData<ShikimoriAnimeFullDto,
-                ShikimoriAnimeBaseFull, AnimeSeriesFullDto>(userId, GraphQLQueries.GetAnimeById(animeId), _mapper.MapToFullSeriesDto);
+                ShikimoriAnimeFull, AnimeSeriesFullDto>(userId, GraphQLQueries.GetAnimeById(animeId), _mapper.MapToFullSeriesDto);
 
             return result.Single();
         }
@@ -57,7 +57,7 @@ namespace SeriesTracker.Application.Services
         {
             // Выполняем GraphQL запрос к Api
             var result = await GetAndMapAnimeData<ShikimoriAnimeDto,
-                ShikimoriAnimeBase, AnimeSeriesDto>(userId, GraphQLQueries.GetAnimes(page, name, season, status, kind, genre, order, censored), _mapper.MapToShortSeriesDto);
+                ShikimoriAnime, AnimeSeriesDto>(userId, GraphQLQueries.GetAnimes(page, name, season, status, kind, genre, order, censored), _mapper.MapToShortSeriesDto);
 
             return result;
         }
@@ -66,7 +66,7 @@ namespace SeriesTracker.Application.Services
         {
             // Выполняем GraphQL запрос к Api
             var result = await GetAndMapAnimeData<ShikimoriAnimeDto,
-                ShikimoriAnimeBase, AnimeSeriesDto>(userId, GraphQLQueries.GetAnimesByName(animeName), _mapper.MapToShortSeriesDto);
+                ShikimoriAnime, AnimeSeriesDto>(userId, GraphQLQueries.GetAnimesByName(animeName), _mapper.MapToShortSeriesDto);
 
             return result;
         }
@@ -98,10 +98,10 @@ namespace SeriesTracker.Application.Services
             return result;
         }
 
-        public async Task<ShikimoriAnimeBase> GetRandomAnime()
+        public async Task<ShikimoriAnime> GetRandomAnime()
         {
             // 1. Получаем список аниме через GraphQL (предполагаем, что только 1 элемент)
-            var animeResponse = await GraphQLHelper.ExecuteGraphQLRequest<ShikimoriAnimeBaseList<ShikimoriAnimeBase>>(GraphQLQueries.GetRandomAnime(), _logger);
+            var animeResponse = await GraphQLHelper.ExecuteGraphQLRequest<ShikimoriAnimeList<ShikimoriAnime>>(GraphQLQueries.GetRandomAnime(), _logger);
 
             // 2. Возвращаем единственный элемент, или выбрасываем InvalidOperationException
             return animeResponse.Animes.Single();
@@ -114,7 +114,7 @@ namespace SeriesTracker.Application.Services
 
             // Выполняем GraphQL запрос к Api
             var result = await GetAndMapAnimeData<ShikimoriAnimeFullDto,
-                ShikimoriAnimeBaseFull, AnimeSeriesFullDto>(user == null ? Guid.Empty : user.Id, GraphQLQueries.GetAnimesByIds(Ids), _mapper.MapToFullSeriesDto);
+                ShikimoriAnimeFull, AnimeSeriesFullDto>(user == null ? Guid.Empty : user.Id, GraphQLQueries.GetAnimesByIds(Ids), _mapper.MapToFullSeriesDto);
 
             // 2. Сортируем по убыванию даты изменения
             return [.. result.OrderByDescending(m => m.ChangedDate)]; // Преобразуем обратно в массив
@@ -139,7 +139,7 @@ namespace SeriesTracker.Application.Services
             where TIntermediate : IAnime
         {
             // 1. Получаем список аниме через GraphQL
-            var animeList = await GraphQLHelper.ExecuteGraphQLRequest<ShikimoriAnimeBaseList<TSource>>(request, _logger);
+            var animeList = await GraphQLHelper.ExecuteGraphQLRequest<ShikimoriAnimeList<TSource>>(request, _logger);
 
             // 2. Преобразуем данные аниме из типа TSource в тип TIntermediate с использованием AutoMapper
             var animeBaseArray = _mapper.Map<TIntermediate[]>(animeList.Animes);

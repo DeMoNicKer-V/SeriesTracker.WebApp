@@ -2,17 +2,27 @@
 
 namespace SeriesTracker.Core.Models.Shikimori
 {
+    /// <summary>
+    /// Представляет информацию о жанре аниме.
+    /// </summary>
     public class Genre
     {
-        [JsonProperty("id")] 
+        /// <summary>
+        /// Уникальный идентификатор жанра.
+        /// </summary>
+        [JsonProperty("id")]
         public long Id { get; set; }
 
-        [JsonProperty("russian")] 
+        /// <summary>
+        /// Название жанра на русском языке.
+        /// </summary>
+        [JsonProperty("russian")]
         public required string Russian { get; set; }
 
-        [JsonProperty("kind")] 
+        /// <summary>
+        /// Тип жанра (например, "genre", "theme").
+        /// </summary>
+        [JsonProperty("kind")]
         public required string Kind { get; set; }
-
-
     }
 }

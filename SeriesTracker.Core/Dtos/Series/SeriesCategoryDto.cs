@@ -17,12 +17,12 @@
             get; set;
         }
 
-        public string CategoryName
+        public required string CategoryName
         {
             get; set;
         }
 
-        public string CategoryColor
+        public required string CategoryColor
         {
             get; set;
         }
@@ -32,12 +32,12 @@
             get; set;
         }
 
-        public string AddedDate
+        public required string AddedDate
         {
             get; set;
         }
 
-        public string? ChangedDate
+        public required string ChangedDate
         {
             get; set;
         }
