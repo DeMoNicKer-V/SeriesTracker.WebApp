@@ -1,50 +1,53 @@
 ﻿namespace SeriesTracker.Core.Dtos
 {
+    /// <summary>
+    /// DTO, представляющий информацию о категории, к которой принадлежит аниме в списке пользователя.
+    /// </summary>
     public class SeriesCategoryDto
     {
-        public Guid SeriesId
-        {
-            get; set;
-        }
+        /// <summary>
+        /// Уникальный идентификатор аниме в списке пользователя.
+        /// </summary>
+        public Guid SeriesId { get; set; }
 
-        public int AnimeId
-        {
-            get; set;
-        }
+        /// <summary>
+        /// Идентификатор аниме, к которому относится аниме.
+        /// </summary>
+        public int AnimeId { get; set; }
 
-        public int CategoryId
-        {
-            get; set;
-        }
+        /// <summary>
+        /// Идентификатор категории, к которой отнесен аниме.
+        /// </summary>
+        public int CategoryId { get; set; }
 
-        public required string CategoryName
-        {
-            get; set;
-        }
+        /// <summary>
+        /// Название категории, к которой отнесен аниме.
+        /// </summary>
+        public required string CategoryName { get; set; }
 
-        public required string CategoryColor
-        {
-            get; set;
-        }
+        /// <summary>
+        /// Цвет категории, к которой отнесен аниме (например, в формате HEX).
+        /// </summary>
+        public required string CategoryColor { get; set; }
 
-        public int WatchedEpisodes
-        {
-            get; set;
-        }
+        /// <summary>
+        /// Количество просмотренных эпизодов сериала пользователем.
+        /// </summary>
+        public int WatchedEpisodes { get; set; }
 
-        public required string AddedDate
-        {
-            get; set;
-        }
+        /// <summary>
+        /// Дата добавления сериала в список пользователя.
+        /// </summary>
+        public required string AddedDate { get; set; }
 
-        public required string ChangedDate
-        {
-            get; set;
-        }
+        /// <summary>
+        /// Дата последнего изменения информации о сериале в списке пользователя.
+        /// </summary>
+        public required string ChangedDate { get; set; }
 
-        public bool IsFavorite
-        {
-            get; set;
-        }
+        /// <summary>
+        /// Флаг, указывающий, добавлен ли аниме в избранное пользователя.
+        /// </summary>
+        public bool IsFavorite { get; set; }
     }
 }

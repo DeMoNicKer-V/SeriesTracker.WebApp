@@ -42,6 +42,7 @@ namespace SeriesTracker.DataAccess.Entities
         /// </summary>
         [Key] // Указываем, что это первичный ключ
         public Guid Id { get; set; }
+
         /// <summary>
         /// Признак, является ли аниме избранным.
         /// </summary>
@@ -58,6 +59,7 @@ namespace SeriesTracker.DataAccess.Entities
         /// </summary>
         [ForeignKey("User")] // Указываем внешний ключ
         public Guid UserId { get; set; }
+
         /// <summary>
         /// Количество просмотренных эпизодов.
         /// </summary>

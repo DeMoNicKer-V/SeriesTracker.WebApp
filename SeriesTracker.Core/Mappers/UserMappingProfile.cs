@@ -26,7 +26,7 @@ namespace SeriesTracker.Core.Mappers
             // Этот маппинг преобразует данные пользователя и добавляет информацию об активности пользователя.
             CreateMap<User, UserActivityDTO>().AfterMap((src, dest, context) =>
             {
-                dest.SeriesGroup = (List<SeriesGroupDto>)context.Items["SeriesGroup"];
+                dest.SeriesGroup = (List<SeriesGroupFullDto>)context.Items["SeriesGroup"];
                 dest.SeriesIDS = (string)context.Items["SeriesIDS"];
             });
         }

@@ -30,6 +30,7 @@ namespace SeriesTracker.Core.Models.Shikimori
         /// </summary>
         [JsonProperty("mini2xUrl")]
         private string? MiniUrl { get; set; }
+
         /// <summary>
         /// URL адрес оригинального постера.
         /// </summary>

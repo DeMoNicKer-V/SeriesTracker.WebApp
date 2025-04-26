@@ -2,10 +2,10 @@ import React from "react";
 import { Col, Card, Tooltip, Tag, Flex, Row, Divider } from "antd";
 import Link from "next/link";
 import Title from "antd/es/typography/Title";
-import { SeriesGroup } from "../Models/Series/SeriesGroup";
+import { SeriesGroupProfile } from "../Models/Series/SeriesGroup";
 
 interface Props {
-    items: SeriesGroup[];
+    items: SeriesGroupProfile[];
     username: string;
 }
 

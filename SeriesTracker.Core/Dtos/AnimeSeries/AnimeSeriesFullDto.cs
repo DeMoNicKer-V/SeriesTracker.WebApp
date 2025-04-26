@@ -3,32 +3,50 @@ using SeriesTracker.Core.Models.Shikimori;
 
 namespace SeriesTracker.Core.Dtos
 {
-    // Представляет полные данные аниме, включая информацию о категориях и пользовательских настройках.
-    // Наследуется от ShikimoriAnimeFull и реализует интерфейс IAnimeSeries.
+    /// <summary>
+    /// Представляет полные данные аниме, включая информацию о категориях и пользовательских настройках.
+    /// Наследуется от <see cref="ShikimoriAnimeFull"/> и реализует интерфейс <see cref="IAnimeSeries"/>.
+    /// </summary>
     public class AnimeSeriesFullDto : ShikimoriAnimeFull, IAnimeSeries
     {
-        // Уникальный идентификатор элемента списка пользователя.
+        /// <summary>
+        /// Уникальный идентификатор элемента списка пользователя.
+        /// </summary>
         public Guid? SeriesId { get; set; }
 
-        // Идентификатор категории, к которой относится аниме.
+        /// <summary>
+        /// Идентификатор категории, к которой относится аниме.
+        /// </summary>
         public int CategoryId { get; set; }
 
-        // Название категории, к которой относится аниме.
-        public string CategoryName { get; set; }
+        /// <summary>
+        /// Название категории, к которой относится аниме.
+        /// </summary>
+        public required string CategoryName { get; set; }
 
-        // Цвет категории, к которой относится аниме.
-        public string CategoryColor { get; set; }
+        /// <summary>
+        /// Цвет категории, к которой относится аниме.
+        /// </summary>
+        public required string CategoryColor { get; set; }
 
-        // Количество просмотренных эпизодов аниме-сериала пользователем.
-        public int WatchedEpisodes { get; set; }
+        /// <summary>
+        /// Количество просмотренных эпизодов аниме-сериала пользователем.
+        /// </summary>
+        public required int WatchedEpisodes { get; set; }
 
-        // Дата добавления аниме.
-        public string AddedDate { get; set; }
+        /// <summary>
+        /// Дата добавления аниме.
+        /// </summary>
+        public required string AddedDate { get; set; }
 
-        // Дата последнего изменения пользовательских настроек аниме.
-        public string ChangedDate { get; set; }
+        /// <summary>
+        /// Дата последнего изменения пользовательских настроек аниме.
+        /// </summary>
+        public required string ChangedDate { get; set; }
 
-        // Флаг, указывающий, добавлено ли аниме в избранное пользователем.
+        /// <summary>
+        /// Флаг, указывающий, добавлено ли аниме в избранное пользователем.
+        /// </summary>
         public bool IsFavorite { get; set; }
     }
 }

@@ -24,7 +24,7 @@ namespace SeriesTracker.Core.Models.Shikimori
         public int Episodes { get; set; }
 
         /// <summary>
-        /// Количество вышедших в эфир эпизодов аниме.
+        /// Количество вышедших эпизодов аниме.
         /// </summary>
         public int EpisodesAired { get; set; }
 

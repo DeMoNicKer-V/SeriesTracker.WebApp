@@ -1,4 +1,4 @@
-import { SeriesGroup } from "../Series/SeriesGroup";
+import { SeriesGroupProfile } from "../Series/SeriesGroup";
 
 export interface MainUserInfo {
     email: string;
@@ -9,7 +9,7 @@ export interface MainUserInfo {
     dateBirth: string;
     regDate: string;
     roleId: number;
-    seriesGroup: SeriesGroup[];
+    seriesGroup: SeriesGroupProfile[];
     seriesIDS: string;
 }
 

@@ -73,8 +73,16 @@ namespace SeriesTracker.Application.Services
 
         public async Task<GenreList> GetGenres()
         {
+            // 1. Получаем список жанров через GraphQL
+            var genreResponse = await GraphQLHelper.ExecuteGraphQLRequest<GenreList>(GraphQLQueries.GetGenres(), _logger);
+
+            if (genreResponse == null)
+            {
+                return new GenreList();
+            }
+
+            return genreResponse;
             // Выполняем GraphQL запрос к Api и возвращаем список жанров
-            return await GraphQLHelper.ExecuteGraphQLRequest<GenreList>(GraphQLQueries.GetGenres(), _logger);
         }
 
         public async Task<GenreGroupingDTO> GetGroupingGenres()
@@ -82,6 +90,10 @@ namespace SeriesTracker.Application.Services
             // 1. Получаем список жанров через GraphQL
             var genreResponse = await GraphQLHelper.ExecuteGraphQLRequest<GenreList>(GraphQLQueries.GetGenres(), _logger);
 
+            if (genreResponse == null)
+            {
+                return new GenreGroupingDTO();
+            }
             // 2. Группируем жанры.  Учитываем, что Kind может быть null
             var groupedRecords = genreResponse.Genres
                 .GroupBy(r => r.Kind)
@@ -103,6 +115,10 @@ namespace SeriesTracker.Application.Services
             // 1. Получаем список аниме через GraphQL (предполагаем, что только 1 элемент)
             var animeResponse = await GraphQLHelper.ExecuteGraphQLRequest<ShikimoriAnimeList<ShikimoriAnime>>(GraphQLQueries.GetRandomAnime(), _logger);
 
+            if (animeResponse == null)
+            {
+                return new ShikimoriAnime();
+            }
             // 2. Возвращаем единственный элемент, или выбрасываем InvalidOperationException
             return animeResponse.Animes.Single();
         }
@@ -141,6 +157,10 @@ namespace SeriesTracker.Application.Services
             // 1. Получаем список аниме через GraphQL
             var animeList = await GraphQLHelper.ExecuteGraphQLRequest<ShikimoriAnimeList<TSource>>(request, _logger);
 
+            if (animeList == null)
+            {
+                return [];
+            }
             // 2. Преобразуем данные аниме из типа TSource в тип TIntermediate с использованием AutoMapper
             var animeBaseArray = _mapper.Map<TIntermediate[]>(animeList.Animes);
 

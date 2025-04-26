@@ -2,7 +2,6 @@
 using SeriesTracker.API.Contracts;
 using SeriesTracker.API.Extensions;
 using SeriesTracker.Application.Services;
-using SeriesTracker.Core.Models;
 
 namespace SeriesTracker.API.Controllers
 {

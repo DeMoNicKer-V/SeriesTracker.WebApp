@@ -18,7 +18,7 @@
         /// <param name="dateBirth">Дата рождения пользователя.</param>
         /// <param name="regDate">Дата регистрации пользователя.</param>
         /// <param name="roleId">Идентификатор роли пользователя.</param>
-        private User(Guid id, string userName, string email, string passwordHash, string? name, string? surName,  string? avatar, string? dateBirth, string regDate, int roleId)
+        private User(Guid id, string userName, string email, string passwordHash, string? name, string? surName, string? avatar, string? dateBirth, string regDate, int roleId)
         {
             this.Id = id;
             this.UserName = userName;
@@ -63,6 +63,7 @@
         {
             get; private set;
         }
+
         /// <summary>
         /// Имя пользователя.
         /// </summary>
@@ -110,6 +111,7 @@
         {
             get; private set;
         }
+
         /// <summary>
         /// Фабричный метод для создания экземпляра класса <see cref="User"/>.
         /// </summary>

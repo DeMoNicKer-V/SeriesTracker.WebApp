@@ -43,8 +43,8 @@ namespace SeriesTracker.Core.Abstractions
         /// Получает сгруппированный список аниме пользователя по категориям (краткое представление).
         /// </summary>
         /// <param name="userName">Имя пользователя.</param>
-        /// <returns>Список, сгруппированых по категорям, <see cref="SeriesGroupShortDto"/></returns>
-        Task<List<SeriesGroupShortDto>> GetGroupShortSeries(string userName);
+        /// <returns>Список, сгруппированых по категорям, <see cref="SeriesGroupDto"/></returns>
+        Task<List<SeriesGroupDto>> GetGroupShortSeries(string userName);
 
         /// <summary>
         /// Получает профиль пользователя с информацией о его списках аниме.

@@ -1,17 +1,19 @@
 ﻿namespace SeriesTracker.Core.Dtos
 {
-    public class UserActivityDTO
+    /// <summary>
+    /// DTO, представляющий активность пользователя.
+    /// Наследуется от <see cref="UserDetailDto"/>, добавляя информацию о списках аниме пользователя.
+    /// </summary>
+    public class UserActivityDTO : UserDetailDto
     {
-        public string? Avatar { get; set; }
-        public string? DateBirth { get; set; }
-        public string Email { get; set; }
-        public Guid Id { get; set; }
-        public string? Name { get; set; }
-        public string RegDate { get; set; }
-        public int RoleId { get; set; }
-        public string? SurName { get; set; }
-        public string UserName { get; set; }
-        public List<SeriesGroupDto> SeriesGroup { get; set; }
-        public string SeriesIDS { get; set; }
+        /// <summary>
+        /// Строка, содержащая идентификаторы аниме, связанных с пользователем.
+        /// </summary>
+        public string? SeriesIDS { get; set; }
+
+        /// <summary>
+        /// Список DTO, представляющих сгуппированную информацию об аниме, связанных с пользователем.
+        /// </summary>
+        public List<SeriesGroupFullDto>? SeriesGroup { get; set; }
     }
 }

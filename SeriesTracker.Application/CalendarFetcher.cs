@@ -1,12 +1,12 @@
-﻿using SeriesTracker.Core.Abstractions;
-using SeriesTracker.Core.Models.Shikimori;
+﻿using Newtonsoft.Json;
 using SeriesTracker.Core;
+using SeriesTracker.Core.Abstractions;
+using SeriesTracker.Core.Models.Shikimori;
 using System.Net;
 using System.Net.Http.Headers;
-using Newtonsoft.Json;
 
-
-namespace SeriesTracker.Application {
+namespace SeriesTracker.Application
+{
     /// <summary>
     /// Сервис для получения данных календаря аниме.
     /// Отвечает за загрузку данных из внешнего источника и фильтрацию элементов.

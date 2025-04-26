@@ -81,7 +81,7 @@ namespace SeriesTracker.DataAccess.Repositories
             return animeIds; // Возвращаем список AnimeId
         }
 
-        public async Task<List<SeriesGroupShortDto>> GetGroupShortSeries(string userName)
+        public async Task<List<SeriesGroupDto>> GetGroupShortSeries(string userName)
         {
             // Получаем список записей пользователя и группируем их по категориям (для краткого представления)
             List<UserSeriesEntity> userSeries = await _context.UserSeriesEntities
@@ -96,12 +96,12 @@ namespace SeriesTracker.DataAccess.Repositories
             }
 
             // Группируем записи по категориям
-            List<SeriesGroupShortDto> categoryGroup = userSeries
+            List<SeriesGroupDto> categoryGroup = userSeries
                 .GroupBy(s => new { s.Category.Id, s.Category.Name, s.Category.Color })
-                .Select(g => new SeriesGroupShortDto  // Создаем DTO для каждой группы
+                .Select(g => new SeriesGroupDto  // Создаем DTO для каждой группы
                 {
-                    Key = g.Key.Id.ToString(),
-                    Value = g.Count(),
+                    Id = g.Key.Id.ToString(),
+                    SeriesCount = g.Count(),
                     Color = g.Key.Color
                 })
                 .ToList();
@@ -110,9 +110,9 @@ namespace SeriesTracker.DataAccess.Repositories
             int count = userSeries.Count;
 
             // Создаем результат и вставляем в начало:
-            List<SeriesGroupShortDto> result = categoryGroup.ToList();
+            List<SeriesGroupDto> result = categoryGroup.ToList();
 
-            result.Insert(0, new SeriesGroupShortDto { Key = "0", Value = count, Color = "" });
+            result.Insert(0, new SeriesGroupDto { Id = "0", SeriesCount = count, Color = "" });
 
             return result; // Возвращаем список сгруппированных записей
         }
@@ -132,15 +132,15 @@ namespace SeriesTracker.DataAccess.Repositories
             }
 
             // Группируем список записей по категориям
-            List<SeriesGroupDto> categoryGroup = userSeriesList
+            List<SeriesGroupFullDto> categoryGroup = userSeriesList
                 .GroupBy(s => s.Category.Id) // Группируем по ID категории
                 .Select(g =>
                 {
                     CategoryEntity category = g.First().Category; // Получаем информацию о категории
 
-                    return new SeriesGroupDto
+                    return new SeriesGroupFullDto
                     {
-                        Id = g.Key,
+                        Id = g.Key.ToString(),
                         Name = category.Name,
                         Color = category.Color,
                         SeriesCount = g.Count() // Количество записей в категории

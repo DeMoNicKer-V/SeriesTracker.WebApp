@@ -16,8 +16,6 @@ namespace SeriesTracker.Core.Dtos
         [JsonProperty("id")]
         public int Id { get; set; }
 
-
-
         /// <summary>
         /// URL адрес изображения постера аниме.
         /// </summary>

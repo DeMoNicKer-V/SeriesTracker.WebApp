@@ -8,12 +8,7 @@ import {
 } from "../endpoints";
 import { get } from "../httpClient";
 import { UsersList } from "@/app/Models/User/UsersList";
-
-export interface CategoryCount {
-    key: string;
-    value: number;
-    color: string;
-}
+import { SeriesGroup } from "@/app/Models/Series/SeriesGroup";
 
 export const getUserById = async (userId: string): Promise<User> => {
     const url = GET_USER_BY_ID_URL.replace("{id}", userId); // Формируем URL
@@ -43,8 +38,8 @@ export const getAllUsersList = async (page: number): Promise<UsersList> => {
 
 export const getUserCategoriesCount = async (
     userName: string
-): Promise<CategoryCount[]> => {
+): Promise<SeriesGroup[]> => {
     const url = GET_SERIES_CATEGORIES_USER_URL.replace("{userName}", userName);
-    const categoriesList = await get<CategoryCount[]>(url, {});
+    const categoriesList = await get<SeriesGroup[]>(url, {});
     return categoriesList;
 };

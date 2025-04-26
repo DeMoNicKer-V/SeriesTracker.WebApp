@@ -43,5 +43,4 @@ namespace SeriesTracker.Core.Models.Shikimori
         [JsonProperty("episodes_aired")]
         public int EpisodesAired { get; set; }
     }
-
 }

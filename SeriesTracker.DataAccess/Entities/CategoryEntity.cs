@@ -34,6 +34,7 @@ namespace SeriesTracker.DataAccess.Entities
         [Required]
         [MaxLength(255)]
         public string Name { get; set; } = string.Empty;
+
         /// <summary>
         /// Предыдущий цвет категории.
         /// </summary>

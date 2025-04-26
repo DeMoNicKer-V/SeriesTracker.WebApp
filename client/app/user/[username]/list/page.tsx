@@ -41,18 +41,18 @@ export default function UserPage({ params }: { params: { username: string } }) {
 
     const getUsersGroups = async (username: string) => {
         const response = await getUserCategoriesCount(username);
-        if (response && response[0].value > 0) {
+        if (response && response[0].seriesCount > 0) {
             setEmpty(false);
         } else {
             setEmpty(true);
             return new Map();
         }
         const cc = new Map<string, string>(
-            response.map((item) => [item.key, item.color])
+            response.map((item) => [item.id, item.color])
         );
         setColors(cc);
         const seriesGroup = new Map<string, number>(
-            response.map((item) => [item.key, item.value])
+            response.map((item) => [item.id, item.seriesCount])
         );
         return seriesGroup;
     };

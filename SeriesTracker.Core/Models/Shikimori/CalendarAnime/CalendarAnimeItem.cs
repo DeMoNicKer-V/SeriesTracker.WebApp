@@ -23,6 +23,6 @@ namespace SeriesTracker.Core.Models.Shikimori
         /// Дата и время выхода следующего эпизода (в формате строки).
         /// </summary>
         [JsonProperty("next_episode_at")]
-        public string? NextEpisodeAt { get; set; }
+        public required string NextEpisodeAt { get; set; }
     }
 }

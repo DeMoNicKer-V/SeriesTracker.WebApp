@@ -1,6 +1,9 @@
 export interface SeriesGroup {
-    id: number;
-    name: string;
-    color: string;
+    id: string;
     seriesCount: number;
+    color: string;
+}
+
+export interface SeriesGroupProfile extends SeriesGroup {
+    name: string;
 }

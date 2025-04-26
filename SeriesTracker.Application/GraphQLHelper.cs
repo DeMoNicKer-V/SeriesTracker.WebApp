@@ -3,7 +3,6 @@ using GraphQL;
 using GraphQL.Client.Http;
 using GraphQL.Client.Serializer.Newtonsoft;
 using Microsoft.Extensions.Logging;
-using SeriesTracker.Core;
 
 namespace SeriesTracker.Application
 {
@@ -25,7 +24,7 @@ namespace SeriesTracker.Application
         /// <param name="logger">Логгер для записи информации о процессе выполнения запроса.</param>
         /// <returns>Результат GraphQL-запроса типа <typeparamref name="TResult"/>.</returns>
         /// <exception cref="Exception">Выбрасывается, если GraphQL-запрос завершается с ошибками.</exception>
-        public static async Task<TResult> ExecuteGraphQLRequest<TSource, TResult>(
+        public static async Task<TResult?> ExecuteGraphQLRequest<TSource, TResult>(
            GraphQLRequest request,
            ILogger logger,
            IMapper mapper)
@@ -56,7 +55,7 @@ namespace SeriesTracker.Application
             }
         }
 
-        public static async Task<TResult> ExecuteGraphQLRequest<TSource, TResult>(
+        public static async Task<TResult?> ExecuteGraphQLRequest<TSource, TResult>(
         GraphQLRequest request,
         ILogger logger)
         {
@@ -85,10 +84,11 @@ namespace SeriesTracker.Application
                 throw;
             }
         }
+
         /// <summary>
         ///  Вспомогательный метод для случаев, когда не требуется проекция.  Просто возвращает данные как есть.
         /// </summary>
-        public static async Task<TSource> ExecuteGraphQLRequest<TSource>(GraphQLRequest request, ILogger logger)
+        public static async Task<TSource?> ExecuteGraphQLRequest<TSource>(GraphQLRequest request, ILogger logger)
         {
             return await ExecuteGraphQLRequest<TSource, TSource>(request, logger);
         }

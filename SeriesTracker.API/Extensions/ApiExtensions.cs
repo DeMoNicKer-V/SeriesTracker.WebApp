@@ -69,12 +69,17 @@ namespace SeriesTracker.API.Extensions
                 // Перебираем все значения перечисления Permission.
                 foreach (var permission in Enum.GetValues(typeof(Permission)))
                 {
-                    // Добавляем политику авторизации для каждого разрешения.
-                    options.AddPolicy(permission.ToString(), policy =>
+                    string? permissionString = permission.ToString();
+
+                    if (permissionString != null)
                     {
-                        // Требуем наличия разрешения для доступа к ресурсу.
-                        policy.Requirements.Add(new PermissionRequirement(new[] { (Permission)permission }));
-                    });
+                        // Добавляем политику авторизации для каждого разрешения.
+                        options.AddPolicy(permissionString, policy =>
+                        {
+                            // Требуем наличия разрешения для доступа к ресурсу.
+                            policy.Requirements.Add(new PermissionRequirement([(Permission)permission]));
+                        });
+                    }
                 }
             });
         }

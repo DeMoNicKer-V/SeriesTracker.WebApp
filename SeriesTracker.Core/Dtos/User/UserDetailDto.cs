@@ -1,15 +1,29 @@
 ﻿namespace SeriesTracker.Core.Dtos
 {
-    public class UserDetailDto
+    /// <summary>
+    /// DTO, представляющий детальную информацию о пользователе.
+    /// Наследуется от <see cref="UserDto"/>, добавляя дополнительные свойства.
+    /// </summary>
+    public class UserDetailDto : UserDto
     {
+        /// <summary>
+        /// URL адрес аватара пользователя.
+        /// </summary>
         public string? Avatar { get; set; }
+
+        /// <summary>
+        /// Дата рождения пользователя.
+        /// </summary>
         public string? DateBirth { get; set; }
-        public string Email { get; set; }
-        public Guid Id { get; set; }
+
+        /// <summary>
+        /// Имя пользователя.
+        /// </summary>
         public string? Name { get; set; }
-        public string RegDate { get; set; }
-        public int RoleId { get; set; }
+
+        /// <summary>
+        /// Фамилия пользователя.
+        /// </summary>
         public string? SurName { get; set; }
-        public string UserName { get; set; }
     }
 }

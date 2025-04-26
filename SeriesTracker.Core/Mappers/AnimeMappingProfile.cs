@@ -34,14 +34,14 @@ namespace SeriesTracker.Core.Mappers
             CreateMap<ShikimoriAnime, AnimeSeriesDto>()
 
               // Вызываем метод BeforeMap для установки свойств категории.
-              .BeforeMap((_, dest, context) => 
+              .BeforeMap((_, dest, context) =>
               {
                   if (context.Items.Count == 0)
                   {
                       return;
                   }
 
-                  MapCategoryProperties(dest, context); 
+                  MapCategoryProperties(dest, context);
               });
 
             // Маппинг из ShikimoriAnimeFull в AnimeSeriesFullDto.
