@@ -161,6 +161,7 @@ namespace SeriesTracker.Application.Services
             {
                 return [];
             }
+
             // 2. Преобразуем данные аниме из типа TSource в тип TIntermediate с использованием AutoMapper
             var animeBaseArray = _mapper.Map<TIntermediate[]>(animeList.Animes);
 

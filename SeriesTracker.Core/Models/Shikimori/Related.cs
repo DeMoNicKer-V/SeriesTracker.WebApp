@@ -12,12 +12,21 @@ namespace SeriesTracker.Core.Models.Shikimori
         /// Информация об аниме.
         /// </summary>
         [JsonProperty("anime")]
-        public AnimeBaseDto? Anime { get; set; }
+        public RalatedAnime? Anime { get; set; }
 
         /// <summary>
         /// Текст, описывающий связь между аниме.
         /// </summary>
         [JsonProperty("relationText")]
         public string? RelationText { get; set; }
+
+        public class RalatedAnime : AnimeBaseDto
+        {
+            [JsonProperty("kind")]
+            private string? KindInfo { get; set; }
+
+            [JsonIgnore]
+            public new string? Kind => AnimeConverter.ConvertKindToRussian(KindInfo); 
+        }
     }
 }

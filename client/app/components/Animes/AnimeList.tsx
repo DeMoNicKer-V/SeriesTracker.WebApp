@@ -37,7 +37,6 @@ import {
 import { ShikimoriRequest } from "@/app/Models/Requests/ShikimoriRequest";
 import AnimeDetailPopover from "../Popovers/AnimeDetailPopover";
 import { getAnimes } from "@/app/api/shikimori/anime/getAnime";
-import { getGenres } from "@/app/api/shikimori/genre/getGenre";
 
 const { Text } = Typography;
 
@@ -58,7 +57,6 @@ const AnimeList = ({}) => {
         []
     );
 
-    const [genres, setGenres] = useState<Genre[] | any>([]);
     const [page, setPage] = useState<number>(
         searchParams.get("page") != null ? Number(searchParams.get("page")) : 1
     );
@@ -93,8 +91,6 @@ const AnimeList = ({}) => {
 
     const getAnimesPost = async (url: string) => {
         const data: SeriesAnime[] = await getAnimes(url);
-        const list = await getGenres();
-        setGenres(list);
         if (data.length === 0) {
             const prevPage = page - 1;
             changePage(prevPage);
@@ -183,7 +179,6 @@ const AnimeList = ({}) => {
                             >
                                 <Link href={`/shikimori/${animes.id}`}>
                                     <Badge.Ribbon
-                                        color={animes.categoryColor}
                                         text={
                                             <Flex
                                                 justify="center"
@@ -276,8 +271,12 @@ const AnimeList = ({}) => {
                                             title={"В избранном"}
                                             trigger={"hover"}
                                         >
-                                            <Tag color="cyan">
-                                                <HeartFilled />
+                                            <Tag>
+                                                <HeartFilled
+                                                    style={{
+                                                        color: "#ff69b4",
+                                                    }}
+                                                />
                                             </Tag>
                                         </Tooltip>
                                     </Col>
@@ -301,10 +300,9 @@ const AnimeList = ({}) => {
                                     <Tag className="tag">{animes.kind}</Tag>
                                 </Col>
                                 <Col>
-                                    {animes.kind === "Фильм" && (
+                                    {animes.kind.length === 5 ? (
                                         <Tag className="tag">{`${animes.duration} мин.`}</Tag>
-                                    )}
-                                    {animes.kind !== "Фильм" && (
+                                    ) : (
                                         <Tag className="tag">{`${animes.episodes} эп.`}</Tag>
                                     )}
                                 </Col>
@@ -314,7 +312,6 @@ const AnimeList = ({}) => {
                 )}
             />
             <AnimeParamsMenu
-                genres={genres}
                 open={isOpen}
                 onClose={toggleOpen}
                 setRequest={setRequest}

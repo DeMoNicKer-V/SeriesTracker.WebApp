@@ -32,22 +32,18 @@ namespace SeriesTracker.Core.Mappers
 
             // Маппинг из ShikimoriAnime в AnimeSeriesDto.
             CreateMap<ShikimoriAnime, AnimeSeriesDto>()
-
-              // Вызываем метод BeforeMap для установки свойств категории.
-              .BeforeMap((_, dest, context) =>
-              {
-                  if (context.Items.Count == 0)
-                  {
-                      return;
-                  }
-
-                  MapCategoryProperties(dest, context);
-              });
+                .BeforeMap((_, dest, context) =>
+                {
+                    if (context.Items.Count == 0)
+                    {
+                        return;
+                    }
+                    
+                    MapCategoryProperties(dest, context);
+                });
 
             // Маппинг из ShikimoriAnimeFull в AnimeSeriesFullDto.
             CreateMap<ShikimoriAnimeFull, AnimeSeriesFullDto>()
-
-                // Вызываем метод BeforeMap для установки свойств, специфичных для AnimeSeriesFullDto и свойств категории.
                 .BeforeMap((_, dest, context) =>
                 {
                     if (context.Items.Count == 0)
@@ -59,7 +55,6 @@ namespace SeriesTracker.Core.Mappers
                     dest.WatchedEpisodes = (int)context.Items["WatchedEpisodes"];
                     dest.ChangedDate = (string)context.Items["ChangedDate"];
                     dest.AddedDate = (string)context.Items["AddedDate"];
-                    dest.IsFavorite = (bool)context.Items["IsFavorite"];
                     MapCategoryProperties(dest, context);
                 });
         }
@@ -98,13 +93,14 @@ namespace SeriesTracker.Core.Mappers
             return relatedData.Where(a => a.Anime != null && !_sourceArray.Any(c => a.Anime.Kind?.Contains(c) == true)).ToArray();
         }
 
-        // Устанавливает свойства категории (CategoryId, CategoryName, CategoryColor) из ResolutionContext.
+        // Устанавливает свойства категории (CategoryId, CategoryName, CategoryColor, IsFavorite) из ResolutionContext.
         private static void MapCategoryProperties(IAnimeSeries dest, ResolutionContext context)
         {
             // Получаем соответствующие данные из context.Items.
             dest.CategoryId = (int)context.Items["CategoryId"];
             dest.CategoryName = (string)context.Items["CategoryName"];
             dest.CategoryColor = (string)context.Items["CategoryColor"];
+            dest.IsFavorite = (bool)context.Items["IsFavorite"];
         }
     }
 }

@@ -9,19 +9,9 @@ namespace SeriesTracker.Core.Dtos
     /// </summary>
     public class AnimeSeriesDto : ShikimoriAnime, IAnimeSeries
     {
-        /// <summary>
-        /// Идентификатор категории, к которой относится аниме.
-        /// </summary>
         public int CategoryId { get; set; }
-
-        /// <summary>
-        /// Название категории, к которой относится аниме.
-        /// </summary>
         public required string CategoryName { get; set; }
-
-        /// <summary>
-        /// Цвет категории, к которой относится аниме.
-        /// </summary>
         public required string CategoryColor { get; set; }
+        public bool IsFavorite { get; set; }
     }
 }

@@ -25,8 +25,9 @@ import {
 } from "@ant-design/icons";
 import dayjs from "dayjs";
 import FilterItem from "../components/FilterItem";
-import { Dispatch, SetStateAction, useRef, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import { ShikimoriRequest } from "../Models/Requests/ShikimoriRequest";
+import { getGenres } from "../api/shikimori/genre/getGenre";
 type FieldType = {
     page: number;
     query: string;
@@ -42,21 +43,14 @@ type FieldType = {
 const date = dayjs();
 
 interface Props {
-    genres: Genre[] | any;
     ids?: string;
     open: boolean;
     onClose: () => void;
     setRequest: Dispatch<SetStateAction<ShikimoriRequest>>;
     setPage: (newPage: number) => void;
 }
-function AnimeParamsMenu({
-    genres,
-    ids,
-    open,
-    setPage,
-    onClose,
-    setRequest,
-}: Props) {
+function AnimeParamsMenu({ ids, open, setPage, onClose, setRequest }: Props) {
+    const [genres, setGenres] = useState<Genre[] | any>(null);
     const { Title } = Typography;
     const [form] = Form.useForm();
     const [censored, setCensored] = useState<boolean>(true);
@@ -138,6 +132,18 @@ function AnimeParamsMenu({
     const onChange: CheckboxProps["onChange"] = (e) => {
         setCensored(e.target.checked);
     };
+
+    useEffect(() => {
+        async function fetchGenres() {
+            const response = await getGenres();
+            setGenres(response);
+        }
+
+        if (!genres) {
+            // Загружаем жанры только если их нет в кэше
+            fetchGenres();
+        }
+    }, [genres]);
 
     return (
         <Drawer
@@ -293,7 +299,7 @@ function AnimeParamsMenu({
                             label: <Title level={5}>Аудитория</Title>,
                             children: (
                                 <FilterItem
-                                    dataSource={genres.demographic}
+                                    dataSource={genres?.demographic}
                                     index="demographic"
                                 />
                             ),
@@ -305,7 +311,7 @@ function AnimeParamsMenu({
                             children: (
                                 <FilterItem
                                     censored={censored}
-                                    dataSource={genres.genre}
+                                    dataSource={genres?.genre}
                                     index="genre"
                                 />
                             ),
@@ -316,7 +322,7 @@ function AnimeParamsMenu({
                             label: <Title level={5}>Темы</Title>,
                             children: (
                                 <FilterItem
-                                    dataSource={genres.theme}
+                                    dataSource={genres?.theme}
                                     index="theme"
                                 />
                             ),

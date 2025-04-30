@@ -49,7 +49,7 @@ namespace SeriesTracker.Core
                 "special" => "Спешл",
                 "tv_special" => "TV-Спешл",
                 null => "Неизвестно",
-                _ => kindName,
+                _ => kindName.ToUpper(),
             };
         }
 

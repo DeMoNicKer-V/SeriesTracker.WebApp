@@ -19,5 +19,10 @@
         /// Цвет категории, к которой относится аниме.
         /// </summary>
         string CategoryColor { get; set; }
+
+        /// <summary>
+        /// Флаг, указывающий, добавлено ли аниме в избранное пользователем.
+        /// </summary>
+        bool IsFavorite { get; set; }
     }
 }

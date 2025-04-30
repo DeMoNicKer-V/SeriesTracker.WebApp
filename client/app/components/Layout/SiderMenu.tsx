@@ -19,16 +19,10 @@ interface Props {
     pathName: string;
     collapsed: boolean;
     user?: User;
-    setLoading: (value: boolean) => void;
+
     setCollapsed: (value: boolean) => void;
 }
-const SiderMenu = ({
-    collapsed,
-    user,
-    setLoading,
-    setCollapsed,
-    pathName,
-}: Props) => {
+const SiderMenu = ({ collapsed, user, setCollapsed, pathName }: Props) => {
     const [currentKey, setCurrentKey] = useState<string>("shikimori");
     const router = useRouter();
     const ShikimoriMenuIcon = (props: Partial<CustomIconComponentProps>) => (
@@ -64,7 +58,7 @@ const SiderMenu = ({
                 ? {
                       key: "settings",
                       icon: <SettingOutlined />,
-                      label: <Link href={"/settings"}>Настройки</Link>,
+                      label: <Link href={"/settings"}>Админ-панель</Link>,
                   }
                 : false,
         ];
@@ -74,7 +68,6 @@ const SiderMenu = ({
     useEffect(() => {
         setCurrentKey(pathName?.replace("/", ""));
         //     setCurrentKey(pathName?.split("/")[1]);
-        setLoading(false);
     }, [pathName]);
     return (
         <Sider
@@ -92,7 +85,6 @@ const SiderMenu = ({
             <Menu
                 className={styles["sider-menu"]}
                 onSelect={({ key }) => {
-                    setLoading(true);
                     setCurrentKey(key);
                     setCollapsed(true);
                 }}

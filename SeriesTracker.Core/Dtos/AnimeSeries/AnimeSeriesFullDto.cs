@@ -15,21 +15,6 @@ namespace SeriesTracker.Core.Dtos
         public Guid? SeriesId { get; set; }
 
         /// <summary>
-        /// Идентификатор категории, к которой относится аниме.
-        /// </summary>
-        public int CategoryId { get; set; }
-
-        /// <summary>
-        /// Название категории, к которой относится аниме.
-        /// </summary>
-        public required string CategoryName { get; set; }
-
-        /// <summary>
-        /// Цвет категории, к которой относится аниме.
-        /// </summary>
-        public required string CategoryColor { get; set; }
-
-        /// <summary>
         /// Количество просмотренных эпизодов аниме-сериала пользователем.
         /// </summary>
         public required int WatchedEpisodes { get; set; }
@@ -44,9 +29,10 @@ namespace SeriesTracker.Core.Dtos
         /// </summary>
         public required string ChangedDate { get; set; }
 
-        /// <summary>
-        /// Флаг, указывающий, добавлено ли аниме в избранное пользователем.
-        /// </summary>
+        // Реализованные поля интерфейса IAnimeSeries
+        public int CategoryId { get; set; }
+        public required string CategoryName { get; set; }
+        public required string CategoryColor { get; set; }
         public bool IsFavorite { get; set; }
     }
 }

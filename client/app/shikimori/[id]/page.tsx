@@ -223,12 +223,12 @@ export default function AnimePage({ params }: { params: { id: string } }) {
             >
                 <Row align={"middle"} justify={"center"}>
                     <Col xxl={19} md={21}>
-                        <Card style={{ opacity: 0.9 }}>
+                        <Card>
                             <Flex style={{ zIndex: 0, position: "relative" }}>
                                 <AbsoluteImage
                                     src={anime.pictureUrl}
                                     zIndex={-1}
-                                    filter="contrast(225%) brightness(75%)"
+                                    filter="contrast(150%) brightness(50%) opacity(90%)"
                                 />
 
                                 <Button

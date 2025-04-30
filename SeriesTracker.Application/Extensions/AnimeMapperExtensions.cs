@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using SeriesTracker.Core.Dtos;
+using SeriesTracker.Core.Interfaces;
 using SeriesTracker.Core.Models.Shikimori;
 
 namespace SeriesTracker.Application.Extensions
@@ -29,13 +30,10 @@ namespace SeriesTracker.Application.Extensions
             return mapper.Map<AnimeSeriesFullDto>(anime, opt =>
             {
                 opt.Items["SeriesId"] = series.SeriesId;
-                opt.Items["CategoryId"] = series.CategoryId;
-                opt.Items["CategoryName"] = series.CategoryName;
-                opt.Items["CategoryColor"] = series.CategoryColor;
                 opt.Items["WatchedEpisodes"] = series.WatchedEpisodes;
                 opt.Items["AddedDate"] = series.AddedDate;
-                opt.Items["IsFavorite"] = series.IsFavorite;
                 opt.Items["ChangedDate"] = series.ChangedDate;
+                MapCategoryProperties(opt, series);
             });
         }
 
@@ -57,10 +55,18 @@ namespace SeriesTracker.Application.Extensions
             // Если пользовательская информация предоставлена, добавляем ее в контекст маппинга и маппим аниме.
             return mapper.Map<AnimeSeriesDto>(anime, opt =>
             {
-                opt.Items["CategoryId"] = series.CategoryId;
-                opt.Items["CategoryName"] = series.CategoryName;
-                opt.Items["CategoryColor"] = series.CategoryColor;
+                MapCategoryProperties(opt, series);
             });
+        }
+
+        // Устанавливает свойства категории (CategoryId, CategoryName, CategoryColor, IsFavorite) из ResolutionContext.
+        private static void MapCategoryProperties<T>(IMappingOperationOptions<object, T> opt, SeriesCategoryDto series)
+        {
+            // Получаем соответствующие данные из context.Items.
+            opt.Items["CategoryId"] = series.CategoryId;
+            opt.Items["CategoryName"] = series.CategoryName;
+            opt.Items["CategoryColor"] = series.CategoryColor;
+            opt.Items["IsFavorite"] = series.IsFavorite;
         }
     }
 }

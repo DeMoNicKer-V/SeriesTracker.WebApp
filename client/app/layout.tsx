@@ -1,11 +1,10 @@
 "use client";
 import "./globals.css";
-import React, { useEffect, useState } from "react";
-import { ConfigProvider, Divider, Layout, theme } from "antd";
+import React, { useEffect, useState, useTransition } from "react";
+import { ConfigProvider, Divider, Layout, Spin, theme } from "antd";
 import { usePathname } from "next/navigation";
 import { Footer } from "antd/es/layout/layout";
 import siteLogo from "./img/logo.ico";
-import Loading from "./components/Loading";
 import MainFooterContent from "./components/Layout/MainFooterContent";
 import HeaderMenu from "./components/Layout/HeaderMenu";
 import SiderMenu from "./components/Layout/SiderMenu";
@@ -22,7 +21,6 @@ export default function RootLayout({
     const pathName = usePathname();
     const [collapsed, setCollapsed] = useState(true);
     const [user, setUser] = useState<User>();
-    const [loading, setLoading] = useState<boolean>(true);
     const [mounted, setMounted] = useState(false);
 
     const GetUser = async () => {
@@ -35,9 +33,20 @@ export default function RootLayout({
     };
 
     useEffect(() => {
-        GetUser();
+        async function getUser() {
+            var code = await getDecodedUserToken();
+            if (!code) {
+                return;
+            }
+            const currentUser = await getUserById(code.userId);
+            setUser(currentUser);
+
+            if (!user) {
+                getUser();
+            }
+        }
         setMounted(true);
-    }, []);
+    }, [user]);
 
     return (
         <html lang="en">
@@ -120,16 +129,12 @@ export default function RootLayout({
                         >
                             <SiderMenu
                                 setCollapsed={setCollapsed}
-                                setLoading={setLoading}
                                 user={user}
                                 collapsed={collapsed}
                                 pathName={pathName}
                             />
                             <Layout className="main-content-layout">
-                                <Content>
-                                    {loading && <Loading loading={loading} />}
-                                    {!loading && children}
-                                </Content>
+                                <Content>{children}</Content>
 
                                 <Footer>
                                     <Divider style={{ margin: 0 }} />

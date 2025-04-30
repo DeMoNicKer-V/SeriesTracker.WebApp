@@ -282,18 +282,6 @@ const UsersAnimeList = ({ myList, userName, color }: Props) => {
                                 gutter={[0, 5]}
                                 style={{ justifyContent: "start" }}
                             >
-                                {animes.isFavorite && (
-                                    <Col>
-                                        <Tooltip
-                                            title={"В избранном"}
-                                            trigger={"hover"}
-                                        >
-                                            <Tag color="cyan">
-                                                <HeartFilled />
-                                            </Tag>
-                                        </Tooltip>
-                                    </Col>
-                                )}
                                 <Col>
                                     {animes.status.length > 6 ? (
                                         <Tag
