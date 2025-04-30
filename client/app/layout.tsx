@@ -1,7 +1,7 @@
 "use client";
 import "./globals.css";
-import React, { useEffect, useState, useTransition } from "react";
-import { ConfigProvider, Divider, Layout, Spin, theme } from "antd";
+import React, { useEffect, useState } from "react";
+import { ConfigProvider, Divider, Layout, theme } from "antd";
 import { usePathname } from "next/navigation";
 import { Footer } from "antd/es/layout/layout";
 import siteLogo from "./img/logo.ico";
@@ -9,8 +9,7 @@ import MainFooterContent from "./components/Layout/MainFooterContent";
 import HeaderMenu from "./components/Layout/HeaderMenu";
 import SiderMenu from "./components/Layout/SiderMenu";
 import StarsBackground from "./components/StarsBackground/StarsBackground";
-import { getUserById } from "./api/user/getUser";
-import { getDecodedUserToken } from "./utils/cookie";
+import { UserProvider } from "./components/UserContext";
 const { Content } = Layout;
 
 export default function RootLayout({
@@ -20,33 +19,11 @@ export default function RootLayout({
 }>) {
     const pathName = usePathname();
     const [collapsed, setCollapsed] = useState(true);
-    const [user, setUser] = useState<User>();
     const [mounted, setMounted] = useState(false);
 
-    const GetUser = async () => {
-        var code = await getDecodedUserToken();
-        if (!code) {
-            return;
-        }
-        const currentUser = await getUserById(code.userId);
-        setUser(currentUser);
-    };
-
     useEffect(() => {
-        async function getUser() {
-            var code = await getDecodedUserToken();
-            if (!code) {
-                return;
-            }
-            const currentUser = await getUserById(code.userId);
-            setUser(currentUser);
-
-            if (!user) {
-                getUser();
-            }
-        }
         setMounted(true);
-    }, [user]);
+    }, []);
 
     return (
         <html lang="en">
@@ -106,51 +83,51 @@ export default function RootLayout({
                         },
                     }}
                 >
-                    <Layout
-                        style={{
-                            visibility: !mounted ? "hidden" : "visible",
-                            minHeight: "100vh",
-                        }}
-                    >
-                        <title>Series Tracker</title>
-                        <HeaderMenu
-                            user={user}
-                            pathName={pathName}
-                            collapsed={collapsed}
-                            setCollapsed={setCollapsed}
-                        />
+                    <UserProvider>
                         <Layout
-                            className={
-                                collapsed
-                                    ? "main-sider-layout"
-                                    : "main-sider-layout fullscreen"
-                            }
-                            hasSider
+                            style={{
+                                visibility: !mounted ? "hidden" : "visible",
+                                minHeight: "100vh",
+                            }}
                         >
-                            <SiderMenu
-                                setCollapsed={setCollapsed}
-                                user={user}
-                                collapsed={collapsed}
+                            <title>Series Tracker</title>
+                            <HeaderMenu
                                 pathName={pathName}
+                                collapsed={collapsed}
+                                setCollapsed={setCollapsed}
                             />
-                            <Layout className="main-content-layout">
-                                <Content>{children}</Content>
+                            <Layout
+                                className={
+                                    collapsed
+                                        ? "main-sider-layout"
+                                        : "main-sider-layout fullscreen"
+                                }
+                                hasSider
+                            >
+                                <SiderMenu
+                                    setCollapsed={setCollapsed}
+                                    collapsed={collapsed}
+                                    pathName={pathName}
+                                />
+                                <Layout className="main-content-layout">
+                                    <Content>{children}</Content>
 
-                                <Footer>
-                                    <Divider style={{ margin: 0 }} />
-                                    <MainFooterContent
-                                        alignItems={
-                                            ["/login", "/signup"].includes(
-                                                pathName
-                                            )
-                                                ? "center"
-                                                : "start"
-                                        }
-                                    />
-                                </Footer>
+                                    <Footer>
+                                        <Divider style={{ margin: 0 }} />
+                                        <MainFooterContent
+                                            alignItems={
+                                                ["/login", "/signup"].includes(
+                                                    pathName
+                                                )
+                                                    ? "center"
+                                                    : "start"
+                                            }
+                                        />
+                                    </Footer>
+                                </Layout>
                             </Layout>
                         </Layout>
-                    </Layout>
+                    </UserProvider>
                 </ConfigProvider>
             </body>
         </html>

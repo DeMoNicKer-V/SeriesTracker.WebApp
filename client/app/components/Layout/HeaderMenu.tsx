@@ -1,20 +1,21 @@
 import { Button, Col, Flex, Row } from "antd";
 import { Header } from "antd/es/layout/layout";
-
 import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
 import { LogoIcon } from "@/app/img/LogoIcon";
-
 import styles from "./component.module.css";
 import SearchBar from "../Searchbar/Searchbar";
 import UserProfile from "../UserComponents/UserProfile";
+import { useUser } from "../UserContext";
+
 interface Props {
     pathName: string;
-    user?: User;
     collapsed: boolean;
     setCollapsed: (value: any) => void;
 }
 
-const HeaderMenu = ({ collapsed, user, pathName, setCollapsed }: Props) => {
+const HeaderMenu = ({ collapsed, pathName, setCollapsed }: Props) => {
+    const { user } = useUser();
+
     return (
         <Header
             className={styles["header"]}

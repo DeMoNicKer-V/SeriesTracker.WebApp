@@ -50,6 +50,9 @@ import { getAnimeById } from "@/app/api/shikimori/anime/getAnime";
 import { updateSeries } from "@/app/api/series/editSeries";
 import { createSeries } from "@/app/api/series/createSeries";
 import { getDecodedUserToken } from "@/app/utils/cookie";
+import PageErrorView from "@/app/components/PageErrorVIew";
+import { useUser } from "@/app/components/UserContext";
+import { deleteSeries } from "@/app/api/series/deleteSeries";
 
 const { Title, Text } = Typography;
 
@@ -69,18 +72,13 @@ export default function AnimePage({ params }: { params: { id: string } }) {
             label: string;
         }[]
     >([]);
-    const [isAuth, setIsAuth] = useState<boolean>(false);
     const [watchedEpisode, setWatchedEpisode] = useState<number>(0);
     const [isFavorite, setIsFavorite] = useState<boolean>(false);
-
-    const checkAuth = async () => {
-        const token = await getDecodedUserToken();
-        setIsAuth(token !== null);
-    };
+    const { user } = useUser();
 
     const getAnime = async (id: string) => {
         const response = await getAnimeById(id);
-        checkAuth();
+
         setWatchedEpisode(
             response.watchedEpisodes === null ? 0 : response.watchedEpisodes
         );
@@ -95,15 +93,15 @@ export default function AnimePage({ params }: { params: { id: string } }) {
         return response;
     };
 
-    const { data: anime = defaultValues, isLoading } = useSWR<Anime>(
-        params.id,
-        getAnime,
-        {
-            revalidateOnFocus: false,
-            revalidateOnReconnect: false,
-            errorRetryInterval: 30000,
-        }
-    );
+    const {
+        data: anime = defaultValues,
+        isLoading,
+        error,
+    } = useSWR<Anime>(params.id, getAnime, {
+        revalidateOnFocus: false,
+        revalidateOnReconnect: false,
+        errorRetryInterval: 30000,
+    });
 
     const updateFavoriteSeries = async (value: number) => {
         if (anime.seriesId) {
@@ -190,10 +188,13 @@ export default function AnimePage({ params }: { params: { id: string } }) {
     };
 
     const deleteSeriesById = async (seriesId: string) => {
-        await deleteSeriesById(seriesId);
+        await deleteSeries(seriesId);
         mutate(params.id);
     };
 
+    if (error) {
+        return <PageErrorView text={error.message} />;
+    }
     return isLoading ? (
         <Loading loading />
     ) : (
@@ -366,7 +367,7 @@ export default function AnimePage({ params }: { params: { id: string } }) {
                                                         },
                                                     ]}
                                                 />
-                                                {isAuth ? (
+                                                {user ? (
                                                     <Space
                                                         wrap
                                                         className={

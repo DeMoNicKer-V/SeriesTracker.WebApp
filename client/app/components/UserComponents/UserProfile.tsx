@@ -21,7 +21,7 @@ import {
 import Link from "next/link";
 import { logout } from "@/app/api/auth";
 interface Props {
-    user: User;
+    user: User | any;
 }
 
 const UserProfile = ({ user }: Props) => {
