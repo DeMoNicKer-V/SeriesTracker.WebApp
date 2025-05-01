@@ -11,7 +11,7 @@ interface Props {
 
 const PageErrorView = ({
     text,
-    href = "/shikimori",
+    href = "/animes",
     btnText = "Вернуться на главную",
 }: Props) => {
     return (

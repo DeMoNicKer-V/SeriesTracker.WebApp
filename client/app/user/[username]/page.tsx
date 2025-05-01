@@ -38,7 +38,7 @@ import {
     MainUserInfo,
 } from "@/app/Models/User/MainUserInfo";
 import { getUserByUsername } from "@/app/api/user/getUser";
-import { GetRecentUserActivities } from "@/app/api/shikimori/anime/getAnime";
+import { GetRecentUserActivities } from "@/app/api/animes/getAnime";
 import { getDecodedUserToken } from "@/app/utils/cookie";
 import LoadingContentHandler from "@/app/components/LoadingContentHandler";
 dayjs.locale("ru");
@@ -254,7 +254,7 @@ export default function UserPage({ params }: { params: { username: string } }) {
                                                 style={{ display: "block" }}
                                             >
                                                 <Link
-                                                    href={`/shikimori/${item.id}`}
+                                                    href={`/animes/${item.id}`}
                                                 >
                                                     <Card hoverable>
                                                         <Row

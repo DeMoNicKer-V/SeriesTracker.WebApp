@@ -60,7 +60,7 @@ export const AnimeDetailPopover = ({ anime }: Props) => {
                     <Col span={24} style={{ marginTop: "auto" }}>
                         <Button
                             style={{ fontWeight: 600, fontSize: 15 }}
-                            href={`/shikimori/${anime.id}`}
+                            href={`/animes/${anime.id}`}
                             block
                         >
                             Посмотреть подробнее

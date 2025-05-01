@@ -28,7 +28,7 @@ import { EmptyView } from "../EmptyView";
 import Link from "next/link";
 import { SeriesAnime } from "@/app/Models/Anime/SeriesAnime";
 import MainShortInfo from "../MainShortInfo/MainShortInfo";
-import { getAnimesByName } from "@/app/api/shikimori/anime/getAnime";
+import { getAnimesByName } from "@/app/api/animes/getAnime";
 
 const SearchBar = ({}) => {
     const inputRef = useRef<InputRef>(null);
@@ -115,7 +115,7 @@ const SearchBar = ({}) => {
                     <List
                         dataSource={animes}
                         renderItem={(item: SeriesAnime) => (
-                            <Link target="_top" href={`/shikimori/${item.id}`}>
+                            <Link target="_top" href={`/animes/${item.id}`}>
                                 <Badge.Ribbon
                                     text={item.categoryName}
                                     color={item.categoryColor}

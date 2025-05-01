@@ -13,7 +13,7 @@ namespace SeriesTracker.API.Controllers
     /// Предоставляет методы для получения аниме по ID, имени или с использованием различных параметров.
     /// </summary>
     [ApiController]
-    [Route("shikimori")] // Атрибут, определяющий маршрут для контроллера
+    [Route("animes")] // Атрибут, определяющий маршрут для контроллера
     public class ShikimoriController : ControllerBase
     {
         private readonly ICalendarFetcher _fetcher;

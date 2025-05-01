@@ -15,7 +15,7 @@ const SignFormHeader = ({ actionText, text, href }: Props) => {
         <Flex className="width-100 head" align="center" justify="space-around">
             <Button
                 style={{ cursor: "pointer" }}
-                href="/shikimori"
+                href="/animes"
                 type="link"
                 icon={
                     <LogoIcon

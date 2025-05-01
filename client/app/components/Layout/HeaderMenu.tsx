@@ -37,8 +37,8 @@ const HeaderMenu = ({ collapsed, pathName, setCollapsed }: Props) => {
                         />
                         <Button
                             style={{ cursor: "pointer" }}
-                            disabled={pathName === "/shikimori"}
-                            href="/shikimori"
+                            disabled={pathName === "/animes"}
+                            href="/animes"
                             type="link"
                         >
                             <LogoIcon

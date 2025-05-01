@@ -7,20 +7,12 @@ import {
     Rate,
     Select,
     Space,
-    Tag,
 } from "antd";
 import React, { useState } from "react";
 import {
-    StarOutlined,
     HeartFilled,
-    CalendarOutlined,
-    ClockCircleOutlined,
     BookOutlined,
-    TeamOutlined,
-    FireOutlined,
-    YoutubeOutlined,
     PlusOutlined,
-    InfoCircleOutlined,
     MinusOutlined,
     CloseOutlined,
 } from "@ant-design/icons";
@@ -32,18 +24,14 @@ import { updateSeries } from "@/app/api/series/editSeries";
 import { mutate } from "swr";
 interface Props {
     anime: Anime;
+    auth: boolean;
+    categories: { value: number; label: string }[];
 }
 
-const BelowButtons = ({ anime }: Props) => {
-    const [filteredCategories, setFilteredCategories] = useState<
-        {
-            value: number;
-            label: string;
-        }[]
-    >([]);
-    const [watchedEpisode, setWatchedEpisode] = useState<number>(0);
-    const [isFavorite, setIsFavorite] = useState<boolean>(false);
-
+const BelowButtons = ({ anime, categories, auth }: Props) => {
+    const [watchedEpisode, setWatchedEpisode] = useState<number>(
+        anime.watchedEpisodes
+    );
     const updateFavoriteSeries = async (value: number) => {
         if (anime.seriesId) {
             const request = createRequest(
@@ -51,7 +39,6 @@ const BelowButtons = ({ anime }: Props) => {
                 anime.categoryId,
                 !anime.isFavorite
             );
-            setIsFavorite(Boolean(value));
             await updateSeries(anime.seriesId, request);
             return;
         }
@@ -133,7 +120,7 @@ const BelowButtons = ({ anime }: Props) => {
         mutate(anime.id.toString());
     };
 
-    return (
+    return auth ? (
         <Space
             wrap
             className={styles["manage-buttons"]}
@@ -167,7 +154,7 @@ const BelowButtons = ({ anime }: Props) => {
                     textAlign: "start",
                 }}
                 defaultActiveFirstOption={false}
-                prefix={<BookOutlined />}
+                prefix={<BookOutlined style={{ color: anime.categoryColor }} />}
                 value={anime.categoryName}
                 placement="topLeft"
                 placeholder={
@@ -203,35 +190,33 @@ const BelowButtons = ({ anime }: Props) => {
                         )}
                     </>
                 )}
-                options={filteredCategories}
+                options={categories}
             />
 
             {anime.seriesId && (
                 <InputNumber
                     className={styles["episodes-input"]}
                     readOnly={anime.categoryId === 3}
-                    value={watchedEpisode}
                     onChange={onEpisodeInputChange}
                     size="small"
                     maxLength={4}
                     addonBefore={
                         <Button
-                            disabled={anime.categoryId === 3}
+                            onClick={decEpisodeSeries}
                             type="link"
                             size="small"
                             icon={<MinusOutlined />}
-                            onClick={decEpisodeSeries}
                         ></Button>
                     }
                     addonAfter={
                         <Button
-                            disabled={anime.categoryId === 3}
+                            onClick={incEpisodeSeries}
                             type="link"
                             size="small"
                             icon={<PlusOutlined />}
-                            onClick={incEpisodeSeries}
                         ></Button>
                     }
+                    value={watchedEpisode}
                     max={anime.episodes}
                     prefix={"Эпизоды:"}
                     suffix={`из ${anime.episodes} эп.`}
@@ -242,6 +227,10 @@ const BelowButtons = ({ anime }: Props) => {
                 />
             )}
         </Space>
+    ) : (
+        <Button ghost type="primary" href="/login">
+            Войдите, чтобы добавить в свой список
+        </Button>
     );
 };
 export default BelowButtons;

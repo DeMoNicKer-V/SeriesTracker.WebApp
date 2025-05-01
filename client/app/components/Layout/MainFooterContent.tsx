@@ -35,7 +35,7 @@ const MainFooterContent = ({ alignItems = "start" }: Props) => {
                 Данный сайт не хранит на своем сервере никаких данных. Весь
                 контент на сайте предоставляется сайтом{" "}
                 <Typography.Link
-                    href="https://shikimori.one"
+                    href="https://animes.one"
                     target="_blank"
                     style={{ fontSize: 11 }}
                     type="secondary"
@@ -49,7 +49,7 @@ const MainFooterContent = ({ alignItems = "start" }: Props) => {
                     style={{ fontSize: 15 }}
                     className="info"
                     strong
-                    href={"/shikimori"}
+                    href={"/animes"}
                 >
                     Series Tracker
                 </Typography.Link>

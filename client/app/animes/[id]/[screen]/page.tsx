@@ -2,17 +2,15 @@
 
 import { Breadcrumb, Card, Row, Col, Tooltip } from "antd";
 import { ShikimoriLogo } from "@/app/img/ShikimoriLogo";
-import { getAnimeById } from "@/app/api/shikimori/anime/getAnime";
-import {
-    Anime,
-    defaultAnimeValues as defaultValues,
-} from "@/app/Models/Anime/Anime";
+
 import useSWR from "swr";
 import Title from "antd/es/typography/Title";
 import Link from "next/link";
 import ScreenshotsPreview from "@/app/components/AnimeDetailDescription/ScreenshotsPreview";
 import PageErrorView from "@/app/components/PageErrorVIew";
 import Loading from "@/app/components/Loading";
+import { Anime, defaultAnimeValues } from "@/app/models/anime/Anime";
+import { getAnimeById } from "@/app/api/animes/getAnime";
 
 export default function ScreenshotPage({ params }: { params: { id: string } }) {
     const getAnime = async (id: string) => {
@@ -21,7 +19,7 @@ export default function ScreenshotPage({ params }: { params: { id: string } }) {
     };
 
     const {
-        data: anime = defaultValues,
+        data: anime = defaultAnimeValues,
         isLoading,
         error,
     } = useSWR<Anime>(params.id, getAnime, {
@@ -58,7 +56,7 @@ export default function ScreenshotPage({ params }: { params: { id: string } }) {
                                                 alignItems: "center",
                                                 justifyContent: "center",
                                             }}
-                                            href="/shikimori"
+                                            href="/animes"
                                         >
                                             <ShikimoriLogo />
                                         </Link>

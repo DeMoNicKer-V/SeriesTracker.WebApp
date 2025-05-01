@@ -27,14 +27,15 @@ import dayjs from "dayjs";
 import "dayjs/locale/ru";
 import styles from "./page.module.css";
 import LoadAnimateImage from "../components/LoadAnimateImage";
-import {
-    CalendarAnimeItem,
-    defaultCalendarAnimeValues as defaultValues,
-} from "../Models/Anime/CalendarAnimeItem";
+
 import useSWR from "swr";
 import DaysWeekSkeleton from "../components/DaysWeekSkeleton";
-import { getCalendarAnimes } from "../api/shikimori/calendar/getCalendarAnime";
+import { getCalendarAnimes } from "../api/animes/calendar/getCalendarAnime";
 import { GET_CALENDAR_ANIMES_URL } from "../api/endpoints";
+import {
+    CalendarAnimeItem,
+    defaultCalendarAnimeValues,
+} from "../models/anime/CalendarAnimeItem";
 dayjs.locale("ru");
 
 interface CalendarDateLabel {
@@ -98,7 +99,7 @@ export default function CalendarPage() {
     const [weekDays] = useState<CalendarDateLabel[]>(getDatesArray());
     const [filterDate, setFilterDate] = useState<Date>(new Date());
     const [filterAnimes, setFilterAnimes] = useState<CalendarAnimeItem[]>(
-        Array.from({ length: 5 }).map((_, i) => defaultValues)
+        Array.from({ length: 5 }).map((_, i) => defaultCalendarAnimeValues)
     );
 
     const { data: airedAnimes, isLoading } = useSWR<CalendarAnimeItem[]>(
@@ -184,9 +185,7 @@ export default function CalendarPage() {
                                         }}
                                         paragraph={{ rows: 1 }}
                                     >
-                                        <Link
-                                            href={`/shikimori/${item.anime.id}`}
-                                        >
+                                        <Link href={`/animes/${item.anime.id}`}>
                                             <Badge.Ribbon
                                                 color="volcano"
                                                 style={

@@ -29,7 +29,7 @@ const LoginPage = () => {
 
         try {
             await login(values); // Вызываем login и ждем результат
-            window.location.href = "/shikimori"; // Перенаправляем при успехе
+            window.location.href = "/animes"; // Перенаправляем при успехе
         } catch (error: any) {
             // Перехватываем ошибку, выброшенную login
             setErrorMessage(error.message || "Произошла неизвестная ошибка."); // Отображаем сообщение об ошибке

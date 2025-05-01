@@ -193,7 +193,7 @@ const UsersAnimeList = ({ myList, userName, color }: Props) => {
                                     />
                                 }
                             >
-                                <Link href={`/shikimori/${animes.id}`}>
+                                <Link href={`/animes/${animes.id}`}>
                                     <Badge.Ribbon
                                         color={color}
                                         text={
@@ -274,7 +274,7 @@ const UsersAnimeList = ({ myList, userName, color }: Props) => {
                             </Popover>
                             <Link
                                 className="title-link"
-                                href={`/shikimori/${animes.id}`}
+                                href={`/animes/${animes.id}`}
                             >
                                 {animes.title}
                             </Link>

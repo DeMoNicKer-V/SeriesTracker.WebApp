@@ -1,13 +1,13 @@
-import { SeriesAnime } from "@/app/Models/Anime/SeriesAnime";
+import { SeriesAnime } from "@/app/models/anime/SeriesAnime";
 import {
     GET_ANIME_BY_ID_URL,
     GET_ANIMES_BY_NAME_URL,
     GET_ANIMES_URL,
     GET_RANDOM_ANIME_URL,
     GET_USER_RECENT_ANIMES_URL,
-} from "../../endpoints";
-import { get } from "../../httpClient";
-import { Anime } from "@/app/Models/Anime/Anime";
+} from "../endpoints";
+import { get } from "../httpClient";
+import { Anime } from "@/app/models/anime/Anime";
 
 export const getAnimes = async (
     paramString: string

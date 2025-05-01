@@ -20,11 +20,13 @@ import {
 } from "@ant-design/icons";
 import Link from "next/link";
 import { logout } from "@/app/api/auth";
+import { useRouter } from "next/navigation";
 interface Props {
     user: User | any;
 }
 
 const UserProfile = ({ user }: Props) => {
+    const router = useRouter();
     const items: MenuProps["items"] = [
         {
             label: user?.email,
@@ -71,6 +73,7 @@ const UserProfile = ({ user }: Props) => {
             key: "4",
             onClick: async () => {
                 await logout(user?.userName);
+                router.push("/login");
             },
             icon: <LogoutOutlined />,
         },

@@ -43,7 +43,7 @@ const RelatedAnimes = ({ animes }: Props) => {
             <List
                 dataSource={animes}
                 renderItem={(item: Related) => (
-                    <Link target="_top" href={`/shikimori/${item.anime.id}`}>
+                    <Link target="_top" href={`/animes/${item.anime.id}`}>
                         <Card className={styles["related-item-card"]} hoverable>
                             <Row
                                 className={styles["related-item-row"]}

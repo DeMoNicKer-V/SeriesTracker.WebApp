@@ -47,20 +47,20 @@ export const DELETE_USER_SERIES_URL = "/series/{userName}/deleteAll";
 // deleteSeries endpoints
 
 // getAnime endpoints
-export const GET_ANIMES_URL = "/shikimori?{query}";
-export const GET_ANIME_BY_ID_URL = "/shikimori/id/{id}";
+export const GET_ANIMES_URL = "/animes?{query}";
+export const GET_ANIME_BY_ID_URL = "/animes/id/{id}";
 export const GET_USER_RECENT_ANIMES_URL =
-    "/shikimori/activity?userName={userName}&id={id}";
-export const GET_ANIMES_BY_NAME_URL = "/shikimori/{name}";
-export const GET_RANDOM_ANIME_URL = "/shikimori/random";
+    "/animes/activity?userName={userName}&id={id}";
+export const GET_ANIMES_BY_NAME_URL = "/animes/{name}";
+export const GET_RANDOM_ANIME_URL = "/animes/random";
 // getAnime endpoints
 
 // getCalendarAnimes endpoints
-export const GET_CALENDAR_ANIMES_URL = "/shikimori/calendar";
+export const GET_CALENDAR_ANIMES_URL = "/animes/calendar";
 // getCalendarAnimes endpoints
 
 // getGenre endpoints
-export const GET_GENRES_URL = "/shikimori/groupGenres";
+export const GET_GENRES_URL = "/animes/groupGenres";
 // getGenre endpoints
 
 // deleteUser endpoints

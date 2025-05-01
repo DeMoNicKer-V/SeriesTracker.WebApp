@@ -10,11 +10,11 @@ import styles from "./component.module.css";
 import Link from "next/link";
 
 import { useRouter } from "next/navigation";
-import { ShikimoriLogo } from "@/app/img/ShikimoriLogo";
 import { RandomIcon } from "@/app/img/RandomIcon";
 import { CustomIconComponentProps } from "@ant-design/icons/lib/components/Icon";
-import { getRandomAnimeId } from "@/app/api/shikimori/anime/getAnime";
+import { getRandomAnimeId } from "@/app/api/animes/getAnime";
 import { useUser } from "../UserContext";
+import { ShikimoriLogo } from "@/app/img/ShikimoriLogo";
 
 interface Props {
     pathName: string;
@@ -24,7 +24,7 @@ interface Props {
 }
 const SiderMenu = ({ collapsed, setCollapsed, pathName }: Props) => {
     const { user } = useUser();
-    const [currentKey, setCurrentKey] = useState<string>("shikimori");
+    const [currentKey, setCurrentKey] = useState<string>("animes");
     const router = useRouter();
 
     const ShikimoriMenuIcon = (props: Partial<CustomIconComponentProps>) => (
@@ -35,16 +35,16 @@ const SiderMenu = ({ collapsed, setCollapsed, pathName }: Props) => {
     );
     const viewRandomAnime = async () => {
         const id = await getRandomAnimeId();
-        router.push(`/shikimori/${id}`);
+        router.push(`/animes/${id}`);
     };
 
     type MenuItem = Required<MenuProps>["items"][number];
     const siderMenuItems: MenuItem[] = useMemo(() => {
         const baseItems: (MenuItem | false)[] = [
             {
-                key: "shikimori",
+                key: "animes",
                 icon: <ShikimoriMenuIcon />,
-                label: <Link href={"/shikimori"}>Главная</Link>,
+                label: <Link href={"/animes"}>Главная</Link>,
             },
             {
                 key: "calendar",

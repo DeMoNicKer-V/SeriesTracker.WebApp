@@ -28,15 +28,14 @@ import { useSearchParams } from "next/navigation";
 import useSWR from "swr";
 import { EmptyView } from "../EmptyView";
 import PageNavigator from "../PageNavigator";
-
 import styles from "./component.module.css";
-import {
-    defaultSeriesAnimeValues as defaultValues,
-    SeriesAnime,
-} from "@/app/Models/Anime/SeriesAnime";
-import { ShikimoriRequest } from "@/app/Models/Requests/ShikimoriRequest";
 import AnimeDetailPopover from "../Popovers/AnimeDetailPopover";
-import { getAnimes } from "@/app/api/shikimori/anime/getAnime";
+import { getAnimes } from "@/app/api/animes/getAnime";
+import {
+    defaultSeriesAnimeValues,
+    SeriesAnime,
+} from "@/app/models/anime/SeriesAnime";
+import { ShikimoriRequest } from "@/app/models/requests/ShikimoriRequest";
 
 const { Text } = Typography;
 
@@ -102,7 +101,9 @@ const AnimeList = ({}) => {
         setPage(newPage); // Обновляем состояние
     };
     const {
-        data = Array.from({ length: 14 }).map((_, i) => defaultValues),
+        data = Array.from({ length: 14 }).map(
+            (_, i) => defaultSeriesAnimeValues
+        ),
         isLoading,
     } = useSWR(createQueryString(request), getAnimesPost, {
         // Опции для useSWR
@@ -177,7 +178,7 @@ const AnimeList = ({}) => {
                                     />
                                 }
                             >
-                                <Link href={`/shikimori/${animes.id}`}>
+                                <Link href={`/animes/${animes.id}`}>
                                     <Badge.Ribbon
                                         text={
                                             <Flex
@@ -257,7 +258,7 @@ const AnimeList = ({}) => {
                             </Popover>
                             <Link
                                 className="title-link"
-                                href={`/shikimori/${animes.id}`}
+                                href={`/animes/${animes.id}`}
                             >
                                 {animes.title}
                             </Link>

@@ -20,20 +20,9 @@
     .anime-detail-title {
         text-align: center;
     }
-    .manage-buttons {
-        justify-content: center;
-    }
     .flex-anime-detail {
         text-align: center;
     }
-}
-
-.episodes-input {
-    max-width: 285px;
-}
-
-.episodes-input input {
-    text-align: end !important;
 }
 
 .description {

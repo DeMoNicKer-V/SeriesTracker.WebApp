@@ -76,6 +76,12 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({
         loadUser(); //  Вызываем функцию для загрузки данных пользователя
     }, []); //  useEffect выполняется только один раз при монтировании компонента
 
+    useEffect(() => {
+        if (!user) {
+            //  Если user стал null или undefined (выход)
+            localStorage.removeItem("user");
+        }
+    }, [user]);
     return (
         <UserContext.Provider value={{ user, setUser, loading, error }}>
             {children}{" "}
