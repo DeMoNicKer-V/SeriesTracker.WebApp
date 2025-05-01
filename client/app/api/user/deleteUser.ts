@@ -1,23 +1,28 @@
+// api/user/deleteUser.ts
+
+// Импортируем эндпоинты из файла endpoints.ts
 import {
-    DELETE_USER_SELF_URL,
-    DELETE_USER_SERIES_URL,
-    DELETE_USER_URL,
+    DELETE_USER_SELF_URL, //  URL для удаления своего аккаунта
+    DELETE_USER_SERIES_URL, //  URL для удаления списка сериалов пользователя
+    DELETE_USER_URL, //  URL для удаления пользователя
 } from "../endpoints";
+
+// Импортируем функцию del для выполнения HTTP-запросов из файла httpClient.ts
 import { del } from "../httpClient";
 
-// Удаление пользователя
+// Функция для удаления пользователя
 export const deleteUser = async (userName: string): Promise<void> => {
     const url = DELETE_USER_URL.replace("{username}", userName);
     await del(url);
 };
 
-// Удаление своего аккаунта
+// Функция для удаления своего аккаунта
 export const deleteSelfUser = async (userName: string): Promise<void> => {
     const url = DELETE_USER_SELF_URL.replace("{username}", userName);
     await del(url);
 };
 
-// Удаление своего списка
+// Функция для удаления всего списка аниме пользователя
 export const deleteUserSeries = async (userName: string) => {
     const url = DELETE_USER_SERIES_URL.replace("{username}", userName);
     await del(url);

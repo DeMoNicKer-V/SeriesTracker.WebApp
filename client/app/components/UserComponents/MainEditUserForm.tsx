@@ -3,10 +3,6 @@ import { updateUser } from "@/app/api/user/editUser";
 import SecondaryEditUserForm from "@/app/components/UserComponents/SecondaryEditUserForm";
 import { LongLeftArrow } from "@/app/img/LongLeftArrow";
 import {
-    defaultUserValues,
-    MainUserInfo,
-} from "@/app/Models/User/MainUserInfo";
-import {
     CheckOutlined,
     CloseOutlined,
     EditOutlined,
@@ -24,9 +20,9 @@ dayjs.locale("ru");
 
 interface Props {
     messageApi: NotificationInstance;
-    user?: MainUserInfo | null;
+    user?: User;
 }
-const MainEditUserForm = ({ messageApi, user = defaultUserValues }: Props) => {
+const MainEditUserForm = ({ messageApi, user }: Props) => {
     const [visibleFields, setVisibleFields] = useState({
         email: false,
         password: false,
@@ -34,7 +30,7 @@ const MainEditUserForm = ({ messageApi, user = defaultUserValues }: Props) => {
 
     const handleSwitchFields = (
         fieldNames: ("email" | "password")[],
-        dest: boolean // true for show, false for hide
+        dest: boolean
     ) => {
         setVisibleFields((prev) => {
             const newState = { ...prev };
@@ -47,6 +43,9 @@ const MainEditUserForm = ({ messageApi, user = defaultUserValues }: Props) => {
 
     const router = useRouter();
     const onFinish = async (values: any) => {
+        if (!user) {
+            return;
+        }
         const UserRequest = {
             userName: values["userName"],
             name: values["name"],
@@ -56,9 +55,6 @@ const MainEditUserForm = ({ messageApi, user = defaultUserValues }: Props) => {
             avatar: values["avatar"],
             dateBirth: values["dateBirth"],
         };
-        if (user === null) {
-            return;
-        }
         try {
             await updateUser(user.userName, UserRequest);
             messageApi.success({

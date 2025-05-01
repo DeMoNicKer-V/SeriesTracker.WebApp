@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using SeriesTracker.Core.Abstractions;
 using SeriesTracker.Core.Dtos;
+using SeriesTracker.Core.Exceptions;
 using SeriesTracker.Core.Models;
 using SeriesTracker.Core.Models.Shikimori;
 
@@ -91,7 +92,8 @@ namespace SeriesTracker.Application.Services
 
         public async Task<ShikimoriAnime[]> GetUserSeriesList(string userName, int page, int categoryId, bool isFavorite)
         {
-            var animeIds = await _userSeriesRepository.GetAnimeIdsList(userName, page, categoryId, isFavorite); // Получаем список идентификаторов аниме из репозитория
+            User? user = await _userRepository.GetUserByUserName(userName) ?? throw new NotFoundException();
+            var animeIds = await _userSeriesRepository.GetAnimeIdsList(user.Id, page, categoryId, isFavorite); // Получаем список идентификаторов аниме из репозитория
 
             if (animeIds.Count == 0)
             {

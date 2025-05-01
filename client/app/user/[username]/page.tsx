@@ -6,12 +6,12 @@ import LoadingContentHandler from "@/app/components/LoadingContentHandler";
 import MainShortInfo from "@/app/components/MainShortInfo/MainShortInfo";
 import PageErrorView from "@/app/components/PageErrorVIew";
 import SeriesGroupInfo from "@/app/components/SeriesGroupInfo";
+import { useUser } from "@/app/components/UserContext";
 import { SeriesAnime } from "@/app/models/anime/SeriesAnime";
 import {
     defaultUserValues,
     MainUserInfo,
-} from "@/app/Models/User/MainUserInfo";
-import { getDecodedUserToken } from "@/app/utils/cookie";
+} from "@/app/models/user/MainUserInfo";
 import {
     CrownOutlined,
     SettingOutlined,
@@ -44,63 +44,101 @@ dayjs.locale("ru");
 dayjs.extend(relativeTime);
 
 const { Text, Title, Paragraph } = Typography;
+
+//  Основной компонент UserListPage (страница пользовательского профиля)
 export default function UserPage({ params }: { params: { username: string } }) {
+    //  Хук для навигации (получаем экземпляр роутера)
     const router = useRouter();
-    const [error, setError] = useState<boolean | null>(null);
-    const [currentUser, setCurrentUser] = useState<boolean>(false);
+
+    //  Хук для получения текущего пути
     const pathname = usePathname();
+
+    //  Получаем информацию о текущем пользователе из контекста
+    const { user } = useUser();
+
+    //  Состояние для отображения ошибок
+    const [error, setError] = useState<boolean | null>(null);
+
+    //  Состояние для хранения информации о пользователе (полученной с сервера)
     const [userInfo, setUserInfo] = useState<MainUserInfo>(defaultUserValues);
+
+    //  Состояние для хранения списка аниме, связанных с пользователем
     const [animes, setAnimes] = useState<SeriesAnime[]>();
 
+    //  Состояние, указывающее, является ли просматриваемый профиль профилем текущего пользователя
+    const [currentUser, setCurrentUser] = useState<boolean>(false);
+
+    //  Асинхронная функция для получения данных о пользователе
     const getCurrentUser = async (username: string) => {
         try {
-            const user = await getUserByUsername(username);
-            const token = await getDecodedUserToken();
+            //  Проверяем, является ли просматриваемый профиль профилем текущего пользователя
+            setCurrentUser(user?.userName === username);
+
+            //  Получаем информацию о пользователе по имени пользователя
+            const mainUserInfo = await getUserByUsername(username);
+
+            //  Обновляем состояние с информацией о пользователе
+            setUserInfo(mainUserInfo);
+
+            //  Сбрасываем флаг ошибки
             setError(false);
-            setCurrentUser(token?.userName === username);
-            setUserInfo(user);
-            if (user.seriesIDS.length > 0) {
+
+            //  Если у пользователя есть какие-либо аниме в списке, получаем информацию об этих аниме
+            if (mainUserInfo.seriesIDS.length > 0) {
                 const animes = await GetRecentUserActivities(
                     username,
-                    user.seriesIDS
+                    mainUserInfo.seriesIDS
                 );
+                //  Обновляем состояние со списком аниме
                 setAnimes(animes);
             }
         } catch (error) {
+            //  Обрабатываем ошибки при получении данных
             setError(true);
             return;
         }
     };
 
+    //  Используем useSWR для управления запросом к API
     const { isLoading } = useSWR(params.username, getCurrentUser, {
-        // Опции для useSWR
-        revalidateOnFocus: false, // Отключить обновление при фокусе
-        revalidateOnReconnect: false, // Отключить обновление при восстановлении соединения
-        errorRetryInterval: 30000, // Тайм-аут для потоврного запроса при ошибке
+        //  Отключаем автоматическую перепроверку при фокусе
+        revalidateOnFocus: false,
+        //  Отключаем автоматическую перепроверку при переподключении к сети
+        revalidateOnReconnect: false,
+        //  Устанавливаем количество попыток перезагрузки в случае ошибки на 0
+        errorRetryCount: 0,
     });
 
+    //  Функция для форматирования возраста пользователя
     const getFormatedAge = (dateBirth?: string) => {
+        //  Проверяем, указана ли дата рождения
         if (!dateBirth) {
-            return null;
+            return null; //  Если нет, возвращаем null
         } else
             return (
                 <>
+                    {/*  Отображаем возраст пользователя в формате "X (год|года|лет) назад" */}
                     {dayjs(dateBirth).fromNow(true)} <Divider type="vertical" />
                 </>
             );
     };
 
+    //  Функция для форматирования имени пользователя
     const getFormatedName = (name?: string, surName?: string) => {
-        const formattedName = name ? name : ""; // Если name не null/undefined, используем его, иначе пустую строку
-        const formattedSurName = surName ? surName : ""; // Аналогично для surName
+        //  Используем name, если есть, иначе пустую строку
+        const formattedName = name ? name : "";
+        //  Используем surName, если есть, иначе пустую строку
+        const formattedSurName = surName ? surName : "";
 
+        //  Если есть имя или фамилия
         if (formattedName || formattedSurName) {
             return (
                 <>
+                    {/*  Отображаем имя и фамилию пользователя */}
                     {formattedName} {formattedSurName}
                     <Divider type="vertical" />
                 </>
-            ); // Объединяем и убираем лишние пробелы
+            );
         }
     };
 

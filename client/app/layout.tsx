@@ -1,4 +1,6 @@
-"use client";
+"use client"; //  Компонент клиентской стороны (обязательно для Next.js)
+
+// Импортируем необходимые модули и компоненты
 import { ConfigProvider, Divider, Layout, theme } from "antd";
 import { Footer } from "antd/es/layout/layout";
 import { usePathname } from "next/navigation";
@@ -12,15 +14,22 @@ import "./globals.css";
 import siteLogo from "./img/logo.ico";
 const { Content } = Layout;
 
+//  Основной компонент Layout (RootLayout)
 export default function RootLayout({
     children,
 }: Readonly<{
     children: React.ReactNode;
 }>) {
+    //  Хук для получения текущего пути
     const pathName = usePathname();
+
+    //  Состояние для управления состоянием бокового меню (свернуто/развернуто)
     const [collapsed, setCollapsed] = useState(true);
+
+    //  Состояние для отслеживания, был ли компонент смонтирован (для предотвращения мерцания)
     const [mounted, setMounted] = useState(false);
 
+    //  Эффект для установки mounted в true после монтирования компонента
     useEffect(() => {
         setMounted(true);
     }, []);
@@ -28,10 +37,14 @@ export default function RootLayout({
     return (
         <html lang="en">
             <head>
+                {/*  Мета-тег для иконки сайта */}
                 <link rel="icon" href={siteLogo.src} />
             </head>
             <body>
+                {/*  Фоновый компонент с анимацией звезд */}
                 <StarsBackground />
+
+                {/*  Ant Design Provider для настройки глобальных стилей компонентов */}
                 <ConfigProvider
                     theme={{
                         token: {
@@ -83,42 +96,55 @@ export default function RootLayout({
                         },
                     }}
                 >
+                    {/*  Provider для управления данными пользователя */}
                     <UserProvider>
+                        {/*  Основной компонент Layout из Ant Design */}
                         <Layout
                             style={{
+                                //  Скрываем контент до монтирования, чтобы избежать мерцания
                                 visibility: !mounted ? "hidden" : "visible",
-                                minHeight: "100vh",
+                                minHeight: "100vh", //  Занимаем всю высоту экрана
                             }}
                         >
+                            {/*  Заголовок страницы (не отображается визуально) */}
                             <title>Series Tracker</title>
+
+                            {/*  Компонент шапки (меню) */}
                             <HeaderMenu
                                 pathName={pathName}
                                 collapsed={collapsed}
                                 setCollapsed={setCollapsed}
                             />
+
+                            {/*  Основной контейнер с боковым меню и контентом */}
                             <Layout
                                 className={
-                                    collapsed
+                                    collapsed //  Применяем разные классы в зависимости от состояния бокового меню
                                         ? "main-sider-layout"
                                         : "main-sider-layout fullscreen"
                                 }
-                                hasSider
+                                hasSider //  Указываем, что есть боковое меню
                             >
+                                {/*  Компонент бокового меню */}
                                 <SiderMenu
-                                    setCollapsed={setCollapsed}
-                                    collapsed={collapsed}
-                                    pathName={pathName}
+                                    setCollapsed={setCollapsed} //  Передаем функцию для управления состоянием
+                                    collapsed={collapsed} //  Передаем состояние свернутости/развернутости
+                                    pathName={pathName} //  Передаем текущий путь
                                 />
+
+                                {/*  Контейнер для основного контента */}
                                 <Layout className="main-content-layout">
+                                    {/*  Отображаем дочерние компоненты */}
                                     <Content>{children}</Content>
 
+                                    {/*  Компонент футера */}
                                     <Footer>
-                                        <Divider style={{ margin: 0 }} />
+                                        <Divider style={{ margin: 0 }} />{" "}
                                         <MainFooterContent
                                             alignItems={
                                                 ["/login", "/signup"].includes(
                                                     pathName
-                                                )
+                                                ) //  Выравнивание футера в зависимости от текущего пути
                                                     ? "center"
                                                     : "start"
                                             }

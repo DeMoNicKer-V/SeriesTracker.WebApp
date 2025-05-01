@@ -1,5 +1,6 @@
 ﻿using SeriesTracker.Core.Dtos;
 using SeriesTracker.Core.Models.Shikimori;
+using SeriesTracker.Core.Exceptions;
 
 namespace SeriesTracker.Core.Abstractions
 {
@@ -57,6 +58,7 @@ namespace SeriesTracker.Core.Abstractions
         /// <param name="categoryId">Идентификатор категории.</param>
         /// <param name="isFavorite">Признак избранного.</param>
         /// <returns>Массив базовых DTO с информацией об аниме.</returns>
+        /// <exception cref="NotFoundException">Выбрасывается, если пользователя не найдено.</exception>
         Task<ShikimoriAnime[]> GetUserSeriesList(string userName, int page, int categoryId, bool isFavorite);
 
         /// <summary>

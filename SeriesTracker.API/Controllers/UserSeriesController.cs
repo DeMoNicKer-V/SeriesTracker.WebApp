@@ -3,6 +3,7 @@ using SeriesTracker.API.Contracts;
 using SeriesTracker.API.Extensions;
 using SeriesTracker.Core.Abstractions;
 using SeriesTracker.Core.Enums;
+using SeriesTracker.Core.Exceptions;
 using SeriesTracker.Infrastructure.Authentication;
 using System.ComponentModel.DataAnnotations;
 
@@ -190,6 +191,10 @@ namespace SeriesTracker.API.Controllers
 
                 // Возвращаем список аниме пользователя с кодом 200 OK
                 return Results.Ok(userSeries);
+            }
+            catch (NotFoundException)
+            {
+                return _logger.NotFoundResponse($"User ({userName}) does not exists.");
             }
             catch (Exception ex)
             {

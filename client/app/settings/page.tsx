@@ -2,9 +2,7 @@
 "use client";
 import { BorderlessTableOutlined, TeamOutlined } from "@ant-design/icons";
 import { Col, ConfigProvider, Row, Tabs } from "antd";
-import { useCallback, useEffect, useState } from "react";
-import { Category } from "../Models/Category";
-import { UsersList } from "../Models/User/UsersList";
+import { useEffect, useState } from "react";
 import { getAllCategoriesList } from "../api/category/getCategory";
 import { deleteUser } from "../api/user/deleteUser";
 import { getAllUsersList } from "../api/user/getUser";
@@ -14,65 +12,79 @@ import DeleteUserModal from "../components/Modals/DeleteUserModal";
 import PageErrorView from "../components/PageErrorVIew";
 import CategoryTable from "../components/SettingsComponents/CategoryTable";
 import UserTable from "../components/SettingsComponents/UserTable";
-import { getDecodedUserToken, UserToken } from "../utils/cookie";
+import { useUser } from "../components/UserContext";
+import { Category } from "../models/Category";
+import { UsersList } from "../models/user/UsersList";
 
+//  Основной компонент SettingsPage (страница настроек)
 export default function SettingsPage() {
-    const allowedRoles = ["1", "2"];
+    //  Получаем информацию о текущем пользователе из контекста
+    const { user } = useUser();
+
+    //  Массив разрешенных ролей (для доступа к странице)
+    const allowedRoles = [1, 2];
+
+    //  Состояние для отображения ошибок авторизации
     const [error, setError] = useState<boolean | null>(null);
+
+    //  Состояние для хранения списка категорий
     const [categories, setCategories] = useState<Category[]>([]);
+
+    //  Состояние для хранения данных о пользователях (список)
     const [usersData, setUsersData] = useState<UsersList>();
-    const [userToken, setUserToken] = useState<UserToken>({
-        userName: "",
-        userId: "",
-        roleId: "",
-    });
+
+    //  Состояние для управления номером страницы (для пагинации списка пользователей)
     const [page, setPage] = useState<number>(1);
+
+    //  Состояние для хранения имени пользователя, которого нужно удалить
     const [deleteUserUserName, setDeleteUserUserName] = useState<string>("");
+
+    //  Состояние для управления видимостью модального окна подтверждения удаления пользователя
     const [openDeleteUser, setOpenDeleteUser] = useState<boolean>(false);
 
+    //  Асинхронная функция для удаления пользователя
     const onDeleteUser = async () => {
-        await deleteUser(deleteUserUserName);
-        window.location.reload();
+        await deleteUser(deleteUserUserName); //  Удаляем пользователя
+        setPage(1); // Обновляем страницу -> обновляем список пользователей
     };
 
+    //  Функция для закрытия модального окна
     const onClose = () => {
-        setOpenDeleteUser(false);
+        setOpenDeleteUser(false); //  Закрываем модальное окно
     };
 
+    //  Эффект, который запускается при монтировании компонента
     useEffect(() => {
         const start = async () => {
-            const token: UserToken | null = await getDecodedUserToken();
-
-            if (!token) {
-                console.warn("Отсутствует JWT токен.");
-                setError(true);
-                return;
+            if (!user) {
+                return; // Ждем, пока user не станет доступен
             }
-
-            if (!allowedRoles.includes(token.roleId)) {
-                console.warn(
-                    `У пользователя roleId "${token.roleId}" нет прав доступа.`
-                );
+            try {
+                //  Проверяем права доступа
+                if (!allowedRoles.includes(user.roleId)) {
+                    setError(true); //  Устанавливаем флаг ошибки (недостаточно прав)
+                    return;
+                }
+                //  Получаем список категорий
+                const categories = await getAllCategoriesList();
+                setCategories(categories);
+                setError(false); //  Сбрасываем флаг ошибки (доступ разрешен)
+            } catch (err) {
+                console.error("Ошибка при загрузке данных:", err);
                 setError(true);
-                return;
             }
-
-            setUserToken(token);
-            const category = await getAllCategoriesList();
-            setCategories(category);
-            setError(false);
         };
-        start();
-    }, []);
+        start(); //  Запускаем асинхронную функцию
+    }, [user]);
 
-    const updateUsers = useCallback(async () => {
-        const usersData = await getAllUsersList(page);
-        setUsersData(usersData);
-    }, [page]);
-
+    //  Функция для обновления списка пользователей
     useEffect(() => {
-        updateUsers();
-    }, [updateUsers]);
+        const fetchUsers = async () => {
+            const usersData = await getAllUsersList(page); //  Получаем список пользователей (с учетом текущей страницы)
+            setUsersData(usersData);
+        };
+        fetchUsers();
+    }, [page]); //  Зависимости: page (перезапускаем функцию, если изменилась страница)
 
     return (
         <LoadingContentHandler
@@ -122,7 +134,7 @@ export default function SettingsPage() {
                                             children: (
                                                 <UserTable
                                                     usersData={usersData}
-                                                    userToken={userToken}
+                                                    user={user}
                                                     setPage={setPage}
                                                     setDeleteUserName={
                                                         setDeleteUserUserName

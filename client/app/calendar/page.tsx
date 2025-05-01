@@ -108,7 +108,7 @@ export default function CalendarPage() {
         {
             revalidateOnFocus: false,
             revalidateOnReconnect: false,
-            errorRetryInterval: 30000,
+            errorRetryCount: 0,
         }
     );
 

@@ -14,7 +14,7 @@ import {
     Input,
     Typography,
 } from "antd";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import "./style.css";
 
 import locale from "antd/es/date-picker/locale/ru_RU";
@@ -27,65 +27,70 @@ import { LongLeftArrow } from "../img/LongLeftArrow";
 
 import dayjs from "dayjs";
 import "dayjs/locale/ru";
-import { UserRequest } from "../Models/User/Requests/UserRequest";
 import { register } from "../api/auth";
 import LoadingContentHandler from "../components/LoadingContentHandler";
-import { getDecodedUserToken } from "../utils/cookie";
+import { useUser } from "../components/UserContext";
+import { UserRequest } from "../models/user/requests/UserRequest";
 dayjs.locale("ru");
 
 const { Text, Title, Link } = Typography;
 
+//  Основной компонент SignupPage (страница регистрации)
 const SignupPage = () => {
+    //  Получаем информацию о текущем пользователе из контекста
+    const { user } = useUser();
+
+    //  Получаем экземпляр Form (из Ant Design) для управления формой
+    const [form] = Form.useForm();
+
+    //  Состояние для отображения сообщения об ошибке
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+    //  Состояние для отслеживания текущего шага (этапа) регистрации
     const [current, setCurrent] = useState<number>(0);
+
+    //  Состояние для хранения данных формы регистрации
     const [formData, setFormData] = useState<UserRequest>({
         email: "",
         password: "",
         userName: "",
     });
-    const [auth, setAuth] = useState<boolean | null>(null);
+
+    //  Состояние для отображения, согласен ли пользователь с правилами
     const [checked, setChecked] = useState(false);
 
-    const [form] = Form.useForm();
+    //  Получаем функцию для получения значений полей формы
     const { getFieldsValue } = form;
 
+    //  Асинхронная функция для создания нового аккаунта (регистрации)
     const createNewAccount = async () => {
-        setErrorMessage(null); // Сбрасываем сообщение об ошибке перед отправкой
-
+        setErrorMessage(null); //  Сбрасываем сообщение об ошибке перед отправкой
         try {
             await register(formData);
-            window.location.href = "/login";
+            window.location.href = "/login"; //  Перенаправляем пользователя на страницу логина после успешной регистрации
         } catch (error: any) {
-            // Перехватываем ошибку, выброшенную login
-            setErrorMessage(error.message || "Произошла неизвестная ошибка."); // Отображаем сообщение об ошибке
+            setErrorMessage(error.message);
         }
     };
 
+    //  Функция для обработки изменения состояния чекбокса согласия с правилами
     const onChangeAgreeRules: CheckboxProps["onChange"] = (e) => {
         setChecked(e.target.checked);
     };
 
+    //  Функция для перехода к следующему шагу (этапу) регистрации
     const handleNext = () => {
-        const values = getFieldsValue();
+        const values = getFieldsValue(); //  Получаем значения полей формы
         setFormData((prevFormData) => ({
-            ...prevFormData,
-            ...values,
+            ...prevFormData, //  Сохраняем предыдущие значения
+            ...values, //  Обновляем значения новыми значениями
         }));
-        setCurrent(current + 1);
+        setCurrent(current + 1); //  Увеличиваем текущий шаг
     };
-
-    const getIsAuth = async () => {
-        const token = await getDecodedUserToken();
-        setAuth(token !== null);
-    };
-
-    useEffect(() => {
-        getIsAuth();
-    }, []);
 
     return (
         <LoadingContentHandler
-            condition={auth}
+            condition={user === null ? null : user != null}
             defaultNode={
                 <Flex className="bg flex-column">
                     <title>Series Tracker - Регистрация</title>

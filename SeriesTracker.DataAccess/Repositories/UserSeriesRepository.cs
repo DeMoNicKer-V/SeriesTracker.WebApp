@@ -67,12 +67,12 @@ namespace SeriesTracker.DataAccess.Repositories
             return rowsAffected > 0; // Возвращаем true, если кол-во затронутых записей больше нуля, иначе - false
         }
 
-        public async Task<List<int>> GetAnimeIdsList(string userName, int page, int categoryId, bool isFavorite)
+        public async Task<List<int>> GetAnimeIdsList(Guid userId, int page, int categoryId, bool isFavorite)
         {
             // Получаем список AnimeId пользователя с учетом пагинации, категории и избранного
             List<int> animeIds = await _context.UserSeriesEntities
                 .AsNoTracking()
-                .Where(s => s.User.UserName == userName && (categoryId <= 0 || s.CategoryId == categoryId) && (!isFavorite || s.IsFavorite))
+                .Where(s => s.UserId == userId && (categoryId <= 0 || s.CategoryId == categoryId) && (!isFavorite || s.IsFavorite))
                 .Skip((page - 1) * 22)
                 .Take(22)
                 .Select(s => s.AnimeId)

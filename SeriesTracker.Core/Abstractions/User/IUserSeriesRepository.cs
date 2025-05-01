@@ -32,12 +32,12 @@ namespace SeriesTracker.Core.Abstractions
         /// <summary>
         /// Получает список идентификаторов аниме пользователя с учетом параметров фильтрации и пагинации.
         /// </summary>
-        /// <param name="userName">Имя пользователя.</param>
+        /// <param name="userId">Идентификатор пользователя.</param>
         /// <param name="page">Номер страницы списка.</param>
         /// <param name="categoryId">Идентификатор категории (0 для всех категорий).</param>
         /// <param name="isFavorite">Признак избранного (true для избранных, false для всех).</param>
         /// <returns>Список идентификаторов аниме.</returns>
-        Task<List<int>> GetAnimeIdsList(string userName, int page, int categoryId, bool isFavorite);
+        Task<List<int>> GetAnimeIdsList(Guid userId, int page, int categoryId, bool isFavorite);
 
         /// <summary>
         /// Получает сгруппированный список аниме пользователя по категориям (краткое представление).

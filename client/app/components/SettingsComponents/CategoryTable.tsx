@@ -13,15 +13,16 @@ import {
     Tooltip,
     Typography,
 } from "antd";
-import { Category } from "../../Models/Category";
 import { editCategoryColor } from "../../api/category/editCategory";
 import { LongLeftArrow } from "../../img/LongLeftArrow";
+import { Category } from "../../models/Category";
 
 interface Props {
     categories: Category[];
 }
 
 const { Paragraph, Text } = Typography;
+
 const CategoryTable = ({ categories }: Props) => {
     const [api, contextHolder] = notification.useNotification();
 

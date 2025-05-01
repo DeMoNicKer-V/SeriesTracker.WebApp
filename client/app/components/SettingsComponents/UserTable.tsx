@@ -1,6 +1,6 @@
 // UserTable.tsx
 import { changeUserRole } from "@/app/api/user/editUser";
-import { UserItem, UsersList } from "@/app/Models/User/UsersList";
+import { UserItem, UsersList } from "@/app/models/user/UsersList";
 import {
     CloseOutlined,
     DeleteOutlined,
@@ -22,11 +22,7 @@ import { FilterDropdownProps } from "antd/es/table/interface";
 
 interface Props {
     usersData?: UsersList;
-    userToken: {
-        userName: string;
-        userId: string;
-        roleId: string;
-    };
+    user?: User;
     setPage: (page: number) => void;
     setDeleteUserName: (userName: string) => void;
     setOpenDeleteModal: (open: boolean) => void;
@@ -46,7 +42,7 @@ const handleReset = (
 
 const UserTable = ({
     usersData,
-    userToken,
+    user,
     setPage,
     setDeleteUserName,
     setOpenDeleteModal,
@@ -137,12 +133,12 @@ const UserTable = ({
                                   {
                                       value: 2,
                                       label: "Модер",
-                                      disabled: Number(userToken.roleId) != 1,
+                                      disabled: user?.roleId != 1,
                                   },
                                   {
                                       value: 3,
                                       label: "Юзер",
-                                      disabled: Number(userToken.roleId) != 1,
+                                      disabled: user?.roleId != 1,
                                   },
                               ]
                     }
@@ -177,8 +173,8 @@ const UserTable = ({
                         size="small"
                         icon={<EyeOutlined />}
                     />
-                    {record.id !== userToken.userId &&
-                        record.roleId > Number(userToken.roleId) && (
+                    {record.id !== user?.id &&
+                        record.roleId > Number(user?.roleId) && (
                             <Button
                                 danger
                                 onClick={() => openDeleteModal(record.userName)}
