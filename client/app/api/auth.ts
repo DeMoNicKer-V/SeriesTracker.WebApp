@@ -1,12 +1,12 @@
 import { LoginRequest } from "../Models/User/Requests/LoginRequest";
 import { UserRequest } from "../Models/User/Requests/UserRequest";
 import {
-    LOGIN_URL,
-    REGISTER_URL,
-    LOGOUT_URL,
-    VERIFY_URL,
     IS_EMAIL_URL,
     IS_USERNAME_URL,
+    LOGIN_URL,
+    LOGOUT_URL,
+    REGISTER_URL,
+    VERIFY_URL,
 } from "./endpoints";
 import { get, post } from "./httpClient";
 

@@ -1,5 +1,5 @@
-import styles from "./component.module.css";
 import { Flex, Typography } from "antd";
+import styles from "./component.module.css";
 
 interface Props {
     title?: string;

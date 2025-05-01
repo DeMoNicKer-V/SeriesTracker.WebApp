@@ -1,5 +1,3 @@
-import { Flex } from "antd";
-
 interface Props {
     src: string;
     zIndex: number;

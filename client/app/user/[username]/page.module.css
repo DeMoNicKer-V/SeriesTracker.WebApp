@@ -17,5 +17,5 @@
 }
 .container {
     display: flex;
-    gap: 1rem; /* 1rem = 16px,  можете изменить значение по своему вкусу */
+    gap: 1rem;
 }

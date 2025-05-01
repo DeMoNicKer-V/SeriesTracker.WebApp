@@ -1,4 +1,14 @@
-import Card from "antd/es/card/Card";
+import { get } from "@/app/api/httpClient";
+import {
+    defaultSeriesAnimeValues as defaultValues,
+    SeriesAnime,
+} from "@/app/models/anime/SeriesAnime";
+import {
+    FireOutlined,
+    HeartFilled,
+    HeartOutlined,
+    StarOutlined,
+} from "@ant-design/icons";
 import {
     Badge,
     Col,
@@ -11,28 +21,17 @@ import {
     Row,
     Skeleton,
     Tag,
-    Tooltip,
     Typography,
 } from "antd";
+import Card from "antd/es/card/Card";
 import Link from "next/link";
-import {
-    FireOutlined,
-    HeartFilled,
-    HeartOutlined,
-    StarOutlined,
-} from "@ant-design/icons";
-import AbsoluteImage from "../AbsoluteImage";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import useSWR from "swr";
+import AbsoluteImage from "../AbsoluteImage";
 import { EmptyView } from "../EmptyView";
 import PageNavigator from "../PageNavigator";
-import styles from "./component.module.css";
-import {
-    defaultSeriesAnimeValues as defaultValues,
-    SeriesAnime,
-} from "@/app/Models/Anime/SeriesAnime";
 import AnimeDetailPopover from "../Popovers/AnimeDetailPopover";
-import { get } from "@/app/api/httpClient";
+import styles from "./component.module.css";
 
 const { Text } = Typography;
 

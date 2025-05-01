@@ -1,4 +1,4 @@
-import { CalendarAnimeItem } from "@/app/Models/Anime/CalendarAnimeItem";
+import { CalendarAnimeItem } from "@/app/models/anime/CalendarAnimeItem";
 import { get } from "../../httpClient";
 
 export const getCalendarAnimes = async (

@@ -1,4 +1,18 @@
 "use client";
+import { getUserCategoriesCount } from "@/app/api/user/getUser";
+import UsersAnimeList from "@/app/components/Animes/UsersAnimeList";
+import LoadingContentHandler from "@/app/components/LoadingContentHandler";
+import PageErrorView from "@/app/components/PageErrorVIew";
+import {
+    BookOutlined,
+    CheckOutlined,
+    CloseOutlined,
+    EyeOutlined,
+    FieldTimeOutlined,
+    NumberOutlined,
+    SyncOutlined,
+    UserOutlined,
+} from "@ant-design/icons";
 import {
     Breadcrumb,
     Col,
@@ -8,24 +22,10 @@ import {
     MenuProps,
     Row,
 } from "antd";
-import { useCallback, useEffect, useState } from "react";
-import {
-    BookOutlined,
-    CloseOutlined,
-    NumberOutlined,
-    SyncOutlined,
-    FieldTimeOutlined,
-    EyeOutlined,
-    CheckOutlined,
-    UserOutlined,
-} from "@ant-design/icons";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useCallback, useEffect, useState } from "react";
 import useSWR from "swr";
-import { getUserCategoriesCount } from "@/app/api/user/getUser";
-import LoadingContentHandler from "@/app/components/LoadingContentHandler";
-import PageErrorView from "@/app/components/PageErrorVIew";
-import UsersAnimeList from "@/app/components/Animes/UsersAnimeList";
 
 export default function UserPage({ params }: { params: { username: string } }) {
     const router = useRouter();

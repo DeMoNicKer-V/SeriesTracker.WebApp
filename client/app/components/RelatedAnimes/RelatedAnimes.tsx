@@ -1,28 +1,24 @@
+import { Related } from "@/app/models/anime/Anime";
+import {
+    CalendarOutlined,
+    InfoCircleOutlined,
+    ReadOutlined,
+} from "@ant-design/icons";
 import {
     Card,
     Col,
+    ConfigProvider,
+    Divider,
+    Image,
     List,
     Row,
-    Image,
     Space,
     Tag,
-    Divider,
-    ConfigProvider,
-    Flex,
-    Typography,
 } from "antd";
 import Link from "next/link";
 import noFoundImage from "../../img/img-error.jpg";
-import styles from "./component.module.css";
-
-const { Text, Title } = Typography;
-import {
-    InfoCircleOutlined,
-    CalendarOutlined,
-    ReadOutlined,
-} from "@ant-design/icons";
-import { Related } from "@/app/Models/Anime/Anime";
 import MainShortInfo from "../MainShortInfo/MainShortInfo";
+import styles from "./component.module.css";
 
 interface Props {
     animes: Related[];
@@ -43,7 +39,7 @@ const RelatedAnimes = ({ animes }: Props) => {
             <List
                 dataSource={animes}
                 renderItem={(item: Related) => (
-                    <Link target="_top" href={`/animes/${item.anime.id}`}>
+                    <Link target="_top" href={`/shikimori/${item.anime.id}`}>
                         <Card className={styles["related-item-card"]} hoverable>
                             <Row
                                 className={styles["related-item-row"]}

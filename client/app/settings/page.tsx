@@ -1,20 +1,20 @@
 // settings/page.tsx
 "use client";
-import React, { useCallback, useEffect, useState } from "react";
-import { Col, ConfigProvider, Row, Tabs } from "antd";
 import { BorderlessTableOutlined, TeamOutlined } from "@ant-design/icons";
-import { EmptyView } from "../components/EmptyView";
-import PageErrorView from "../components/PageErrorVIew";
+import { Col, ConfigProvider, Row, Tabs } from "antd";
+import { useCallback, useEffect, useState } from "react";
 import { Category } from "../Models/Category";
-import { getAllCategoriesList } from "../api/category/getCategory";
-import { getAllUsersList } from "../api/user/getUser";
-import { deleteUser } from "../api/user/deleteUser";
-import { getDecodedUserToken, UserToken } from "../utils/cookie";
 import { UsersList } from "../Models/User/UsersList";
+import { getAllCategoriesList } from "../api/category/getCategory";
+import { deleteUser } from "../api/user/deleteUser";
+import { getAllUsersList } from "../api/user/getUser";
+import { EmptyView } from "../components/EmptyView";
+import LoadingContentHandler from "../components/LoadingContentHandler";
 import DeleteUserModal from "../components/Modals/DeleteUserModal";
+import PageErrorView from "../components/PageErrorVIew";
 import CategoryTable from "../components/SettingsComponents/CategoryTable";
 import UserTable from "../components/SettingsComponents/UserTable";
-import LoadingContentHandler from "../components/LoadingContentHandler";
+import { getDecodedUserToken, UserToken } from "../utils/cookie";
 
 export default function SettingsPage() {
     const allowedRoles = ["1", "2"];

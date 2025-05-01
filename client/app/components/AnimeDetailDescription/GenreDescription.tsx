@@ -1,5 +1,4 @@
 import { Space, Tag } from "antd";
-import React from "react";
 
 import styles from "./component.module.css";
 interface Props {

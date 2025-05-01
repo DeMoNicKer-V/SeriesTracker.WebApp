@@ -1,5 +1,22 @@
 "use client";
-import styles from "./page.module.css";
+import { GetRecentUserActivities } from "@/app/api/animes/getAnime";
+import { getUserByUsername } from "@/app/api/user/getUser";
+import { EmptyView } from "@/app/components/EmptyView";
+import LoadingContentHandler from "@/app/components/LoadingContentHandler";
+import MainShortInfo from "@/app/components/MainShortInfo/MainShortInfo";
+import PageErrorView from "@/app/components/PageErrorVIew";
+import SeriesGroupInfo from "@/app/components/SeriesGroupInfo";
+import { SeriesAnime } from "@/app/models/anime/SeriesAnime";
+import {
+    defaultUserValues,
+    MainUserInfo,
+} from "@/app/Models/User/MainUserInfo";
+import { getDecodedUserToken } from "@/app/utils/cookie";
+import {
+    CrownOutlined,
+    SettingOutlined,
+    UserOutlined,
+} from "@ant-design/icons";
 import {
     Avatar,
     Button,
@@ -15,32 +32,14 @@ import {
     Tooltip,
     Typography,
 } from "antd";
-import { useState } from "react";
-import {
-    CrownOutlined,
-    SettingOutlined,
-    UserOutlined,
-} from "@ant-design/icons";
-import { usePathname, useRouter } from "next/navigation";
-import Link from "next/link";
-import { EmptyView } from "@/app/components/EmptyView";
-import useSWR from "swr";
-
 import dayjs from "dayjs";
 import "dayjs/locale/ru";
 import relativeTime from "dayjs/plugin/relativeTime";
-import SeriesGroupInfo from "@/app/components/SeriesGroupInfo";
-import PageErrorView from "@/app/components/PageErrorVIew";
-import MainShortInfo from "@/app/components/MainShortInfo/MainShortInfo";
-import { SeriesAnime } from "@/app/Models/Anime/SeriesAnime";
-import {
-    defaultUserValues,
-    MainUserInfo,
-} from "@/app/Models/User/MainUserInfo";
-import { getUserByUsername } from "@/app/api/user/getUser";
-import { GetRecentUserActivities } from "@/app/api/animes/getAnime";
-import { getDecodedUserToken } from "@/app/utils/cookie";
-import LoadingContentHandler from "@/app/components/LoadingContentHandler";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+import { useState } from "react";
+import useSWR from "swr";
+import styles from "./page.module.css";
 dayjs.locale("ru");
 dayjs.extend(relativeTime);
 

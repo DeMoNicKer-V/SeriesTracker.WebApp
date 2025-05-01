@@ -1,12 +1,12 @@
-import { Button, Col, Flex, Row, Tag, Image, Typography, Space } from "antd";
+import { SeriesAnime } from "@/app/models/anime/SeriesAnime";
 import {
     CalendarOutlined,
-    YoutubeOutlined,
     InfoCircleOutlined,
     StarOutlined,
     TeamOutlined,
+    YoutubeOutlined,
 } from "@ant-design/icons";
-import { SeriesAnime } from "@/app/Models/Anime/SeriesAnime";
+import { Button, Col, Flex, Image, Row, Space, Tag, Typography } from "antd";
 import MainShortInfo from "../MainShortInfo/MainShortInfo";
 interface Props {
     anime: SeriesAnime;

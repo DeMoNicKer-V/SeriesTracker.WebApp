@@ -1,34 +1,34 @@
-import styles from "./component.module.css";
+import { getAnimesByName } from "@/app/api/animes/getAnime";
+import { SeriesAnime } from "@/app/models/anime/SeriesAnime";
 import {
+    CalendarOutlined,
+    FireOutlined,
+    HeartFilled,
+    InfoCircleOutlined,
+    SearchOutlined,
+    YoutubeOutlined,
+} from "@ant-design/icons";
+import {
+    Badge,
     Card,
     Col,
     ConfigProvider,
     Divider,
-    List,
+    Flex,
     Image,
+    List,
+    Popover,
     Row,
     Space,
     Tag,
-    Popover,
-    Flex,
-    Badge,
 } from "antd";
 import Input, { InputRef } from "antd/es/input";
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import {
-    SearchOutlined,
-    InfoCircleOutlined,
-    FireOutlined,
-    YoutubeOutlined,
-    CalendarOutlined,
-    HeartFilled,
-} from "@ant-design/icons";
 import noFoundImage from "../../img/img-error.jpg";
 import { EmptyView } from "../EmptyView";
-import Link from "next/link";
-import { SeriesAnime } from "@/app/Models/Anime/SeriesAnime";
 import MainShortInfo from "../MainShortInfo/MainShortInfo";
-import { getAnimesByName } from "@/app/api/animes/getAnime";
+import styles from "./component.module.css";
 
 const SearchBar = ({}) => {
     const inputRef = useRef<InputRef>(null);
@@ -147,13 +147,13 @@ const SearchBar = ({}) => {
                                                 >
                                                     <Space wrap size={[5, 5]}>
                                                         {item.isFavorite && (
-                                                            <Tag
-                                                                color="cyan"
-                                                                className="tag"
-                                                                icon={
-                                                                    <HeartFilled />
-                                                                }
-                                                            ></Tag>
+                                                            <Tag className="tag">
+                                                                <HeartFilled
+                                                                    style={{
+                                                                        color: "#ff69b4",
+                                                                    }}
+                                                                />
+                                                            </Tag>
                                                         )}
                                                         {item.status.length >
                                                         6 ? (

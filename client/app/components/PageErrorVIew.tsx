@@ -1,7 +1,6 @@
 import { Flex } from "antd";
-import React from "react";
-import LinkButton from "./LinkButton";
 import { EmptyView } from "./EmptyView";
+import LinkButton from "./LinkButton";
 
 interface Props {
     text: string;

@@ -1,15 +1,15 @@
 "use client";
-import "./globals.css";
-import React, { useEffect, useState } from "react";
 import { ConfigProvider, Divider, Layout, theme } from "antd";
-import { usePathname } from "next/navigation";
 import { Footer } from "antd/es/layout/layout";
-import siteLogo from "./img/logo.ico";
-import MainFooterContent from "./components/Layout/MainFooterContent";
+import { usePathname } from "next/navigation";
+import React, { useEffect, useState } from "react";
 import HeaderMenu from "./components/Layout/HeaderMenu";
+import MainFooterContent from "./components/Layout/MainFooterContent";
 import SiderMenu from "./components/Layout/SiderMenu";
 import StarsBackground from "./components/StarsBackground/StarsBackground";
 import { UserProvider } from "./components/UserContext";
+import "./globals.css";
+import siteLogo from "./img/logo.ico";
 const { Content } = Layout;
 
 export default function RootLayout({

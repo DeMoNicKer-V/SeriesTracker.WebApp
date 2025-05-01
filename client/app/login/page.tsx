@@ -1,14 +1,14 @@
 "use client";
-import "./style.css";
-import React, { useEffect, useState } from "react";
-import { MailOutlined, KeyOutlined } from "@ant-design/icons";
-import { Button, Card, Flex, Form, Input, Typography, Divider } from "antd";
-import SignPageConfigProvider from "../components/SignPageConfigProvider";
+import { KeyOutlined, MailOutlined } from "@ant-design/icons";
+import { Button, Card, Divider, Flex, Form, Input, Typography } from "antd";
+import { useEffect, useState } from "react";
+import { login } from "../api/auth";
 import PageErrorView from "../components/PageErrorVIew";
 import SignFormHeader from "../components/SignFormHeader";
+import SignPageConfigProvider from "../components/SignPageConfigProvider";
 import { LoginRequest } from "../Models/User/Requests/LoginRequest";
-import { login } from "../api/auth";
 import { getDecodedUserToken } from "../utils/cookie";
+import "./style.css";
 
 const { Text, Title, Link } = Typography;
 const LoginPage = () => {

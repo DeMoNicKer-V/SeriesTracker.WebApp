@@ -1,37 +1,36 @@
 "use client";
-import "./style.css";
-import React, { useEffect, useState } from "react";
 import { CheckOutlined, UserOutlined } from "@ant-design/icons";
 import {
     Avatar,
     Button,
     Card,
+    Checkbox,
+    CheckboxProps,
+    Collapse,
     DatePicker,
+    Divider,
     Flex,
     Form,
     Input,
     Typography,
-    Divider,
-    Checkbox,
-    Collapse,
-    CheckboxProps,
 } from "antd";
+import { useEffect, useState } from "react";
+import "./style.css";
 
 import locale from "antd/es/date-picker/locale/ru_RU";
-import { LongLeftArrow } from "../img/LongLeftArrow";
-import SignPageConfigProvider from "../components/SignPageConfigProvider";
 import PageErrorView from "../components/PageErrorVIew";
 import SignFormHeader from "../components/SignFormHeader";
+import SignPageConfigProvider from "../components/SignPageConfigProvider";
 import MainForm from "../components/SingupComponents/MainForm";
 import SecondaryForm from "../components/SingupComponents/SecondaryForm";
+import { LongLeftArrow } from "../img/LongLeftArrow";
 
 import dayjs from "dayjs";
 import "dayjs/locale/ru";
-import { useRouter } from "next/navigation";
 import { UserRequest } from "../Models/User/Requests/UserRequest";
 import { register } from "../api/auth";
-import { getDecodedUserToken } from "../utils/cookie";
 import LoadingContentHandler from "../components/LoadingContentHandler";
+import { getDecodedUserToken } from "../utils/cookie";
 dayjs.locale("ru");
 
 const { Text, Title, Link } = Typography;

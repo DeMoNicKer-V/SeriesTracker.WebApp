@@ -1,3 +1,14 @@
+import { createSeries } from "@/app/api/series/createSeries";
+import { deleteSeries } from "@/app/api/series/deleteSeries";
+import { updateSeries } from "@/app/api/series/editSeries";
+import { Anime } from "@/app/models/anime/Anime";
+import {
+    BookOutlined,
+    CloseOutlined,
+    HeartFilled,
+    MinusOutlined,
+    PlusOutlined,
+} from "@ant-design/icons";
 import {
     Button,
     Divider,
@@ -8,20 +19,9 @@ import {
     Select,
     Space,
 } from "antd";
-import React, { useState } from "react";
-import {
-    HeartFilled,
-    BookOutlined,
-    PlusOutlined,
-    MinusOutlined,
-    CloseOutlined,
-} from "@ant-design/icons";
-import styles from "./component.module.css";
-import { Anime } from "@/app/Models/Anime/Anime";
-import { createSeries } from "@/app/api/series/createSeries";
-import { deleteSeries } from "@/app/api/series/deleteSeries";
-import { updateSeries } from "@/app/api/series/editSeries";
+import { useState } from "react";
 import { mutate } from "swr";
+import styles from "./component.module.css";
 interface Props {
     anime: Anime;
     auth: boolean;

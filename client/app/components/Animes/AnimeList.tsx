@@ -1,4 +1,15 @@
-import Card from "antd/es/card/Card";
+import { getAnimes } from "@/app/api/animes/getAnime";
+import {
+    defaultSeriesAnimeValues,
+    SeriesAnime,
+} from "@/app/models/anime/SeriesAnime";
+import { ShikimoriRequest } from "@/app/models/requests/ShikimoriRequest";
+import {
+    FireOutlined,
+    HeartFilled,
+    SearchOutlined,
+    StarOutlined,
+} from "@ant-design/icons";
 import {
     Badge,
     Col,
@@ -14,28 +25,17 @@ import {
     Tooltip,
     Typography,
 } from "antd";
+import Card from "antd/es/card/Card";
 import Link from "next/link";
-import {
-    FireOutlined,
-    HeartFilled,
-    SearchOutlined,
-    StarOutlined,
-} from "@ant-design/icons";
+import { useSearchParams } from "next/navigation";
+import { useCallback, useMemo, useState } from "react";
+import useSWR from "swr";
 import AbsoluteImage from "../AbsoluteImage";
 import AnimeParamsMenu from "../AnimeParamsMenu";
-import { useCallback, useMemo, useState } from "react";
-import { useSearchParams } from "next/navigation";
-import useSWR from "swr";
 import { EmptyView } from "../EmptyView";
 import PageNavigator from "../PageNavigator";
-import styles from "./component.module.css";
 import AnimeDetailPopover from "../Popovers/AnimeDetailPopover";
-import { getAnimes } from "@/app/api/animes/getAnime";
-import {
-    defaultSeriesAnimeValues,
-    SeriesAnime,
-} from "@/app/models/anime/SeriesAnime";
-import { ShikimoriRequest } from "@/app/models/requests/ShikimoriRequest";
+import styles from "./component.module.css";
 
 const { Text } = Typography;
 
@@ -272,7 +272,7 @@ const AnimeList = ({}) => {
                                             title={"В избранном"}
                                             trigger={"hover"}
                                         >
-                                            <Tag>
+                                            <Tag className="tag">
                                                 <HeartFilled
                                                     style={{
                                                         color: "#ff69b4",

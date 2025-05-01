@@ -1,12 +1,10 @@
-import { ConfigProvider, Flex, Image, List } from "antd";
-import React from "react";
-
-import styles from "./component.module.css";
+import { Screenshot } from "@/app/models/anime/Anime";
+import { ConfigProvider, Image, List } from "antd";
 import { ListGridType } from "antd/es/list";
-import LoadAnimateImage from "../LoadAnimateImage";
 import { EmptyView } from "../EmptyView";
 import LinkButton from "../LinkButton";
-import { Screenshot } from "@/app/Models/Anime/Anime";
+import LoadAnimateImage from "../LoadAnimateImage";
+import styles from "./component.module.css";
 
 interface Props {
     grid?: ListGridType;

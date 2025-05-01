@@ -1,16 +1,16 @@
 "use client";
 
-import { Breadcrumb, Card, Row, Col, Tooltip } from "antd";
 import { ShikimoriLogo } from "@/app/img/ShikimoriLogo";
+import { Breadcrumb, Card, Col, Row, Tooltip } from "antd";
 
-import useSWR from "swr";
+import { getAnimeById } from "@/app/api/animes/getAnime";
+import ScreenshotsPreview from "@/app/components/AnimeDetailDescription/ScreenshotsPreview";
+import Loading from "@/app/components/Loading";
+import PageErrorView from "@/app/components/PageErrorVIew";
+import { Anime, defaultAnimeValues } from "@/app/models/anime/Anime";
 import Title from "antd/es/typography/Title";
 import Link from "next/link";
-import ScreenshotsPreview from "@/app/components/AnimeDetailDescription/ScreenshotsPreview";
-import PageErrorView from "@/app/components/PageErrorVIew";
-import Loading from "@/app/components/Loading";
-import { Anime, defaultAnimeValues } from "@/app/models/anime/Anime";
-import { getAnimeById } from "@/app/api/animes/getAnime";
+import useSWR from "swr";
 
 export default function ScreenshotPage({ params }: { params: { id: string } }) {
     const getAnime = async (id: string) => {

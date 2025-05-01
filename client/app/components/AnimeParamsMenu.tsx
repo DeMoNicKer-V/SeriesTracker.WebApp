@@ -1,4 +1,13 @@
 import {
+    CalendarOutlined,
+    FontColorsOutlined,
+    QuestionCircleOutlined,
+    SearchOutlined,
+    StarOutlined,
+    TeamOutlined,
+    UndoOutlined,
+} from "@ant-design/icons";
+import {
     Button,
     Checkbox,
     CheckboxProps,
@@ -14,19 +23,10 @@ import {
     Tooltip,
     Typography,
 } from "antd";
-import {
-    UndoOutlined,
-    SearchOutlined,
-    QuestionCircleOutlined,
-    StarOutlined,
-    FontColorsOutlined,
-    TeamOutlined,
-    CalendarOutlined,
-} from "@ant-design/icons";
 import dayjs from "dayjs";
-import FilterItem from "../components/FilterItem";
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import { getGenres } from "../api/animes/genre/getGenre";
+import FilterItem from "../components/FilterItem";
 import { ShikimoriRequest } from "../models/requests/ShikimoriRequest";
 type FieldType = {
     page: number;

@@ -1,6 +1,6 @@
 // components/LoadingErrorContext.tsx
 "use client";
-import React, { createContext, useState, useContext, ReactNode } from "react";
+import React, { createContext, ReactNode, useContext } from "react";
 import useSWR from "swr"; // Установите swr
 import { fetcher } from "../utils/fetcher"; //  Ваш fetcher (см. ниже)
 

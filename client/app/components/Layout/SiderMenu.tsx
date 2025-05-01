@@ -1,20 +1,20 @@
-import { FloatButton, Menu, MenuProps } from "antd";
-import Sider from "antd/es/layout/Sider";
-import { useEffect, useMemo, useState } from "react";
 import Icon, {
+    CalendarOutlined,
     InfoCircleOutlined,
     SettingOutlined,
-    CalendarOutlined,
 } from "@ant-design/icons";
-import styles from "./component.module.css";
+import { FloatButton, Menu, MenuProps } from "antd";
+import Sider from "antd/es/layout/Sider";
 import Link from "next/link";
+import { useEffect, useMemo, useState } from "react";
+import styles from "./component.module.css";
 
-import { useRouter } from "next/navigation";
-import { RandomIcon } from "@/app/img/RandomIcon";
-import { CustomIconComponentProps } from "@ant-design/icons/lib/components/Icon";
 import { getRandomAnimeId } from "@/app/api/animes/getAnime";
-import { useUser } from "../UserContext";
+import { RandomIcon } from "@/app/img/RandomIcon";
 import { ShikimoriLogo } from "@/app/img/ShikimoriLogo";
+import { CustomIconComponentProps } from "@ant-design/icons/lib/components/Icon";
+import { useRouter } from "next/navigation";
+import { useUser } from "../UserContext";
 
 interface Props {
     pathName: string;

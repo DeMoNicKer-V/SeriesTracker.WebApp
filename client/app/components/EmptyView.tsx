@@ -1,4 +1,4 @@
-import { Flex, Space, Typography } from "antd";
+import { Space } from "antd";
 
 import { InfoCircleOutlined } from "@ant-design/icons";
 

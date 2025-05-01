@@ -1,11 +1,11 @@
+import { LogoIcon } from "@/app/img/LogoIcon";
+import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
 import { Button, Col, Flex, Row } from "antd";
 import { Header } from "antd/es/layout/layout";
-import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
-import { LogoIcon } from "@/app/img/LogoIcon";
-import styles from "./component.module.css";
 import SearchBar from "../Searchbar/Searchbar";
 import UserProfile from "../UserComponents/UserProfile";
 import { useUser } from "../UserContext";
+import styles from "./component.module.css";
 
 interface Props {
     pathName: string;

@@ -1,15 +1,15 @@
-import React, { useState } from "react";
+import { isEmailExists, isUserNameExists } from "@/app/api/auth";
 import {
     Button,
     Col,
     Flex,
     Form,
+    FormInstance,
     Input,
     Row,
     Typography,
-    FormInstance,
 } from "antd";
-import { isEmailExists, isUserNameExists } from "@/app/api/auth";
+import { useState } from "react";
 
 const { Text } = Typography;
 

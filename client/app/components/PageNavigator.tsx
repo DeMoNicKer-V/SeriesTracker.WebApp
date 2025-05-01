@@ -1,9 +1,8 @@
 import { Button, Flex, Space, Tag } from "antd";
-import { LongRightArrow } from "../img/LongRightArrow";
 import { LongLeftArrow } from "../img/LongLeftArrow";
+import { LongRightArrow } from "../img/LongRightArrow";
 
 import { DoubleLeftOutlined } from "@ant-design/icons";
-import { Dispatch, SetStateAction } from "react";
 
 interface Props {
     page: number;

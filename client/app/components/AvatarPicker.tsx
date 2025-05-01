@@ -1,17 +1,16 @@
+import { UserOutlined } from "@ant-design/icons";
 import {
+    ConfigProvider,
     Flex,
     GetProp,
+    Image,
     message,
     Upload,
     UploadFile,
     UploadProps,
-    Image,
-    Form,
-    ConfigProvider,
 } from "antd";
 import ImgCrop from "antd-img-crop";
-import { Dispatch, SetStateAction, useState } from "react";
-import { UserOutlined } from "@ant-design/icons";
+import { useState } from "react";
 interface Props {
     onChange: (value: any) => void;
     preloadFile?: string;

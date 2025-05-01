@@ -1,25 +1,25 @@
-import React, { useEffect, useState } from "react";
-import {
-    QuestionCircleOutlined,
-    MinusCircleOutlined,
-    EditOutlined,
-    CloseOutlined,
-    KeyOutlined,
-    CheckOutlined,
-} from "@ant-design/icons";
-import { Button, Card, Flex, Form, Input, Divider, Tooltip } from "antd";
-import dayjs from "dayjs";
-import "dayjs/locale/ru";
-import { useRouter } from "next/navigation";
+import { isEmailExists, isUserNameExists, verify } from "@/app/api/auth";
+import { updateUser } from "@/app/api/user/editUser";
 import SecondaryEditUserForm from "@/app/components/UserComponents/SecondaryEditUserForm";
 import { LongLeftArrow } from "@/app/img/LongLeftArrow";
 import {
     defaultUserValues,
     MainUserInfo,
 } from "@/app/Models/User/MainUserInfo";
-import { isEmailExists, isUserNameExists, verify } from "@/app/api/auth";
-import { updateUser } from "@/app/api/user/editUser";
+import {
+    CheckOutlined,
+    CloseOutlined,
+    EditOutlined,
+    KeyOutlined,
+    MinusCircleOutlined,
+    QuestionCircleOutlined,
+} from "@ant-design/icons";
+import { Button, Card, Divider, Flex, Form, Input, Tooltip } from "antd";
 import { NotificationInstance } from "antd/es/notification/interface";
+import dayjs from "dayjs";
+import "dayjs/locale/ru";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 dayjs.locale("ru");
 
 interface Props {

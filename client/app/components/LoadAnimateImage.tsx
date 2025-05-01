@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
-import { Image, Skeleton, Spin } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
+import { Image, Skeleton } from "antd";
+import { useEffect, useState } from "react";
 import noFoundImage from ".//../img/img-error.jpg";
 const antIcon = <LoadingOutlined style={{ fontSize: 32 }} spin />;
 

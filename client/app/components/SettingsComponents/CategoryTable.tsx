@@ -1,21 +1,21 @@
 // CategoryTable.tsx
+import { QuestionCircleOutlined } from "@ant-design/icons";
 import {
     Button,
     ColorPicker,
+    Flex,
     notification,
     Popconfirm,
     Space,
-    Typography,
+    Table,
     TableProps,
     Tag,
     Tooltip,
-    Table,
+    Typography,
 } from "antd";
-import { Flex } from "antd";
-import { QuestionCircleOutlined } from "@ant-design/icons";
 import { Category } from "../../Models/Category";
-import { LongLeftArrow } from "../../img/LongLeftArrow";
 import { editCategoryColor } from "../../api/category/editCategory";
+import { LongLeftArrow } from "../../img/LongLeftArrow";
 
 interface Props {
     categories: Category[];

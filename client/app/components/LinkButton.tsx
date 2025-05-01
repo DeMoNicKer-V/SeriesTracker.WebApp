@@ -1,7 +1,6 @@
 import { Button, Flex } from "antd";
-import React from "react";
-import { LongRightArrow } from "../img/LongRightArrow";
 import { LongLeftArrow } from "../img/LongLeftArrow";
+import { LongRightArrow } from "../img/LongRightArrow";
 
 interface Props {
     text?: string;

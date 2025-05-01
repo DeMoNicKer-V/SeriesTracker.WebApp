@@ -11,6 +11,7 @@ import {
     Typography,
 } from "antd";
 
+import { logout } from "@/app/api/auth";
 import {
     BookOutlined,
     LogoutOutlined,
@@ -19,7 +20,6 @@ import {
     UserOutlined,
 } from "@ant-design/icons";
 import Link from "next/link";
-import { logout } from "@/app/api/auth";
 import { useRouter } from "next/navigation";
 interface Props {
     user: User | any;

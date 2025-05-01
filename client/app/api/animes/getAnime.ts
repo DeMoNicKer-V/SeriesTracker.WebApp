@@ -1,3 +1,4 @@
+import { Anime } from "@/app/models/anime/Anime";
 import { SeriesAnime } from "@/app/models/anime/SeriesAnime";
 import {
     GET_ANIME_BY_ID_URL,
@@ -7,7 +8,6 @@ import {
     GET_USER_RECENT_ANIMES_URL,
 } from "../endpoints";
 import { get } from "../httpClient";
-import { Anime } from "@/app/models/anime/Anime";
 
 export const getAnimes = async (
     paramString: string

@@ -1,6 +1,6 @@
 import { CreateSeriesRequest } from "@/app/Models/Requests/CreateSeriesRequest";
-import { post } from "../httpClient";
 import { CREATE_SERIES_URL } from "../endpoints";
+import { post } from "../httpClient";
 
 // Добавить аниме в список
 export const createSeries = async (

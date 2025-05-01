@@ -1,37 +1,37 @@
 "use client";
 import {
+    Badge,
+    Card,
     Col,
+    ConfigProvider,
+    Descriptions,
+    Flex,
     List,
     Row,
-    Card,
-    Typography,
-    Flex,
-    ConfigProvider,
-    Tabs,
-    Descriptions,
-    Badge,
-    Tag,
     Skeleton,
+    Tabs,
+    Tag,
+    Typography,
 } from "antd";
 import { useCallback, useEffect, useState } from "react";
 
 import {
     CheckCircleOutlined,
-    QuestionCircleOutlined,
     ClockCircleOutlined,
-    InfoCircleOutlined,
     FireFilled,
+    InfoCircleOutlined,
+    QuestionCircleOutlined,
 } from "@ant-design/icons";
-import Link from "next/link";
 import dayjs from "dayjs";
 import "dayjs/locale/ru";
-import styles from "./page.module.css";
+import Link from "next/link";
 import LoadAnimateImage from "../components/LoadAnimateImage";
+import styles from "./page.module.css";
 
 import useSWR from "swr";
-import DaysWeekSkeleton from "../components/DaysWeekSkeleton";
 import { getCalendarAnimes } from "../api/animes/calendar/getCalendarAnime";
 import { GET_CALENDAR_ANIMES_URL } from "../api/endpoints";
+import DaysWeekSkeleton from "../components/DaysWeekSkeleton";
 import {
     CalendarAnimeItem,
     defaultCalendarAnimeValues,

@@ -1,5 +1,4 @@
-import { Checkbox, Col, Form, GetProp, Row } from "antd";
-import { Dispatch, SetStateAction, useEffect } from "react";
+import { Checkbox, Col, Form, Row } from "antd";
 interface DataType {
     id: any;
     russian: string;

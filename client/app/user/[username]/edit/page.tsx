@@ -1,39 +1,39 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import {
-    UserOutlined,
-    UploadOutlined,
-    QuestionCircleOutlined,
-    WarningOutlined,
-} from "@ant-design/icons";
-import {
-    Button,
-    Col,
-    Flex,
-    Input,
-    Row,
-    Typography,
-    Divider,
-    Breadcrumb,
-    Tooltip,
-    Modal,
-    ConfigProvider,
-    notification,
-} from "antd";
-import Link from "next/link";
-import dayjs from "dayjs";
-import "dayjs/locale/ru";
-import Paragraph from "antd/es/typography/Paragraph";
-import MainEditUserForm from "@/app/components/UserComponents/MainEditUserForm";
+import { deleteSelfUser, deleteUserSeries } from "@/app/api/user/deleteUser";
+import { getUserByUsername } from "@/app/api/user/getUser";
+import LoadingContentHandler from "@/app/components/LoadingContentHandler";
 import PageErrorView from "@/app/components/PageErrorVIew";
+import MainEditUserForm from "@/app/components/UserComponents/MainEditUserForm";
 import {
     defaultUserValues,
     MainUserInfo,
 } from "@/app/Models/User/MainUserInfo";
-import { deleteSelfUser, deleteUserSeries } from "@/app/api/user/deleteUser";
-import { getUserByUsername } from "@/app/api/user/getUser";
 import { getDecodedUserToken } from "@/app/utils/cookie";
-import LoadingContentHandler from "@/app/components/LoadingContentHandler";
+import {
+    QuestionCircleOutlined,
+    UploadOutlined,
+    UserOutlined,
+    WarningOutlined,
+} from "@ant-design/icons";
+import {
+    Breadcrumb,
+    Button,
+    Col,
+    ConfigProvider,
+    Divider,
+    Flex,
+    Input,
+    Modal,
+    notification,
+    Row,
+    Tooltip,
+    Typography,
+} from "antd";
+import Paragraph from "antd/es/typography/Paragraph";
+import dayjs from "dayjs";
+import "dayjs/locale/ru";
+import Link from "next/link";
+import { useEffect, useState } from "react";
 dayjs.locale("ru");
 
 const { Text, Title } = Typography;

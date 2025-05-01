@@ -1,24 +1,24 @@
 // UserTable.tsx
-import {
-    Button,
-    Space,
-    TableProps,
-    Table,
-    TableColumnType,
-    Input,
-    Radio,
-    RadioChangeEvent,
-} from "antd";
-import { Flex } from "antd";
+import { changeUserRole } from "@/app/api/user/editUser";
+import { UserItem, UsersList } from "@/app/Models/User/UsersList";
 import {
     CloseOutlined,
     DeleteOutlined,
     EyeOutlined,
     SearchOutlined,
 } from "@ant-design/icons";
-import { UserItem, UsersList } from "@/app/Models/User/UsersList";
+import {
+    Button,
+    Flex,
+    Input,
+    Radio,
+    RadioChangeEvent,
+    Space,
+    Table,
+    TableColumnType,
+    TableProps,
+} from "antd";
 import { FilterDropdownProps } from "antd/es/table/interface";
-import { changeUserRole } from "@/app/api/user/editUser";
 
 interface Props {
     usersData?: UsersList;

@@ -1,7 +1,6 @@
-import React from "react";
-import { Col, Card, Tooltip, Tag, Flex, Row, Divider } from "antd";
-import Link from "next/link";
+import { Card, Col, Divider, Flex, Row, Tooltip } from "antd";
 import Title from "antd/es/typography/Title";
+import Link from "next/link";
 import { SeriesGroupProfile } from "../Models/Series/SeriesGroup";
 
 interface Props {

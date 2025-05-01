@@ -1,14 +1,14 @@
+import { SeriesGroup } from "@/app/Models/Series/SeriesGroup";
 import { MainUserInfo } from "@/app/Models/User/MainUserInfo";
+import { UsersList } from "@/app/Models/User/UsersList";
 import {
-    GET_USER_BY_ID_URL,
-    GET_USER_BY_EMAIL_URL,
-    GET_USER_BY_USERNAME_URL,
     GET_ALL_USERS_URL,
     GET_SERIES_CATEGORIES_USER_URL,
+    GET_USER_BY_EMAIL_URL,
+    GET_USER_BY_ID_URL,
+    GET_USER_BY_USERNAME_URL,
 } from "../endpoints";
 import { get } from "../httpClient";
-import { UsersList } from "@/app/Models/User/UsersList";
-import { SeriesGroup } from "@/app/Models/Series/SeriesGroup";
 
 export const getUserById = async (userId: string): Promise<User> => {
     const url = GET_USER_BY_ID_URL.replace("{id}", userId); // Формируем URL

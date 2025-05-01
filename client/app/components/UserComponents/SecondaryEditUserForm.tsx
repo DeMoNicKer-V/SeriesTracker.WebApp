@@ -1,20 +1,8 @@
-import React, { Dispatch, SetStateAction, useState } from "react";
-import { InfoCircleOutlined } from "@ant-design/icons";
-import {
-    Button,
-    DatePicker,
-    Flex,
-    Form,
-    Space,
-    Typography,
-    Divider,
-    FormInstance,
-} from "antd";
+import { DatePicker, Divider, Flex, Form, Space, Typography } from "antd";
+import { useState } from "react";
 
 import locale from "antd/es/date-picker/locale/ru_RU";
 import AvatarPicker from "../../components/AvatarPicker";
-import { LongLeftArrow } from "../../img/LongLeftArrow";
-import { LongRightArrow } from "../../img/LongRightArrow";
 import NameFormItem from "../../components/SingupComponents/NameFormItem";
 
 import dayjs from "dayjs";

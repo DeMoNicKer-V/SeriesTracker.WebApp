@@ -1,6 +1,6 @@
 import { Divider, Space } from "antd";
-import TextIcon from "../TextIcon";
 import React from "react";
+import TextIcon from "../TextIcon";
 
 import styles from "./component.module.css";
 interface DataType {

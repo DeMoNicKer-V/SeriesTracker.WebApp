@@ -1,44 +1,44 @@
 "use client";
-import styles from "./page.module.css";
+import { getAnimeById } from "@/app/api/animes/getAnime";
+import AbsoluteImage from "@/app/components/AbsoluteImage";
+import BelowButtons from "@/app/components/AnimeDetailDescription/BelowButtons";
+import GenreDescription from "@/app/components/AnimeDetailDescription/GenreDescription";
+import InfoDescription from "@/app/components/AnimeDetailDescription/InfoDescription";
+import ScreenshotsPreview from "@/app/components/AnimeDetailDescription/ScreenshotsPreview";
+import Loading from "@/app/components/Loading";
+import PageErrorView from "@/app/components/PageErrorVIew";
+import Relatedanimes from "@/app/components/RelatedAnimes/RelatedAnimes";
+import { useUser } from "@/app/components/UserContext";
+import { LongLeftArrow } from "@/app/img/LongLeftArrow";
+import noFoundImage from "@/app/img/img-error.jpg";
+import {
+    Anime,
+    defaultAnimeValues as defaultValues,
+} from "@/app/models/anime/Anime";
+import {
+    CalendarOutlined,
+    ClockCircleOutlined,
+    FireOutlined,
+    InfoCircleOutlined,
+    StarOutlined,
+    TeamOutlined,
+    YoutubeOutlined,
+} from "@ant-design/icons";
 import {
     Button,
     Card,
     Col,
-    Image,
-    Flex,
-    Row,
-    Typography,
-    FloatButton,
     Collapse,
     ConfigProvider,
+    Flex,
+    FloatButton,
+    Image,
+    Row,
+    Typography,
 } from "antd";
 import { useState } from "react";
-import AbsoluteImage from "@/app/components/AbsoluteImage";
-import {
-    StarOutlined,
-    CalendarOutlined,
-    ClockCircleOutlined,
-    TeamOutlined,
-    FireOutlined,
-    YoutubeOutlined,
-    InfoCircleOutlined,
-} from "@ant-design/icons";
-import { LongLeftArrow } from "@/app/img/LongLeftArrow";
-import noFoundImage from "@/app/img/img-error.jpg";
-import Relatedanimes from "@/app/components/RelatedAnimes/RelatedAnimes";
-import InfoDescription from "@/app/components/AnimeDetailDescription/InfoDescription";
-import GenreDescription from "@/app/components/AnimeDetailDescription/GenreDescription";
-import ScreenshotsPreview from "@/app/components/AnimeDetailDescription/ScreenshotsPreview";
-import Loading from "@/app/components/Loading";
-import {
-    Anime,
-    defaultAnimeValues as defaultValues,
-} from "@/app/Models/Anime/Anime";
 import useSWR from "swr";
-import { getAnimeById } from "@/app/api/animes/getAnime";
-import PageErrorView from "@/app/components/PageErrorVIew";
-import { useUser } from "@/app/components/UserContext";
-import BelowButtons from "@/app/components/AnimeDetailDescription/BelowButtons";
+import styles from "./page.module.css";
 
 const { Title, Text } = Typography;
 
