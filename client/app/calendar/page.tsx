@@ -1,335 +1,92 @@
 "use client";
-import {
-    Badge,
-    Card,
-    Col,
-    ConfigProvider,
-    Descriptions,
-    Flex,
-    List,
-    Row,
-    Skeleton,
-    Tabs,
-    Tag,
-    Typography,
-} from "antd";
+import { Col, Row } from "antd";
 import { useCallback, useEffect, useState } from "react";
 
-import {
-    CheckCircleOutlined,
-    ClockCircleOutlined,
-    FireFilled,
-    InfoCircleOutlined,
-    QuestionCircleOutlined,
-} from "@ant-design/icons";
 import dayjs from "dayjs";
 import "dayjs/locale/ru";
-import Link from "next/link";
-import LoadAnimateImage from "../components/LoadAnimateImage";
-import styles from "./page.module.css";
 
 import useSWR from "swr";
 import { getCalendarAnimes } from "../api/animes/calendar/getCalendarAnime";
 import { GET_CALENDAR_ANIMES_URL } from "../api/endpoints";
-import DaysWeekSkeleton from "../components/DaysWeekSkeleton";
-import {
-    CalendarAnimeItem,
-    defaultCalendarAnimeValues,
-} from "../models/anime/CalendarAnimeItem";
+import { CalendarAnimeItem } from "../models/anime/CalendarAnimeItem";
 dayjs.locale("ru");
 
-interface CalendarDateLabel {
-    label: JSX.Element;
-    key: string;
-}
-const { Text, Title } = Typography;
+import CalendarHeader from "../components/CalendarComponents/CalendarHeader";
+import CalendarList from "../components/CalendarComponents/CalendarList";
+import { CalendarDateLabel, getDatesArray } from "../utils/dateUtils";
 
-function capitalizeFirstLetter(str: string): string {
-    if (!str) return "";
-    return str[0].toUpperCase() + str.slice(1);
-}
-
-function dateComparer(date1: Date, date2: Date): JSX.Element {
-    if (date1.getTime() > date2.getTime()) {
-        return <CheckCircleOutlined style={{ color: "#52c41a" }} />;
-    } else return <ClockCircleOutlined style={{ color: "#faad14" }} />;
-}
-
-const customizeRenderEmpty = () => (
-    <Flex className="emptyview" justify="center" align="middle" gap={10}>
-        <InfoCircleOutlined style={{ fontSize: 32 }} />
-        <Text style={{ fontSize: 22 }}>
-            {"На данную дату новых релизов не найдено"}
-        </Text>
-    </Flex>
-);
-
-const getDatesArray = () => {
-    const datesArray = [];
-    const currentDate = new Date();
-
-    for (let i = 0; i < 7; i++) {
-        const newDate = new Date(currentDate);
-        newDate.setDate(currentDate.getDate() + i);
-        datesArray.push({
-            key: i.toString(),
-            label: (
-                <Flex
-                    className="flex-column"
-                    style={{
-                        textAlign: "center",
-                        padding: 4,
-                    }}
-                >
-                    <Title level={5}>
-                        {capitalizeFirstLetter(dayjs(newDate).format("dddd"))}
-                    </Title>
-                    <Text italic type="secondary">
-                        {dayjs(newDate).format("D MMMM")}
-                    </Text>
-                </Flex>
-            ),
-        });
-    }
-
-    return datesArray;
-};
-
+// Основной компонент CalendarPage: Отображает календарь аниме
 export default function CalendarPage() {
+    // Состояние для хранения массива меток дат (для отображения заголовков в календаре)
     const [weekDays] = useState<CalendarDateLabel[]>(getDatesArray());
+
+    // Состояние для хранения выбранной даты (для фильтрации аниме)
     const [filterDate, setFilterDate] = useState<Date>(new Date());
-    const [filterAnimes, setFilterAnimes] = useState<CalendarAnimeItem[]>(
-        Array.from({ length: 5 }).map((_, i) => defaultCalendarAnimeValues)
-    );
 
-    const { data: airedAnimes, isLoading } = useSWR<CalendarAnimeItem[]>(
-        GET_CALENDAR_ANIMES_URL,
-        getCalendarAnimes,
-        {
-            revalidateOnFocus: false,
-            revalidateOnReconnect: false,
-            errorRetryCount: 0,
-        }
-    );
+    // Состояние для хранения отфильтрованного списка аниме для отображения
+    const [filterAnimes, setFilterAnimes] = useState<CalendarAnimeItem[]>([]);
 
-    const isDateEqual = useCallback((date1: Date, date2: Date) => {
-        return (
-            date1.getMonth() === date2.getMonth() &&
-            date1.getDate() === date2.getDate()
-        );
-    }, []);
-
-    const filterItems = useCallback(
-        (items: CalendarAnimeItem[], filterDate: Date) => {
-            if (!items) {
-                setFilterAnimes([]);
-                return;
-            }
-
-            const filteredData = items.filter((item: CalendarAnimeItem) => {
-                return isDateEqual(new Date(item.nextEpisodeAt), filterDate);
-            });
-            setFilterAnimes(filteredData);
+    // Функция для проверки равенства двух дат (используем useCallback для оптимизации)
+    const isDateEqual = useCallback(
+        (date1: Date, date2: Date) => {
+            return (
+                date1.getMonth() === date2.getMonth() &&
+                date1.getDate() === date2.getDate()
+            );
         },
-        [isDateEqual, setFilterAnimes]
+        [] // Зависимости нет, функция всегда будет одной и той же
     );
 
+    // Функция для обработки изменения даты (используем useCallback для оптимизации)
     const onChangeDate = useCallback(
         (key: string) => {
-            const newFilterDate = new Date();
-            newFilterDate.setDate(newFilterDate.getDate() + Number(key));
-            setFilterDate(newFilterDate);
+            const newFilterDate = new Date(); // Создаем новую дату
+            newFilterDate.setDate(newFilterDate.getDate() + Number(key)); // Изменяем дату
+            setFilterDate(newFilterDate); // Обновляем состояние с новой датой
         },
-        [setFilterDate]
+        [setFilterDate] // Зависимость: setFilterDate (для обновления состояния)
     );
 
+    // Получаем данные аниме из SWR
+    const { data: airedAnimes, isLoading } = useSWR<CalendarAnimeItem[]>(
+        GET_CALENDAR_ANIMES_URL, // Ключ для запроса (используем эндпоинт)
+        getCalendarAnimes, // Функция для получения данных (из api)
+        {
+            revalidateOnFocus: false, // Отключаем перепроверку при фокусе
+            revalidateOnReconnect: false, // Отключаем перепроверку при переподключении
+            errorRetryCount: 0, // Количество попыток перезагрузки в случае ошибки
+        }
+    );
+
+    // Функция для фильтрации аниме по дате (используем useCallback для оптимизации)
+    const filterItems = useCallback(
+        (items: CalendarAnimeItem[], filterDate: Date) => {
+            return items.filter((item: CalendarAnimeItem) =>
+                isDateEqual(new Date(item.nextEpisodeAt), filterDate)
+            );
+        },
+        [isDateEqual] // Зависимость: isDateEqual (для оптимизации)
+    );
+
+    // Эффект для фильтрации аниме при изменении данных или фильтра
     useEffect(() => {
         if (airedAnimes) {
-            filterItems(airedAnimes, filterDate);
+            setFilterAnimes(filterItems(airedAnimes, filterDate)); // Вызываем функцию фильтрации
         }
-    }, [airedAnimes, filterDate, filterItems]);
+    }, [airedAnimes, filterDate, filterItems]); // Зависимости: airedAnimes, filterDate, filterItems (перезапускаем при изменении)
 
     return (
         <div className="container">
             <title>Series Tracker - Календарь выхода</title>
             <Row justify={"center"}>
                 <Col span={22}>
-                    {isLoading ? (
-                        <DaysWeekSkeleton />
-                    ) : (
-                        <Tabs
-                            onChange={(key) => onChangeDate(key)}
-                            centered
-                            items={weekDays}
-                        />
-                    )}
+                    <CalendarHeader
+                        loading={isLoading}
+                        weekDays={weekDays}
+                        onChangeDate={onChangeDate}
+                    />
 
-                    <ConfigProvider renderEmpty={customizeRenderEmpty}>
-                        <List
-                            dataSource={filterAnimes}
-                            renderItem={(item: CalendarAnimeItem) => (
-                                <List.Item
-                                    key={item.anime.id}
-                                    style={{ border: "none" }}
-                                >
-                                    <Skeleton
-                                        className={styles["calendar-skeleton"]}
-                                        loading={isLoading}
-                                        active
-                                        avatar={{
-                                            className:
-                                                styles[
-                                                    "calendar-skeleton-image"
-                                                ],
-                                            shape: "square",
-                                        }}
-                                        paragraph={{ rows: 1 }}
-                                    >
-                                        <Link href={`/animes/${item.anime.id}`}>
-                                            <Badge.Ribbon
-                                                color="volcano"
-                                                style={
-                                                    item.nextEpisode ===
-                                                    item.anime.episodes
-                                                        ? {}
-                                                        : {
-                                                              display: "none",
-                                                          }
-                                                }
-                                                text={
-                                                    <Tag
-                                                        className="transparent"
-                                                        bordered={false}
-                                                        icon={<FireFilled />}
-                                                    >
-                                                        Финальный эп.
-                                                    </Tag>
-                                                }
-                                            >
-                                                <Card
-                                                    hoverable
-                                                    className={styles.card}
-                                                >
-                                                    <Row align={"middle"}>
-                                                        <Col>
-                                                            <LoadAnimateImage
-                                                                prev={false}
-                                                                maxWidth={100}
-                                                                src={`https://shikimori.one${item.anime.image.preview}`}
-                                                            ></LoadAnimateImage>
-                                                        </Col>
-                                                        <Col
-                                                            offset={1}
-                                                            xs={14}
-                                                            sm={14}
-                                                            md={16}
-                                                            lg={16}
-                                                            xl={16}
-                                                            xxl={16}
-                                                        >
-                                                            <Text
-                                                                className={
-                                                                    styles.title
-                                                                }
-                                                                strong
-                                                            >
-                                                                {item.anime
-                                                                    .russian ||
-                                                                    item.anime
-                                                                        .name}
-                                                            </Text>
-                                                            <Descriptions
-                                                                items={[
-                                                                    {
-                                                                        key: "1",
-                                                                        label: "Вышло",
-                                                                        children:
-                                                                            (
-                                                                                <Flex
-                                                                                    gap={
-                                                                                        5
-                                                                                    }
-                                                                                >
-                                                                                    <Text>
-                                                                                        {
-                                                                                            item
-                                                                                                .anime
-                                                                                                .episodesAired
-                                                                                        }
-                                                                                    </Text>
-                                                                                    <Text>
-                                                                                        {
-                                                                                            "из"
-                                                                                        }
-                                                                                    </Text>
-                                                                                    {item
-                                                                                        .anime
-                                                                                        .episodes >
-                                                                                    0 ? (
-                                                                                        <Text>
-                                                                                            {
-                                                                                                item
-                                                                                                    .anime
-                                                                                                    .episodes
-                                                                                            }
-                                                                                        </Text>
-                                                                                    ) : (
-                                                                                        <QuestionCircleOutlined />
-                                                                                    )}
-                                                                                    <Text>
-                                                                                        {
-                                                                                            "эп."
-                                                                                        }
-                                                                                    </Text>
-                                                                                </Flex>
-                                                                            ),
-                                                                    },
-                                                                ]}
-                                                            />
-                                                        </Col>
-                                                        <Col
-                                                            offset={1}
-                                                            style={{
-                                                                marginLeft:
-                                                                    "auto",
-                                                            }}
-                                                            lg={2}
-                                                            xl={2}
-                                                            xxl={2}
-                                                        >
-                                                            <Title level={4}>
-                                                                {`${item.nextEpisode} эп.`}
-                                                            </Title>
-                                                            <Flex gap={5}>
-                                                                <Text>
-                                                                    {new Date(
-                                                                        item.nextEpisodeAt
-                                                                    ).toLocaleTimeString(
-                                                                        "ru-RU",
-                                                                        {
-                                                                            hour: "numeric",
-                                                                            minute: "numeric",
-                                                                        }
-                                                                    )}
-                                                                </Text>
-
-                                                                {dateComparer(
-                                                                    new Date(),
-                                                                    new Date(
-                                                                        item.nextEpisodeAt
-                                                                    )
-                                                                )}
-                                                            </Flex>
-                                                        </Col>
-                                                    </Row>
-                                                </Card>
-                                            </Badge.Ribbon>
-                                        </Link>
-                                    </Skeleton>
-                                </List.Item>
-                            )}
-                        />
-                    </ConfigProvider>
+                    <CalendarList animes={filterAnimes} loading={isLoading} />
                 </Col>
             </Row>
         </div>
