@@ -3,6 +3,7 @@ import { getUserCategoriesCount } from "@/app/api/user/getUser";
 import UsersAnimeList from "@/app/components/Animes/UsersAnimeList";
 import LoadingContentHandler from "@/app/components/LoadingContentHandler";
 import PageErrorView from "@/app/components/PageErrorVIew";
+import { defaultGroups } from "@/app/constants/constants";
 import {
     BookOutlined,
     CheckOutlined,
@@ -86,16 +87,7 @@ export default function UserListPage({
 
     //  Используем useSWR для получения данных о категориях пользователя
     const {
-        data: groups = new Map([
-            //  Данные из useSWR (если данные не получены, используем дефолтные значения)
-            ["0", 0],
-            ["1", 0],
-            ["2", 0],
-            ["3", 0],
-            ["4", 0],
-            ["5", 0],
-            ["6", 0],
-        ]),
+        data: groups = defaultGroups,
         error, //  Возможные ошибки при запросе
     } = useSWR<Map<string, number>>(params.username, getUsersGroups, {
         //  Отключаем автоматическую перепроверку при фокусе

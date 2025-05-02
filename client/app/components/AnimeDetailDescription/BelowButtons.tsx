@@ -32,7 +32,7 @@ const BelowButtons = ({ anime, categories, auth }: Props) => {
     const [watchedEpisode, setWatchedEpisode] = useState<number>(
         anime.watchedEpisodes
     );
-    const updateFavoriteSeries = async (value: number) => {
+    const updateFavoriteSeries = async () => {
         if (anime.seriesId) {
             const request = createRequest(
                 anime.watchedEpisodes,
@@ -103,6 +103,9 @@ const BelowButtons = ({ anime, categories, auth }: Props) => {
                 categoryId,
                 anime.isFavorite
             );
+            if (categoryId === 3) {
+                setWatchedEpisode(anime.episodes);
+            }
             await updateSeries(anime.seriesId, request);
         } else {
             const request = createRequest(
@@ -202,6 +205,7 @@ const BelowButtons = ({ anime, categories, auth }: Props) => {
                     maxLength={4}
                     addonBefore={
                         <Button
+                            disabled={anime.categoryId === 3}
                             onClick={decEpisodeSeries}
                             type="link"
                             size="small"
@@ -210,6 +214,7 @@ const BelowButtons = ({ anime, categories, auth }: Props) => {
                     }
                     addonAfter={
                         <Button
+                            disabled={anime.categoryId === 3}
                             onClick={incEpisodeSeries}
                             type="link"
                             size="small"
