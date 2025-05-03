@@ -1,4 +1,4 @@
-import { SeriesAnime } from "@/app/models/anime/SeriesAnime";
+import { Anime } from "@/app/models/anime/Anime";
 import {
     CalendarOutlined,
     InfoCircleOutlined,
@@ -9,7 +9,7 @@ import {
 import { Button, Col, Flex, Image, Row, Space, Tag, Typography } from "antd";
 import MainShortInfo from "../MainShortInfo/MainShortInfo";
 interface Props {
-    anime: SeriesAnime;
+    anime: Anime;
     isOpen: boolean;
 }
 

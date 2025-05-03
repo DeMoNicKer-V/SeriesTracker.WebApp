@@ -10,7 +10,7 @@
     /// <param name="Name">Имя пользователя (может быть null).</param>
     /// <param name="SurName">Фамилия пользователя (может быть null).</param>
     /// <param name="DateBirth">Дата рождения пользователя (может быть null).</param>
-    public record UserRequest
+    public record CreateUserRequest
     (
         string? Email,
         string? Password,

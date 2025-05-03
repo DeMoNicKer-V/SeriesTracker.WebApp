@@ -7,7 +7,7 @@ import MainShortInfo from "@/app/components/MainShortInfo/MainShortInfo";
 import PageErrorView from "@/app/components/PageErrorVIew";
 import SeriesGroupInfo from "@/app/components/SeriesGroupInfo";
 import { useUser } from "@/app/components/UserContext";
-import { SeriesAnime } from "@/app/models/anime/SeriesAnime";
+import { Anime } from "@/app/models/anime/Anime";
 import {
     defaultUserValues,
     MainUserInfo,
@@ -63,7 +63,7 @@ export default function UserPage({ params }: { params: { username: string } }) {
     const [userInfo, setUserInfo] = useState<MainUserInfo>(defaultUserValues);
 
     //  Состояние для хранения списка аниме, связанных с пользователем
-    const [animes, setAnimes] = useState<SeriesAnime[]>();
+    const [animes, setAnimes] = useState<Anime[]>();
 
     //  Состояние, указывающее, является ли просматриваемый профиль профилем текущего пользователя
     const [currentUser, setCurrentUser] = useState<boolean>(false);
@@ -286,7 +286,7 @@ export default function UserPage({ params }: { params: { username: string } }) {
                                             size: "large",
                                         }}
                                         dataSource={animes}
-                                        renderItem={(item: SeriesAnime) => (
+                                        renderItem={(item: Anime) => (
                                             <List.Item
                                                 style={{ display: "block" }}
                                             >

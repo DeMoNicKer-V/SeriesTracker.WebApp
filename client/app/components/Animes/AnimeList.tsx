@@ -1,8 +1,5 @@
 import { getAnimes } from "@/app/api/animes/getAnime";
-import {
-    defaultSeriesAnimeValues,
-    SeriesAnime,
-} from "@/app/models/anime/SeriesAnime";
+import { Anime, defaultAnimeValues } from "@/app/models/anime/Anime";
 import { ShikimoriRequest } from "@/app/models/requests/ShikimoriRequest";
 import {
     FireOutlined,
@@ -89,7 +86,7 @@ const AnimeList = ({}) => {
     );
 
     const getAnimesPost = async (url: string) => {
-        const data: SeriesAnime[] = await getAnimes(url);
+        const data: Anime[] = await getAnimes(url);
         if (data.length === 0) {
             const prevPage = page - 1;
             changePage(prevPage);
@@ -101,9 +98,7 @@ const AnimeList = ({}) => {
         setPage(newPage); // Обновляем состояние
     };
     const {
-        data = Array.from({ length: 14 }).map(
-            (_, i) => defaultSeriesAnimeValues
-        ),
+        data = Array.from({ length: 14 }).map((_, i) => defaultAnimeValues),
         isLoading,
     } = useSWR(createQueryString(request), getAnimesPost, {
         // Опции для useSWR
@@ -150,7 +145,7 @@ const AnimeList = ({}) => {
                     xxl: 7,
                 }}
                 dataSource={data.length === 22 ? data.slice(0, -1) : data}
-                renderItem={(animes: SeriesAnime) => (
+                renderItem={(animes: Anime) => (
                     <List.Item>
                         <Skeleton
                             className={"flex-column"}

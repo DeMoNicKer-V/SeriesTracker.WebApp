@@ -52,7 +52,7 @@ export default function EditUserPage({
     //  Состояние для хранения строки подтверждения удаления
     const [deleteStr, setDeleteStr] = useState<string>("");
 
-    //  Состояние для управления видимостью модального окна подтверждения удаления списка сериалов
+    //  Состояние для управления видимостью модального окна подтверждения удаления списка аниме
     const [openDelete, setOpenDelete] = useState<boolean>(false);
 
     //  Состояние для управления видимостью модального окна подтверждения удаления аккаунта
@@ -76,7 +76,7 @@ export default function EditUserPage({
         window.location.href = `/login`;
     };
 
-    //  Асинхронная функция для удаления списка сериалов пользователя
+    //  Асинхронная функция для удаления списка аниме пользователя
     const deleteSeriesByUser = async () => {
         setOpenDelete(false);
         await deleteUserSeries(params.username);

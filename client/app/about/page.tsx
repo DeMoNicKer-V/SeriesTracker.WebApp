@@ -4,6 +4,7 @@ import styles from "./page.module.css";
 
 const { Title, Paragraph, Text } = Typography;
 
+// Основной компонент AboutPage: Страница с правилами сайта
 export default function AboutPage() {
     return (
         <div className="container">

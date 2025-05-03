@@ -181,7 +181,7 @@ namespace SeriesTracker.API.Controllers
         ///   Возвращает  `500 Internal Server Error`, если произошла непредвиденная ошибка.
         /// </returns>
         [HttpPost("register")] // Атрибут, указывающий, что это POST-запрос на эндпоинт /auth/register
-        public async Task<IResult> Register([FromBody] UserRequest request)
+        public async Task<IResult> Register([FromBody] CreateUserRequest request)
         {
             // 1. Валидация входных данных (проверка на null и пустые строки)
             if (string.IsNullOrWhiteSpace(request.Email))

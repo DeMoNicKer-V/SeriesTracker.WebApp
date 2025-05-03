@@ -1,5 +1,8 @@
 // AnimeDataProvider.tsx
-import { Anime, defaultAnimeValues } from "@/app/models/anime/Anime"; // Импортируем типы данных и дефолтное значение
+import {
+    AnimeDetail,
+    defaultAnimeDetailValues,
+} from "@/app/models/anime/AnimeDetail"; // Импортируем типы данных и дефолтное значение
 import React from "react";
 import useSWR from "swr";
 import { getAnimeById } from "../api/animes/getAnime";
@@ -9,7 +12,7 @@ import PageErrorView from "./PageErrorVIew";
 interface AnimeDataProviderProps {
     animeId: string; // ID аниме, данные о котором нужно получить
     children: (props: {
-        anime: Anime;
+        anime: AnimeDetail;
         isLoading: boolean;
         error: any;
     }) => React.ReactNode;
@@ -25,10 +28,10 @@ const AnimeDataProvider: React.FC<AnimeDataProviderProps> = ({
 }) => {
     // Используем useSWR для получения данных об аниме.
     const {
-        data: anime = defaultAnimeValues,
+        data: anime = defaultAnimeDetailValues,
         isLoading,
         error,
-    } = useSWR<Anime>(
+    } = useSWR<AnimeDetail>(
         animeId, // Ключ для запроса: ID аниме
         (id) => getAnimeById(id), // Функция для получения данных: getAnimeById с ID
         {

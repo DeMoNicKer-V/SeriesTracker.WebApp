@@ -3,7 +3,7 @@
 // Импортируем эндпоинты из файла endpoints.ts
 import {
     DELETE_USER_SELF_URL, //  URL для удаления своего аккаунта
-    DELETE_USER_SERIES_URL, //  URL для удаления списка сериалов пользователя
+    DELETE_USER_SERIES_URL, //  URL для удаления аниме из списка пользователя
     DELETE_USER_URL, //  URL для удаления пользователя
 } from "../endpoints";
 

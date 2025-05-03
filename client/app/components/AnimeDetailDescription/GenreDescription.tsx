@@ -2,7 +2,7 @@ import { Space, Tag } from "antd";
 
 import styles from "./component.module.css";
 interface Props {
-    genresList: [];
+    genresList: Genre[];
     size?: [number, number];
 }
 

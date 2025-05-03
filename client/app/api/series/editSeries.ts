@@ -3,7 +3,7 @@
 // Импортируем тип запроса для добавления аниме в список
 import { CreateSeriesRequest } from "@/app/models/requests/CreateSeriesRequest";
 
-// Импортируем эндпоинт для обновления сериала
+// Импортируем эндпоинт для обновления аниме в списке пользователя
 import { UPDATE_SERIES_URL } from "../endpoints";
 
 // Импортируем функцию put для выполнения HTTP-запросов

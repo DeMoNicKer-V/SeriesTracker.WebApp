@@ -30,7 +30,7 @@ import "dayjs/locale/ru";
 import { register } from "../api/auth";
 import LoadingContentHandler from "../components/LoadingContentHandler";
 import { useUser } from "../components/UserContext";
-import { UserRequest } from "../models/user/requests/UserRequest";
+import { CreateUserRequest } from "../models/user/requests/CreateUserRequest";
 dayjs.locale("ru");
 
 const { Text, Title, Link } = Typography;
@@ -50,7 +50,7 @@ const SignupPage = () => {
     const [current, setCurrent] = useState<number>(0);
 
     //  Состояние для хранения данных формы регистрации
-    const [formData, setFormData] = useState<UserRequest>({
+    const [formData, setFormData] = useState<CreateUserRequest>({
         email: "",
         password: "",
         userName: "",

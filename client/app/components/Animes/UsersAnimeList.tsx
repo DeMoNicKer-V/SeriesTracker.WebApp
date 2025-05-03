@@ -1,8 +1,8 @@
 import { get } from "@/app/api/httpClient";
 import {
-    defaultSeriesAnimeValues as defaultValues,
-    SeriesAnime,
-} from "@/app/models/anime/SeriesAnime";
+    Anime,
+    defaultAnimeValues as defaultValues,
+} from "@/app/models/anime/Anime";
 import {
     FireOutlined,
     HeartFilled,
@@ -78,7 +78,7 @@ const UsersAnimeList = ({ myList, userName, color }: Props) => {
     }, []);
 
     const getAnimesPost = async (url: string) => {
-        const data: SeriesAnime[] = await get(url);
+        const data: Anime[] = await get(url);
         return data;
     };
 
@@ -164,7 +164,7 @@ const UsersAnimeList = ({ myList, userName, color }: Props) => {
                     xxl: 7,
                 }}
                 dataSource={data.length === 22 ? data.slice(0, -1) : data}
-                renderItem={(animes: SeriesAnime) => (
+                renderItem={(animes: Anime) => (
                     <List.Item>
                         <Skeleton
                             className={"flex-column"}

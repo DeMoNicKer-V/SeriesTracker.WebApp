@@ -230,7 +230,7 @@ namespace SeriesTracker.API.Controllers
         /// </returns>
         [RequirePermission(Permission.Update)] // Атрибут, указывающий, что для доступа к методу требуется разрешение 'Update'
         [HttpPut("update/{userName}")]
-        public async Task<IResult> UpdateUser(string userName, [FromBody] UserRequest request)
+        public async Task<IResult> UpdateUser(string userName, [FromBody] CreateUserRequest request)
         {
             try
             {

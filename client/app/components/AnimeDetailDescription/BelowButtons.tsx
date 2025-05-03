@@ -1,7 +1,7 @@
 import { createSeries } from "@/app/api/series/createSeries";
 import { deleteSeries } from "@/app/api/series/deleteSeries";
 import { updateSeries } from "@/app/api/series/editSeries";
-import { Anime } from "@/app/models/anime/Anime";
+import { Anime } from "@/app/models/anime/AnimeDetail";
 import {
     BookOutlined,
     CloseOutlined,

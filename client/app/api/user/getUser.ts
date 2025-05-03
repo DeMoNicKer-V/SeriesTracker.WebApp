@@ -1,14 +1,14 @@
 // api/user/getUser.ts
 
 // Импортируем типы данных (модели)
-import { SeriesGroup } from "@/app/models/series/SeriesGroup"; //  Тип для группы сериалов
+import { SeriesGroup } from "@/app/models/series/SeriesGroup"; //  Тип для группы аниме
 import { MainUserInfo } from "@/app/models/user/MainUserInfo"; //  Тип для основной информации о пользователе
 import { UsersList } from "@/app/models/user/UsersList"; //  Тип для списка пользователей
 
 // Импортируем эндпоинты из файла endpoints.ts
 import {
     GET_ALL_USERS_URL, //  URL для получения списка пользователей
-    GET_SERIES_CATEGORIES_USER_URL, //  URL для получения категорий сериалов пользователя
+    GET_SERIES_CATEGORIES_USER_URL, //  URL для получения категорий аниме в списке пользователя пользователя
     GET_USER_BY_EMAIL_URL, //  URL для получения пользователя по email
     GET_USER_BY_ID_URL, //  URL для получения пользователя по ID
     GET_USER_BY_USERNAME_URL, //  URL для получения пользователя по имени пользователя
@@ -51,7 +51,7 @@ export const getAllUsersList = async (page: number): Promise<UsersList> => {
     return usersList;
 };
 
-// Функция для получения списка категорий сериалов пользователя
+// Функция для получения списка категорий аниме пользователя
 export const getUserCategoriesCount = async (
     userName: string
 ): Promise<SeriesGroup[]> => {

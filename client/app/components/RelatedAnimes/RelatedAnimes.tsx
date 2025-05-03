@@ -1,4 +1,4 @@
-import { Related } from "@/app/models/anime/Anime";
+import { Related } from "@/app/models/anime/AnimeDetail";
 import {
     CalendarOutlined,
     InfoCircleOutlined,

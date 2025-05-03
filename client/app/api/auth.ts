@@ -1,8 +1,8 @@
 // api/auth.ts
 
 // Импортируем типы данных (запросы)
+import { CreateUserRequest } from "../models/user/requests/CreateUserRequest"; //  Тип запроса для регистрации
 import { LoginRequest } from "../models/user/requests/LoginRequest"; //  Тип запроса для логина
-import { UserRequest } from "../models/user/requests/UserRequest"; //  Тип запроса для регистрации
 
 // Импортируем эндпоинты из файла endpoints.ts
 import {
@@ -31,7 +31,7 @@ export const login = async (credentials: LoginRequest): Promise<string> => {
 };
 
 // Функция для регистрации нового пользователя
-export const register = async (userData: UserRequest): Promise<void> => {
+export const register = async (userData: CreateUserRequest): Promise<void> => {
     return await post(REGISTER_URL, userData);
 };
 

@@ -1,4 +1,4 @@
-import { Screenshot } from "@/app/models/anime/Anime";
+import { Screenshot } from "@/app/models/anime/AnimeDetail";
 import { ConfigProvider, Image, List } from "antd";
 import { ListGridType } from "antd/es/list";
 import { EmptyView } from "../EmptyView";

@@ -46,7 +46,7 @@ const MainEditUserForm = ({ messageApi, user }: Props) => {
         if (!user) {
             return;
         }
-        const UserRequest = {
+        const CreateUserRequest = {
             userName: values["userName"],
             name: values["name"],
             surName: values["surName"],
@@ -56,7 +56,7 @@ const MainEditUserForm = ({ messageApi, user }: Props) => {
             dateBirth: values["dateBirth"],
         };
         try {
-            await updateUser(user.userName, UserRequest);
+            await updateUser(user.userName, CreateUserRequest);
             messageApi.success({
                 type: "success",
                 message: "Профиль успешно обновлен!",

@@ -78,11 +78,11 @@ export default function UserListPage({
         );
         setColors(groupColors); //  Обновляем состояние с цветами категорий
 
-        //  Создаем карту (Map) для хранения количества сериалов в каждой категории
+        //  Создаем карту (Map) для хранения количества аниме в каждой категории
         const seriesGroup = new Map<string, number>(
             groups.map((item) => [item.id, item.seriesCount]) //  Преобразуем массив в карту (id категории : количество)
         );
-        return seriesGroup; //  Возвращаем карту с количеством сериалов
+        return seriesGroup; //  Возвращаем карту с количеством аниме
     };
 
     //  Используем useSWR для получения данных о категориях пользователя
@@ -101,7 +101,7 @@ export default function UserListPage({
     //  Массив элементов для меню сортировки
     const sortMenuItems: MenuItem[] = [
         {
-            label: `Всё (${groups.get("0") ?? 0})`, //  Метка пункта меню (количество сериалов)
+            label: `Всё (${groups.get("0") ?? 0})`, //  Метка пункта меню (количество аниме)
             key: "0", //  Ключ пункта меню
             icon: <NumberOutlined />, //  Иконка пункта меню
         },
@@ -109,7 +109,7 @@ export default function UserListPage({
             label: `Запланировано (${groups.get("1") ?? 0})`,
             key: "1",
             icon: <BookOutlined />,
-            disabled: !groups.get("1"), //  Отключаем пункт меню, если нет сериалов в категории
+            disabled: !groups.get("1"), //  Отключаем пункт меню, если нет аниме в категории
         },
         {
             label: `Смотрю (${groups.get("2") ?? 0})`,

@@ -1,5 +1,5 @@
 import { getAnimesByName } from "@/app/api/animes/getAnime";
-import { SeriesAnime } from "@/app/models/anime/SeriesAnime";
+import { Anime } from "@/app/models/anime/Anime";
 import {
     CalendarOutlined,
     FireOutlined,
@@ -36,10 +36,10 @@ const SearchBar = ({}) => {
     const [isShown, setIsShown] = useState(false);
     const [loading, setLoading] = useState(false);
     const [nullString, setNullString] = useState("Введите для поиска");
-    const [animes, setAnimes] = useState<SeriesAnime[]>([]);
+    const [animes, setAnimes] = useState<Anime[]>([]);
 
     const searchAnimes = async (query: string) => {
-        const series: SeriesAnime[] | any = await getAnimesByName(query);
+        const series: Anime[] | any = await getAnimesByName(query);
         setAnimes(series);
         setLoading(false);
 
@@ -114,7 +114,7 @@ const SearchBar = ({}) => {
                 content={
                     <List
                         dataSource={animes}
-                        renderItem={(item: SeriesAnime) => (
+                        renderItem={(item: Anime) => (
                             <Link target="_top" href={`/animes/${item.id}`}>
                                 <Badge.Ribbon
                                     text={item.categoryName}
