@@ -1,0 +1,21 @@
+.link-button {
+    font-weight: 700;
+    padding-inline: 15px;
+}
+
+.empty-view {
+    justify-content: center;
+    text-align: center;
+}
+
+.empty-view-icon {
+    vertical-align: middle;
+}
+
+.avatar-picker-icon {
+    font-size: 30px;
+}
+
+.avatar-picker-image {
+    display: none;
+}

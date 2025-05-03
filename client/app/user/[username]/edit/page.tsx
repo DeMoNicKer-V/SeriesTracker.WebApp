@@ -1,6 +1,6 @@
 "use client";
 import { deleteSelfUser, deleteUserSeries } from "@/app/api/user/deleteUser";
-import LoadingContentHandler from "@/app/components/LoadingContentHandler";
+import ConditionalContent from "@/app/components/ConditionalContent";
 import PageErrorView from "@/app/components/PageErrorVIew";
 import MainEditUserForm from "@/app/components/UserComponents/MainEditUserForm";
 import { useUser } from "@/app/components/UserContext";
@@ -95,209 +95,201 @@ export default function EditUserPage({
     };
 
     return (
-        <LoadingContentHandler
+        <ConditionalContent
             condition={error}
-            defaultNode={
-                <div className="container">
-                    {contextHolder}
-
-                    <ConfigProvider
-                        theme={{
-                            components: {
-                                Card: {
-                                    colorBgContainer: "transparent",
-                                    padding: 24,
-                                },
-                            },
-                        }}
-                    >
-                        <title>{`${params.username} / Редактирование`}</title>
-                        <Breadcrumb
-                            items={[
-                                {
-                                    title: (
-                                        <Link href={"./"}>
-                                            <Flex justify="center" gap={5}>
-                                                <UserOutlined />{" "}
-                                                {params.username}
-                                            </Flex>
-                                        </Link>
-                                    ),
-                                },
-
-                                {
-                                    title: "Редактирование профиля",
-                                },
-                            ]}
-                        />
-                        <Row justify={"center"} align={"middle"}>
-                            <Col>
-                                <MainEditUserForm
-                                    user={user}
-                                    messageApi={messageApi}
-                                />
-                                <Divider orientation="left">
-                                    <Flex gap={10}>
-                                        Дополнительные настройки{" "}
-                                        <Tooltip title={"Будьте внимательными"}>
-                                            <WarningOutlined />{" "}
-                                        </Tooltip>
-                                    </Flex>
-                                </Divider>
-                                <Flex
-                                    justify="center"
-                                    gap={15}
-                                    style={{ flexDirection: "column" }}
-                                >
-                                    <Button
-                                        onClick={() => setOpenDelete(true)}
-                                        ghost
-                                        type="primary"
-                                        danger
-                                    >
-                                        Очистить мои списки
-                                    </Button>
-
-                                    <Button
-                                        onClick={() => setOpenDeleteUser(true)}
-                                        ghost
-                                        type="primary"
-                                        danger
-                                    >
-                                        Удалить аккаунт
-                                    </Button>
-                                </Flex>
-                            </Col>
-                        </Row>
-                        <Modal
-                            onOk={deleteSeriesByUser}
-                            centered
-                            onCancel={onClose}
-                            closeIcon={false}
-                            open={openDelete}
-                            cancelText="Нет"
-                            okText="Удалить"
-                            okButtonProps={{
-                                danger: true,
-                                disabled: deleteStr !== "УДАЛИТЬ",
-                            }}
-                            title={
-                                <Flex gap={10}>
-                                    <QuestionCircleOutlined
-                                        style={{ color: "orange" }}
-                                    />
-                                    <Title level={5}>
-                                        Удалить все ваши данные?
-                                    </Title>
-                                </Flex>
-                            }
-                            footer={(_, { OkBtn, CancelBtn }) => (
-                                <>
-                                    <Flex gap={10}>
-                                        <Button
-                                            icon={<UploadOutlined />}
-                                            style={{ marginRight: "auto" }}
-                                        ></Button>
-                                        <CancelBtn />
-                                        <OkBtn />
-                                    </Flex>
-                                </>
-                            )}
-                        >
-                            <Flex style={{ flexDirection: "column" }} gap={10}>
-                                <Paragraph>
-                                    Будьте внимательны, это необратимое
-                                    действие! <br />
-                                    Убедитесь, что Вы экспортировали свои данные
-                                    заранее.
-                                    <br />
-                                    Для того, чтобы удалить данные, введите в
-                                    поле ниже - (
-                                    <Text type="danger" code strong>
-                                        УДАЛИТЬ
-                                    </Text>
-                                    ) .
-                                </Paragraph>
-
-                                <Input
-                                    onChange={(e) =>
-                                        setDeleteStr(e.target.value)
-                                    }
-                                    value={deleteStr}
-                                    spellCheck={false}
-                                    status="error"
-                                    size="small"
-                                    style={{
-                                        textAlign: "center",
-                                        fontSize: 16,
-                                        fontWeight: 500,
-                                    }}
-                                />
-                            </Flex>
-                        </Modal>
-                        <Modal
-                            centered
-                            onOk={deleteUser}
-                            onCancel={onClose}
-                            closeIcon={false}
-                            open={openDeleteUser}
-                            cancelText="Нет"
-                            okText="Удалить"
-                            okButtonProps={{
-                                danger: true,
-                                disabled: deleteStr !== "УДАЛИТЬ",
-                            }}
-                            title={
-                                <Flex gap={10}>
-                                    <QuestionCircleOutlined
-                                        style={{ color: "orange" }}
-                                    />
-                                    <Title level={5}>
-                                        Удалить Ваш Аккаунт?
-                                    </Title>
-                                </Flex>
-                            }
-                            footer={(_, { OkBtn, CancelBtn }) => (
-                                <>
-                                    <CancelBtn />
-                                    <OkBtn />
-                                </>
-                            )}
-                        >
-                            <Flex style={{ flexDirection: "column" }} gap={10}>
-                                <Paragraph>
-                                    Будьте внимательны, это необратимое
-                                    действие! <br />
-                                    Для того, чтобы удалить аккаунт, введите в
-                                    поле ниже - (
-                                    <Text type="danger" code strong>
-                                        УДАЛИТЬ
-                                    </Text>
-                                    ) .
-                                </Paragraph>
-
-                                <Input
-                                    onChange={(e) =>
-                                        setDeleteStr(e.target.value)
-                                    }
-                                    value={deleteStr}
-                                    spellCheck={false}
-                                    status="error"
-                                    size="small"
-                                    style={{
-                                        textAlign: "center",
-                                        fontSize: 16,
-                                        fontWeight: 500,
-                                    }}
-                                />
-                            </Flex>
-                        </Modal>
-                    </ConfigProvider>
-                </div>
-            }
             onErrorNode={
                 <PageErrorView text="У вас нет доступа к данной странице" />
             }
-        />
+        >
+            <div className="container">
+                {contextHolder}
+
+                <ConfigProvider
+                    theme={{
+                        components: {
+                            Card: {
+                                colorBgContainer: "transparent",
+                                padding: 24,
+                            },
+                        },
+                    }}
+                >
+                    <title>{`${params.username} / Редактирование`}</title>
+                    <Breadcrumb
+                        items={[
+                            {
+                                title: (
+                                    <Link href={"./"}>
+                                        <Flex justify="center" gap={5}>
+                                            <UserOutlined /> {params.username}
+                                        </Flex>
+                                    </Link>
+                                ),
+                            },
+
+                            {
+                                title: "Редактирование профиля",
+                            },
+                        ]}
+                    />
+                    <Row justify={"center"} align={"middle"}>
+                        <Col>
+                            <MainEditUserForm
+                                user={user}
+                                messageApi={messageApi}
+                            />
+                            <Divider orientation="left">
+                                <Flex gap={10}>
+                                    Дополнительные настройки{" "}
+                                    <Tooltip title={"Будьте внимательными"}>
+                                        <WarningOutlined />{" "}
+                                    </Tooltip>
+                                </Flex>
+                            </Divider>
+                            <Flex
+                                justify="center"
+                                gap={15}
+                                style={{ flexDirection: "column" }}
+                            >
+                                <Button
+                                    onClick={() => setOpenDelete(true)}
+                                    ghost
+                                    type="primary"
+                                    danger
+                                >
+                                    Очистить мои списки
+                                </Button>
+
+                                <Button
+                                    onClick={() => setOpenDeleteUser(true)}
+                                    ghost
+                                    type="primary"
+                                    danger
+                                >
+                                    Удалить аккаунт
+                                </Button>
+                            </Flex>
+                        </Col>
+                    </Row>
+                    <Modal
+                        onOk={deleteSeriesByUser}
+                        centered
+                        onCancel={onClose}
+                        closeIcon={false}
+                        open={openDelete}
+                        cancelText="Нет"
+                        okText="Удалить"
+                        okButtonProps={{
+                            danger: true,
+                            disabled: deleteStr !== "УДАЛИТЬ",
+                        }}
+                        title={
+                            <Flex gap={10}>
+                                <QuestionCircleOutlined
+                                    style={{ color: "orange" }}
+                                />
+                                <Title level={5}>
+                                    Удалить все ваши данные?
+                                </Title>
+                            </Flex>
+                        }
+                        footer={(_, { OkBtn, CancelBtn }) => (
+                            <>
+                                <Flex gap={10}>
+                                    <Button
+                                        icon={<UploadOutlined />}
+                                        style={{ marginRight: "auto" }}
+                                    ></Button>
+                                    <CancelBtn />
+                                    <OkBtn />
+                                </Flex>
+                            </>
+                        )}
+                    >
+                        <Flex style={{ flexDirection: "column" }} gap={10}>
+                            <Paragraph>
+                                Будьте внимательны, это необратимое действие!{" "}
+                                <br />
+                                Убедитесь, что Вы экспортировали свои данные
+                                заранее.
+                                <br />
+                                Для того, чтобы удалить данные, введите в поле
+                                ниже - (
+                                <Text type="danger" code strong>
+                                    УДАЛИТЬ
+                                </Text>
+                                ) .
+                            </Paragraph>
+
+                            <Input
+                                onChange={(e) => setDeleteStr(e.target.value)}
+                                value={deleteStr}
+                                spellCheck={false}
+                                status="error"
+                                size="small"
+                                style={{
+                                    textAlign: "center",
+                                    fontSize: 16,
+                                    fontWeight: 500,
+                                }}
+                            />
+                        </Flex>
+                    </Modal>
+                    <Modal
+                        centered
+                        onOk={deleteUser}
+                        onCancel={onClose}
+                        closeIcon={false}
+                        open={openDeleteUser}
+                        cancelText="Нет"
+                        okText="Удалить"
+                        okButtonProps={{
+                            danger: true,
+                            disabled: deleteStr !== "УДАЛИТЬ",
+                        }}
+                        title={
+                            <Flex gap={10}>
+                                <QuestionCircleOutlined
+                                    style={{ color: "orange" }}
+                                />
+                                <Title level={5}>Удалить Ваш Аккаунт?</Title>
+                            </Flex>
+                        }
+                        footer={(_, { OkBtn, CancelBtn }) => (
+                            <>
+                                <CancelBtn />
+                                <OkBtn />
+                            </>
+                        )}
+                    >
+                        <Flex style={{ flexDirection: "column" }} gap={10}>
+                            <Paragraph>
+                                Будьте внимательны, это необратимое действие!{" "}
+                                <br />
+                                Для того, чтобы удалить аккаунт, введите в поле
+                                ниже - (
+                                <Text type="danger" code strong>
+                                    УДАЛИТЬ
+                                </Text>
+                                ) .
+                            </Paragraph>
+
+                            <Input
+                                onChange={(e) => setDeleteStr(e.target.value)}
+                                value={deleteStr}
+                                spellCheck={false}
+                                status="error"
+                                size="small"
+                                style={{
+                                    textAlign: "center",
+                                    fontSize: 16,
+                                    fontWeight: 500,
+                                }}
+                            />
+                        </Flex>
+                    </Modal>
+                </ConfigProvider>
+            </div>
+        </ConditionalContent>
     );
 }

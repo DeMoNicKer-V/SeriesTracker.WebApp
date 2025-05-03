@@ -73,7 +73,7 @@ const UserProfile = ({ user }: Props) => {
             key: "4",
             onClick: async () => {
                 await logout(user?.userName);
-                router.push("/login");
+                window.location.href = "/login";
             },
             icon: <LogoutOutlined />,
         },

@@ -1,7 +1,7 @@
 import { Card, Col, Divider, Flex, Row, Tooltip } from "antd";
 import Title from "antd/es/typography/Title";
 import Link from "next/link";
-import { SeriesGroupProfile } from "../Models/Series/SeriesGroup";
+import { SeriesGroupProfile } from "../models/series/SeriesGroup";
 
 interface Props {
     items: SeriesGroupProfile[];

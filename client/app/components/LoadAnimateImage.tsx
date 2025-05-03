@@ -1,48 +1,74 @@
-import { LoadingOutlined } from "@ant-design/icons";
-import { Image, Skeleton } from "antd";
-import { useEffect, useState } from "react";
-import noFoundImage from ".//../img/img-error.jpg";
-const antIcon = <LoadingOutlined style={{ fontSize: 32 }} spin />;
+import { Image, Skeleton } from "antd"; // Импорт компонентов Image и Skeleton из Ant Design
+import React, { useEffect, useState } from "react"; // Обязательный импорт React, useState и useEffect
+import noFoundImage from ".//../img/img-error.jpg"; // Импорт изображения "не найдено"
 
+// Определение интерфейса Props для компонента LoadAnimateImage
 interface Props {
-    src: string | undefined;
-    maxWidth?: number;
-    prev?: boolean;
-    aspectRatio?: string;
+    src: string | undefined; // URL изображения (может быть undefined, если изображение отсутствует)
+    maxWidth?: number; // Максимальная ширина изображения (опционально, по умолчанию 280px)
+    preview?: boolean; // Флаг, указывающий, нужно ли отображать превью изображения (опционально, по умолчанию false)
+    alt: string; // Альтернативный текст для изображения (обязательный атрибут для доступности)
+    aspectRatio?: string; // Соотношение сторон изображения (опционально, по умолчанию "auto")
 }
 
-const LoadAnimateImage = ({
+/**
+ * @component LoadAnimateImage
+ * @description Компонент для отображения изображения с анимацией загрузки и обработкой ошибок.
+ * Показывает Skeleton (анимацию загрузки) до тех пор, пока изображение не загрузится.
+ * Если изображение не загружается, отображает изображение "не найдено".
+ * @param {Props} props - Объект с пропсами компонента.
+ * @returns {JSX.Element}
+ */
+const LoadAnimateImage: React.FC<Props> = ({
     src,
     maxWidth = 280,
-    prev = false,
-    aspectRatio = "",
-}: Props) => {
-    const [isLoading, setIsLoading] = useState<boolean>(true);
-    const [isError, setIsError] = useState<boolean>(false);
+    preview = false,
+    alt,
+    aspectRatio = "auto",
+}: Props): JSX.Element => {
+    const [isLoading, setIsLoading] = useState<boolean>(true); // Состояние загрузки изображения (true - загружается, false - загружено или ошибка)
+    const [isError, setIsError] = useState<boolean>(false); // Состояние ошибки загрузки изображения (true - ошибка, false - нет ошибки)
 
     useEffect(() => {
-        if (!src) {
-            setIsLoading(false);
-            return;
-        }
-        const img = new window.Image();
+        let img: HTMLImageElement; // Объявляем переменную img вне условия, чтобы она была доступна в return
 
-        img.onload = () => {
-            setIsLoading(false);
+        const loadImage = () => {
+            if (!src) {
+                setIsLoading(false);
+                return;
+            }
+            img = new window.Image(); // Создаем новый объект Image
+
+            img.onload = () => {
+                setIsLoading(false); // Устанавливаем isLoading в false
+            };
+
+            img.onerror = () => {
+                setIsLoading(false); // Устанавливаем isLoading в false
+                setIsError(true); // Устанавливаем isError в true
+            };
+
+            img.src = src; // Устанавливаем src для начала загрузки изображения
         };
 
-        img.onerror = () => {
-            setIsLoading(false);
-            setIsError(true);
+        loadImage(); // Вызываем функцию loadImage
+
+        return () => {
+            // Функция будет вызвана при unmount компонента
+            if (img) {
+                // Проверяем, был ли создан объект img
+                img.onload = null;
+                img.onerror = null;
+            }
         };
+    }, [src]); // Зависимость от src: эффект будет перезапускаться при изменении src
 
-        img.src = src;
-    }, [src]);
-
+    // Отображаем Skeleton, пока изображение загружается
     if (isLoading) {
         return <Skeleton.Image active />;
     }
 
+    // Если произошла ошибка загрузки, отображаем изображение "не найдено"
     if (isError) {
         return (
             <Image
@@ -52,24 +78,28 @@ const LoadAnimateImage = ({
                     maxWidth: maxWidth,
                     aspectRatio: aspectRatio,
                 }}
+                alt="Изображение не найдено"
             />
         );
     }
 
+    // Если изображение успешно загружено, отображаем его
     return (
         <Image
             src={src}
             style={{
                 maxWidth: maxWidth,
                 aspectRatio: aspectRatio,
+                objectFit: "cover",
             }}
             preview={
-                prev
+                preview
                     ? {
                           mask: "Посмотреть",
                       }
                     : false
             }
+            alt={alt}
         />
     );
 };

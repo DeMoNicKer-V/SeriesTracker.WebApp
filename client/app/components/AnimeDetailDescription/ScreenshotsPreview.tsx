@@ -1,4 +1,4 @@
-import { Screenshot } from "@/app/models/anime/AnimeDetail";
+import { Screenshot } from "@/app/models/anime/Screenshot";
 import { ConfigProvider, Image, List } from "antd";
 import { ListGridType } from "antd/es/list";
 import { EmptyView } from "../EmptyView";
@@ -42,7 +42,8 @@ const ScreenshotsPreview = ({
                                 src={item.originalUrl}
                                 maxWidth={maxWidth}
                                 aspectRatio="12/7"
-                                prev={true}
+                                preview={true}
+                                alt={`screen-${item.id}`}
                             />
                         </List.Item>
                     )}

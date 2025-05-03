@@ -6,8 +6,8 @@ import { useEffect, useState } from "react";
 import { getAllCategoriesList } from "../api/category/getCategory";
 import { deleteUser } from "../api/user/deleteUser";
 import { getAllUsersList } from "../api/user/getUser";
+import ConditionalContent from "../components/ConditionalContent";
 import { EmptyView } from "../components/EmptyView";
-import LoadingContentHandler from "../components/LoadingContentHandler";
 import DeleteUserModal from "../components/Modals/DeleteUserModal";
 import PageErrorView from "../components/PageErrorVIew";
 import CategoryTable from "../components/SettingsComponents/CategoryTable";
@@ -87,80 +87,75 @@ export default function SettingsPage() {
     }, [page]); //  Зависимости: page (перезапускаем функцию, если изменилась страница)
 
     return (
-        <LoadingContentHandler
+        <ConditionalContent
             condition={error}
-            defaultNode={
-                <div className="container">
-                    <ConfigProvider
-                        renderEmpty={() => (
-                            <EmptyView
-                                text={"Ничего не найдено"}
-                                iconSize={20}
-                                fontSize={16}
-                            />
-                        )}
-                        theme={{
-                            components: {
-                                Tabs: { fontSize: 16 },
-                            },
-                        }}
-                    >
-                        <title>Series Tracker - Настройки</title>
-                        <Row
-                            gutter={[20, 20]}
-                            align={"middle"}
-                            justify={"center"}
-                        >
-                            <Col span={23}>
-                                <Tabs
-                                    animated
-                                    defaultActiveKey="category"
-                                    centered
-                                    items={[
-                                        {
-                                            label: "Список категорий",
-                                            key: "category",
-                                            icon: <BorderlessTableOutlined />,
-                                            children: (
-                                                <CategoryTable
-                                                    categories={categories}
-                                                />
-                                            ),
-                                        },
-                                        {
-                                            label: "Список пользователей",
-                                            key: "user",
-                                            icon: <TeamOutlined />,
-                                            children: (
-                                                <UserTable
-                                                    usersData={usersData}
-                                                    user={user}
-                                                    setPage={setPage}
-                                                    setDeleteUserName={
-                                                        setDeleteUserUserName
-                                                    }
-                                                    setOpenDeleteModal={
-                                                        setOpenDeleteUser
-                                                    }
-                                                />
-                                            ),
-                                        },
-                                    ]}
-                                />
-                            </Col>
-                        </Row>
-                    </ConfigProvider>
-                    <DeleteUserModal
-                        onOk={onDeleteUser}
-                        onCancel={onClose}
-                        open={openDeleteUser}
-                        title={`Удалить пользователя '${deleteUserUserName}'`}
-                    />
-                </div>
-            }
             onErrorNode={
                 <PageErrorView text="У вас нет доступа к данной странице" />
             }
-        />
+        >
+            <div className="container">
+                <ConfigProvider
+                    renderEmpty={() => (
+                        <EmptyView
+                            text={"Ничего не найдено"}
+                            iconSize={20}
+                            fontSize={16}
+                        />
+                    )}
+                    theme={{
+                        components: {
+                            Tabs: { fontSize: 16 },
+                        },
+                    }}
+                >
+                    <title>Series Tracker - Настройки</title>
+                    <Row gutter={[20, 20]} align={"middle"} justify={"center"}>
+                        <Col span={23}>
+                            <Tabs
+                                animated
+                                defaultActiveKey="category"
+                                centered
+                                items={[
+                                    {
+                                        label: "Список категорий",
+                                        key: "category",
+                                        icon: <BorderlessTableOutlined />,
+                                        children: (
+                                            <CategoryTable
+                                                categories={categories}
+                                            />
+                                        ),
+                                    },
+                                    {
+                                        label: "Список пользователей",
+                                        key: "user",
+                                        icon: <TeamOutlined />,
+                                        children: (
+                                            <UserTable
+                                                usersData={usersData}
+                                                user={user}
+                                                setPage={setPage}
+                                                setDeleteUserName={
+                                                    setDeleteUserUserName
+                                                }
+                                                setOpenDeleteModal={
+                                                    setOpenDeleteUser
+                                                }
+                                            />
+                                        ),
+                                    },
+                                ]}
+                            />
+                        </Col>
+                    </Row>
+                </ConfigProvider>
+                <DeleteUserModal
+                    onOk={onDeleteUser}
+                    onCancel={onClose}
+                    open={openDeleteUser}
+                    title={`Удалить пользователя '${deleteUserUserName}'`}
+                />
+            </div>
+        </ConditionalContent>
     );
 }

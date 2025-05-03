@@ -63,8 +63,9 @@ const CalendarAnime: React.FC<CalendarAnimeProps> = ({ item, loading }) => {
                         <Row align={"middle"}>
                             <Col>
                                 <LoadAnimateImage
-                                    prev={false}
+                                    preview={false}
                                     maxWidth={100}
+                                    alt={`image-${item.anime.id}`}
                                     src={`https://shikimori.one${item.anime.image.preview}`}
                                 ></LoadAnimateImage>
                             </Col>

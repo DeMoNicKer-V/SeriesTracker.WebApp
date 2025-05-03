@@ -1,7 +1,7 @@
 "use client";
 import { getUserCategoriesCount } from "@/app/api/user/getUser";
 import UsersAnimeList from "@/app/components/Animes/UsersAnimeList";
-import LoadingContentHandler from "@/app/components/LoadingContentHandler";
+import ConditionalContent from "@/app/components/ConditionalContent";
 import PageErrorView from "@/app/components/PageErrorVIew";
 import { defaultGroups } from "@/app/constants/constants";
 import {
@@ -158,7 +158,7 @@ export default function UserListPage({
     }
 
     return (
-        <LoadingContentHandler
+        <ConditionalContent
             condition={empty}
             defaultNode={
                 <div className="container">

@@ -1,5 +1,5 @@
 /**
- * @interface CreateCreateUserRequest
+ * @interface CreateUserRequest
  * @description Запрос для регистрации нового пользователя.
  * @property {string} [email] Адрес электронной почты пользователя.
  * @property {string} [password] Пароль пользователя.
@@ -9,7 +9,7 @@
  * @property {string} [surName] Фамилия пользователя (может быть null).
  * @property {string} [dateBirth] Дата рождения пользователя (может быть null).
  */
-export interface CreateCreateUserRequest {
+export interface CreateUserRequest {
     email?: string;
     password?: string;
     userName?: string;
