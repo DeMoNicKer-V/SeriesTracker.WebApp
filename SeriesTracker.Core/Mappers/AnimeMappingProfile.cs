@@ -17,6 +17,7 @@ namespace SeriesTracker.Core.Mappers
             // Маппинг из ShikimoriAnimeDto в ShikimoriAnime.
             CreateMap<ShikimoriAnimeDto, ShikimoriAnime>().AfterMap((src, dest) =>
             {
+                dest.Episodes = src.Episodes == 0 ?src.EpisodesAired: src.Episodes;
                 dest.Description = ConvertDescription(src.Description);
                 dest.Rating = ConvertRating(src.Rating);
                 dest.Kind = ConvertKind(src.Kind);

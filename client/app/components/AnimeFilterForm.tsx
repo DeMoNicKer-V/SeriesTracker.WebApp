@@ -1,7 +1,6 @@
 import {
     CalendarOutlined,
     FontColorsOutlined,
-    QuestionCircleOutlined,
     SearchOutlined,
     StarOutlined,
     TeamOutlined,
@@ -13,8 +12,6 @@ import {
     CheckboxProps,
     Collapse,
     DatePicker,
-    Descriptions,
-    DescriptionsProps,
     Drawer,
     Flex,
     Form,
@@ -24,94 +21,81 @@ import {
     Typography,
 } from "antd";
 import dayjs from "dayjs";
-import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
+import {
+    Dispatch,
+    SetStateAction,
+    useCallback,
+    useEffect,
+    useRef,
+    useState,
+} from "react";
 import { getGenres } from "../api/animes/genre/getGenre";
-import FilterItem from "../components/FilterItem";
-import { ShikimoriRequest } from "../models/requests/ShikimoriRequest";
+import { kindOptions, statusOptions } from "../constants/constants";
+import {
+    defaultShikimoriRequest,
+    ShikimoriRequest,
+} from "../models/requests/ShikimoriRequest";
+import FilterItem from "./FilterItem";
+import SafeModeDescription from "./SafeModeDescription";
+// Определение типа для полей формы
 type FieldType = {
-    page: number;
-    query: string;
-    season: string;
-    status: [];
-    kind: [];
-    audience: [];
-    genre: [];
-    theme: [];
-    order: string;
-    censored: boolean;
+    query: string; // Поисковый запрос
+    season: dayjs.Dayjs | null; // Сезон
+    status: string[]; // Массив статусов
+    kind: string[]; // Массив типов
+    genre: Genre[]; // Массив ID жанров
+    audience: Genre[]; // Массив ID целевой аудитории
+    theme: Genre[]; // Массив ID тем
+    order: string; // Порядок сортировки
+    censored: boolean; // Флаг "безопасного режима"
 };
 const date = dayjs();
+const { Title } = Typography;
 
+// Определение интерфейса Props для компонента AnimeParamsMenu
 interface Props {
-    ids?: string;
-    open: boolean;
-    onClose: () => void;
-    setRequest: Dispatch<SetStateAction<ShikimoriRequest>>;
-    setPage: (newPage: number) => void;
+    open: boolean; // Флаг, определяющий, открыт ли Drawer (обязательно)
+    onClose: () => void; // Callback-функция, вызываемая при закрытии Drawer (обязательно)
+    setRequest: Dispatch<SetStateAction<ShikimoriRequest>>; // Функция для обновления состояния запроса к Shikimori API (обязательно)
+    setPage: (newPage: number) => void; // Функция для установки номера страницы (обязательно)
 }
-function AnimeParamsMenu({ ids, open, setPage, onClose, setRequest }: Props) {
-    const [genres, setGenres] = useState<Genre[] | any>(null);
-    const { Title } = Typography;
-    const [form] = Form.useForm();
-    const [censored, setCensored] = useState<boolean>(true);
+/**
+ * @component AnimeFilterForm
+ * @description Компонент Drawer с формой для фильтрации аниме.
+ * @param {Props} props - Объект с пропсами компонента.
+ * @returns {JSX.Element}
+ */
+const AnimeFilterForm: React.FC<Props> = ({
+    open,
+    setPage,
+    onClose,
+    setRequest,
+}: Props): JSX.Element => {
+    const [form] = Form.useForm<FieldType>(); // Создаем экземпляр Form
+    const [genres, setGenres] = useState<GroupGenre | null>(null); // Состояние для хранения списка жанров (изначально null)
+    const [censored, setCensored] = useState<boolean>(true); // Состояние для "безопасного режима" (по умолчанию включен)
+    const timeoutIdRef = useRef<NodeJS.Timeout | null>(null); // Ref для хранения ID таймера
 
-    const statusOptions = [
-        { russian: "Онгоинг", id: "ongoing" },
-        { russian: "Вышло", id: "released" },
-        { russian: "Анонс", id: "anons" },
-    ];
-
-    const kindOptions = [
-        { russian: "TV-Сериал", id: "tv" },
-        { russian: "П/ф", id: "movie" },
-        { russian: "ONA", id: "ona" },
-        { russian: "OVA", id: "ova" },
-        { russian: "Спешл", id: "special" },
-        { russian: "TV-Спешл", id: "tv_special" },
-    ];
     const resetAllFields = () => {
-        setRequest({
-            censored: true,
-            page: 1,
-            name: "",
-            ids: ids,
-            kind: "",
-            status: "",
-            order: "ranked",
-            season: "",
-            genre: "",
-        });
+        setRequest(() => defaultShikimoriRequest); // Используем функциональный подход
         form.resetFields();
+        setPage(1);
     };
-    const items: DescriptionsProps["items"] = [
-        {
-            label: "Состояние",
-            children: (
-                <Flex gap={5}>
-                    {censored ? "Включен" : "Выключен"}
-                    <Tooltip
-                        trigger={"hover"}
-                        title={
-                            censored
-                                ? "Рекомендуется в большинстве случаев"
-                                : "Если вы ищете что-то определенное"
-                        }
-                    >
-                        <QuestionCircleOutlined style={{ cursor: "help" }} />
-                    </Tooltip>
-                </Flex>
-            ),
-        },
-    ];
-    const timeoutIdRef = useRef<NodeJS.Timeout | null>(null);
-    const handleFieldsChange = (changedValue: any, allValues: FieldType) => {
+
+    //Обработчик изменения полей формы.
+    // Устанавливает таймер для обновления состояния запроса с задержкой в 1 секунду.
+    const handleFieldsChange = (_: any, allValues: FieldType): (() => void) => {
         if (timeoutIdRef.current) {
+            // Если таймер уже запущен, очищаем его
             clearTimeout(timeoutIdRef.current);
         }
+
         timeoutIdRef.current = setTimeout(() => {
             const order = allValues.query ? "ranked" : allValues.order;
             setPage(1);
-            setRequest({
+            setRequest((prevRequest) => ({
+                // Обновляем состояние запроса
+                ...prevRequest,
                 page: 1,
                 name: allValues.query,
                 season: allValues.season
@@ -122,28 +106,36 @@ function AnimeParamsMenu({ ids, open, setPage, onClose, setRequest }: Props) {
                 genre: allValues.genre
                     .concat(allValues.audience)
                     .concat(allValues.theme)
-                    .toString(),
+                    .toString(), // Объединяем и преобразуем массивы жанров, аудитории и тем в строку
                 order: order,
                 censored: allValues.censored,
-            });
+            }));
         }, 1000);
-        return () => clearTimeout(timeoutIdRef.current!);
-    };
-    const onChange: CheckboxProps["onChange"] = (e) => {
-        setCensored(e.target.checked);
+
+        return () => clearTimeout(timeoutIdRef.current!); // Возвращаем функцию для очистки таймера
     };
 
-    useEffect(() => {
-        async function fetchGenres() {
+    //Обработчик изменения состояния чекбокса "безопасного режима".
+
+    const onChange: CheckboxProps["onChange"] = (e) => {
+        setCensored(e.target.checked); // Обновляем состояние "безопасного режима"
+    };
+
+    // Асинхронная функция для загрузки жанров
+    const fetchGenres = useCallback(async () => {
+        try {
             const response = await getGenres();
             setGenres(response);
+        } catch (error) {
+            console.error("Ошибка при загрузке жанров:", error);
         }
+    }, []);
 
+    useEffect(() => {
         if (!genres) {
-            // Загружаем жанры только если их нет в кэше
             fetchGenres();
         }
-    }, [genres]);
+    }, [fetchGenres]); //  Зависимость от useCallback функции
 
     return (
         <Drawer
@@ -186,7 +178,7 @@ function AnimeParamsMenu({ ids, open, setPage, onClose, setRequest }: Props) {
                 >
                     <Title level={5}>Безопасный поиск</Title>
                     <Flex>
-                        <Descriptions items={items}></Descriptions>
+                        <SafeModeDescription censored={censored} />
                         <Form.Item name={"censored"} valuePropName="checked">
                             <Checkbox
                                 onChange={onChange}
@@ -332,6 +324,6 @@ function AnimeParamsMenu({ ids, open, setPage, onClose, setRequest }: Props) {
             </Form>
         </Drawer>
     );
-}
+};
 
-export default AnimeParamsMenu;
+export default AnimeFilterForm;

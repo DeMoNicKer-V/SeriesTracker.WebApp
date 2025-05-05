@@ -9,39 +9,57 @@ import {
     Space,
     Typography,
 } from "antd";
-import { Dispatch, SetStateAction, useState } from "react";
-
 import locale from "antd/es/date-picker/locale/ru_RU";
+import dayjs from "dayjs";
+import "dayjs/locale/ru";
+import { Dispatch, SetStateAction, useState } from "react";
 import AvatarPicker from "../../components/AvatarPicker";
 import NameFormItem from "../../components/SingupComponents/NameFormItem";
 import { LongLeftArrow } from "../../img/LongLeftArrow";
 import { LongRightArrow } from "../../img/LongRightArrow";
-
-import dayjs from "dayjs";
-import "dayjs/locale/ru";
+import styles from "./component.module.css";
 dayjs.locale("ru");
 
 const { Text, Title } = Typography;
-
-interface Props {
-    form: FormInstance<any>;
-    setCurrent: Dispatch<SetStateAction<number>>;
-    handleNext: () => void;
+// Определение интерфейса для значений формы
+interface FormValues {
+    name?: string;
+    surName?: string;
+    avatar?: string;
+    dateBirth?: string;
 }
-const SecondaryForm = ({ form, handleNext, setCurrent }: Props) => {
-    const [avatar, setAvatar] = useState<string>("");
+
+// Определение интерфейса для пропсов компонента
+interface Props {
+    form: FormInstance<FormValues>; // Экземпляр Form из Ant Design (обязательно)
+    setCurrent: Dispatch<SetStateAction<number>>; // Функция для установки текущего шага (обязательно)
+    handleNext: () => void; // Функция для перехода к следующему шагу (обязательно)
+}
+
+/**
+ * @component OptinalRegistrationForm
+ * @description Вторая форма регистрации (необязательная).
+ * Предоставляет поля для ввода имени, фамилии, выбора аватара и даты рождения.
+ * @param {Props} props - Объект с пропсами компонента.
+ * @returns {JSX.Element}
+ */
+const OptinalRegistrationForm: React.FC<Props> = ({
+    form,
+    handleNext,
+    setCurrent,
+}): JSX.Element => {
+    const [avatar, setAvatar] = useState<string>(""); // Состояние для хранения URL аватара
 
     return (
         <Form
             layout="vertical"
             form={form}
-            name="registration-form-secondary"
+            name="registration-form-optinal"
             className="width-100"
         >
             <Flex className="flex-column">
                 <Space
-                    className="wrap-title"
-                    style={{ justifyContent: "center" }}
+                    className={styles["registration-form-optional-head"]}
                     wrap
                     size={[10, 10]}
                 >
@@ -54,7 +72,10 @@ const SecondaryForm = ({ form, handleNext, setCurrent }: Props) => {
                     <Flex className="flex-column">
                         <Title level={5}>{"Выберите ваш аватар"}</Title>
 
-                        <Text type="secondary" style={{ fontSize: 12 }}>
+                        <Text
+                            type="secondary"
+                            className={styles["registration-form-warning"]}
+                        >
                             {
                                 "только файлы формата JPG/PNG, размером не превышающие 256 КБ"
                             }
@@ -64,7 +85,11 @@ const SecondaryForm = ({ form, handleNext, setCurrent }: Props) => {
 
                 <Divider>Как вас зовут?</Divider>
 
-                <Space styles={{ item: { flex: "auto" } }} wrap size={[10, 10]}>
+                <Space
+                    classNames={{ item: styles["registration-form-items"] }}
+                    wrap
+                    size={[10, 10]}
+                >
                     <NameFormItem name={"name"} label={"Имя"} />
                     <NameFormItem name={"surName"} label={"Фамилия"} />
                 </Space>
@@ -97,10 +122,7 @@ const SecondaryForm = ({ form, handleNext, setCurrent }: Props) => {
 
                 <Flex gap={10} justify="space-between">
                     <Button
-                        style={{
-                            opacity: 0.75,
-                            fontSize: 12,
-                        }}
+                        className={styles["nav-button"]}
                         icon={<LongLeftArrow />}
                         onClick={() => setCurrent(0)}
                         type="link"
@@ -109,11 +131,8 @@ const SecondaryForm = ({ form, handleNext, setCurrent }: Props) => {
                     </Button>
 
                     <Button
+                        className={styles["nav-button"]}
                         type="link"
-                        style={{
-                            opacity: 0.75,
-                            fontSize: 12,
-                        }}
                         iconPosition="end"
                         onClick={handleNext}
                         icon={<LongRightArrow />}
@@ -132,4 +151,4 @@ const SecondaryForm = ({ form, handleNext, setCurrent }: Props) => {
     );
 };
 
-export default SecondaryForm;
+export default OptinalRegistrationForm;

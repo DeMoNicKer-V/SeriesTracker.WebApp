@@ -1,34 +1,35 @@
+import styles from "./components.module.css";
+
+import React from "react";
+
+// Определение интерфейса Props для компонента AbsoluteImage
 interface Props {
-    src: string;
-    zIndex: number;
-    children?: React.ReactNode;
-    filter?: string;
+    src: string; // URL изображения (обязательно)
+    zIndex: number; // z-index элемента (обязательно)
+    children?: React.ReactNode; // Дочерние элементы (опционально)
+    filter?: boolean; // Применять ли CSS-фильтр для изображения (опционально)
 }
-export const AbsoluteImage = ({
+
+/**
+ * @component AbsoluteImage
+ * @description Компонент для отображения изображения в качестве абсолютного "задника".
+ * @param {Props} props - Объект с пропсами компонента.
+ * @returns {JSX.Element}
+ */
+export const AbsoluteImage: React.FC<Props> = ({
     src,
     zIndex,
     children,
-    filter = "",
-}: Props) => {
+    filter = false,
+}): JSX.Element => {
     return (
         <div
+            className={`${styles["absolute-image"]} ${
+                filter ? styles["absolute-image-filter"] : ""
+            }`}
             style={{
-                pointerEvents: "none",
-                flexDirection: "column",
                 backgroundImage: `url(${src})`,
-                backgroundSize: "cover",
-                backgroundRepeat: "no-repeat",
-                backgroundPosition: "top",
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                position: "absolute",
-                borderRadius: 10,
                 zIndex: zIndex,
-                filter: filter,
-                justifyContent: "flex-end",
-                display: "flex",
             }}
         >
             {children}

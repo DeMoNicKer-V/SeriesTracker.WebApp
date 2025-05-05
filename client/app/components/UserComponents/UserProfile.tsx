@@ -1,4 +1,13 @@
 "use client";
+
+import { logout } from "@/app/api/auth";
+import {
+    BookOutlined,
+    LogoutOutlined,
+    MailOutlined,
+    SettingOutlined,
+    UserOutlined,
+} from "@ant-design/icons";
 import {
     Avatar,
     Button,
@@ -10,39 +19,41 @@ import {
     Space,
     Typography,
 } from "antd";
-
-import { logout } from "@/app/api/auth";
-import {
-    BookOutlined,
-    LogoutOutlined,
-    MailOutlined,
-    SettingOutlined,
-    UserOutlined,
-} from "@ant-design/icons";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import React from "react";
+import styles from "./component.module.css";
+
+// Определение интерфейса Props для компонента UserProfile
 interface Props {
-    user: User | any;
+    user: User;
 }
 
-const UserProfile = ({ user }: Props) => {
-    const router = useRouter();
+/**
+ * @component UserProfile
+ * @description Компонент для отображения профиля пользователя в виде выпадающего меню.
+ * Предоставляет ссылки на профиль пользователя, список аниме, настройки и возможность выхода из системы.
+ * @param {Props} props - Объект с пропсами компонента.
+ * @returns {JSX.Element}
+ */
+const UserProfile: React.FC<Props> = ({ user }): JSX.Element => {
+    // Определение пунктов меню для Dropdown
     const items: MenuProps["items"] = [
         {
-            label: user?.email,
+            label: user?.email, // Email пользователя (отображается в меню)
             key: "0",
-            style: { cursor: "default" },
-            icon: <MailOutlined />,
-            disabled: true,
+            className: styles["user-profile-btn-disabled"], // CSS-класс для отключенных элементов
+            icon: <MailOutlined />, // Иконка email
+            disabled: true, // Отключаем пункт меню (нельзя выбрать)
         },
         {
-            label: <Divider style={{ margin: 0, padding: 0 }} />,
-            style: { cursor: "default" },
+            label: <Divider />,
+            className: styles["user-profile-btn-divider"],
             key: "divider",
             disabled: true,
         },
         {
             label: (
+                // Ссылка на профиль пользователя
                 <Link href={`/user/${user?.userName}`} target="_top">
                     Профиль
                 </Link>
@@ -52,6 +63,7 @@ const UserProfile = ({ user }: Props) => {
         },
         {
             label: (
+                // Ссылка на список аниме пользователя
                 <Link href={`/user/${user?.userName}/list`} target="_top">
                     Мои аниме
                 </Link>
@@ -61,6 +73,7 @@ const UserProfile = ({ user }: Props) => {
         },
         {
             label: (
+                // Ссылка на настройки пользователя
                 <Link href={`/user/${user?.userName}/edit`} target="_top">
                     Настройки
                 </Link>
@@ -69,9 +82,10 @@ const UserProfile = ({ user }: Props) => {
             icon: <SettingOutlined />,
         },
         {
-            label: "Выйти",
+            label: "Выйти", // Пункт меню для выхода из системы
             key: "4",
             onClick: async () => {
+                // Обработчик клика
                 await logout(user?.userName);
                 window.location.href = "/login";
             },
@@ -92,16 +106,11 @@ const UserProfile = ({ user }: Props) => {
                     <Dropdown menu={{ items }}>
                         <Button type="text" className="height-100">
                             <Space
-                                style={{
-                                    padding: "0 10px",
-                                    alignItems: "end",
-                                }}
+                                className={styles["user-profile-dropdown"]}
                                 size={[20, 20]}
                             >
                                 <Avatar
-                                    style={{
-                                        borderColor: "#313131",
-                                    }}
+                                    className={styles["user-profile-avatar"]}
                                     size={40}
                                     shape="circle"
                                     src={user?.avatar}

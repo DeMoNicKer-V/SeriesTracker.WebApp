@@ -28,7 +28,7 @@ import { useSearchParams } from "next/navigation";
 import { useCallback, useMemo, useState } from "react";
 import useSWR from "swr";
 import AbsoluteImage from "../AbsoluteImage";
-import AnimeParamsMenu from "../AnimeParamsMenu";
+import AnimeFilterForm from "../AnimeFilterForm";
 import { EmptyView } from "../EmptyView";
 import PageNavigator from "../PageNavigator";
 import AnimeDetailPopover from "../Popovers/AnimeDetailPopover";
@@ -73,13 +73,9 @@ const AnimeList = ({}) => {
     };
 
     const changePage = useCallback(
-        (page: number) => {
-            if (page === 0) {
-                setPage(1);
-            } else {
-                setPage(page);
-            }
-            request.page = page;
+        (newPage: number) => {
+            setPage(newPage);
+            request.page = newPage;
             scrollTop();
         },
         [page]
@@ -87,10 +83,6 @@ const AnimeList = ({}) => {
 
     const getAnimesPost = async (url: string) => {
         const data: Anime[] = await getAnimes(url);
-        if (data.length === 0) {
-            const prevPage = page - 1;
-            changePage(prevPage);
-        }
         return data;
     };
 
@@ -214,6 +206,11 @@ const AnimeList = ({}) => {
                                     >
                                         <Card
                                             className={styles["anime-card"]}
+                                            classNames={{
+                                                cover: styles[
+                                                    "anime-card-cover"
+                                                ],
+                                            }}
                                             bordered={false}
                                             cover={
                                                 <AbsoluteImage
@@ -307,7 +304,7 @@ const AnimeList = ({}) => {
                     </List.Item>
                 )}
             />
-            <AnimeParamsMenu
+            <AnimeFilterForm
                 open={isOpen}
                 onClose={toggleOpen}
                 setRequest={setRequest}

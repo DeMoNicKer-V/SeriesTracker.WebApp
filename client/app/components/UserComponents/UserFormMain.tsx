@@ -1,6 +1,6 @@
 import { isEmailExists, isUserNameExists, verify } from "@/app/api/auth";
 import { updateUser } from "@/app/api/user/editUser";
-import SecondaryEditUserForm from "@/app/components/UserComponents/SecondaryEditUserForm";
+import UserFormOptional from "@/app/components/UserComponents/UserFormOptional";
 import { LongLeftArrow } from "@/app/img/LongLeftArrow";
 import {
     CheckOutlined,
@@ -16,23 +16,49 @@ import dayjs from "dayjs";
 import "dayjs/locale/ru";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import styles from "./component.module.css";
 dayjs.locale("ru");
 
+// Определение интерфейса Props для компонента UserFormMain
 interface Props {
-    messageApi: NotificationInstance;
-    user?: User;
+    messageApi: NotificationInstance; // Объект messageApi для отображения уведомлений
+    user?: User; // Объект пользователя
 }
-const MainEditUserForm = ({ messageApi, user }: Props) => {
+interface FormValues {
+    userName: string;
+    name: string;
+    surName: string;
+    email: string;
+    newEmail?: string;
+    password?: string;
+    newPassword?: string;
+    avatar: string;
+    dateBirth: string;
+}
+/**
+ * @component UserFormMain
+ * @description Компонент для отображения формы редактирования данных пользователя.
+ * @param {Props} props - Объект с пропсами компонента.
+ * @returns {JSX.Element}
+ */
+const UserFormMain: React.FC<Props> = ({ messageApi, user }): JSX.Element => {
+    const router = useRouter();
+    const [form] = Form.useForm<FormValues>(); // Создаем экземпляр Form
+    const { isFieldsValidating, setFieldsValue } = form; // Получаем функции из form
+
     const [visibleFields, setVisibleFields] = useState({
+        // Состояние для видимости полей email и password (изначально скрыты)
         email: false,
         password: false,
     });
 
+    //     Переключает видимость указанных полей формы (email или password).
     const handleSwitchFields = (
         fieldNames: ("email" | "password")[],
         dest: boolean
     ) => {
         setVisibleFields((prev) => {
+            // Обновляем состояние видимости полей
             const newState = { ...prev };
             fieldNames.forEach((field) => {
                 newState[field] = dest;
@@ -41,46 +67,56 @@ const MainEditUserForm = ({ messageApi, user }: Props) => {
         });
     };
 
-    const router = useRouter();
-    const onFinish = async (values: any) => {
+    //Обработчик отправки формы.
+    // Собирает данные из формы, создает объект CreateUserRequest и отправляет запрос на сервер для обновления данных пользователя.
+
+    const onFinish = async (values: FormValues): Promise<void> => {
         if (!user) {
+            // Если объект пользователя не передан, выходим из функции
             return;
         }
+
         const CreateUserRequest = {
-            userName: values["userName"],
-            name: values["name"],
-            surName: values["surName"],
-            email: values["newEmail"],
-            password: values["newPassword"],
-            avatar: values["avatar"],
-            dateBirth: values["dateBirth"],
+            // Создаем объект запроса
+            userName: values.userName,
+            name: values.name,
+            surName: values.surName,
+            email: values.newEmail || user.email, // Если поле newEmail не заполнено, используем email из объекта user
+            password: values.newPassword,
+            avatar: values.avatar,
+            dateBirth: values.dateBirth,
         };
+
         try {
-            await updateUser(user.userName, CreateUserRequest);
+            await updateUser(user.userName, CreateUserRequest); // Отправляем запрос на сервер
+
             messageApi.success({
                 type: "success",
                 message: "Профиль успешно обновлен!",
-                onClose: () =>
-                    (window.location.href = `../${values["userName"]}`),
+                onClose: () => (window.location.href = `../${values.userName}`),
                 showProgress: true,
             });
         } catch (error: any) {
+            console.error("Ошибка при обновлении профиля:", error); // Логируем ошибку
             messageApi.error({
                 message: "Не удалось обновить данные",
-                description: error.message,
+                description:
+                    error.response?.data?.message ||
+                    "Произошла неизвестная ошибка.", // Пытаемся получить сообщение об ошибке с сервера
             });
         }
     };
-    const [form] = Form.useForm();
-    const { isFieldsValidating, setFieldsValue } = form;
 
     useEffect(() => {
-        setFieldsValue(user);
-    }, []);
+        // Заполняем форму данными пользователя при монтировании компонента
+        if (user) {
+            setFieldsValue(user);
+        }
+    }, [user, setFieldsValue]);
 
     return (
         <Form
-            style={{ maxWidth: 600 }}
+            className={styles["user-edit-form"]}
             spellCheck={false}
             layout="vertical"
             onFinish={onFinish}
@@ -120,7 +156,7 @@ const MainEditUserForm = ({ messageApi, user }: Props) => {
                 />
             </Form.Item>
             <Divider>{user?.email}</Divider>
-            <SecondaryEditUserForm previewFile={user?.avatar} />
+            <UserFormOptional previewFile={user?.avatar} />
 
             <Flex className="flex-column">
                 {visibleFields["email"] && (
@@ -141,24 +177,34 @@ const MainEditUserForm = ({ messageApi, user }: Props) => {
                         <Form.Item
                             validateDebounce={1500}
                             hasFeedback
-                            style={{ width: "100%" }}
+                            className="width-100"
                             label={"Новая эл. почта"}
                             name={"newEmail"}
                             rules={[
                                 {
+                                    required: true,
+                                    message: "Пожалуйста, введите email!", //  Более понятное сообщение
+                                },
+                                {
                                     type: "email",
                                     message:
-                                        "Эл. почта имеет некорректную сигнатуру",
+                                        "Пожалуйста, введите корректный email!", //  Более понятное сообщение
                                 },
                                 {
                                     validator: async (_, value) => {
-                                        if (!value || value === user?.email) {
-                                            return Promise.resolve();
+                                        if (!value) {
+                                            return Promise.reject(
+                                                "Пожалуйста, введите email!"
+                                            ); // Обязательное поле
                                         }
                                         try {
-                                            await isEmailExists(value);
+                                            await isEmailExists(value); //  Вызываем isEmailExists
+                                            return Promise.resolve(); // Email не существует, все хорошо
                                         } catch (error: any) {
-                                            return Promise.reject(error);
+                                            return Promise.reject(
+                                                error?.message ||
+                                                    "Этот email уже зарегистрирован!"
+                                            ); // Email уже существует, возвращаем ошибку
                                         }
                                     },
                                 },
@@ -171,9 +217,7 @@ const MainEditUserForm = ({ messageApi, user }: Props) => {
                                 <Form.Item
                                     validateDebounce={1500}
                                     hasFeedback
-                                    style={{
-                                        width: "100%",
-                                    }}
+                                    className="width-100"
                                     label={"Старый пароль"}
                                     name={["oldPassword"]}
                                     rules={[
@@ -186,10 +230,8 @@ const MainEditUserForm = ({ messageApi, user }: Props) => {
                                             validator: async (_, value) => {
                                                 if (!value) {
                                                     // Проверка на пустоту
-                                                    return Promise.resolve(); // Возвращаем Promise.resolve(), если поле пустое
+                                                    return Promise.resolve();
                                                 }
-                                                // Проверка на стороне сервера
-
                                                 await verify(
                                                     user?.email,
                                                     value
@@ -203,9 +245,7 @@ const MainEditUserForm = ({ messageApi, user }: Props) => {
                                 <Form.Item
                                     validateDebounce={1500}
                                     hasFeedback
-                                    style={{
-                                        width: "100%",
-                                    }}
+                                    className="width-100"
                                     label={"Новый пароль"}
                                     name={["newPassword"]}
                                     rules={[
@@ -221,10 +261,9 @@ const MainEditUserForm = ({ messageApi, user }: Props) => {
                                     <Input.Password placeholder="Введите новый пароль" />
                                 </Form.Item>
                                 <Form.Item
-                                    style={{
-                                        display: "flex",
-                                        justifyContent: "center",
-                                    }}
+                                    className={
+                                        styles["user-edit-form-passwords"]
+                                    }
                                 >
                                     <MinusCircleOutlined
                                         onClick={() =>
@@ -238,9 +277,7 @@ const MainEditUserForm = ({ messageApi, user }: Props) => {
                             </Flex>
                         ) : (
                             <Form.Item
-                                style={{
-                                    marginTop: 15,
-                                }}
+                                className={styles["user-edit-form-change-btn"]}
                             >
                                 <Button
                                     type="text"
@@ -273,10 +310,7 @@ const MainEditUserForm = ({ messageApi, user }: Props) => {
             <Divider />
             <Flex gap={10} justify="space-between">
                 <Button
-                    style={{
-                        opacity: 0.75,
-                        fontSize: 12,
-                    }}
+                    className={styles["nav-button"]}
                     icon={<LongLeftArrow />}
                     onClick={() => router.back()}
                     type="link"
@@ -290,10 +324,7 @@ const MainEditUserForm = ({ messageApi, user }: Props) => {
                             disabled={isFieldsValidating()}
                             htmlType="submit"
                             type="link"
-                            style={{
-                                opacity: 0.75,
-                                fontSize: 12,
-                            }}
+                            className={styles["nav-button"]}
                             iconPosition="end"
                             icon={<CheckOutlined />}
                         >
@@ -306,4 +337,4 @@ const MainEditUserForm = ({ messageApi, user }: Props) => {
     );
 };
 
-export default MainEditUserForm;
+export default UserFormMain;

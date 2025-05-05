@@ -22,3 +22,19 @@ export interface ShikimoriRequest {
     order?: string;
     censored?: boolean;
 }
+
+/**
+ * @constant defaultShikimoriRequest
+ * @description Объект с дефолтными значениями для ShikimoriRequest.
+ */
+export const defaultShikimoriRequest: ShikimoriRequest = {
+    page: 0,
+    name: "",
+    ids: "",
+    season: "",
+    status: "",
+    kind: "",
+    genre: "",
+    order: "",
+    censored: true,
+};

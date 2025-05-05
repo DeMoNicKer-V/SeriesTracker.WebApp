@@ -7,8 +7,8 @@ import { GET_GENRES_URL } from "../../endpoints";
 import { get } from "../../httpClient";
 
 // Функция для получения списка жанров
-export const getGenres = async (): Promise<Genre[]> => {
-    const genres = await get<Genre[]>(GET_GENRES_URL, {}); //  Ожидаем массив объектов Genre
+export const getGenres = async (): Promise<GroupGenre> => {
+    const genres = await get<GroupGenre>(GET_GENRES_URL, {}); //  Ожидаем массив объектов Genre
 
     return genres;
 };

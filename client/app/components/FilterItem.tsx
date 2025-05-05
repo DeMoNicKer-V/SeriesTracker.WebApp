@@ -2,13 +2,13 @@ import { Checkbox, Col, Form, Row } from "antd";
 import React from "react"; // Обязательный импорт React
 // Определение интерфейса DataType для элемента данных (жанр, тема, аудитория)
 interface DataType {
-    id: number; // Уникальный идентификатор элемента
+    id: number | any; // Уникальный идентификатор элемента
     russian: string; // Название элемента на русском языке
 }
 
 // Определение интерфейса Props для компонента FilterItem
 interface Props {
-    dataSource: DataType[]; // Массив данных для отображения в виде чекбоксов
+    dataSource?: Genre[]; // Массив данных для отображения в виде чекбоксов
     index: string; // Уникальный индекс для группы чекбоксов
     censored?: boolean; // Флаг, указывающий, нужно ли скрывать элементы, предназначенные для взрослой аудитории (опционально)
 }
@@ -21,14 +21,14 @@ interface Props {
  * @returns {JSX.Element}
  */
 const FilterItem: React.FC<Props> = ({
-    dataSource,
+    dataSource = [],
     index,
     censored,
 }: Props): JSX.Element => {
     // Фильтрация dataSource в зависимости от значения censored
     const filteredDataSource =
         censored === true
-            ? dataSource.filter((item) => ![12, 539].includes(item.id))
+            ? dataSource.filter((item) => ![12, 539].includes(Number(item.id)))
             : dataSource;
     return (
         <Form.Item name={index}>

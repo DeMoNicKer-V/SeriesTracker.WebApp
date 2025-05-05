@@ -2,7 +2,7 @@
 import { deleteSelfUser, deleteUserSeries } from "@/app/api/user/deleteUser";
 import ConditionalContent from "@/app/components/ConditionalContent";
 import PageErrorView from "@/app/components/PageErrorVIew";
-import MainEditUserForm from "@/app/components/UserComponents/MainEditUserForm";
+import UserFormMain from "@/app/components/UserComponents/UserFormMain";
 import { useUser } from "@/app/components/UserContext";
 
 import {
@@ -134,10 +134,7 @@ export default function EditUserPage({
                     />
                     <Row justify={"center"} align={"middle"}>
                         <Col>
-                            <MainEditUserForm
-                                user={user}
-                                messageApi={messageApi}
-                            />
+                            <UserFormMain user={user} messageApi={messageApi} />
                             <Divider orientation="left">
                                 <Flex gap={10}>
                                     Дополнительные настройки{" "}

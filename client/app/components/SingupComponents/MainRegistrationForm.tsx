@@ -9,30 +9,53 @@ import {
     Row,
     Typography,
 } from "antd";
-import { useState } from "react";
+import React, { useState } from "react";
+import styles from "./component.module.css";
 
 const { Text } = Typography;
 
-interface Props {
-    form: FormInstance<any>;
-    handleNext: () => void;
+// Определение интерфейса для значений формы
+interface FormValues {
+    email: string;
+    password: string;
+    userName?: string;
+    dateBirth?: string;
 }
-const MainForm = ({ form, handleNext }: Props) => {
-    const [visibleFields, setVisibleFields] = useState([true]);
 
-    const [isActive, setIsActive] = useState<Record<string, boolean>>({
+// Определение интерфейса для пропсов компонента
+interface Props {
+    form: FormInstance<FormValues>; // Экземпляр Form из Ant Design (обязательно)
+    handleNext: () => void; // Функция для перехода к следующему шагу (обязательно)
+}
+
+/**
+ * @component MainRegistrationForm
+ * @description Первая форма регистрации (обязательная).
+ * Предоставляет поля для ввода email, пароля и имени пользователя.
+ * @param {Props} props - Объект с пропсами компонента.
+ * @returns {JSX.Element}
+ */
+const MainRegistrationForm: React.FC<Props> = ({
+    form,
+    handleNext,
+}: Props): JSX.Element => {
+    const [activeField, setActiveField] = useState<Record<string, boolean>>({
+        // Состояние для активности полей (изначально активен только email)
         email: true,
         password: false,
         userName: false,
     });
-
+    const [visibleFields, setVisibleFields] = useState([true]);
+    // Получаем функции из form
     const { getFieldError, getFieldValue, isFieldsValidating, focusField } =
         form;
 
-    const handleFocus = (name: string) => {
-        setIsActive({ [name]: true });
+    //Устанавливает поле с указанным именем активным.
+    const onFocusField = (name: string) => {
+        setActiveField({ [name]: true });
     };
 
+    // Открывает следующее поле формы.
     const handleNextField = (index: number) => {
         setVisibleFields((prevVisibleFields) => {
             const nextVisibleFields = [...prevVisibleFields];
@@ -83,12 +106,12 @@ const MainForm = ({ form, handleNext }: Props) => {
                             <Input
                                 autoComplete="off"
                                 spellCheck={false}
-                                onFocus={() => handleFocus("email")}
+                                onFocus={() => onFocusField("email")}
                             />
                         </Form.Item>
                     </Col>
                     <Col sm={5} xs={24}>
-                        {isActive.email ? (
+                        {activeField.email && (
                             <Form.Item shouldUpdate>
                                 {() => (
                                     <Button
@@ -102,7 +125,6 @@ const MainForm = ({ form, handleNext }: Props) => {
                                         }
                                         onClick={() => {
                                             handleNextField(0);
-
                                             focusField("password");
                                         }}
                                     >
@@ -110,7 +132,7 @@ const MainForm = ({ form, handleNext }: Props) => {
                                     </Button>
                                 )}
                             </Form.Item>
-                        ) : null}
+                        )}
                     </Col>
                 </Row>
                 {visibleFields[1] && (
@@ -143,12 +165,12 @@ const MainForm = ({ form, handleNext }: Props) => {
                                     autoComplete="off"
                                     autoFocus
                                     spellCheck={false}
-                                    onFocus={() => handleFocus("password")}
+                                    onFocus={() => onFocusField("password")}
                                 />
                             </Form.Item>
                         </Col>
                         <Col sm={5} xs={24}>
-                            {isActive.password && (
+                            {activeField.password && (
                                 <Form.Item shouldUpdate>
                                     {() => (
                                         <Button
@@ -163,7 +185,6 @@ const MainForm = ({ form, handleNext }: Props) => {
                                             }
                                             onClick={() => {
                                                 handleNextField(1);
-
                                                 focusField("userName");
                                             }}
                                         >
@@ -225,12 +246,12 @@ const MainForm = ({ form, handleNext }: Props) => {
                                     autoComplete="off"
                                     autoFocus
                                     spellCheck={false}
-                                    onFocus={() => handleFocus("userName")}
+                                    onFocus={() => onFocusField("userName")}
                                 />
                             </Form.Item>
                         </Col>
                         <Col sm={5} xs={24}>
-                            {isActive.userName && (
+                            {activeField.userName && (
                                 <Form.Item shouldUpdate>
                                     {() => (
                                         <Button
@@ -256,19 +277,14 @@ const MainForm = ({ form, handleNext }: Props) => {
             </Flex>
 
             <Form.Item
-                style={{ marginTop: -5, marginBottom: -10 }}
+                className={styles["registration-form-errors"]}
                 shouldUpdate
             >
                 {() => (
-                    <Text
-                        strong
-                        style={{
-                            opacity: 0.8,
-                        }}
-                    >
-                        {isActive.email && getFieldError("email")}
-                        {isActive.password && getFieldError("password")}
-                        {isActive.userName && getFieldError("userName")}
+                    <Text className={styles["registration-form-error-text"]}>
+                        {activeField.email && getFieldError("email")}
+                        {activeField.password && getFieldError("password")}
+                        {activeField.userName && getFieldError("userName")}
                     </Text>
                 )}
             </Form.Item>
@@ -276,4 +292,4 @@ const MainForm = ({ form, handleNext }: Props) => {
     );
 };
 
-export default MainForm;
+export default MainRegistrationForm;

@@ -9,6 +9,11 @@
     min-width: auto;
     aspect-ratio: auto 8/11;
 }
+.anime-card .anime-card-cover > * {
+    width: 100%;
+    display: flex;
+    border-radius: 10px;
+}
 .category-tag {
     text-align: center;
     width: 100%;
@@ -23,7 +28,7 @@
     border-radius: 10px;
 }
 
-.animes-list :not(:first-child):not(:last-child) * {
+.animes-list > div > div > div {
     justify-content: center;
 }
 

@@ -1,26 +1,35 @@
 import { DatePicker, Divider, Flex, Form, Space, Typography } from "antd";
-import { useState } from "react";
-
 import locale from "antd/es/date-picker/locale/ru_RU";
-import AvatarPicker from "../../components/AvatarPicker";
-import NameFormItem from "../../components/SingupComponents/NameFormItem";
-
 import dayjs from "dayjs";
 import "dayjs/locale/ru";
+import React, { useState } from "react";
+import AvatarPicker from "../../components/AvatarPicker";
+import NameFormItem from "../../components/SingupComponents/NameFormItem";
+import styles from "./component.module.css";
 dayjs.locale("ru");
 
 const { Text, Title } = Typography;
 
+// Определение интерфейса Props для компонента UserFormOptional
 interface Props {
-    previewFile?: string;
+    previewFile?: string; // URL предварительно загруженного файла аватара (опционально, по умолчанию "")
 }
-const SecondaryEditUserForm = ({ previewFile = "" }: Props) => {
-    const [avatar, setAvatar] = useState<string>(previewFile);
+
+/**
+ * @component UserFormOptional
+ * @description Компонент для отображения необязательных полей формы профиля пользователя.
+ * @param {Props} props - Объект с пропсами компонента.
+ * @returns {JSX.Element}
+ */
+const UserFormOptional: React.FC<Props> = ({
+    previewFile = "",
+}: Props): JSX.Element => {
+    const [avatar, setAvatar] = useState<string>(previewFile); // Состояние для хранения URL аватара
 
     return (
         <Flex className="flex-column">
             <Space
-                className="wrap-title"
+                className={styles["user-edit-form-head"]}
                 style={{ justifyContent: "center" }}
                 wrap
                 size={[10, 10]}
@@ -31,7 +40,10 @@ const SecondaryEditUserForm = ({ previewFile = "" }: Props) => {
                 <Flex className="flex-column">
                     <Title level={5}>{"Выберите ваш аватар"}</Title>
 
-                    <Text type="secondary" style={{ fontSize: 12 }}>
+                    <Text
+                        type="secondary"
+                        className={styles["user-edit-form-head-warning"]}
+                    >
                         {
                             "только файлы формата JPG/PNG, размером не превышающие 256 КБ"
                         }
@@ -41,7 +53,11 @@ const SecondaryEditUserForm = ({ previewFile = "" }: Props) => {
 
             <Divider>Как вас зовут?</Divider>
 
-            <Space styles={{ item: { flex: "auto" } }} wrap size={[10, 10]}>
+            <Space
+                classNames={{ item: styles["user-edit-form-head"] }}
+                wrap
+                size={[10, 10]}
+            >
                 <NameFormItem name={"name"} label={"Имя"} />
                 <NameFormItem name={"surName"} label={"Фамилия"} />
             </Space>
@@ -73,4 +89,4 @@ const SecondaryEditUserForm = ({ previewFile = "" }: Props) => {
     );
 };
 
-export default SecondaryEditUserForm;
+export default UserFormOptional;

@@ -1,0 +1,25 @@
+.registration-form-optional-head {
+    justify-content: center;
+}
+.registration-form-warning {
+    font-size: 12px;
+}
+.registration-form-items {
+    flex: auto;
+}
+.registration-form-errors {
+    margin-top: -5px;
+    margin-bottom: -10px;
+}
+.registration-form-error-text {
+    opacity: 0.8;
+    font-weight: 600;
+}
+.registration-form-preview {
+    margin-bottom: 10;
+    flex-direction: column;
+}
+.nav-button {
+    opacity: 0.75;
+    font-size: 12px;
+}

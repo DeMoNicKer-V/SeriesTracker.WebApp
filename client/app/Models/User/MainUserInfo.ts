@@ -30,18 +30,8 @@ export interface MainUserInfo {
 /**
  * @constant defaultUserValues
  * @description Объект с дефолтными значениями для MainUserInfo.
- * @property {string} email Default: "". Адрес электронной почты пользователя.
- * @property {string} userName Default: "". Имя пользователя (никнейм).
- * @property {string} avatar Default: "". URL аватара пользователя.
- * @property {string} name Default: "". Имя пользователя.
- * @property {string} surName Default: "". Фамилия пользователя.
- * @property {string} dateBirth Default: "". Дата рождения пользователя.
- * @property {string} regDate Default: "". Дата регистрации пользователя.
- * @property {number} roleId Default: 0. Идентификатор роли пользователя.
- * @property {SeriesGroupProfile[]} seriesGroup Default: []. Массив объектов SeriesGroupProfile.
- * @property {string} seriesIDS Default: "". Строка с идентификаторами аниме.
  */
-export const defaultUserValues = {
+export const defaultUserValues: MainUserInfo = {
     email: "",
     userName: "",
     avatar: "",

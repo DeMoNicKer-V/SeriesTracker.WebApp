@@ -19,3 +19,26 @@
 .avatar-picker-image {
     display: none;
 }
+
+.safe-mode-icon {
+    cursor: help;
+}
+
+.absolute-image {
+    pointer-events: none;
+    flex-direction: column;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: top;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    position: absolute;
+    border-radius: 10px;
+    justify-content: flex-end;
+}
+
+.absolute-image-filter {
+    filter: contrast(150%) brightness(50%) opacity(90%);
+}

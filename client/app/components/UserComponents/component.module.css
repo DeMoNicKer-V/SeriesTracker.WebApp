@@ -1,0 +1,45 @@
+.user-profile-dropdown {
+    padding: 0 15px;
+    align-items: end;
+}
+
+.user-profile-avatar {
+    border-color: #313131;
+}
+.user-profile-disabled {
+    cursor: default;
+}
+.user-profile-divider {
+    cursor: default;
+}
+
+.user-edit-form-head {
+    justify-content: center;
+    flex: auto;
+}
+
+.user-edit-form-head {
+    justify-content: center;
+    flex: auto;
+}
+
+.user-edit-form-head-warning {
+    font-size: 12px;
+}
+
+.user-edit-form {
+    max-width: 600;
+}
+
+.user-edit-form-passwords {
+    margin-top: 15px;
+}
+.user-edit-form-passwords {
+    display: flex;
+    justify-content: center;
+}
+
+.nav-button {
+    opacity: 0.75;
+    font-size: 12px;
+}

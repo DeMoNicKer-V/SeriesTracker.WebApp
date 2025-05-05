@@ -17,3 +17,18 @@ export const defaultGroups = new Map([
     ["5", 0],
     ["6", 0],
 ]);
+
+export const statusOptions = [
+    { russian: "Онгоинг", id: "ongoing" },
+    { russian: "Вышло", id: "released" },
+    { russian: "Анонс", id: "anons" },
+];
+
+export const kindOptions = [
+    { russian: "TV-Сериал", id: "tv" },
+    { russian: "П/ф", id: "movie" },
+    { russian: "ONA", id: "ona" },
+    { russian: "OVA", id: "ova" },
+    { russian: "Спешл", id: "special" },
+    { russian: "TV-Спешл", id: "tv_special" },
+];
