@@ -2,10 +2,8 @@
     margin-bottom: 8px;
 }
 .card:hover {
-    box-shadow:
-        0 1px 2px 0 rgba(0, 0, 0, 0.5),
-        0 3px 6px -1px rgba(0, 0, 0, 0.4),
-        0 2px 4px 0 rgba(0, 0, 0, 0.4);
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.5),
+        0 3px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px 0 rgba(0, 0, 0, 0.4);
 }
 
 @keyframes moveLine {
@@ -26,4 +24,19 @@
     bottom: 0;
     left: 0;
     animation: moveLine 2s linear infinite;
+}
+
+.searchbar-popover {
+    width: calc(40% + 10px);
+    max-width: calc(40% + 10px);
+}
+.searchbar-favorite-icon {
+    color: #ff69b4;
+}
+
+.searchbar-ribbon {
+    display: block;
+}
+.searchbar-ribbon-none {
+    display: none;
 }

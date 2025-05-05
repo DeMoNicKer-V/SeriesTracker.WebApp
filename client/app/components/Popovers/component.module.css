@@ -1,0 +1,11 @@
+.anime-popover {
+    max-width: 600px;
+}
+.anime-popover-head {
+    margin-bottom: 10px;
+}
+
+.anime-popover-btn {
+    font-weight: 600;
+    font-size: 15px;
+}

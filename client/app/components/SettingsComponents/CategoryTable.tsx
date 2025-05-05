@@ -17,37 +17,82 @@ import { editCategoryColor } from "../../api/category/editCategory";
 import { LongLeftArrow } from "../../img/LongLeftArrow";
 import { Category } from "../../models/Category";
 
+// Определение интерфейса Props для компонента CategoryTable
 interface Props {
-    categories: Category[];
+    categories: Category[]; // Массив категорий (обязательно)
 }
 
 const { Paragraph, Text } = Typography;
 
-const CategoryTable = ({ categories }: Props) => {
-    const [api, contextHolder] = notification.useNotification();
+/**
+ * @component CategoryTable
+ * @description Компонент для отображения таблицы с категориями.
+ * Позволяет изменять цвет каждой категории.
+ * @param {Props} props - Объект с пропсами компонента.
+ * @returns {JSX.Element}
+ */
+const CategoryTable: React.FC<Props> = ({ categories }: Props): JSX.Element => {
+    const [api, contextHolder] = notification.useNotification(); // Хук для управления уведомлениями
 
-    const showUpdateColorNotify = async (record: Category, color: string) => {
-        await openNotification(record, color);
+    // Показывает уведомление с запросом подтверждения изменения цвета категории.
+    const showUpdateColorNotify = async (
+        record: Category,
+        color: string
+    ): Promise<void> => {
+        await openNotification(record, color); // Открываем уведомление
+    };
+    // Обработчик подтверждения изменения цвета категории
+    const onConfirm = async (id: number, color: string): Promise<void> => {
+        try {
+            await editCategoryColor(id, color); // Отправляем запрос на изменение цвета категории
+            api.success({
+                message: "Цвет категории успешно обновлен!",
+            });
+        } catch (error) {
+            console.error("Ошибка при обновлении цвета категории:", error);
+            api.error({
+                message: "Не удалось обновить цвет категории.",
+            });
+        } finally {
+            api.destroy(); // Закрываем уведомление
+            window.location.reload();
+        }
     };
 
-    const onConfirm = async (id: number, color: string) => {
-        await editCategoryColor(id, color);
-        api.destroy();
-        window.location.reload();
+    // Обновляет цвет категории и перезагружает страницу.
+    const updateCategoryColor = async (
+        id: number,
+        color: string
+    ): Promise<void> => {
+        try {
+            await editCategoryColor(id, color); // Отправляем запрос на изменение цвета категории
+            window.location.reload();
+        } catch (error) {
+            console.error("Ошибка при обновлении цвета категории:", error);
+            api.error({
+                message: "Не удалось обновить цвет категории.",
+            });
+        }
     };
 
-    const updateCategoryColor = async (id: number, color: string) => {
-        await editCategoryColor(id, color);
-        window.location.reload();
-    };
-
-    const openNotification = async (record: Category, newColor: string) => {
-        const key = `open-confirm-notify`;
+    // Открывает уведомление с запросом подтверждения изменения цвета категории.
+    const openNotification = async (
+        record: Category,
+        newColor: string
+    ): Promise<void> => {
+        const key = `open-confirm-notify`; // Ключ уведомления
         const btn = (
+            // Кнопки для уведомления
             <Space>
-                <Button type="link" size="small" onClick={() => api.destroy()}>
+                {/* Кнопка "Нет" */}
+                <Button
+                    type="link"
+                    size="small"
+                    onClick={() => api.destroy(key)}
+                >
                     Нет
                 </Button>
+                {/* Кнопка "Да" */}
                 <Button
                     type="primary"
                     size="small"
@@ -57,10 +102,13 @@ const CategoryTable = ({ categories }: Props) => {
                 </Button>
             </Space>
         );
+
         api.open({
+            // Открываем уведомление
             message: (
+                // Сообщение уведомления
                 <Paragraph>
-                    <QuestionCircleOutlined /> {"Изменить цвет категории"}{" "}
+                    <QuestionCircleOutlined /> {`Изменить цвет категории `}
                     <Text strong italic>
                         {record.name}
                     </Text>
@@ -68,23 +116,27 @@ const CategoryTable = ({ categories }: Props) => {
                 </Paragraph>
             ),
             description: (
+                // Описание уведомления
                 <Flex gap={10} justify="center" align="center">
+                    {/* Новый цвет */}
                     <Tag style={{ margin: 0 }} color={newColor}>
                         {newColor.toUpperCase()}
                     </Tag>
                     <LongLeftArrow />
+                    {/* Старый цвет */}
                     <Tag style={{ margin: 0 }} color={record.color}>
                         {record.color.toUpperCase()}
                     </Tag>
                 </Flex>
             ),
-            btn,
-            key,
-            pauseOnHover: true,
-            duration: 0,
+            btn, // Кнопки
+            key, // Ключ
+            pauseOnHover: true, // Пауза при наведении
+            duration: 0, // Не закрывать автоматически
         });
     };
 
+    // Определение колонок таблицы
     const categoryColumns: TableProps<Category>["columns"] = [
         {
             title: "ID",

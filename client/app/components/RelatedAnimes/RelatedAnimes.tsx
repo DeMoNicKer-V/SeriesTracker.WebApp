@@ -1,4 +1,4 @@
-import { Related } from "@/app/models/anime/AnimeDetail";
+import { Related } from "@/app/models/anime/RelatedAnime";
 import {
     CalendarOutlined,
     InfoCircleOutlined,
@@ -20,11 +20,20 @@ import noFoundImage from "../../img/img-error.jpg";
 import MainShortInfo from "../MainShortInfo/MainShortInfo";
 import styles from "./component.module.css";
 
+// Определение интерфейса Props для компонента RelatedAnimes
 interface Props {
-    animes: Related[];
+    animes: Related[]; // Список связаных аниме
 }
 
-const RelatedAnimes = ({ animes }: Props) => {
+/**
+ * @component RelatedAnimes
+ * @description Компонент для отображения связанных (с основным) аниме.
+ * @param {Props} props - Объект с пропсами компонента.
+ * @returns {JSX.Element}
+ */
+export const RelatedAnimes: React.FC<Props> = ({
+    animes,
+}: Props): JSX.Element => {
     return (
         <ConfigProvider
             theme={{

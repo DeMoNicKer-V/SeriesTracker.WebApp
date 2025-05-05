@@ -6,25 +6,36 @@ import {
     TeamOutlined,
     YoutubeOutlined,
 } from "@ant-design/icons";
-import { Button, Col, Flex, Image, Row, Space, Tag, Typography } from "antd";
+import { Button, Col, Flex, Image, Row, Space, Tag } from "antd";
 import MainShortInfo from "../MainShortInfo/MainShortInfo";
+import styles from "./component.module.css";
+
+// Определение интерфейса Props для компонента AnimeDetailPopover
 interface Props {
-    anime: Anime;
-    isOpen: boolean;
+    anime: Anime; // Объект аниме (обязательно)
 }
 
-export const AnimeDetailPopover = ({ anime }: Props) => {
-    const { Text } = Typography;
+/**
+ * @component AnimeDetailPopover
+ * @description Компонент для отображения всплывающей подсказки с детальной информацией об аниме.
+ * @param {Props} props - Объект с пропсами компонента.
+ * @returns {JSX.Element}
+ */
+const AnimeDetailPopover: React.FC<Props> = ({ anime }: Props): JSX.Element => {
     return (
-        <Row style={{ maxWidth: 600 }} justify={"start"}>
+        <Row className={styles["anime-popover"]} justify={"start"}>
             <Col span={7}>
                 <Flex className="height-100" align="center">
-                    <Image preview={false} src={anime.pictureUrl} />
+                    <Image
+                        alt={`preview-${anime.id}`}
+                        preview={false}
+                        src={anime.pictureUrl}
+                    />
                 </Flex>
             </Col>
             <Col offset={1} span={16}>
                 <Row className="height-100">
-                    <Col span={24} style={{ marginBottom: 10 }}>
+                    <Col span={24} className={styles["anime-popover-head"]}>
                         <MainShortInfo
                             title={anime.title}
                             subTitle={anime.subTitle}
@@ -59,7 +70,7 @@ export const AnimeDetailPopover = ({ anime }: Props) => {
                     </Col>
                     <Col span={24} style={{ marginTop: "auto" }}>
                         <Button
-                            style={{ fontWeight: 600, fontSize: 15 }}
+                            className={styles["anime-popover-btn"]}
                             href={`/animes/${anime.id}`}
                             block
                         >

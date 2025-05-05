@@ -1,26 +1,29 @@
+import { deleteSelfUser } from "@/app/api/user/deleteUser";
 import { QuestionCircleOutlined } from "@ant-design/icons";
 import { Flex, Input, Modal, Typography } from "antd";
 import { useState } from "react";
 import styles from "./component.module.css";
 
 interface Props {
-    title: string;
     open: boolean;
+    userName: string;
     onCancel: () => void;
-    onOk: () => void;
 }
 
 const { Text, Title, Paragraph } = Typography;
-const DelteUserModal = ({ title, open, onCancel, onOk }: Props) => {
+
+const DeleteSelfModal = ({ open, userName, onCancel }: Props) => {
     const [deleteStr, setDeleteStr] = useState<string>("");
+    //  Асинхронная функция для удаления своего аккаунта
+    const deleteSelf = async () => {
+        onCancel();
+        await deleteSelfUser(userName);
+    };
     return (
         <Modal
+            onOk={deleteSelf}
             centered
-            onOk={onOk}
-            onCancel={() => {
-                onCancel();
-                setDeleteStr("");
-            }}
+            onCancel={onCancel}
             closeIcon={false}
             open={open}
             cancelText="Нет"
@@ -32,24 +35,27 @@ const DelteUserModal = ({ title, open, onCancel, onOk }: Props) => {
             title={
                 <Flex gap={10}>
                     <QuestionCircleOutlined />
-                    <Title level={5}>{title}</Title>
+                    <Title level={5}>Удалить Ваш Аккаунт?</Title>
                 </Flex>
             }
             footer={(_, { OkBtn, CancelBtn }) => (
                 <>
-                    <CancelBtn />
-                    <OkBtn />
+                    <Flex gap={10}>
+                        <CancelBtn />
+                        <OkBtn />
+                    </Flex>
                 </>
             )}
         >
             <Flex className="flex-column" gap={10}>
                 <Paragraph>
                     Будьте внимательны, это необратимое действие! <br />
-                    Для того, чтобы удалить аккаунт, введите в поле ниже - (
+                    <br />
+                    Чтобы подтвердить удаление, введите в поле ниже - (
                     <Text type="danger" code strong>
                         УДАЛИТЬ
                     </Text>
-                    ) .
+                    ).
                 </Paragraph>
 
                 <Input
@@ -65,4 +71,4 @@ const DelteUserModal = ({ title, open, onCancel, onOk }: Props) => {
     );
 };
 
-export default DelteUserModal;
+export default DeleteSelfModal;

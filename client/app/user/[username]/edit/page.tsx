@@ -1,16 +1,13 @@
 "use client";
-import { deleteSelfUser, deleteUserSeries } from "@/app/api/user/deleteUser";
+import { deleteSelfUser } from "@/app/api/user/deleteUser";
 import ConditionalContent from "@/app/components/ConditionalContent";
+import DeleteAnimesModal from "@/app/components/Modals/DeleteAnimesModal";
+import DeleteSelfModal from "@/app/components/Modals/DeleteSelfModal";
 import PageErrorView from "@/app/components/PageErrorVIew";
 import UserFormMain from "@/app/components/UserComponents/UserFormMain";
 import { useUser } from "@/app/components/UserContext";
 
-import {
-    QuestionCircleOutlined,
-    UploadOutlined,
-    UserOutlined,
-    WarningOutlined,
-} from "@ant-design/icons";
+import { UserOutlined, WarningOutlined } from "@ant-design/icons";
 import {
     Breadcrumb,
     Button,
@@ -18,14 +15,11 @@ import {
     ConfigProvider,
     Divider,
     Flex,
-    Input,
-    Modal,
     notification,
     Row,
     Tooltip,
     Typography,
 } from "antd";
-import Paragraph from "antd/es/typography/Paragraph";
 import dayjs from "dayjs";
 import "dayjs/locale/ru";
 import Link from "next/link";
@@ -74,12 +68,6 @@ export default function EditUserPage({
 
         //  Перенаправляем пользователя на страницу логина
         window.location.href = `/login`;
-    };
-
-    //  Асинхронная функция для удаления списка аниме пользователя
-    const deleteSeriesByUser = async () => {
-        setOpenDelete(false);
-        await deleteUserSeries(params.username);
     };
 
     //  Эффект, который запускается при монтировании компонента
@@ -168,123 +156,16 @@ export default function EditUserPage({
                             </Flex>
                         </Col>
                     </Row>
-                    <Modal
-                        onOk={deleteSeriesByUser}
-                        centered
-                        onCancel={onClose}
-                        closeIcon={false}
+                    <DeleteAnimesModal
                         open={openDelete}
-                        cancelText="Нет"
-                        okText="Удалить"
-                        okButtonProps={{
-                            danger: true,
-                            disabled: deleteStr !== "УДАЛИТЬ",
-                        }}
-                        title={
-                            <Flex gap={10}>
-                                <QuestionCircleOutlined
-                                    style={{ color: "orange" }}
-                                />
-                                <Title level={5}>
-                                    Удалить все ваши данные?
-                                </Title>
-                            </Flex>
-                        }
-                        footer={(_, { OkBtn, CancelBtn }) => (
-                            <>
-                                <Flex gap={10}>
-                                    <Button
-                                        icon={<UploadOutlined />}
-                                        style={{ marginRight: "auto" }}
-                                    ></Button>
-                                    <CancelBtn />
-                                    <OkBtn />
-                                </Flex>
-                            </>
-                        )}
-                    >
-                        <Flex style={{ flexDirection: "column" }} gap={10}>
-                            <Paragraph>
-                                Будьте внимательны, это необратимое действие!{" "}
-                                <br />
-                                Убедитесь, что Вы экспортировали свои данные
-                                заранее.
-                                <br />
-                                Для того, чтобы удалить данные, введите в поле
-                                ниже - (
-                                <Text type="danger" code strong>
-                                    УДАЛИТЬ
-                                </Text>
-                                ) .
-                            </Paragraph>
-
-                            <Input
-                                onChange={(e) => setDeleteStr(e.target.value)}
-                                value={deleteStr}
-                                spellCheck={false}
-                                status="error"
-                                size="small"
-                                style={{
-                                    textAlign: "center",
-                                    fontSize: 16,
-                                    fontWeight: 500,
-                                }}
-                            />
-                        </Flex>
-                    </Modal>
-                    <Modal
-                        centered
-                        onOk={deleteUser}
-                        onCancel={onClose}
-                        closeIcon={false}
+                        userName={params.username}
+                        onCancel={() => setOpenDelete(false)}
+                    />
+                    <DeleteSelfModal
                         open={openDeleteUser}
-                        cancelText="Нет"
-                        okText="Удалить"
-                        okButtonProps={{
-                            danger: true,
-                            disabled: deleteStr !== "УДАЛИТЬ",
-                        }}
-                        title={
-                            <Flex gap={10}>
-                                <QuestionCircleOutlined
-                                    style={{ color: "orange" }}
-                                />
-                                <Title level={5}>Удалить Ваш Аккаунт?</Title>
-                            </Flex>
-                        }
-                        footer={(_, { OkBtn, CancelBtn }) => (
-                            <>
-                                <CancelBtn />
-                                <OkBtn />
-                            </>
-                        )}
-                    >
-                        <Flex style={{ flexDirection: "column" }} gap={10}>
-                            <Paragraph>
-                                Будьте внимательны, это необратимое действие!{" "}
-                                <br />
-                                Для того, чтобы удалить аккаунт, введите в поле
-                                ниже - (
-                                <Text type="danger" code strong>
-                                    УДАЛИТЬ
-                                </Text>
-                                ) .
-                            </Paragraph>
-
-                            <Input
-                                onChange={(e) => setDeleteStr(e.target.value)}
-                                value={deleteStr}
-                                spellCheck={false}
-                                status="error"
-                                size="small"
-                                style={{
-                                    textAlign: "center",
-                                    fontSize: 16,
-                                    fontWeight: 500,
-                                }}
-                            />
-                        </Flex>
-                    </Modal>
+                        userName={params.username}
+                        onCancel={() => setOpenDeleteUser(false)}
+                    />
                 </ConfigProvider>
             </div>
         </ConditionalContent>

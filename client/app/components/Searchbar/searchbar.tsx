@@ -17,6 +17,7 @@ import {
     Flex,
     Image,
     List,
+    message,
     Popover,
     Row,
     Space,
@@ -30,49 +31,79 @@ import { EmptyView } from "../EmptyView";
 import MainShortInfo from "../MainShortInfo/MainShortInfo";
 import styles from "./component.module.css";
 
-const SearchBar = ({}) => {
+const DEBOUNCE_DELAY = 1000; // Задержка для debounce
+/**
+ * @component SearchBar
+ * @description Компонент поисковой строки для поиска аниме.
+ * Отображает список найденных аниме в выпадающем списке.
+ * @returns {JSX.Element}
+ */
+const SearchBar: React.FC = (): JSX.Element => {
+    // Ref для доступа к элементу Input
     const inputRef = useRef<InputRef>(null);
+
+    // Состояние для хранения поискового запроса
     const [query, setQuery] = useState("");
+
+    // Состояние для отображения/скрытия выпадающего списка (не используется)
     const [isShown, setIsShown] = useState(false);
+
+    // Состояние для отображения индикатора загрузки
     const [loading, setLoading] = useState(false);
+
+    // Состояние для отображения сообщения, когда ничего не найдено
     const [nullString, setNullString] = useState("Введите для поиска");
+
+    // Состояние для хранения списка найденных аниме
     const [animes, setAnimes] = useState<Anime[]>([]);
 
-    const searchAnimes = async (query: string) => {
-        const series: Anime[] | any = await getAnimesByName(query);
-        setAnimes(series);
-        setLoading(false);
+    //  Выполняет поиск аниме по имени и обновляет состояние.
+    const searchAnimes = async (query: string): Promise<void> => {
+        try {
+            const searchResult: Anime[] = await getAnimesByName(query); // Выполняем поиск
+            setAnimes(searchResult);
 
-        if (!series.length) {
-            setNullString("Ничего не найдено");
-            return;
+            if (searchResult.length === 0) {
+                setNullString("Ничего не найдено");
+            }
+        } catch (error: any) {
+            console.error("Ошибка при поиске аниме:", error);
+            message.error(
+                error.message || "Не удалось выполнить поиск. Попробуйте позже."
+            );
+            setNullString("Ошибка при поиске");
+        } finally {
+            setLoading(false); // Снимаем индикатор загрузки
         }
     };
+
+    // Переключает состояние отображения выпадающего списка.
     const handleClick = () => {
         setIsShown((current) => !current);
     };
+
     useEffect(() => {
+        // Выполняем поиск с задержкой (debounce)
         if (!query) {
             setAnimes([]);
             setNullString("Введите для поиска");
             setLoading(false);
             return;
         }
+
         setLoading(true);
-        // Выполняем поиск, когда значение меняется (с задержкой)
+
         const timeoutId = setTimeout(() => {
             searchAnimes(query);
-        }, 1000); // Задержка в 1000 миллисекунд (для debounce)
-        return () => clearTimeout(timeoutId); // Убираем timeout
+        }, DEBOUNCE_DELAY);
+
+        return () => clearTimeout(timeoutId); // Очищаем таймер при размонтировании компонента или изменении query
     }, [query]);
 
-    const handleChange = (e: any) => {
-        setQuery(e.target.value);
+    // Обработчик изменения значения поля ввода.
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setQuery(e.target.value); // Обновляем поисковый запрос
     };
-
-    const customizeRenderEmpty = () => (
-        <EmptyView text={nullString} iconSize={20} fontSize={16} />
-    );
 
     return (
         <ConfigProvider
@@ -93,18 +124,14 @@ const SearchBar = ({}) => {
                     },
                 },
             }}
-            renderEmpty={customizeRenderEmpty}
+            renderEmpty={() => (
+                <EmptyView text={nullString} iconSize={20} fontSize={16} />
+            )}
         >
             <Popover
                 destroyTooltipOnHide
-                rootClassName="popover"
+                rootClassName={styles["searchbar-popover"]}
                 trigger={"hover"}
-                styles={{
-                    root: {
-                        width: "calc(40% + 10px)",
-                        maxWidth: "calc(40% + 10px)",
-                    },
-                }}
                 arrow={false}
                 open={isShown && !loading}
                 onOpenChange={() => {
@@ -119,12 +146,11 @@ const SearchBar = ({}) => {
                                 <Badge.Ribbon
                                     text={item.categoryName}
                                     color={item.categoryColor}
-                                    style={{
-                                        display:
-                                            item.categoryId > 0
-                                                ? "block"
-                                                : "none",
-                                    }}
+                                    className={
+                                        item.categoryId === 0
+                                            ? styles["searchbar-ribbon-none"]
+                                            : styles["searchbar-ribbon"]
+                                    }
                                 >
                                     <Card className={styles["card"]} hoverable>
                                         <Row
@@ -149,9 +175,11 @@ const SearchBar = ({}) => {
                                                         {item.isFavorite && (
                                                             <Tag className="tag">
                                                                 <HeartFilled
-                                                                    style={{
-                                                                        color: "#ff69b4",
-                                                                    }}
+                                                                    className={
+                                                                        styles[
+                                                                            "searchbar-favorite-icon"
+                                                                        ]
+                                                                    }
                                                                 />
                                                             </Tag>
                                                         )}

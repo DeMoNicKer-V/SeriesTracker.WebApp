@@ -19,43 +19,69 @@ import {
     TableProps,
 } from "antd";
 import { FilterDropdownProps } from "antd/es/table/interface";
+import styles from "./component.module.css";
 
+// Определение интерфейса Props для компонента UserTable
 interface Props {
-    usersData?: UsersList;
-    user?: User;
-    setPage: (page: number) => void;
-    setDeleteUserName: (userName: string) => void;
-    setOpenDeleteModal: (open: boolean) => void;
+    usersData?: UsersList; // Данные о пользователях (опционально)
+    user?: User; // Информация о текущем пользователе (опционально)
+    setPage: (page: number) => void; // Функция для установки номера страницы (обязательно)
+    setDeleteUserName: (userName: string) => void; // Функция для установки имени пользователя для удаления (обязательно)
+    setOpenDeleteModal: (open: boolean) => void; // Функция для открытия/закрытия модального окна удаления (обязательно)
 }
 
-const handleSearch = (confirm: FilterDropdownProps["confirm"]) => {
-    confirm();
-};
-
-const handleReset = (
-    clearFilters: () => void,
-    confirm: FilterDropdownProps["confirm"]
-) => {
-    clearFilters();
-    confirm();
-};
-
-const UserTable = ({
+/**
+ * @component UserTable
+ * @description Компонент для отображения таблицы со списком пользователей.
+ * Позволяет искать пользователей по имени, изменять их роль и удалять пользователей.
+ * @param {Props} props - Объект с пропсами компонента.
+ * @returns {JSX.Element}
+ */
+const UserTable: React.FC<Props> = ({
     usersData,
     user,
     setPage,
     setDeleteUserName,
     setOpenDeleteModal,
-}: Props) => {
-    const onChange = async (userId: string, e: RadioChangeEvent) => {
-        await changeUserRole(userId, e.target.value);
-        window.location.reload();
+}): JSX.Element => {
+    //Обработчик события поиска.
+
+    const handleSearch = (confirm: FilterDropdownProps["confirm"]) => {
+        confirm(); // Подтверждаем поиск
     };
 
-    const openDeleteModal = (username: string) => {
-        setDeleteUserName(username);
-        setOpenDeleteModal(true);
+    //Обработчик события сброса фильтров.
+
+    const handleReset = (
+        clearFilters: () => void,
+        confirm: FilterDropdownProps["confirm"]
+    ) => {
+        clearFilters(); // Очищаем фильтры
+        confirm(); // Подтверждаем сброс
     };
+
+    /**
+     * @function onChange
+     * @description Обработчик события изменения роли пользователя.
+     * @param {string} userId - ID пользователя.
+     * @param {RadioChangeEvent} e - Объект события RadioChangeEvent.
+     * @returns {Promise<void>}
+     */
+    const onChange = async (
+        userId: string,
+        e: RadioChangeEvent
+    ): Promise<void> => {
+        await changeUserRole(userId, e.target.value); // Отправляем запрос на изменение роли пользователя
+        window.location.reload(); // Перезагружаем страницу
+    };
+
+    //Открывает модальное окно подтверждения удаления пользователя.
+    const openDeleteModal = (username: string) => {
+        setDeleteUserName(username); // Устанавливаем имя пользователя для удаления
+        setOpenDeleteModal(true); // Открываем модальное окно
+    };
+
+    //Возвращает объект с настройками для фильтрации столбца таблицы.
 
     const getColumnSearchProps = (): TableColumnType<UserItem> => ({
         filterDropdown: ({
@@ -64,15 +90,19 @@ const UserTable = ({
             confirm,
             clearFilters,
         }) => (
-            <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
+            // Компонент для отображения фильтра
+            <div
+                className={styles["user-table-search"]}
+                onKeyDown={(e) => e.stopPropagation()} // Предотвращаем всплытие события keydown
+            >
                 <Input
+                    className={styles["user-table-search-input"]}
                     placeholder={"Введите для поиска"}
                     value={selectedKeys[0]}
                     onChange={(e) =>
                         setSelectedKeys(e.target.value ? [e.target.value] : [])
-                    }
+                    } // Обработчик изменения значения поля ввода
                     onPressEnter={() => handleSearch(confirm)}
-                    style={{ marginBottom: 10 }}
                 />
                 <Flex justify="space-between">
                     <Button
@@ -94,12 +124,14 @@ const UserTable = ({
         ),
         filterIcon: <SearchOutlined />,
         onFilter: (value, record) =>
+            // Функция фильтрации
             record.userName
                 .toString()
                 .toLowerCase()
-                .includes((value as string).toLowerCase()),
+                .includes((value as string).toLowerCase()), // Приводим к нижнему регистру и проверяем наличие подстроки
     });
 
+    // Определение колонок таблицы
     const userColumn: TableProps<UserItem>["columns"] = [
         {
             fixed: "left",

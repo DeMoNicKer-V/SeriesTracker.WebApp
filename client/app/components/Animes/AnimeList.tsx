@@ -158,12 +158,7 @@ const AnimeList = ({}) => {
                                 mouseLeaveDelay={0.2}
                                 placement="bottomLeft"
                                 arrow={false}
-                                content={
-                                    <AnimeDetailPopover
-                                        anime={animes}
-                                        isOpen={false}
-                                    />
-                                }
+                                content={<AnimeDetailPopover anime={animes} />}
                             >
                                 <Link href={`/animes/${animes.id}`}>
                                     <Badge.Ribbon
