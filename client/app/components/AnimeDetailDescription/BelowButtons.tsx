@@ -141,9 +141,7 @@ const BelowButtons = ({ anime, categories, auth }: Props) => {
                         : "Добавить в избранное",
                 ]}
                 character={<HeartFilled />}
-                style={{
-                    color: "#ff69b4",
-                }}
+                className={styles["heart-icon"]}
                 onChange={updateFavoriteSeries}
                 defaultValue={anime.isFavorite ? 1 : 0}
                 count={1}

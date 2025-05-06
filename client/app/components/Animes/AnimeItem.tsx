@@ -1,6 +1,6 @@
 // CalendarAnime.tsx
 import { Anime } from "@/app/models/anime/Anime";
-import { FireOutlined, StarOutlined } from "@ant-design/icons";
+import { FireOutlined, HeartFilled, StarOutlined } from "@ant-design/icons";
 import {
     Badge,
     Card,
@@ -11,6 +11,7 @@ import {
     Row,
     Skeleton,
     Tag,
+    Tooltip,
     Typography,
 } from "antd";
 import Link from "next/link";
@@ -83,6 +84,7 @@ const AnimeItem: React.FC<Props> = ({
                         }
                     >
                         <Card
+                            classNames={{ cover: styles["anime-card-cover"] }}
                             className={styles["anime-card"]}
                             bordered={false}
                             cover={
@@ -117,6 +119,17 @@ const AnimeItem: React.FC<Props> = ({
                 {anime.title}
             </Link>
             <Row gutter={[0, 5]} style={{ justifyContent: "start" }}>
+                <Col>
+                    {anime.isFavorite && (
+                        <Tooltip title="В избранном">
+                            <Tag
+                                color="pink"
+                                className="tag"
+                                icon={<HeartFilled />}
+                            ></Tag>
+                        </Tooltip>
+                    )}
+                </Col>
                 <Col>
                     {anime.status.length > 6 ? (
                         <Tag
