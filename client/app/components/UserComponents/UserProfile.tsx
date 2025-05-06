@@ -25,7 +25,7 @@ import styles from "./component.module.css";
 
 // Определение интерфейса Props для компонента UserProfile
 interface Props {
-    user: User;
+    user: User | undefined;
 }
 
 /**

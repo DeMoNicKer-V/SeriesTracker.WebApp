@@ -1,122 +1,66 @@
 import { getAnimes } from "@/app/api/animes/getAnime";
 import { Anime, defaultAnimeValues } from "@/app/models/anime/Anime";
-import { ShikimoriRequest } from "@/app/models/requests/ShikimoriRequest";
-import {
-    FireOutlined,
-    HeartFilled,
-    SearchOutlined,
-    StarOutlined,
-} from "@ant-design/icons";
-import {
-    Badge,
-    Col,
-    ConfigProvider,
-    Divider,
-    Flex,
-    FloatButton,
-    List,
-    Popover,
-    Row,
-    Skeleton,
-    Tag,
-    Tooltip,
-    Typography,
-} from "antd";
-import Card from "antd/es/card/Card";
-import Link from "next/link";
-import { useSearchParams } from "next/navigation";
-import { useCallback, useMemo, useState } from "react";
+import useAnimeList from "@/app/utils/useAnimeList";
+import { SearchOutlined } from "@ant-design/icons";
+import { ConfigProvider, FloatButton, List } from "antd";
+import React, { useState } from "react";
 import useSWR from "swr";
-import AbsoluteImage from "../AbsoluteImage";
 import AnimeFilterForm from "../AnimeFilterForm";
-import { EmptyView } from "../EmptyView";
+import EmptyView from "../EmptyView";
 import PageNavigator from "../PageNavigator";
-import AnimeDetailPopover from "../Popovers/AnimeDetailPopover";
+import AnimeItem from "./AnimeItem";
 import styles from "./component.module.css";
 
-const { Text } = Typography;
+/**
+ * @component AnimeList
+ * @description Компонент для отображения списка аниме на главной странице.
+ * Использует хук useAnimeList для управления пагинацией и useSWR для получения данных.
+ * @returns {JSX.Element}
+ */
+const AnimesList: React.FC = ({}): JSX.Element => {
+    // Хук для управления пагинацией
+    const { page, request, setRequest, createQueryString, changePage } =
+        useAnimeList();
 
-const AnimeList = ({}) => {
-    const searchParams = useSearchParams();
-    const createQueryString = useMemo(
-        () => (query: any) => {
-            const params = new URLSearchParams(); // Создаем новый объект без начальных значений
-            for (const [name, value] of Object.entries(query)) {
-                if (name && value) {
-                    params.set(name, String(value));
-                } else {
-                    params.delete(name); // Удаляем параметр, если value равен null или undefined
-                }
-            }
-            return params.toString(); // Возвращаем только строку параметров
-        },
-        []
-    );
-
-    const [page, setPage] = useState<number>(
-        searchParams.get("page") != null ? Number(searchParams.get("page")) : 1
-    );
-    const [request, setRequest] = useState<ShikimoriRequest>({
-        page: page,
-    });
-
-    function scrollTop() {
-        window.scrollTo({
-            top: 0,
-            left: 0,
-            behavior: "smooth",
-        });
-    }
+    // Состояние, отвечающее за открытие меню поиска
     const [isOpen, setIsOpen] = useState(false);
+
+    // Функция для переключения состояния видимости меню поиска
     const toggleOpen = () => {
         setIsOpen(!isOpen);
     };
 
-    const changePage = useCallback(
-        (newPage: number) => {
-            setPage(newPage);
-            request.page = newPage;
-            scrollTop();
-        },
-        [page]
-    );
-
-    const getAnimesPost = async (url: string) => {
+    //  Асинхронная функция для получения аниме по Url.
+    const getAnimesList = async (url: string): Promise<Anime[]> => {
         const data: Anime[] = await getAnimes(url);
         return data;
     };
 
-    const handlePageChange = (newPage: number) => {
-        setPage(newPage); // Обновляем состояние
-    };
+    // Используем хук для получения аниме
     const {
         data = Array.from({ length: 14 }).map((_, i) => defaultAnimeValues),
         isLoading,
-    } = useSWR(createQueryString(request), getAnimesPost, {
-        // Опции для useSWR
-        revalidateOnFocus: false, // Отключить обновление при фокусе
-        revalidateOnReconnect: false, // Отключить обновление при восстановлении соединения
+    } = useSWR(createQueryString(request), getAnimesList, {
+        revalidateOnFocus: false,
+        revalidateOnReconnect: false,
         errorRetryCount: 0,
     });
 
+    // Компонент для отображения скелетона и навигации по страницам.
+    //  Отображаем, только если элементов больше 21
     const ListBranches = () => {
         return (
-            <Skeleton
-                active
-                className="width-100"
-                paragraph={false}
-                loading={isLoading}
-            >
-                <PageNavigator
-                    nextButtonDisable={data.length < 22}
-                    onFirstButtonCLick={() => changePage(1)}
-                    onPrevButtonCLick={() => changePage(page - 1)}
-                    onNextButtonCLick={() => changePage(page + 1)}
-                    page={page}
-                />
-            </Skeleton>
+            <PageNavigator
+                hidden={data.length < 22}
+                isLoading={isLoading}
+                onFirstButtonCLick={() => changePage(1)}
+                onPrevButtonCLick={() => changePage(page - 1)}
+                onNextButtonCLick={() => changePage(page + 1)}
+                page={page}
+            />
         );
     };
+
     return (
         <ConfigProvider
             renderEmpty={() => (
@@ -125,8 +69,8 @@ const AnimeList = ({}) => {
         >
             <List
                 className={styles["animes-list"]}
-                header={data.length > 0 && <ListBranches />}
-                footer={data.length > 7 ? <ListBranches /> : []}
+                header={<ListBranches />}
+                footer={<ListBranches />}
                 grid={{
                     gutter: 30,
                     xs: 2,
@@ -137,165 +81,9 @@ const AnimeList = ({}) => {
                     xxl: 7,
                 }}
                 dataSource={data.length === 22 ? data.slice(0, -1) : data}
-                renderItem={(animes: Anime) => (
+                renderItem={(anime: Anime) => (
                     <List.Item>
-                        <Skeleton
-                            className={"flex-column"}
-                            loading={isLoading}
-                            active
-                            style={{ gap: 10 }}
-                            avatar={{
-                                shape: "square",
-                                className: styles["anime-skeleton-image"],
-                            }}
-                            paragraph={{ rows: 2 }}
-                            title={false}
-                        >
-                            <Popover
-                                rootClassName="popover"
-                                trigger={"hover"}
-                                mouseEnterDelay={1}
-                                mouseLeaveDelay={0.2}
-                                placement="bottomLeft"
-                                arrow={false}
-                                content={<AnimeDetailPopover anime={animes} />}
-                            >
-                                <Link href={`/animes/${animes.id}`}>
-                                    <Badge.Ribbon
-                                        text={
-                                            <Flex
-                                                justify="center"
-                                                align="center"
-                                            >
-                                                <Flex
-                                                    gap={3}
-                                                    justify="center"
-                                                    align="center"
-                                                >
-                                                    <StarOutlined
-                                                        style={{ fontSize: 11 }}
-                                                    />
-                                                    <Text
-                                                        className={
-                                                            styles["cover-text"]
-                                                        }
-                                                    >
-                                                        {animes.score}
-                                                    </Text>
-                                                </Flex>
-                                                <Divider
-                                                    type="vertical"
-                                                    style={{ top: 0 }}
-                                                />
-                                                <Text
-                                                    className={
-                                                        styles["cover-text"]
-                                                    }
-                                                >
-                                                    {new Date(
-                                                        animes.startDate
-                                                    ).getFullYear()}
-                                                </Text>
-                                            </Flex>
-                                        }
-                                    >
-                                        <Card
-                                            className={styles["anime-card"]}
-                                            classNames={{
-                                                cover: styles[
-                                                    "anime-card-cover"
-                                                ],
-                                            }}
-                                            bordered={false}
-                                            cover={
-                                                <AbsoluteImage
-                                                    src={animes.pictureUrl}
-                                                    zIndex={0}
-                                                >
-                                                    {animes.categoryId > 0 && (
-                                                        <Tag
-                                                            className={
-                                                                styles[
-                                                                    "category-tag"
-                                                                ]
-                                                            }
-                                                            color={
-                                                                animes.categoryColor
-                                                            }
-                                                            bordered={false}
-                                                        >
-                                                            <Text
-                                                                className={
-                                                                    styles[
-                                                                        "cover-text"
-                                                                    ]
-                                                                }
-                                                            >
-                                                                {
-                                                                    animes.categoryName
-                                                                }
-                                                            </Text>
-                                                        </Tag>
-                                                    )}
-                                                </AbsoluteImage>
-                                            }
-                                        ></Card>
-                                    </Badge.Ribbon>
-                                </Link>
-                            </Popover>
-                            <Link
-                                className="title-link"
-                                href={`/animes/${animes.id}`}
-                            >
-                                {animes.title}
-                            </Link>
-                            <Row
-                                gutter={[0, 5]}
-                                style={{ justifyContent: "start" }}
-                            >
-                                {animes.isFavorite && (
-                                    <Col>
-                                        <Tooltip
-                                            title={"В избранном"}
-                                            trigger={"hover"}
-                                        >
-                                            <Tag className="tag">
-                                                <HeartFilled
-                                                    style={{
-                                                        color: "#ff69b4",
-                                                    }}
-                                                />
-                                            </Tag>
-                                        </Tooltip>
-                                    </Col>
-                                )}
-                                <Col>
-                                    {animes.status.length > 6 ? (
-                                        <Tag
-                                            className="tag"
-                                            color="orange"
-                                            icon={<FireOutlined />}
-                                        >
-                                            {animes.status}
-                                        </Tag>
-                                    ) : (
-                                        <Tag className="tag">
-                                            {animes.status}
-                                        </Tag>
-                                    )}
-                                </Col>
-                                <Col>
-                                    <Tag className="tag">{animes.kind}</Tag>
-                                </Col>
-                                <Col>
-                                    {animes.kind.length === 5 ? (
-                                        <Tag className="tag">{`${animes.duration} мин.`}</Tag>
-                                    ) : (
-                                        <Tag className="tag">{`${animes.episodes} эп.`}</Tag>
-                                    )}
-                                </Col>
-                            </Row>
-                        </Skeleton>
+                        <AnimeItem anime={anime} loading={isLoading} />
                     </List.Item>
                 )}
             />
@@ -303,9 +91,9 @@ const AnimeList = ({}) => {
                 open={isOpen}
                 onClose={toggleOpen}
                 setRequest={setRequest}
-                setPage={handlePageChange}
+                setPage={changePage}
             />
-            <FloatButton.Group style={{ right: 0, margin: 10, bottom: 32 }}>
+            <FloatButton.Group className={styles["float-btn-group"]}>
                 <FloatButton
                     type="primary"
                     icon={<SearchOutlined />}
@@ -317,4 +105,4 @@ const AnimeList = ({}) => {
     );
 };
 
-export default AnimeList;
+export default AnimesList;

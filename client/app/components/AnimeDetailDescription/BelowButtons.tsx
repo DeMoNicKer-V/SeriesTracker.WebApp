@@ -1,7 +1,7 @@
 import { createSeries } from "@/app/api/series/createSeries";
 import { deleteSeries } from "@/app/api/series/deleteSeries";
 import { updateSeries } from "@/app/api/series/editSeries";
-import { Anime } from "@/app/models/anime/AnimeDetail";
+import { AnimeDetail } from "@/app/models/anime/AnimeDetail";
 import {
     BookOutlined,
     CloseOutlined,
@@ -23,11 +23,11 @@ import { useState } from "react";
 import { mutate } from "swr";
 import styles from "./component.module.css";
 interface Props {
-    anime: Anime;
+    anime: AnimeDetail;
     auth: boolean;
     categories: { value: number; label: string }[];
 }
-
+// TODO: Раскидать try catch по все await функциям
 const BelowButtons = ({ anime, categories, auth }: Props) => {
     const [watchedEpisode, setWatchedEpisode] = useState<number>(
         anime.watchedEpisodes
@@ -96,7 +96,10 @@ const BelowButtons = ({ anime, categories, auth }: Props) => {
         return request;
     };
 
-    const updateCategorySeries = async (anime: Anime, categoryId: number) => {
+    const updateCategorySeries = async (
+        anime: AnimeDetail,
+        categoryId: number
+    ) => {
         if (anime.seriesId) {
             const request = createRequest(
                 categoryId === 3 ? anime.episodes : anime.watchedEpisodes,

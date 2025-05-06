@@ -5,8 +5,8 @@ import { ConfigProvider, Divider, Layout, theme } from "antd";
 import { Footer } from "antd/es/layout/layout";
 import { usePathname } from "next/navigation";
 import React, { useEffect, useState } from "react";
+import FooterContent from "./components/Layout/FooterContent";
 import HeaderMenu from "./components/Layout/HeaderMenu";
-import MainFooterContent from "./components/Layout/MainFooterContent";
 import SiderMenu from "./components/Layout/SiderMenu";
 import StarsBackground from "./components/StarsBackground/StarsBackground";
 import { UserProvider } from "./components/UserContext";
@@ -140,7 +140,7 @@ export default function RootLayout({
                                     {/*  Компонент футера */}
                                     <Footer>
                                         <Divider style={{ margin: 0 }} />{" "}
-                                        <MainFooterContent
+                                        <FooterContent
                                             alignItems={
                                                 ["/login", "/signup"].includes(
                                                     pathName

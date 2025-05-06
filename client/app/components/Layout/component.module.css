@@ -4,11 +4,13 @@
     z-index: 99;
     align-items: center;
     padding: 0 20px;
-    box-shadow:
-        0 2px 4px -1px rgba(0, 0, 0, 0.3),
-        0 4px 5px 0 rgba(0, 0, 0, 0.24),
-        0 1px 10px 0 rgba(0, 0, 0, 0.22);
+    box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.3),
+        0 4px 5px 0 rgba(0, 0, 0, 0.24), 0 1px 10px 0 rgba(0, 0, 0, 0.22);
     transition: all 0.2s;
+}
+
+.nav-header-btn {
+    cursor: pointer;
 }
 
 .sider {
@@ -19,20 +21,40 @@
     transform: translateX(0%);
     padding: 5px;
     margin: 10px;
-    box-shadow:
-        0 2px 4px -1px rgba(0, 0, 0, 0.3),
-        0 4px 5px 0 rgba(0, 0, 0, 0.24),
-        0 1px 10px 0 rgba(0, 0, 0, 0.22);
+    box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.3),
+        0 4px 5px 0 rgba(0, 0, 0, 0.24), 0 1px 10px 0 rgba(0, 0, 0, 0.22);
     border-radius: 5px;
 }
 
 .sider-menu {
     font-size: 16px;
     font-weight: 600;
+    background-color: transparent;
 }
+
 .sider-menu span[role="img"] {
     font-size: 20px !important;
     padding-right: 2px;
+}
+
+.footer-secondary-text {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.45);
+}
+
+.footer-primary-text {
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.sider-menu-about {
+    right: 3%;
+    bottom: 20px;
+}
+
+.sider-menu-about-collapsed {
+    right: 25%;
+    bottom: 20px;
 }
 
 @media (max-width: 1200px) {

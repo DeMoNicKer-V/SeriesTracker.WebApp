@@ -28,7 +28,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import noFoundImage from "../../img/img-error.jpg";
 import { EmptyView } from "../EmptyView";
-import MainShortInfo from "../MainShortInfo/MainShortInfo";
+import ShortInfo from "../ShortInfo/ShortInfo";
 import styles from "./component.module.css";
 
 const DEBOUNCE_DELAY = 1000; // Задержка для debounce
@@ -167,7 +167,7 @@ const SearchBar: React.FC = (): JSX.Element => {
                                                 />
                                             </Col>
                                             <Col offset={1}>
-                                                <MainShortInfo
+                                                <ShortInfo
                                                     title={item.title}
                                                     subTitle={item.subTitle}
                                                 >
@@ -237,7 +237,7 @@ const SearchBar: React.FC = (): JSX.Element => {
                                                             {`${item.episodes} эп.`}
                                                         </Tag>
                                                     </Space>
-                                                </MainShortInfo>
+                                                </ShortInfo>
                                             </Col>
                                         </Row>
                                     </Card>

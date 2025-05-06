@@ -21,13 +21,21 @@ import styles from "./component.module.css";
 const { Text, Title } = Typography;
 
 // Интерфейс для props компонента CalendarAnime
-interface CalendarAnimeProps {
+interface Props {
     item: CalendarAnimeItem; // Данные об аниме
     loading: boolean; // Флаг, указывающий, загружаются ли данные
 }
 
-// Компонент CalendarAnime: Отображает информацию об аниме
-const CalendarAnime: React.FC<CalendarAnimeProps> = ({ item, loading }) => {
+/**
+ * @component CalendarAnime
+ * @description Компонент для отображения аниме в списке.
+ * @param {Props} props - Объект с пропсами компонента.
+ * @returns {JSX.Element}
+ */
+const CalendarAnime: React.FC<Props> = ({
+    item,
+    loading,
+}: Props): JSX.Element => {
     return (
         <Skeleton
             className={styles["calendar-skeleton"]}
@@ -41,14 +49,10 @@ const CalendarAnime: React.FC<CalendarAnimeProps> = ({ item, loading }) => {
         >
             <Link href={`/animes/${item.anime.id}`}>
                 <Badge.Ribbon
-                    color="volcano"
-                    style={
-                        item.nextEpisode === item.anime.episodes
-                            ? {}
-                            : {
-                                  display: "none",
-                              }
+                    className={
+                        item.nextEpisode === item.anime.episodes ? "hidden" : ""
                     }
+                    color="volcano"
                     text={
                         <Tag
                             className="transparent"
@@ -113,10 +117,8 @@ const CalendarAnime: React.FC<CalendarAnimeProps> = ({ item, loading }) => {
                                 />
                             </Col>
                             <Col
+                                className={styles["calendar-anime-episodes"]}
                                 offset={1}
-                                style={{
-                                    marginLeft: "auto",
-                                }}
                                 lg={2}
                                 xl={2}
                                 xxl={2}

@@ -17,7 +17,7 @@ import {
 } from "antd";
 import Link from "next/link";
 import noFoundImage from "../../img/img-error.jpg";
-import MainShortInfo from "../MainShortInfo/MainShortInfo";
+import ShortInfo from "../ShortInfo/ShortInfo";
 import styles from "./component.module.css";
 
 // Определение интерфейса Props для компонента RelatedAnimes
@@ -78,7 +78,7 @@ export const RelatedAnimes: React.FC<Props> = ({
                                     xl={21}
                                     xxl={22}
                                 >
-                                    <MainShortInfo
+                                    <ShortInfo
                                         title={item.anime.title}
                                         subTitle={item.anime.subTitle}
                                         strongSubTitle
@@ -107,7 +107,7 @@ export const RelatedAnimes: React.FC<Props> = ({
                                                 {item.relationText}
                                             </Tag>
                                         </Space>
-                                    </MainShortInfo>
+                                    </ShortInfo>
                                 </Col>
                             </Row>
                         </Card>

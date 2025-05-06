@@ -36,8 +36,8 @@ export const register = async (userData: CreateUserRequest): Promise<void> => {
 };
 
 // Функция для выхода пользователя из системы
-export const logout = async (userName: string): Promise<void> => {
-    const url = LOGOUT_URL.replace("{userName}", userName);
+export const logout = async (userName?: string): Promise<void> => {
+    const url = LOGOUT_URL.replace("{userName}", userName ?? "");
 
     await post<void>(url, {});
 };

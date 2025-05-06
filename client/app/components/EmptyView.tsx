@@ -40,3 +40,5 @@ export const EmptyView: React.FC<Props> = ({
         </Space>
     );
 };
+
+export default EmptyView;

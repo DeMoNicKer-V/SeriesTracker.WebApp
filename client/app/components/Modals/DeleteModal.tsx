@@ -1,27 +1,37 @@
-import { deleteSelfUser } from "@/app/api/user/deleteUser";
 import { QuestionCircleOutlined } from "@ant-design/icons";
 import { Flex, Input, Modal, Typography } from "antd";
-import { useState } from "react";
+import React, { useState } from "react";
 import styles from "./component.module.css";
 
+// Определение интерфейса Props для компонента DeleteModal
 interface Props {
-    open: boolean;
-    userName: string;
-    onCancel: () => void;
+    open: boolean; // Определяет, открыто ли модальное окно (обязательно)
+    title: string; // Функция для закрытия модального окна (обязательно)
+    onConfirm: () => Promise<void>; // Функция, вызываемая при подтверждении (удалении) (обязательно)
+    onCancel: () => void; // Заголовок модального окна (обязательно)
 }
 
 const { Text, Title, Paragraph } = Typography;
 
-const DeleteSelfModal = ({ open, userName, onCancel }: Props) => {
+/**
+ * @component DeleteModal
+ * @description Компонент для отображения модального окна подтверждения удаления.
+ * Может использоваться для удаления аккаунта пользователя, списка аниме или любых других данных.
+ * @param {Props} props - Объект с пропсами компонента.
+ * @returns {JSX.Element}
+ */
+const DeleteModal: React.FC<Props> = ({
+    open,
+    onCancel,
+    onConfirm,
+    title,
+}: Props): JSX.Element => {
+    // Состояние для хранения введенного текста
     const [deleteStr, setDeleteStr] = useState<string>("");
-    //  Асинхронная функция для удаления своего аккаунта
-    const deleteSelf = async () => {
-        onCancel();
-        await deleteSelfUser(userName);
-    };
+
     return (
         <Modal
-            onOk={deleteSelf}
+            onOk={onConfirm}
             centered
             onCancel={onCancel}
             closeIcon={false}
@@ -35,7 +45,7 @@ const DeleteSelfModal = ({ open, userName, onCancel }: Props) => {
             title={
                 <Flex gap={10}>
                     <QuestionCircleOutlined />
-                    <Title level={5}>Удалить Ваш Аккаунт?</Title>
+                    <Title level={5}>{title}</Title>
                 </Flex>
             }
             footer={(_, { OkBtn, CancelBtn }) => (
@@ -71,4 +81,4 @@ const DeleteSelfModal = ({ open, userName, onCancel }: Props) => {
     );
 };
 
-export default DeleteSelfModal;
+export default DeleteModal;

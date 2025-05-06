@@ -3,9 +3,9 @@ import { GetRecentUserActivities } from "@/app/api/animes/getAnime";
 import { getUserByUsername } from "@/app/api/user/getUser";
 import ConditionalContent from "@/app/components/ConditionalContent";
 import { EmptyView } from "@/app/components/EmptyView";
-import MainShortInfo from "@/app/components/MainShortInfo/MainShortInfo";
 import PageErrorView from "@/app/components/PageErrorVIew";
 import SeriesGroupInfo from "@/app/components/SeriesGroupInfo";
+import ShortInfo from "@/app/components/ShortInfo/ShortInfo";
 import { useUser } from "@/app/components/UserContext";
 import { Anime } from "@/app/models/anime/Anime";
 import {
@@ -313,7 +313,7 @@ export default function UserPage({ params }: { params: { username: string } }) {
                                                             lg={20}
                                                             xxl={20}
                                                         >
-                                                            <MainShortInfo
+                                                            <ShortInfo
                                                                 title={
                                                                     item.title
                                                                 }

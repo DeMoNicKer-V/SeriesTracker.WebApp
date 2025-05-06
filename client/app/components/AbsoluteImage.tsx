@@ -21,7 +21,7 @@ export const AbsoluteImage: React.FC<Props> = ({
     zIndex,
     children,
     filter = false,
-}): JSX.Element => {
+}: Props): JSX.Element => {
     return (
         <div
             className={`${styles["absolute-image"]} ${

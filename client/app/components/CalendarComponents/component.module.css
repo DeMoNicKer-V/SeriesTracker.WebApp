@@ -32,3 +32,19 @@
     width: 100px !important;
     border-radius: 10px;
 }
+
+.calendar-anime-episodes {
+    margin-left: auto;
+}
+
+.calendar-item-text {
+    border: none;
+}
+
+.calendar-item-text {
+    font-size: 12px;
+}
+
+.calendar-item-icon {
+    font-size: 32px;
+}

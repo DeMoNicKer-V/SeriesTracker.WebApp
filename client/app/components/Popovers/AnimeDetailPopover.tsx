@@ -7,7 +7,7 @@ import {
     YoutubeOutlined,
 } from "@ant-design/icons";
 import { Button, Col, Flex, Image, Row, Space, Tag } from "antd";
-import MainShortInfo from "../MainShortInfo/MainShortInfo";
+import ShortInfo from "../ShortInfo/ShortInfo";
 import styles from "./component.module.css";
 
 // Определение интерфейса Props для компонента AnimeDetailPopover
@@ -36,7 +36,7 @@ const AnimeDetailPopover: React.FC<Props> = ({ anime }: Props): JSX.Element => {
             <Col offset={1} span={16}>
                 <Row className="height-100">
                     <Col span={24} className={styles["anime-popover-head"]}>
-                        <MainShortInfo
+                        <ShortInfo
                             title={anime.title}
                             subTitle={anime.subTitle}
                             description={anime.description}
@@ -66,7 +66,7 @@ const AnimeDetailPopover: React.FC<Props> = ({ anime }: Props): JSX.Element => {
                                     {anime.score}
                                 </Tag>
                             </Space>
-                        </MainShortInfo>
+                        </ShortInfo>
                     </Col>
                     <Col span={24} style={{ marginTop: "auto" }}>
                         <Button

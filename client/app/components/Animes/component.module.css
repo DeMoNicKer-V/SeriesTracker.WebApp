@@ -32,6 +32,11 @@
     justify-content: center;
 }
 
+.float-btn-group {
+    right: 0;
+    margin: 10px;
+    bottom: 32px;
+}
 .animes-list > :nth-child(2) {
     margin-top: 10px;
 }

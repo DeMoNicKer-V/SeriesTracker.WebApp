@@ -8,7 +8,7 @@ import { deleteUser } from "../api/user/deleteUser";
 import { getAllUsersList } from "../api/user/getUser";
 import ConditionalContent from "../components/ConditionalContent";
 import { EmptyView } from "../components/EmptyView";
-import DeleteUserModal from "../components/Modals/DeleteUserModal";
+import DeleteModal from "../components/Modals/DeleteModal";
 import PageErrorView from "../components/PageErrorVIew";
 import CategoryTable from "../components/SettingsComponents/CategoryTable";
 import UserTable from "../components/SettingsComponents/UserTable";
@@ -43,7 +43,7 @@ export default function SettingsPage() {
     const [openDeleteUser, setOpenDeleteUser] = useState<boolean>(false);
 
     //  Асинхронная функция для удаления пользователя
-    const onDeleteUser = async () => {
+    const handleDeleteUser = async () => {
         await deleteUser(deleteUserUserName); //  Удаляем пользователя
         setPage(1); // Обновляем страницу -> обновляем список пользователей
     };
@@ -149,11 +149,11 @@ export default function SettingsPage() {
                         </Col>
                     </Row>
                 </ConfigProvider>
-                <DeleteUserModal
-                    onOk={onDeleteUser}
+                <DeleteModal
+                    onCofirm={handleDeleteUser}
                     onCancel={onClose}
                     open={openDeleteUser}
-                    title={`Удалить пользователя '${deleteUserUserName}'`}
+                    title={`Удалить пользователя '${deleteUserUserName}' ?`}
                 />
             </div>
         </ConditionalContent>

@@ -1,6 +1,6 @@
 "use client";
 import { getUserCategoriesCount } from "@/app/api/user/getUser";
-import UsersAnimeList from "@/app/components/Animes/UsersAnimeList";
+import UserAnimesList from "@/app/components/Animes/UserAnimesList";
 import ConditionalContent from "@/app/components/ConditionalContent";
 import PageErrorView from "@/app/components/PageErrorVIew";
 import { defaultGroups } from "@/app/constants/constants";
@@ -160,76 +160,6 @@ export default function UserListPage({
     return (
         <ConditionalContent
             condition={empty}
-            defaultNode={
-                <div className="container">
-                    <title>{`${params.username} / Список аниме`}</title>
-                    <ConfigProvider
-                        theme={{
-                            components: {
-                                Menu: {
-                                    itemBg: "transparent",
-                                    darkItemBg: "transparent",
-                                },
-                            },
-                        }}
-                    ></ConfigProvider>{" "}
-                    <Breadcrumb
-                        separator=""
-                        items={[
-                            {
-                                title: (
-                                    <Link href={"./"}>
-                                        <Flex justify="center" gap={5}>
-                                            <UserOutlined /> {params.username}
-                                        </Flex>
-                                    </Link>
-                                ),
-                            },
-
-                            {
-                                type: "separator",
-                            },
-                            {
-                                title: "Список аниме",
-                            },
-                        ]}
-                    />
-                    <Row gutter={[15, 15]} align={"middle"} justify={"center"}>
-                        <Col span={22}>
-                            <ConfigProvider
-                                theme={{
-                                    components: {
-                                        Menu: {
-                                            itemSelectedColor: `${colors?.get(
-                                                mylist
-                                            )} !important`,
-                                        },
-                                    },
-                                }}
-                            >
-                                <Menu
-                                    style={{
-                                        justifyContent: "center",
-                                        backgroundColor: "transparent",
-                                    }}
-                                    onSelect={switchGroup}
-                                    selectedKeys={[mylist]}
-                                    items={sortMenuItems}
-                                    mode="horizontal"
-                                />
-                            </ConfigProvider>
-                        </Col>
-
-                        <Col span={24}>
-                            <UsersAnimeList
-                                color={colors.get(mylist)}
-                                myList={mylist}
-                                userName={params.username}
-                            />
-                        </Col>
-                    </Row>
-                </div>
-            }
             onErrorNode={
                 <PageErrorView
                     text="Пользователь еще ничего не добавил"
@@ -237,6 +167,75 @@ export default function UserListPage({
                     btnText="Вернуться назад"
                 />
             }
-        />
+        >
+            <div className="container">
+                <title>{`${params.username} / Список аниме`}</title>
+                <ConfigProvider
+                    theme={{
+                        components: {
+                            Menu: {
+                                itemBg: "transparent",
+                                darkItemBg: "transparent",
+                            },
+                        },
+                    }}
+                ></ConfigProvider>{" "}
+                <Breadcrumb
+                    separator=""
+                    items={[
+                        {
+                            title: (
+                                <Link href={"./"}>
+                                    <Flex justify="center" gap={5}>
+                                        <UserOutlined /> {params.username}
+                                    </Flex>
+                                </Link>
+                            ),
+                        },
+
+                        {
+                            type: "separator",
+                        },
+                        {
+                            title: "Список аниме",
+                        },
+                    ]}
+                />
+                <Row gutter={[15, 15]} align={"middle"} justify={"center"}>
+                    <Col span={22}>
+                        <ConfigProvider
+                            theme={{
+                                components: {
+                                    Menu: {
+                                        itemSelectedColor: `${colors?.get(
+                                            mylist
+                                        )} !important`,
+                                    },
+                                },
+                            }}
+                        >
+                            <Menu
+                                style={{
+                                    justifyContent: "center",
+                                    backgroundColor: "transparent",
+                                }}
+                                onSelect={switchGroup}
+                                selectedKeys={[mylist]}
+                                items={sortMenuItems}
+                                mode="horizontal"
+                            />
+                        </ConfigProvider>
+                    </Col>
+
+                    <Col span={24}>
+                        <UserAnimesList
+                            color={colors.get(mylist)}
+                            myList={mylist}
+                            userName={params.username}
+                        />
+                    </Col>
+                </Row>
+            </div>
+        </ConditionalContent>
     );
 }

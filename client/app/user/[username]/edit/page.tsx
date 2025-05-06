@@ -1,8 +1,7 @@
 "use client";
-import { deleteSelfUser } from "@/app/api/user/deleteUser";
+import { deleteSelfUser, deleteUserSeries } from "@/app/api/user/deleteUser";
 import ConditionalContent from "@/app/components/ConditionalContent";
-import DeleteAnimesModal from "@/app/components/Modals/DeleteAnimesModal";
-import DeleteSelfModal from "@/app/components/Modals/DeleteSelfModal";
+import DeleteModal from "@/app/components/Modals/DeleteModal";
 import PageErrorView from "@/app/components/PageErrorVIew";
 import UserFormMain from "@/app/components/UserComponents/UserFormMain";
 import { useUser } from "@/app/components/UserContext";
@@ -43,11 +42,8 @@ export default function EditUserPage({
     //  Состояние для отображения ошибок
     const [error, setError] = useState<boolean | null>(null);
 
-    //  Состояние для хранения строки подтверждения удаления
-    const [deleteStr, setDeleteStr] = useState<string>("");
-
     //  Состояние для управления видимостью модального окна подтверждения удаления списка аниме
-    const [openDelete, setOpenDelete] = useState<boolean>(false);
+    const [openDeleteList, setOpenDeleteList] = useState<boolean>(false);
 
     //  Состояние для управления видимостью модального окна подтверждения удаления аккаунта
     const [openDeleteUser, setOpenDeleteUser] = useState<boolean>(false);
@@ -60,14 +56,19 @@ export default function EditUserPage({
         }
         setError(false); //  Сбрасываем ошибку, если имена совпадают
     };
-
     //  Асинхронная функция для удаления аккаунта пользователя
-    const deleteUser = async () => {
+    const handleDeleteUser = async () => {
         setOpenDeleteUser(false);
         await deleteSelfUser(params.username);
 
         //  Перенаправляем пользователя на страницу логина
         window.location.href = `/login`;
+    };
+
+    //  Асинхронная функция для удаления списка аниме пользователя
+    const handleDeleteAnimeList = async () => {
+        setOpenDeleteList(false);
+        await deleteUserSeries(params.username);
     };
 
     //  Эффект, который запускается при монтировании компонента
@@ -77,9 +78,8 @@ export default function EditUserPage({
 
     //  Функция для закрытия модальных окон и очистки строки подтверждения
     const onClose = () => {
-        setOpenDelete(false);
+        setOpenDeleteList(false);
         setOpenDeleteUser(false);
-        setDeleteStr("");
     };
 
     return (
@@ -137,7 +137,7 @@ export default function EditUserPage({
                                 style={{ flexDirection: "column" }}
                             >
                                 <Button
-                                    onClick={() => setOpenDelete(true)}
+                                    onClick={() => setOpenDeleteList(true)}
                                     ghost
                                     type="primary"
                                     danger
@@ -156,14 +156,16 @@ export default function EditUserPage({
                             </Flex>
                         </Col>
                     </Row>
-                    <DeleteAnimesModal
-                        open={openDelete}
-                        userName={params.username}
-                        onCancel={() => setOpenDelete(false)}
+                    <DeleteModal
+                        open={openDeleteList}
+                        title="Удалить Ваш список аниме?"
+                        onConfirm={handleDeleteAnimeList}
+                        onCancel={() => setOpenDeleteList(false)}
                     />
-                    <DeleteSelfModal
+                    <DeleteModal
                         open={openDeleteUser}
-                        userName={params.username}
+                        title="Удалить Ваш Аккаунт?"
+                        onConfirm={handleDeleteUser}
                         onCancel={() => setOpenDeleteUser(false)}
                     />
                 </ConfigProvider>

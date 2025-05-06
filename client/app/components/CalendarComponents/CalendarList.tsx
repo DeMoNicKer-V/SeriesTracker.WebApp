@@ -3,19 +3,28 @@ import {
     CalendarAnimeItem,
     defaultCalendarAnimeValues,
 } from "@/app/models/anime/CalendarAnimeItem";
-import { InfoCircleOutlined } from "@ant-design/icons";
-import { ConfigProvider, Flex, List, Typography } from "antd";
+import { ConfigProvider, List } from "antd";
 import React, { useMemo } from "react";
+import { EmptyView } from "../EmptyView";
 import CalendarAnime from "./CalendarAnime";
-const { Text } = Typography;
+import styles from "./component.module.css";
+
 // Интерфейс для props компонента CalendarList
-interface CalendarListProps {
+interface Props {
     animes: CalendarAnimeItem[]; // Массив аниме для отображения в списке
     loading: boolean; // Флаг, указывающий, загружаются ли данные
 }
 
-// Компонент CalendarList: Отображает список аниме (или Skeleton, если данные загружаются)
-const CalendarList: React.FC<CalendarListProps> = ({ animes, loading }) => {
+/**
+ * @component CalendarList
+ * @description Компонент для отображения списка аниме.
+ * @param {Props} props - Объект с пропсами компонента.
+ * @returns {JSX.Element}
+ */
+const CalendarList: React.FC<Props> = ({
+    animes,
+    loading,
+}: Props): JSX.Element => {
     // Создаем массив элементов для отображения Skeleton при загрузке
     const renderItemsLoading = useMemo(() => {
         // Мемоизируем для оптимизации
@@ -39,7 +48,7 @@ const CalendarList: React.FC<CalendarListProps> = ({ animes, loading }) => {
     // Мемоизированный массив элементов для отображения реальных данных
     const renderItems = useMemo(() => {
         return animes.map((item: CalendarAnimeItem) => (
-            <List.Item key={item.anime.id} style={{ border: "none" }}>
+            <List.Item key={item.anime.id} className={styles["calendar-item"]}>
                 <CalendarAnime item={item} loading={loading} />
             </List.Item>
         )); // Преобразуем каждый элемент animes в List.Item
@@ -48,17 +57,7 @@ const CalendarList: React.FC<CalendarListProps> = ({ animes, loading }) => {
     return (
         <ConfigProvider
             renderEmpty={() => (
-                <Flex
-                    className="emptyview"
-                    justify="center"
-                    align="middle"
-                    gap={10}
-                >
-                    <InfoCircleOutlined style={{ fontSize: 32 }} />
-                    <Text style={{ fontSize: 22 }}>
-                        {"На данную дату новых релизов не найдено"}
-                    </Text>
-                </Flex>
+                <EmptyView text="На данную дату релизов не найдено..." />
             )}
         >
             <List
