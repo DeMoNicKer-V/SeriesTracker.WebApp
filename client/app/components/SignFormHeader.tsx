@@ -4,17 +4,29 @@ import { LongRightArrow } from "../img/LongRightArrow";
 
 const { Text, Link } = Typography;
 
+// Определение интерфейса Props для компонента SignFormHeader
 interface Props {
-    actionText: string;
-    text: string;
-    href: string;
+    actionText: string; // Текст для ссылки на действие (например, "Вход" или "Регистрация")
+    text: string; // Основной текст (например, "Уже есть аккаунт?" или "Нет аккаунта?")
+    href: string; // URL для ссылки на действие
 }
 
-const SignFormHeader = ({ actionText, text, href }: Props) => {
+/**
+ * @component SignFormHeader
+ * @description Компонент для отображения шапки на страницах входа и регистрации.
+ * Содержит логотип, основной текст и ссылку на действие.
+ * @param {Props} props - Объект с пропсами компонента.
+ * @returns {JSX.Element}
+ */
+const SignFormHeader: React.FC<Props> = ({
+    actionText,
+    text,
+    href,
+}: Props): JSX.Element => {
     return (
         <Flex className="width-100 head" align="center" justify="space-around">
             <Button
-                style={{ cursor: "pointer" }}
+                aria-label="Перейти на главную страницу"
                 href="/animes"
                 type="link"
                 icon={
@@ -31,13 +43,7 @@ const SignFormHeader = ({ actionText, text, href }: Props) => {
                 <Text type="secondary" italic>
                     {text}
                 </Text>
-                <Link
-                    target="_top"
-                    href={href}
-                    style={{
-                        fontWeight: 700,
-                    }}
-                >
+                <Link strong target="_top" href={href}>
                     <Flex gap={5} justify="center" align="center">
                         {actionText}
                         <LongRightArrow />

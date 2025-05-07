@@ -15,7 +15,7 @@ import { NotificationInstance } from "antd/es/notification/interface";
 import dayjs from "dayjs";
 import "dayjs/locale/ru";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./component.module.css";
 dayjs.locale("ru");
 
@@ -41,16 +41,30 @@ interface FormValues {
  * @param {Props} props - Объект с пропсами компонента.
  * @returns {JSX.Element}
  */
-const UserFormMain: React.FC<Props> = ({ messageApi, user }): JSX.Element => {
+const UserFormMain: React.FC<Props> = ({
+    messageApi,
+    user,
+}: Props): JSX.Element => {
     const router = useRouter();
     const [form] = Form.useForm<FormValues>(); // Создаем экземпляр Form
     const { isFieldsValidating, setFieldsValue } = form; // Получаем функции из form
 
+    // Состояние для видимости полей email и password (изначально скрыты)
     const [visibleFields, setVisibleFields] = useState({
-        // Состояние для видимости полей email и password (изначально скрыты)
         email: false,
         password: false,
     });
+
+    // После успешного обновления данных пользователя на сервере
+    const handleUserUpdate = (newUsername: string) => {
+        try {
+            // Удаляем user из localStorage
+            localStorage.removeItem("user");
+            window.location.href = `../${newUsername}`;
+        } catch (error) {
+            console.error("Ошибка при обновлении пользователя:", error);
+        }
+    };
 
     //     Переключает видимость указанных полей формы (email или password).
     const handleSwitchFields = (
@@ -93,7 +107,7 @@ const UserFormMain: React.FC<Props> = ({ messageApi, user }): JSX.Element => {
             messageApi.success({
                 type: "success",
                 message: "Профиль успешно обновлен!",
-                onClose: () => (window.location.href = `../${values.userName}`),
+                onClose: () => handleUserUpdate(values.userName),
                 showProgress: true,
             });
         } catch (error: any) {

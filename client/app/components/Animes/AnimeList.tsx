@@ -47,11 +47,10 @@ const AnimesList: React.FC = ({}): JSX.Element => {
     });
 
     // Компонент для отображения скелетона и навигации по страницам.
-    //  Отображаем, только если элементов больше 21
     const ListBranches = () => {
         return (
             <PageNavigator
-                hidden={data.length < 22}
+                hidden={data.length < 22 || page > 1}
                 isLoading={isLoading}
                 onFirstButtonCLick={() => changePage(1)}
                 onPrevButtonCLick={() => changePage(page - 1)}

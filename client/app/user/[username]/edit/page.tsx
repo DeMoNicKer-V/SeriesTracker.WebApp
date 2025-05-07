@@ -5,7 +5,6 @@ import DeleteModal from "@/app/components/Modals/DeleteModal";
 import PageErrorView from "@/app/components/PageErrorVIew";
 import UserFormMain from "@/app/components/UserComponents/UserFormMain";
 import { useUser } from "@/app/components/UserContext";
-
 import { UserOutlined, WarningOutlined } from "@ant-design/icons";
 import {
     Breadcrumb,
@@ -17,15 +16,12 @@ import {
     notification,
     Row,
     Tooltip,
-    Typography,
 } from "antd";
 import dayjs from "dayjs";
 import "dayjs/locale/ru";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 dayjs.locale("ru");
-
-const { Text, Title } = Typography;
 
 //  Основной компонент EditUserPage (страница редактирования профиля пользователя)
 export default function EditUserPage({
@@ -74,13 +70,7 @@ export default function EditUserPage({
     //  Эффект, который запускается при монтировании компонента
     useEffect(() => {
         getUser();
-    }, []); //  Зависимости пустые, эффект выполняется один раз при монтировании
-
-    //  Функция для закрытия модальных окон и очистки строки подтверждения
-    const onClose = () => {
-        setOpenDeleteList(false);
-        setOpenDeleteUser(false);
-    };
+    }, [user]); //  Зависимости пустые, эффект выполняется один раз при монтировании
 
     return (
         <ConditionalContent

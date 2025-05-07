@@ -15,125 +15,203 @@ import {
     Flex,
     InputNumber,
     InputNumberProps,
+    message,
     Rate,
     Select,
+    SelectProps,
     Space,
 } from "antd";
-import { useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { mutate } from "swr";
 import styles from "./component.module.css";
+
+// Определение интерфейса Props для компонента BelowButtons
 interface Props {
-    anime: AnimeDetail;
-    auth: boolean;
-    categories: { value: number; label: string }[];
+    anime: AnimeDetail; // Детали аниме (обязательно)
+    auth: boolean; // Определяет, авторизован ли пользователь (обязательно)
+    categories: { value: number; label: string }[]; // Список категорий (обязательно)
 }
-// TODO: Раскидать try catch по все await функциям
-const BelowButtons = ({ anime, categories, auth }: Props) => {
+
+/**
+ * @component BelowButtons
+ * @description Компонент для отображения кнопок управления аниме пользователя.
+ * Позволяет добавлять/удалять из избранного, изменять количество просмотренных эпизодов и категорию.
+ * @param {Props} props - Объект с пропсами компонента.
+ * @returns {JSX.Element}
+ */
+const BelowButtons: React.FC<Props> = ({
+    anime,
+    categories,
+    auth,
+}: Props): JSX.Element => {
+    // Состояние для хранения количества просмотренных эпизодов
     const [watchedEpisode, setWatchedEpisode] = useState<number>(
         anime.watchedEpisodes
     );
-    const updateFavoriteSeries = async () => {
-        if (anime.seriesId) {
-            const request = createRequest(
-                anime.watchedEpisodes,
-                anime.categoryId,
-                !anime.isFavorite
-            );
-            await updateSeries(anime.seriesId, request);
-            return;
+
+    // Создает объект запроса для обновления данных о просмотре аниме.
+    const createRequest = useCallback(
+        (
+            watchedEpisode: number = 0,
+            categoryId: number = 1,
+            isFavorite: boolean = false
+        ) => {
+            const request = {
+                animeId: anime.id,
+                watchedEpisode: watchedEpisode,
+                categoryId: categoryId,
+                isFavorite: isFavorite,
+            };
+            return request;
+        },
+        [anime]
+    );
+
+    // Добавляет/удаляет аниме из избранного.
+    const updateFavoriteSeries = useCallback(async () => {
+        try {
+            if (anime.seriesId) {
+                const request = createRequest(
+                    anime.watchedEpisodes,
+                    anime.categoryId,
+                    !anime.isFavorite
+                );
+                await updateSeries(anime.seriesId, request);
+            } else {
+                const request = createRequest(0, 1, true);
+                await createSeries(request);
+            }
+            mutate(anime.id.toString());
+        } catch (error) {
+            console.error("Ошибка при обновлении избранного:", error);
+            message.error("Не удалось обновить избранное.");
         }
-        const request = createRequest(0, 1, true);
-        await createSeries(request);
+    }, [anime, createRequest]);
 
-        mutate(anime.id.toString());
-    };
+    // Обновляет количество просмотренных эпизодов аниме..
+    const updateEpisodeSeries = useCallback(
+        async (episodeValue: number) => {
+            try {
+                const request = createRequest(
+                    episodeValue,
+                    anime.categoryId,
+                    anime.isFavorite
+                );
+                await updateSeries(anime.seriesId, request);
+            } catch (error) {
+                console.error("Ошибка при обновлении эпизодов:", error);
+                message.error("Не удалось обновить количество эпизодов.");
+            }
+        },
+        [anime, createRequest]
+    );
 
-    const updateEpisodeSeries = async (episodeValue: number) => {
-        const request = createRequest(
-            episodeValue,
-            anime.categoryId,
-            anime.isFavorite
-        );
-        await updateSeries(anime.seriesId, request);
-    };
-    const onEpisodeInputChange: InputNumberProps["onChange"] = (value) => {
-        if (value === null) {
-            return;
-        }
-        setWatchedEpisode(Number(value));
-        updateEpisodeSeries(Number(value));
-    };
+    // Обработчик изменения значения в поле ввода количества просмотренных эпизодов.
+    const onEpisodeInputChange: InputNumberProps["onChange"] = useCallback(
+        (value: any) => {
+            const newEpisodeValue = Number(value);
+            setWatchedEpisode(newEpisodeValue);
+            updateEpisodeSeries(newEpisodeValue);
+        },
+        [updateEpisodeSeries]
+    );
 
-    const decEpisodeSeries = async () => {
+    // Уменьшает количество просмотренных эпизодов на 1.
+    const decEpisodeSeries = useCallback(async () => {
         if (watchedEpisode === 0) {
             return;
         }
-        const newValue = watchedEpisode - 1;
-        setWatchedEpisode(newValue);
-        updateEpisodeSeries(newValue);
-    };
+        try {
+            const newValue = watchedEpisode - 1;
+            setWatchedEpisode(newValue);
+            updateEpisodeSeries(newValue);
+        } catch (error) {
+            console.error("Ошибка при уменьшении эпизода:", error);
+            message.error("Не удалось уменьшить количество эпизодов.");
+        }
+    }, [watchedEpisode, updateEpisodeSeries, anime]);
 
-    const incEpisodeSeries = async () => {
+    // Увеличивает количество просмотренных эпизодов на 1.
+    const incEpisodeSeries = useCallback(async () => {
         if (watchedEpisode === anime.episodes) {
             return;
         }
-        const newValue = watchedEpisode + 1;
-        setWatchedEpisode(newValue);
-        updateEpisodeSeries(newValue);
-    };
-
-    const createRequest = (
-        watchedEpisode = 0,
-        categoryId = 1,
-        isFavorite = false
-    ) => {
-        const request = {
-            animeId: anime.id,
-            watchedEpisode: watchedEpisode,
-            categoryId: categoryId,
-            isFavorite: isFavorite,
-        };
-        return request;
-    };
-
-    const updateCategorySeries = async (
-        anime: AnimeDetail,
-        categoryId: number
-    ) => {
-        if (anime.seriesId) {
-            const request = createRequest(
-                categoryId === 3 ? anime.episodes : anime.watchedEpisodes,
-                categoryId,
-                anime.isFavorite
-            );
-            if (categoryId === 3) {
-                setWatchedEpisode(anime.episodes);
-            }
-            await updateSeries(anime.seriesId, request);
-        } else {
-            const request = createRequest(
-                categoryId === 3 ? anime.episodes : 0,
-                categoryId
-            );
-            await createSeries(request);
+        try {
+            const newValue = watchedEpisode + 1;
+            setWatchedEpisode(newValue);
+            updateEpisodeSeries(newValue);
+        } catch (error) {
+            console.error("Ошибка при увеличении эпизода:", error);
+            message.error("Не удалось увеличить количество эпизодов.");
         }
+    }, [watchedEpisode, updateEpisodeSeries, anime]);
 
-        mutate(anime.id.toString());
-    };
+    // Обновляет категорию аниме.
+    const updateCategorySeries = useCallback(
+        async (anime: AnimeDetail, categoryId: number) => {
+            try {
+                let newWatchedEpisode = anime.watchedEpisodes;
+                if (categoryId === 3) {
+                    newWatchedEpisode = anime.episodes;
+                    setWatchedEpisode(anime.episodes);
+                }
+                if (anime.seriesId) {
+                    const request = createRequest(
+                        categoryId === 3
+                            ? anime.episodes
+                            : anime.watchedEpisodes,
+                        categoryId,
+                        anime.isFavorite
+                    );
+                    await updateSeries(anime.seriesId, request);
+                } else {
+                    const request = createRequest(
+                        categoryId === 3 ? anime.episodes : 0,
+                        categoryId
+                    );
+                    await createSeries(request);
+                }
+                mutate(anime.id.toString());
+            } catch (error) {
+                console.error("Ошибка при обновлении категории:", error);
+                message.error("Не удалось обновить категорию.");
+            }
+        },
+        [anime, createRequest]
+    );
 
-    const deleteSeriesById = async (seriesId: string) => {
-        await deleteSeries(seriesId);
-        mutate(anime.id.toString());
-    };
+    // Удаляет аниме из списка пользователя.
+    const deleteSeriesById = useCallback(
+        async (seriesId: string) => {
+            try {
+                await deleteSeries(seriesId);
+                mutate(anime.id.toString());
+            } catch (error) {
+                console.error("Ошибка при удалении аниме:", error);
+                message.error("Не удалось удалить аниме из вашего списка.");
+            }
+        },
+        [anime]
+    );
+
+    // Список мемоизированных категорий
+    const categoryOptions: SelectProps["options"] = useMemo(() => {
+        return categories.map((category) => ({
+            value: category.value,
+            label: category.label,
+        }));
+    }, [categories]);
+
+    // Обработчик изменения категории
+    const onChange: SelectProps["onChange"] = useCallback(
+        (value: number) => {
+            updateCategorySeries(anime, value);
+        },
+        [anime, updateCategorySeries]
+    );
 
     return auth ? (
-        <Space
-            wrap
-            className={styles["manage-buttons"]}
-            style={{
-                cursor: "default",
-            }}
-        >
+        <Space wrap className={styles["manage-buttons"]}>
             <Rate
                 tooltips={[
                     anime.isFavorite
@@ -148,15 +226,10 @@ const BelowButtons = ({ anime, categories, auth }: Props) => {
             />
 
             <Select
-                onChange={(value: string) =>
-                    updateCategorySeries(anime, Number(value))
-                }
+                onChange={onChange}
+                className={styles["category-select"]}
                 rootClassName={styles["selector"]}
                 size="small"
-                style={{
-                    width: 240,
-                    textAlign: "start",
-                }}
                 defaultActiveFirstOption={false}
                 prefix={<BookOutlined style={{ color: anime.categoryColor }} />}
                 value={anime.categoryName}
@@ -170,19 +243,10 @@ const BelowButtons = ({ anime, categories, auth }: Props) => {
                 dropdownRender={(menu: any) => (
                     <>
                         {menu}
-                        <Divider
-                            style={{
-                                marginBlock: 10,
-                            }}
-                        />
-
+                        <Divider className={styles["selector-divider"]} />
                         {anime.seriesId && (
                             <Button
-                                style={{
-                                    fontSize: 12,
-                                    fontWeight: 500,
-                                }}
-                                className="width-100"
+                                className={styles["delete-anime-btn"]}
                                 size="small"
                                 danger
                                 type="link"
@@ -194,7 +258,7 @@ const BelowButtons = ({ anime, categories, auth }: Props) => {
                         )}
                     </>
                 )}
-                options={categories}
+                options={categoryOptions}
             />
 
             {anime.seriesId && (

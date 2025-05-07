@@ -65,15 +65,9 @@ export default function UserPage({ params }: { params: { username: string } }) {
     //  Состояние для хранения списка аниме, связанных с пользователем
     const [animes, setAnimes] = useState<Anime[]>();
 
-    //  Состояние, указывающее, является ли просматриваемый профиль профилем текущего пользователя
-    const [currentUser, setCurrentUser] = useState<boolean>(false);
-
     //  Асинхронная функция для получения данных о пользователе
     const getCurrentUser = async (username: string) => {
         try {
-            //  Проверяем, является ли просматриваемый профиль профилем текущего пользователя
-            setCurrentUser(user?.userName === username);
-
             //  Получаем информацию о пользователе по имени пользователя
             const mainUserInfo = await getUserByUsername(username);
 
@@ -349,7 +343,7 @@ export default function UserPage({ params }: { params: { username: string } }) {
                         </Col>
                     )}
                 </Row>
-                {currentUser && (
+                {user?.userName === params.username && (
                     <FloatButton.Group style={{ right: 32 }}>
                         <FloatButton
                             onClick={() => router.push(`${pathname}/edit`)}

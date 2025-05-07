@@ -6,11 +6,9 @@
 .user-profile-avatar {
     border-color: #313131;
 }
+
 .user-profile-disabled {
-    cursor: default;
-}
-.user-profile-divider {
-    cursor: default;
+    cursor: default !important;
 }
 
 .user-edit-form-head {

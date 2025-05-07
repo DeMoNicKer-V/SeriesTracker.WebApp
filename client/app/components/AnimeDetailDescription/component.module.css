@@ -8,6 +8,11 @@
 .genre-list {
     align-items: center;
 }
+
+.manage-buttons {
+    cursor: default;
+}
+
 @media (max-width: 1200px) {
     .info-list {
         justify-content: center;
@@ -18,6 +23,20 @@
     .manage-buttons {
         justify-content: center;
     }
+}
+.category-select {
+    width: 240px;
+    text-align: start;
+}
+
+.selector-divider {
+    margin-bottom: 10px;
+}
+
+.delete-anime-btn {
+    width: 100%;
+    font-weight: 500;
+    font-size: 12px;
 }
 
 .episodes-input {

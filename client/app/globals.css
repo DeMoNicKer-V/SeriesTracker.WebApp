@@ -19,6 +19,10 @@ body {
     cursor: default !important;
 }
 
+.secondary-text {
+    font-size: 12px;
+}
+
 .tag {
     margin-inline-end: 5px;
     padding-inline: 5px;
@@ -41,6 +45,10 @@ body {
 
 input {
     cursor: pointer;
+}
+
+.cursor-default {
+    cursor: default;
 }
 
 .container {

@@ -24,6 +24,18 @@
     cursor: help;
 }
 
+.highlight-line {
+    margin-top: 3px;
+    height: 1.5px;
+}
+
+.series-group-card {
+    border-radius: 0;
+    text-align: center;
+    padding: 0;
+    margin: 0;
+}
+
 .absolute-image {
     pointer-events: none;
     flex-direction: column;

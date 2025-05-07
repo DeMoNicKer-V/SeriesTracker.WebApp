@@ -41,13 +41,13 @@ const UserProfile: React.FC<Props> = ({ user }): JSX.Element => {
         {
             label: user?.email, // Email пользователя (отображается в меню)
             key: "0",
-            className: styles["user-profile-btn-disabled"], // CSS-класс для отключенных элементов
+            className: styles["user-profile-disabled"], // CSS-класс для отключенных элементов
             icon: <MailOutlined />, // Иконка email
             disabled: true, // Отключаем пункт меню (нельзя выбрать)
         },
         {
-            label: <Divider />,
-            className: styles["user-profile-btn-divider"],
+            label: <Divider className="zero-margin" />,
+            className: styles["user-profile-disabled"],
             key: "divider",
             disabled: true,
         },
