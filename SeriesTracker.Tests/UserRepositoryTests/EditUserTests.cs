@@ -1,6 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using SeriesTracker.Core.Models;
-using SeriesTracker.DataAccess.Entities;
 using Xunit;
 
 namespace SeriesTracker.Tests.UserRepositoryTests
@@ -16,11 +14,10 @@ namespace SeriesTracker.Tests.UserRepositoryTests
             // Arrange
             // Убедимся, что роль существует
             var role = await _context.RoleEntities.FindAsync(roleId);
-            Assert.NotNull(role); 
+            Assert.NotNull(role);
 
             // Получаем пользователя, которому будем менять роль
-            var user = await _context.UserEntities.Include(u => u.Roles).FirstAsync(); 
-            var initialRoleId = user.Roles.Any() ? user.Roles.First().Id : 0;
+            var user = await _context.UserEntities.Include(u => u.Roles).FirstAsync();
 
             // Act
             bool result = await _userRepository.ChangeUserRole(user.Id, roleId);
@@ -45,6 +42,54 @@ namespace SeriesTracker.Tests.UserRepositoryTests
 
             // Assert
             Assert.False(result); // Проверяем, что метод вернул false
+        }
+
+        [Fact]
+        public async Task UpdateUser_ExistingUser_UpdatesPropertiesAndReturnsTrue()
+        {
+            // Arrange
+            var existingUser = _context.UserEntities.First();
+
+            // Act
+            bool result = await _userRepository.UpdateUser(existingUser.Id, "updateduser", null, null, "updated@example.com", null, null, null);
+
+            // Assert
+            Assert.True(result);
+
+            var updatedUser = await _context.UserEntities.FindAsync(existingUser.Id);
+            Assert.NotNull(updatedUser);
+            Assert.Equal("updateduser", updatedUser.UserName);
+            Assert.Equal("updated@example.com", updatedUser.Email);
+        }
+
+        [Fact]
+        public async Task UpdateUser_NonExistingUser_ReturnsFalse()
+        {
+            // Arrange
+            var nonExistingUserId = Guid.NewGuid();
+
+            // Act
+            bool result = await _userRepository.UpdateUser(nonExistingUserId, "newuser", null, null, "new@example.com", null, null, null);
+
+            // Assert
+            Assert.False(result);
+        }
+
+        [Fact]
+        public async Task UpdateUser_ExistingUser_NullProperties_UpdatesUserName()
+        {
+            // Arrange
+            var existingUser = _context.UserEntities.First();
+
+            // Act
+            bool result = await _userRepository.UpdateUser(existingUser.Id, null, null, null, null, null, null, null);
+
+            // Assert
+            Assert.True(result);
+
+            var updatedUser = await _context.UserEntities.FindAsync(existingUser.Id);
+            Assert.NotNull(updatedUser);
+            Assert.Equal(existingUser.UserName, updatedUser.UserName);
         }
     }
 }

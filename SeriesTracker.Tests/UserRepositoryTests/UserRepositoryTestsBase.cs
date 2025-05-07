@@ -43,16 +43,57 @@ namespace SeriesTracker.Tests.UserRepositoryTests
 
         private void SeedDatabase()
         {
-            var admin = new UserEntity { Id = Guid.NewGuid(), UserName = "testuser1", Email = "test1@mail.com", Roles = [new RoleEntity { Name = "Admin" }] };
-            var moder = new UserEntity { Id = Guid.NewGuid(), UserName = "testuser1", Email = "test2@mail.com", Roles = [new RoleEntity { Name = "Moder" }] };
-            var user = new UserEntity { Id = Guid.NewGuid(), UserName = "testuser2", Email = "test3@mail.com", Roles = [new RoleEntity { Name = "User" }] };
+            var admin = new UserEntity
+            {
+                Id = Guid.NewGuid(),
+                UserName = "testuser1",
+                Email = "test1@mail.com",
+                PasswordHash = "Hash-test1",
+                Name = "Test1",
+                SurName = "Test_1",
+                Avatar = "Test_icon1",
+                DateBirth = "20-12-1999",
+                Roles = [new RoleEntity { Name = "Admin" }]
+            };
+            var moder = new UserEntity
+            {
+                Id = Guid.NewGuid(),
+                UserName = "testuser2",
+                Email = "test2@mail.com",
+                PasswordHash = "Hash-test2",
+                Name = "Test2",
+                SurName = "Test_2",
+                Avatar = "Test_icon2",
+                DateBirth = "21-12-1999",
+                Roles = [new RoleEntity { Name = "Moder" }]
+            };
+            var user = new UserEntity
+            {
+                Id = Guid.NewGuid(),
+                UserName = "testuser3",
+                Email = "test3@mail.com",
+                PasswordHash = "Hash-test3",
+                Name = "Test3",
+                SurName = "Test_3",
+                Avatar = "Test_icon3",
+                DateBirth = "22-12-1999",
+                Roles = [new RoleEntity { Name = "User" }]
+            };
 
             _context.UserEntities.AddRange(admin, moder, user);
             _context.SaveChanges();
         }
 
+
         public void Dispose()
         {
+            // Очищаем базу данных после каждого теста
+            _context.Database.EnsureDeleted();
+
+            // Освобождаем контекст
+            _context.Dispose();
+
+            // Отменяем финализацию (если есть финализатор)
             GC.SuppressFinalize(this);
         }
     }

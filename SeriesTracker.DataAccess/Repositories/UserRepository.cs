@@ -241,15 +241,14 @@ namespace SeriesTracker.DataAccess.Repositories
             }
 
             // 3. Сохраняем изменения в базе данных
-            try
+            try 
+            { 
+                await _context.SaveChangesAsync(); 
+                return true; 
+            } 
+            catch 
             {
-                await _context.SaveChangesAsync();
-                return true;
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                // Обработка конфликтов конкурентного доступа
-                return false;
+                return false; 
             }
         }
 
