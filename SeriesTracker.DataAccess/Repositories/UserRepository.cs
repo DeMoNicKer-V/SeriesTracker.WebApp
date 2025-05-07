@@ -27,10 +27,9 @@ namespace SeriesTracker.DataAccess.Repositories
         public async Task<bool> ChangeUserRole(Guid userId, int roleId)
         {
             // Получаем сущность роли по идентификатору.
-            // AsNoTracking используется, так как мы не планируем изменять эту сущность.
+            // AsNoTracking здесь не нужен, так как мы не используем эту сущность для обновления.
             var roleEntity = await _context.RoleEntities
-                .AsNoTracking()
-                .SingleOrDefaultAsync(r => r.Id == roleId);
+             .SingleOrDefaultAsync(r => r.Id == roleId);
 
             // Если роль не найдена - то констатируем, что изменение прошло неудачно
             if (roleEntity == null)
@@ -38,10 +37,28 @@ namespace SeriesTracker.DataAccess.Repositories
                 return false;
             }
 
-            // Изменяем роли пользователя
-            var rowsAffected = await _context.UserEntities
-                .Where(u => u.Id == userId)
-                .ExecuteUpdateAsync(u => u.SetProperty(u => u.Roles, u => new List<RoleEntity> { roleEntity }));
+            // Загружаем пользователя с его ролями
+            var user = await _context.UserEntities
+             .Include(u => u.Roles) // Важно загрузить связанные сущности
+             .FirstOrDefaultAsync(u => u.Id == userId);
+
+            // Если пользователь не найден, возвращаем false
+            if (user == null)
+            {
+                return false;
+            }
+
+            // Проверяем, что роль уже назначена пользователю
+            if (user.Roles.First().Id == roleEntity.Id)
+            {
+                return true; // Роль уже назначена, возвращаем true
+            }
+
+            // Обновляем роли пользователя
+            user.Roles = [roleEntity];
+
+            // Сохраняем изменения в базе данных
+            var rowsAffected = await _context.SaveChangesAsync();
 
             // Возвращаем true, если была изменена хотя бы одна строка, иначе false.
             return rowsAffected > 0;
