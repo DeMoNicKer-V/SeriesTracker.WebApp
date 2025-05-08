@@ -16,7 +16,6 @@ namespace SeriesTracker.DataAccess.Extensions
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUserSeriesRepository, UserSeriesRepository>();
             services.AddScoped<ICategoryRepository, CategoryRepository>();
-            services.AddScoped<ICategorySeriesRepository, CategorySeriesRepository>();
 
             return services;
         }

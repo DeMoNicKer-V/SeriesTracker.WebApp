@@ -164,6 +164,34 @@ namespace SeriesTracker.DataAccess.Repositories
             return result; // Возвращаем DTO
         }
 
+        public async Task<Dictionary<int, SeriesCategoryDto>> GetSeriesAnimeId(Guid userId, List<int> animeIds)
+        {
+            // Получаем список SeriesCategoryDto
+            // AsNoTracking используется, так как мы не планируем изменять этот объект.
+            var seriesCategories = await _context.UserSeriesEntities
+                .AsNoTracking()
+                .Where(s => s.User.Id == userId && animeIds.Contains(s.AnimeId))
+                .Include(s => s.Category)
+                .Select(s => new SeriesCategoryDto
+                {
+                    SeriesId = s.Id,
+                    AnimeId = s.AnimeId,
+                    CategoryId = s.CategoryId,
+                    CategoryName = s.Category.Name,
+                    CategoryColor = s.Category.Color,
+                    WatchedEpisodes = s.WatchedEpisodes,
+                    AddedDate = s.AddedDate,
+                    ChangedDate = s.ChangedDate,
+                    IsFavorite = s.IsFavorite
+                })
+                .ToListAsync();
+
+            // Преобразуем список SeriesCategoryDto в словарь, где ключ - AnimeId
+            var seriesCategoriesDictionary = seriesCategories.ToDictionary(c => c.AnimeId, c => c);
+
+            return seriesCategoriesDictionary; // Возвращаем словарь
+        }
+
         public async Task<bool> UpdateSeries(Guid seriesId, int watched, int categoryId, bool favorite, string dateNow)
         {
             // Обновляем информацию о записи

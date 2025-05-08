@@ -15,7 +15,7 @@ namespace SeriesTracker.Application.Services
     /// </summary>
     public class ShikimoriService : IShikimoriService
     {
-        private readonly ICategorySeriesRepository _categorySeriesRepository;
+        private readonly IUserSeriesRepository _userSeriesRepository;
         private readonly ILogger<ShikimoriService> _logger;
         private readonly IMapper _mapper;
         private readonly IUserRepository _userRepository;
@@ -23,18 +23,18 @@ namespace SeriesTracker.Application.Services
         /// <summary>
         /// Инициализирует новый экземпляр класса <see cref="ShikimoriService"/>.
         /// </summary>
-        /// <param name="categorySeriesRepository">Репозиторий для работы с категориями и записями пользователя.</param>
+        /// <param name="userSeriesRepository">Репозиторий для работы с категориями и записями пользователя.</param>
         /// <param name="logger">Экземпляр ILogger для логирования.</param>
         /// <param name="mapper">Экземпляр IMapper для маппинга объектов.</param>
         /// <param name="userRepository">Репозиторий для работы с пользователями.</param>
         public ShikimoriService(
-            ICategorySeriesRepository categorySeriesRepository,
+            IUserSeriesRepository userSeriesRepository,
             ILogger<ShikimoriService> logger,
             IMapper mapper,
             IUserRepository userRepository)
         {
             // Внедряем зависимости (Dependency Injection) и проверяем на null
-            _categorySeriesRepository = categorySeriesRepository ?? throw new ArgumentNullException(nameof(categorySeriesRepository));
+            _userSeriesRepository = userSeriesRepository ?? throw new ArgumentNullException(nameof(userSeriesRepository));
 
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
@@ -169,7 +169,7 @@ namespace SeriesTracker.Application.Services
             List<int> animeIds = animeBaseArray.Select(s => s.Id).ToList();
 
             // 4. Получаем пользовательские записи о категориях аниме, которые совпадают с animeIds
-            var seriesCategoriesDictionary = await _categorySeriesRepository.GetSeriesAnimeId(userId, animeIds);
+            var seriesCategoriesDictionary = await _userSeriesRepository.GetSeriesAnimeId(userId, animeIds);
 
             // 5. Сопоставляем данные аниме с данными категории и преобразуем в тип TResult
             var mappedAnimes = animeBaseArray

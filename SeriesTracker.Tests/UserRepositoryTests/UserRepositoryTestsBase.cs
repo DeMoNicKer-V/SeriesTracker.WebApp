@@ -57,6 +57,7 @@ namespace SeriesTracker.Tests.UserRepositoryTests
         private void SeedDatabase()
         {
             var regDate = DateTime.UtcNow.ToString("s");
+
             //  Создаем экземпляры admin, moder, user (мы просто создаем базовые entities)
             var admin = new UserEntity
             {

@@ -1,11 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SeriesTracker.DataAccess.Entities;
 using SeriesTracker.DataAccess.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SeriesTracker.Tests.UserSeriesTests
 {
@@ -61,7 +56,60 @@ namespace SeriesTracker.Tests.UserSeriesTests
         //  SeedDatabase: Заполняет базу данных начальными данными (seed-данными).
         private void SeedDatabase()
         {
-            // В процессе
+            var dateTime = DateTime.UtcNow;
+
+            //  Создаем экземпляры UserEntity
+            var user1 = new UserEntity
+            {
+                Id = Guid.Parse("a7e7c6c3-1f2b-4b3f-8a1d-8e3a9b5f2c7b"),
+                UserName = "user1"
+            };
+            var user2 = new UserEntity
+            {
+                Id = Guid.Parse("b8f8d7d4-2e3c-4c40-9b2e-9f4b1a6b3d8c"),
+                UserName = "user2"
+            };
+
+            _context.UserEntities.AddRange(user1, user2);
+
+            //  Создаем экземпляры UserSeriesEntity
+            var userSeries1 = new UserSeriesEntity
+            {
+                Id = Guid.Parse("b8f8d7d4-2e3c-4c40-9b2e-9f4b1a6b3c7c"),
+                UserId = user1.Id,
+                AnimeId = 1,
+                CategoryId = 1,
+                AddedDate = dateTime.ToString("s"),
+                ChangedDate = dateTime.ToString("s"),
+                WatchedEpisodes = 0,
+                IsFavorite = false,
+            };
+            var userSeries2 = new UserSeriesEntity
+            {
+                Id = Guid.Parse("b8f8d7d4-2e3c-4c40-9b2e-9f4b1a6b3c6c"),
+                UserId = user1.Id,
+                AnimeId = 2,
+                CategoryId = 2,
+                AddedDate = dateTime.ToString("s"),
+                ChangedDate = dateTime.AddDays(5).ToString("s"),
+                WatchedEpisodes = 11,
+                IsFavorite = true,
+            };
+            var userSeries3 = new UserSeriesEntity
+            {
+                Id = Guid.Parse("b8f8d7d4-2e3c-4c40-9b2e-9f4b1a6b3c5c"),
+                UserId = user2.Id,
+                AnimeId = 2,
+                CategoryId = 3,
+                AddedDate = dateTime.AddDays(1).ToString("s"),
+                ChangedDate = dateTime.AddDays(8).ToString("s"),
+                WatchedEpisodes = 12,
+                IsFavorite = true,
+            };
+
+            // Сохраняем изменения в базе данных.
+            _context.UserSeriesEntities.AddRange(userSeries1, userSeries2, userSeries3);
+            _context.SaveChanges();
         }
     }
 }

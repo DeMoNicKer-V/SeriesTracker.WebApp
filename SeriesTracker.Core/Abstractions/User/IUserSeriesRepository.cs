@@ -54,6 +54,14 @@ namespace SeriesTracker.Core.Abstractions
         Task<SeriesProfileDTO> GetUserProfile(Guid Id);
 
         /// <summary>
+        /// Получает словарь, содержащий информацию о категориях аниме в списке пользователя пользователя, по списку идентификаторов аниме.
+        /// </summary>
+        /// <param name="userId">Идентификатор пользователя.</param>
+        /// <param name="animeIds">Список идентификаторов аниме.</param>
+        /// <returns>Словарь, где ключ - AnimeId, а значение - SeriesCategoryDto.</returns>
+        Task<Dictionary<int, SeriesCategoryDto>> GetSeriesAnimeId(Guid userId, List<int> animeIds);
+
+        /// <summary>
         /// Обновляет информацию о просмотре аниме в списке пользователя.
         /// </summary>
         /// <param name="seriesId">Идентификатор записи о просмотре.</param>
