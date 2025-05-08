@@ -1,49 +1,42 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
-using SeriesTracker.DataAccess;
 using SeriesTracker.DataAccess.Entities;
 using SeriesTracker.DataAccess.Repositories;
 
 namespace SeriesTracker.Tests.UserRepositoryTests
 {
-    public class UserRepositoryTestsBase : IDisposable
+    //  UserRepositoryTestsBase: Базовый класс для тестов, связанных с UserRepository.
+    //  Наследуется от TestsBase для получения доступа к DbContext и реализует IDisposable для освобождения ресурсов.
+    public class UserRepositoryTestsBase : TestsBase, IDisposable
     {
-        public readonly SeriesTrackerDbContext _context;
+        //  _userRepository: Экземпляр UserRepository, который будет тестироваться.
         public readonly UserRepository _userRepository;
 
-        private static bool _databaseInitialized; // Флаг для отслеживания инициализации
-        private readonly DbContextOptions<SeriesTrackerDbContext> _options;
+        //  _databaseInitialized: Статический флаг, который гарантирует, что база данных будет инициализирована только один раз для всех тестов.
+        private static bool _databaseInitialized;
 
+        //  Выполняет настройку UserRepository и инициализацию базы данных (удаление, миграция, заполнение seed-данными).
         public UserRepositoryTestsBase()
         {
-            var options = Options.Create(new AuthorizationOptions
-            {
-                RolePermissions = new[] {
-                new RolePermissions {  Role = "Admin", Permissions = new[] {  "Create", "Delete", "Update", "Read", "Add" } },
-                 new RolePermissions { Role = "Moder", Permissions = new[] {  "Delete", "Update", "Read", "Add" } },
-                new RolePermissions { Role = "User", Permissions = new[] { "Update", "Read", "Add" } }
-            }
-            });
-
-            _options = new DbContextOptionsBuilder<SeriesTrackerDbContext>()
-             .UseNpgsql("User ID=postgres;Password=1234;Host=localhost;Port=5432;Database=test_bd;")
-             .Options;
-
-            _context = new SeriesTrackerDbContext(_options, options);
+            //  Создаем экземпляр UserRepository, используя DbContext из базового класса TestsBase.
             _userRepository = new UserRepository(_context);
 
+            //  Проверяем, была ли база данных уже инициализирована.
             if (!_databaseInitialized)
             {
                 try
                 {
+                    //  Пытаемся удалить базу данных.
                     _context.Database.EnsureDeleted();
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine($"Failed to delete database: {ex.Message}");
                 }
+
                 try
                 {
+                    //  Пытаемся выполнить миграцию базы данных.
+                    //  Если миграция не удалась, перехватываем исключение, выводим сообщение в консоль и выбрасываем исключение дальше.
                     _context.Database.Migrate();
                 }
                 catch (Exception ex)
@@ -51,22 +44,20 @@ namespace SeriesTracker.Tests.UserRepositoryTests
                     Console.WriteLine($"Failed to migrate database: {ex.Message}");
                     throw;
                 }
+
+                //  Заполняем базу данных seed-данными.
                 SeedDatabase();
+
+                //  Устанавливаем флаг _databaseInitialized в true, чтобы предотвратить повторную инициализацию базы данных.
                 _databaseInitialized = true;
             }
         }
 
-        public void Dispose()
-        {
-            // Освобождаем контекст
-            _context.Dispose();
-
-            // Отменяем финализацию (если есть финализатор)
-            GC.SuppressFinalize(this);
-        }
-
+        //  SeedDatabase: Заполняет базу данных начальными данными (seed-данными).
         private void SeedDatabase()
         {
+            var regDate = DateTime.UtcNow.ToString("s");
+            //  Создаем экземпляры admin, moder, user (мы просто создаем базовые entities)
             var admin = new UserEntity
             {
                 Id = Guid.Parse("a7e7c6c3-1f2b-4b3f-8a1d-8e3a9b5f2c7b"),
@@ -78,6 +69,7 @@ namespace SeriesTracker.Tests.UserRepositoryTests
                 Avatar = "Test_icon1",
                 DateBirth = "20-12-1999",
                 Roles = [_context.RoleEntities.Where(r => r.Id == 1).First()],
+                RegDate = regDate,
             };
             var moder = new UserEntity
             {
@@ -90,6 +82,7 @@ namespace SeriesTracker.Tests.UserRepositoryTests
                 Avatar = "Test_icon2",
                 DateBirth = "21-12-1999",
                 Roles = [_context.RoleEntities.Where(r => r.Id == 2).First()],
+                RegDate = regDate,
             };
             var user = new UserEntity
             {
@@ -102,8 +95,10 @@ namespace SeriesTracker.Tests.UserRepositoryTests
                 Avatar = "Test_icon3",
                 DateBirth = "22-12-1999",
                 Roles = [_context.RoleEntities.Where(r => r.Id == 3).First()],
+                RegDate = regDate,
             };
 
+            // Сохраняем изменения в базе данных.
             _context.UserEntities.AddRange(admin, moder, user);
             _context.SaveChanges();
         }

@@ -30,7 +30,7 @@ namespace SeriesTracker.DataAccess.Repositories
                 .AsNoTracking()
                 .Where(c => c.Id == categoryId)
                 .Select(c => Category.Create(c.Id, c.Name, c.Color, c.PrevColor, c.Date)) // Преобразуем CategoryEntity в Category
-                .FirstAsync();
+                .SingleAsync();
 
             return category; // Возвращаем категорию
         }

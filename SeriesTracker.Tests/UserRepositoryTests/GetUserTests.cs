@@ -4,9 +4,11 @@ using Xunit;
 
 namespace SeriesTracker.Tests.UserRepositoryTests
 {
+    //  [Collection("Sequential")]: Атрибут, указывающий, что этот класс тестов входит в коллекцию "Sequential", что обеспечивает последовательное выполнение тестов.
     [Collection("Sequential")]
     public class GetUserTests : IClassFixture<UserRepositoryTestsBase>, IDisposable
     {
+        //  _fixture: Экземпляр UserRepositoryTestsBase, предоставляющий доступ к UserRepository и DbContext.
         private readonly UserRepositoryTestsBase _fixture;
 
         public GetUserTests(UserRepositoryTestsBase fixture)
@@ -14,16 +16,17 @@ namespace SeriesTracker.Tests.UserRepositoryTests
             _fixture = fixture;
         }
 
+        //  GetUserBy_ExistingUser_ReturnsUser: Тест, проверяющий, что методы получения пользователя по Id, UserName и Email возвращают пользователя, если он существует.
         [Theory]
         [InlineData("id")]
         [InlineData("username")]
         [InlineData("email")]
         public async Task GetUserBy_ExistingUser_ReturnsUser(string searchBy)
         {
-            // Arrange
+            //  Arrange: Подготовка данных для теста.
             UserEntity expectedUser = _fixture._context.UserEntities.First();
 
-            // Act
+            //  Act: Выполнение тестируемого кода.
             User user;
             switch (searchBy.ToLower())
             {
@@ -43,18 +46,19 @@ namespace SeriesTracker.Tests.UserRepositoryTests
                     throw new ArgumentException("Invalid searchBy value");
             }
 
-            // Assert
+            //  Assert: Проверка результатов теста.
             Assert.NotNull(user);
             Assert.Equal(expectedUser.Id, user.Id);
         }
 
+        //  GetUserBy_NonExistingUser_ReturnsNull: Тест, проверяющий, что методы получения пользователя по Id, UserName и Email возвращают null, если пользователь не существует.
         [Theory]
         [InlineData("id", "00000000-0000-0000-0000-000000000000")]
         [InlineData("username", "nonexistinguser")]
         [InlineData("email", "nonexisting@example.com")]
         public async Task GetUserBy_NonExistingUser_ReturnsNull(string searchBy, string searchValue)
         {
-            // Act
+            //  Act: Выполнение тестируемого кода.
             User user;
             switch (searchBy.ToLower())
             {
@@ -74,10 +78,11 @@ namespace SeriesTracker.Tests.UserRepositoryTests
                     throw new ArgumentException("Invalid searchBy value");
             }
 
-            // Assert
+            //  Assert: Проверка результатов теста.
             Assert.Null(user);
         }
 
+        //  Dispose: Метод, освобождающий ресурсы после выполнения тестов.
         public void Dispose()
         {
             GC.SuppressFinalize(this);
