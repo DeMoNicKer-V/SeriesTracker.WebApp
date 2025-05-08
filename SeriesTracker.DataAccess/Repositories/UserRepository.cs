@@ -27,7 +27,6 @@ namespace SeriesTracker.DataAccess.Repositories
         public async Task<bool> ChangeUserRole(Guid userId, int roleId)
         {
             // Получаем сущность роли по идентификатору.
-            // AsNoTracking здесь не нужен, так как мы не используем эту сущность для обновления.
             var roleEntity = await _context.RoleEntities
              .SingleOrDefaultAsync(r => r.Id == roleId);
 
@@ -241,14 +240,14 @@ namespace SeriesTracker.DataAccess.Repositories
             }
 
             // 3. Сохраняем изменения в базе данных
-            try 
-            { 
-                await _context.SaveChangesAsync(); 
-                return true; 
-            } 
-            catch 
+            try
             {
-                return false; 
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch
+            {
+                return false;
             }
         }
 

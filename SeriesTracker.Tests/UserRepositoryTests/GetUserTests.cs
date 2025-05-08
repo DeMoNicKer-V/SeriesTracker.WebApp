@@ -4,8 +4,16 @@ using Xunit;
 
 namespace SeriesTracker.Tests.UserRepositoryTests
 {
-    public class GetUserTests : UserRepositoryTestsBase
+    [Collection("Sequential")]
+    public class GetUserTests : IClassFixture<UserRepositoryTestsBase>, IDisposable
     {
+        private readonly UserRepositoryTestsBase _fixture;
+
+        public GetUserTests(UserRepositoryTestsBase fixture)
+        {
+            _fixture = fixture;
+        }
+
         [Theory]
         [InlineData("id")]
         [InlineData("username")]
@@ -13,22 +21,22 @@ namespace SeriesTracker.Tests.UserRepositoryTests
         public async Task GetUserBy_ExistingUser_ReturnsUser(string searchBy)
         {
             // Arrange
-            UserEntity expectedUser = _context.UserEntities.First();
+            UserEntity expectedUser = _fixture._context.UserEntities.First();
 
             // Act
             User user;
             switch (searchBy.ToLower())
             {
                 case "id":
-                    user = await _userRepository.GetUserById(expectedUser.Id);
+                    user = await _fixture._userRepository.GetUserById(expectedUser.Id);
                     break;
 
                 case "username":
-                    user = await _userRepository.GetUserByUserName(expectedUser.UserName);
+                    user = await _fixture._userRepository.GetUserByUserName(expectedUser.UserName);
                     break;
 
                 case "email":
-                    user = await _userRepository.GetUserByEmail(expectedUser.Email);
+                    user = await _fixture._userRepository.GetUserByEmail(expectedUser.Email);
                     break;
 
                 default:
@@ -51,15 +59,15 @@ namespace SeriesTracker.Tests.UserRepositoryTests
             switch (searchBy.ToLower())
             {
                 case "id":
-                    user = await _userRepository.GetUserById(Guid.Parse(searchValue));
+                    user = await _fixture._userRepository.GetUserById(Guid.Parse(searchValue));
                     break;
 
                 case "username":
-                    user = await _userRepository.GetUserByUserName(searchValue);
+                    user = await _fixture._userRepository.GetUserByUserName(searchValue);
                     break;
 
                 case "email":
-                    user = await _userRepository.GetUserByEmail(searchValue);
+                    user = await _fixture._userRepository.GetUserByEmail(searchValue);
                     break;
 
                 default:
@@ -68,6 +76,11 @@ namespace SeriesTracker.Tests.UserRepositoryTests
 
             // Assert
             Assert.Null(user);
+        }
+
+        public void Dispose()
+        {
+            GC.SuppressFinalize(this);
         }
     }
 }

@@ -3,16 +3,24 @@ using Xunit;
 
 namespace SeriesTracker.Tests.UserRepositoryTests
 {
-    public class DeleteUserTests : UserRepositoryTestsBase
+    [Collection("Sequential")]
+    public class DeleteUserTests : IClassFixture<UserRepositoryTestsBase>, IDisposable
     {
+        private readonly UserRepositoryTestsBase _fixture;
+
+        public DeleteUserTests(UserRepositoryTestsBase fixture)
+        {
+            _fixture = fixture;
+        }
+
         [Fact]
         public async Task DeleteUser_ExistingUser_ReturnsTrue()
         {
             // Arrange
-            UserEntity user = _context.UserEntities.First();
+            UserEntity user = _fixture._context.UserEntities.First();
 
             // Act
-            bool result = await _userRepository.DeleteUser(user.Id);
+            bool result = await _fixture._userRepository.DeleteUser(user.Id);
 
             // Assert
             Assert.True(result);
@@ -25,10 +33,15 @@ namespace SeriesTracker.Tests.UserRepositoryTests
             var nonExistingUserId = Guid.NewGuid();
 
             // Act
-            bool result = await _userRepository.DeleteUser(nonExistingUserId);
+            bool result = await _fixture._userRepository.DeleteUser(nonExistingUserId);
 
             // Assert
             Assert.False(result);
+        }
+
+        public void Dispose()
+        {
+            GC.SuppressFinalize(this);
         }
     }
 }
