@@ -1,4 +1,5 @@
-﻿using SeriesTracker.DataAccess.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using SeriesTracker.DataAccess.Entities;
 using Xunit;
 
 namespace SeriesTracker.Tests.UserRepositoryTests
@@ -15,7 +16,7 @@ namespace SeriesTracker.Tests.UserRepositoryTests
             _fixture = fixture;
         }
 
-        //  DeleteUser_ExistingUser_ReturnsTrue: Тест, проверяющий, что метод DeleteUser успешно удаляет существующего пользователя и возвращает true.
+        // Тест, проверяющий, что метод DeleteUser успешно удаляет существующего пользователя и возвращает true.
         [Fact]
         public async Task DeleteUser_ExistingUser_ReturnsTrue()
         {
@@ -29,7 +30,7 @@ namespace SeriesTracker.Tests.UserRepositoryTests
             Assert.True(result);
         }
 
-        //  DeleteUser_NonExistingUser_ReturnsFalse: Тест, проверяющий, что метод DeleteUser возвращает false, если пользователь не существует.
+        // Тест, проверяющий, что метод DeleteUser возвращает false, если пользователь не существует.
         [Fact]
         public async Task DeleteUser_NonExistingUser_ReturnsFalse()
         {
@@ -46,6 +47,10 @@ namespace SeriesTracker.Tests.UserRepositoryTests
         //  Dispose: Метод, освобождающий ресурсы после выполнения тестов.
         public void Dispose()
         {
+            foreach (var entry in _fixture._context.ChangeTracker.Entries().ToList())
+            {
+                entry.State = EntityState.Detached;
+            }
             GC.SuppressFinalize(this);
         }
     }

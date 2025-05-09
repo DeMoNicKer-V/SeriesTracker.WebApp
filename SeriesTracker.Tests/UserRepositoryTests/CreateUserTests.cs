@@ -17,7 +17,7 @@ namespace SeriesTracker.Tests.UserRepositoryTests
             _fixture = fixture;
         }
 
-        // CreateUser_ExistingUser_ReturnsGuid_or_Exception: Тест, проверяющий, что метод CreateUser либо успешно создает пользователя и возвращает Guid, либо выбрасывает DbUpdateException, если пользователь с таким Id уже существует.
+        // Тест, проверяющий, что метод CreateUser либо успешно создает пользователя и возвращает Guid, либо выбрасывает DbUpdateException, если пользователь с таким Id уже существует.
         [Theory]
         [InlineData("a7e7c6c3-1f2b-4b3f-8a1d-8e3a9b5f2c7b", "newUser", "newuser@mail.com", "Hash-new", "NewName", "NewSurname", "Url", "23-12-1999")]
         [InlineData("b8f8d7d4-2e3c-4c40-9b2e-9f4b1a6b3d2f", "newUser", "newuser@mail.com", "Hash-new", null, null, null, null)]
@@ -81,6 +81,10 @@ namespace SeriesTracker.Tests.UserRepositoryTests
         //  Dispose: Метод, освобождающий ресурсы после выполнения тестов.
         public void Dispose()
         {
+            foreach (var entry in _fixture._context.ChangeTracker.Entries().ToList())
+            {
+                entry.State = EntityState.Detached;
+            }
             GC.SuppressFinalize(this);
         }
     }

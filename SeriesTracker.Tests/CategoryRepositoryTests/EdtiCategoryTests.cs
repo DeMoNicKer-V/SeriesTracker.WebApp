@@ -1,4 +1,5 @@
-﻿using Xunit;
+﻿using Microsoft.EntityFrameworkCore;
+using Xunit;
 using Category = SeriesTracker.Core.Enums.Category;
 
 namespace SeriesTracker.Tests.CategoryRepositoryTests
@@ -15,7 +16,7 @@ namespace SeriesTracker.Tests.CategoryRepositoryTests
             _fixture = fixture;
         }
 
-        // UpdateCategoryColor_ExsistingCategory_ReturnsCategory: Тест, проверяющий, что метод UpdateCategoryColor успешно обновляет цвет существующей категории и возвращает true.
+        // Тест, проверяющий, что метод UpdateCategoryColor успешно обновляет цвет существующей категории и возвращает true.
         [Theory]
         [InlineData((int)Category.Запланировано, "#e45c45")]
         [InlineData((int)Category.Смотрю, "#fa22a8")]
@@ -39,7 +40,7 @@ namespace SeriesTracker.Tests.CategoryRepositoryTests
             }, p => Assert.Equal(p.Expected, p.Actual));
         }
 
-        // GetCategoryById_NonExistingCategory_ReturnsFalse: Тест, проверяющий, что метод UpdateCategoryColor возвращает false, если категория не существует.
+        // Тест, проверяющий, что метод UpdateCategoryColor возвращает false, если категория не существует.
         [Fact]
         public async Task GetCategoryById_NonExistingCategory_ReturnsFalse()
         {
@@ -56,6 +57,10 @@ namespace SeriesTracker.Tests.CategoryRepositoryTests
         //  Dispose: Метод, освобождающий ресурсы после выполнения тестов.
         public void Dispose()
         {
+            foreach (var entry in _fixture._context.ChangeTracker.Entries().ToList())
+            {
+                entry.State = EntityState.Detached;
+            }
             GC.SuppressFinalize(this);
         }
     }

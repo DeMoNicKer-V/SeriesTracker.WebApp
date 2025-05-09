@@ -44,8 +44,6 @@ namespace SeriesTracker.Tests.UserSeriesTests
                     Console.WriteLine($"Failed to migrate database: {ex.Message}");
                     throw;
                 }
-
-                //  Заполняем базу данных seed-данными.
                 SeedDatabase();
 
                 //  Устанавливаем флаг _databaseInitialized в true, чтобы предотвратить повторную инициализацию базы данных.
@@ -59,24 +57,29 @@ namespace SeriesTracker.Tests.UserSeriesTests
             var dateTime = DateTime.UtcNow;
 
             //  Создаем экземпляры UserEntity
-            var user1 = new UserEntity
+            var hasTwoUser = new UserEntity
             {
                 Id = Guid.Parse("a7e7c6c3-1f2b-4b3f-8a1d-8e3a9b5f2c7b"),
-                UserName = "user1"
+                UserName = "user1",
             };
-            var user2 = new UserEntity
+            var hasOneUser = new UserEntity
             {
                 Id = Guid.Parse("b8f8d7d4-2e3c-4c40-9b2e-9f4b1a6b3d8c"),
-                UserName = "user2"
+                UserName = "user2",
+            };
+            var hasNotUser = new UserEntity
+            {
+                Id = Guid.Parse("b1a1d7d4-2e3c-4c40-9b2e-9f4b1a6b1a1d"),
+                UserName = "user3",
             };
 
-            _context.UserEntities.AddRange(user1, user2);
+            _context.UserEntities.AddRange(hasTwoUser, hasOneUser, hasNotUser);
 
             //  Создаем экземпляры UserSeriesEntity
             var userSeries1 = new UserSeriesEntity
             {
                 Id = Guid.Parse("b8f8d7d4-2e3c-4c40-9b2e-9f4b1a6b3c7c"),
-                UserId = user1.Id,
+                UserId = hasTwoUser.Id,
                 AnimeId = 1,
                 CategoryId = 1,
                 AddedDate = dateTime.ToString("s"),
@@ -87,7 +90,7 @@ namespace SeriesTracker.Tests.UserSeriesTests
             var userSeries2 = new UserSeriesEntity
             {
                 Id = Guid.Parse("b8f8d7d4-2e3c-4c40-9b2e-9f4b1a6b3c6c"),
-                UserId = user1.Id,
+                UserId = hasTwoUser.Id,
                 AnimeId = 2,
                 CategoryId = 2,
                 AddedDate = dateTime.ToString("s"),
@@ -98,7 +101,7 @@ namespace SeriesTracker.Tests.UserSeriesTests
             var userSeries3 = new UserSeriesEntity
             {
                 Id = Guid.Parse("b8f8d7d4-2e3c-4c40-9b2e-9f4b1a6b3c5c"),
-                UserId = user2.Id,
+                UserId = hasOneUser.Id,
                 AnimeId = 2,
                 CategoryId = 3,
                 AddedDate = dateTime.AddDays(1).ToString("s"),

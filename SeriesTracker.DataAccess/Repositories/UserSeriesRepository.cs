@@ -110,7 +110,7 @@ namespace SeriesTracker.DataAccess.Repositories
             int count = userSeries.Count;
 
             // Создаем результат и вставляем в начало:
-            List<SeriesGroupDto> result = categoryGroup.ToList();
+            List<SeriesGroupDto> result = [.. categoryGroup];
 
             result.Insert(0, new SeriesGroupDto { Id = "0", SeriesCount = count, Color = "" });
 
@@ -128,7 +128,11 @@ namespace SeriesTracker.DataAccess.Repositories
 
             if (userSeriesList.Count == 0)
             {
-                return new SeriesProfileDTO(); // Возвращаем пустой DTO, если у пользователя нет записей
+                return  new()
+                {
+                    CategoryGroups = [],
+                    LastFiveSeries = string.Empty,
+                }; // Возвращаем пустой DTO, если у пользователя нет записей
             }
 
             // Группируем список записей по категориям
@@ -194,14 +198,30 @@ namespace SeriesTracker.DataAccess.Repositories
 
         public async Task<bool> UpdateSeries(Guid seriesId, int watched, int categoryId, bool favorite, string dateNow)
         {
-            // Обновляем информацию о записи
-            int rowsAffected = await _context.UserSeriesEntities.Where(s => s.Id == seriesId)
-                .ExecuteUpdateAsync(s => s.SetProperty(s => s.WatchedEpisodes, s => watched)
-                .SetProperty(s => s.CategoryId, s => categoryId)
-                .SetProperty(s => s.IsFavorite, s => favorite)
-                .SetProperty(s => s.ChangedDate, s => dateNow));
+            // Загружаем существующую запись.
+            var userSeries = await _context.UserSeriesEntities.FindAsync(seriesId);
 
-            return rowsAffected > 0;  // Возвращаем true, если кол-во затронутых записей больше нуля, иначе - false
+            if (userSeries == null)
+            {
+                return false; // Запись не найдена.
+            }
+
+            // Обновляем свойства.
+            userSeries.WatchedEpisodes = watched;
+            userSeries.CategoryId = categoryId;
+            userSeries.IsFavorite = favorite;
+            userSeries.ChangedDate = dateNow;
+
+            try
+            {
+                // Сохраняем изменения.
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception)
+            {
+                return false; // Обрабатываем ошибки сохранения.
+            }
         }
     }
 }

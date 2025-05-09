@@ -15,7 +15,7 @@ namespace SeriesTracker.Tests.UserRepositoryTests
             _fixture = fixture;
         }
 
-        //  ChangeUserRole_ExistingRole_ChangesUserRoleAndReturnsTrue: Тест, проверяющий, что метод ChangeUserRole успешно изменяет роль пользователя и возвращает true, если роль существует.
+        // Тест, проверяющий, что метод ChangeUserRole успешно изменяет роль пользователя и возвращает true, если роль существует.
         [Theory]
         [InlineData(1)]
         [InlineData(2)]
@@ -40,7 +40,7 @@ namespace SeriesTracker.Tests.UserRepositoryTests
             Assert.Equal(roleId, updatedUser.Roles.First().Id);
         }
 
-        //  ChangeUserRole_NonExistingRole_ReturnsFalse: Тест, проверяющий, что метод ChangeUserRole возвращает false, если роль не существует.
+        // Тест, проверяющий, что метод ChangeUserRole возвращает false, если роль не существует.
         [Fact]
         public async Task ChangeUserRole_NonExistingRole_ReturnsFalse()
         {
@@ -55,7 +55,7 @@ namespace SeriesTracker.Tests.UserRepositoryTests
             Assert.False(result);
         }
 
-        //  UpdateUser_ExistingUser_UpdatesPropertiesAndReturnsTrue: Тест, проверяющий, что метод UpdateUser успешно обновляет свойства пользователя и возвращает true, если пользователь существует.
+        // Тест, проверяющий, что метод UpdateUser успешно обновляет свойства пользователя и возвращает true, если пользователь существует.
         [Fact]
         public async Task UpdateUser_ExistingUser_UpdatesPropertiesAndReturnsTrue()
         {
@@ -75,7 +75,7 @@ namespace SeriesTracker.Tests.UserRepositoryTests
             Assert.Equal("updated@example.com", updatedUser.Email);
         }
 
-        //  UpdateUser_NonExistingUser_ReturnsFalse: Тест, проверяющий, что метод UpdateUser возвращает false, если пользователь не существует.
+        // Тест, проверяющий, что метод UpdateUser возвращает false, если пользователь не существует.
         [Fact]
         public async Task UpdateUser_NonExistingUser_ReturnsFalse()
         {
@@ -89,7 +89,7 @@ namespace SeriesTracker.Tests.UserRepositoryTests
             Assert.False(result);
         }
 
-        //  UpdateUser_ExistingUser_NullProperties_UpdatesUserName: Тест, проверяющий, что метод UpdateUser с null свойствами обновляет UserName пользователя.
+        // Тест, проверяющий, что метод UpdateUser с null свойствами обновляет UserName пользователя.
         [Fact]
         public async Task UpdateUser_ExistingUser_NullProperties_UpdatesUserName()
         {
@@ -110,6 +110,10 @@ namespace SeriesTracker.Tests.UserRepositoryTests
         //  Dispose: Метод, освобождающий ресурсы после выполнения тестов.
         public void Dispose()
         {
+            foreach (var entry in _fixture._context.ChangeTracker.Entries().ToList())
+            {
+                entry.State = EntityState.Detached;
+            }
             GC.SuppressFinalize(this);
         }
     }

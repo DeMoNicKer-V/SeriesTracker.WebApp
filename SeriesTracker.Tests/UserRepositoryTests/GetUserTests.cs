@@ -1,4 +1,5 @@
-﻿using SeriesTracker.Core.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using SeriesTracker.Core.Models;
 using SeriesTracker.DataAccess.Entities;
 using Xunit;
 
@@ -16,7 +17,7 @@ namespace SeriesTracker.Tests.UserRepositoryTests
             _fixture = fixture;
         }
 
-        //  GetUserBy_ExistingUser_ReturnsUser: Тест, проверяющий, что методы получения пользователя по Id, UserName и Email возвращают пользователя, если он существует.
+        // Тест, проверяющий, что методы получения пользователя по Id, UserName и Email возвращают пользователя, если он существует.
         [Theory]
         [InlineData("id")]
         [InlineData("username")]
@@ -51,7 +52,7 @@ namespace SeriesTracker.Tests.UserRepositoryTests
             Assert.Equal(expectedUser.Id, user.Id);
         }
 
-        //  GetUserBy_NonExistingUser_ReturnsNull: Тест, проверяющий, что методы получения пользователя по Id, UserName и Email возвращают null, если пользователь не существует.
+        // Тест, проверяющий, что методы получения пользователя по Id, UserName и Email возвращают null, если пользователь не существует.
         [Theory]
         [InlineData("id", "00000000-0000-0000-0000-000000000000")]
         [InlineData("username", "nonexistinguser")]
@@ -85,6 +86,10 @@ namespace SeriesTracker.Tests.UserRepositoryTests
         //  Dispose: Метод, освобождающий ресурсы после выполнения тестов.
         public void Dispose()
         {
+            foreach (var entry in _fixture._context.ChangeTracker.Entries().ToList())
+            {
+                entry.State = EntityState.Detached;
+            }
             GC.SuppressFinalize(this);
         }
     }

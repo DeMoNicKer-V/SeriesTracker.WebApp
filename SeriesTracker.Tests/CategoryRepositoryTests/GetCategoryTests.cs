@@ -1,4 +1,5 @@
-﻿using Xunit;
+﻿using Microsoft.EntityFrameworkCore;
+using Xunit;
 
 namespace SeriesTracker.Tests.CategoryRepositoryTests
 {
@@ -14,7 +15,7 @@ namespace SeriesTracker.Tests.CategoryRepositoryTests
             _fixture = fixture;
         }
 
-        // GetCategoryById_ExistingCategory_ReturnsCategory: Тест, проверяющий, что метод GetCategoryById возвращает категорию, если она существует.
+        // Тест, проверяющий, что метод GetCategoryById возвращает категорию, если она существует.
         [Theory]
         [InlineData((int)Core.Enums.Category.Запланировано)]
         [InlineData((int)Core.Enums.Category.Смотрю)]
@@ -33,7 +34,7 @@ namespace SeriesTracker.Tests.CategoryRepositoryTests
             Assert.Equal(Enum.GetName(typeof(Core.Enums.Category), categoryId), category.Name);
         }
 
-        // GetCategoryById_NonExistingCategory_ThrowExeption: Тест, проверяющий, что метод GetCategoryById выбрасывает исключение InvalidOperationException, если категория не существует.
+        // Тест, проверяющий, что метод GetCategoryById выбрасывает исключение InvalidOperationException, если категория не существует.
         [Fact]
         public async Task GetCategoryById_NonExistingCategory_ThrowExeption()
         {
@@ -47,7 +48,7 @@ namespace SeriesTracker.Tests.CategoryRepositoryTests
             });
         }
 
-        // GetCategoryList_ExistingCategories_ReturnsCorrectCount: Тест, проверяющий, что метод GetCategoryList возвращает правильное количество категорий.
+        // Тест, проверяющий, что метод GetCategoryList возвращает правильное количество категорий.
         [Fact]
         public async Task GetCategoryList_ExistingCategories_ReturnsCorrectCount()
         {
@@ -65,6 +66,10 @@ namespace SeriesTracker.Tests.CategoryRepositoryTests
         //  Dispose: Метод, освобождающий ресурсы после выполнения тестов.
         public void Dispose()
         {
+            foreach (var entry in _fixture._context.ChangeTracker.Entries().ToList())
+            {
+                entry.State = EntityState.Detached;
+            }
             GC.SuppressFinalize(this);
         }
     }
