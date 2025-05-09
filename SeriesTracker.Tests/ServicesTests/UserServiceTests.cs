@@ -40,7 +40,7 @@ namespace SeriesTracker.Tests.ServicesTests
             // Act: Выполнение тестируемого кода.
             string token = await _userService.GenerateNewUserToken(userName);
 
-            // Assert
+            //  Assert: Проверка результатов теста.
             Assert.Equal(string.Empty, token);
         }
 
@@ -68,7 +68,7 @@ namespace SeriesTracker.Tests.ServicesTests
             // Act: Выполнение тестируемого кода.
             string token = await _userService.GenerateNewUserToken(userName);
 
-            // Assert
+            //  Assert: Проверка результатов теста.
             Assert.Equal(expectedToken, token);
         }
 
@@ -82,7 +82,7 @@ namespace SeriesTracker.Tests.ServicesTests
             // Act: Выполнение тестируемого кода.
             UserDetailDto? result = await _userService.GetUserById(userId);
 
-            // Assert
+            //  Assert: Проверка результатов теста.
             Assert.Null(result);
         }
 
@@ -110,7 +110,7 @@ namespace SeriesTracker.Tests.ServicesTests
             // Act: Выполнение тестируемого кода.
             UserDetailDto? result = await _userService.GetUserById(userId);
 
-            // Assert
+            //  Assert: Проверка результатов теста.
             Assert.Equal(userDetailDto, result);
         }
 
@@ -124,7 +124,7 @@ namespace SeriesTracker.Tests.ServicesTests
             // Act: Выполнение тестируемого кода.
             UserDetailDto? result = await _userService.GetUserByUserName(userName);
 
-            // Assert
+            //  Assert: Проверка результатов теста.
             Assert.Null(result);
         }
 
@@ -153,7 +153,7 @@ namespace SeriesTracker.Tests.ServicesTests
             // Act: Выполнение тестируемого кода.
             UserDetailDto? result = await _userService.GetUserByUserName(userName);
 
-            // Assert
+            //  Assert: Проверка результатов теста.
             Assert.Equal(userDetailDto, result);
         }
 
@@ -175,7 +175,7 @@ namespace SeriesTracker.Tests.ServicesTests
             // Act: Выполнение тестируемого кода.
             (List<UserDto>, int) result = await _userService.GetUserList(page);
 
-            // Assert
+            //  Assert: Проверка результатов теста.
             Assert.Equal(expectedResult.Item1, result.Item1);
             Assert.Equal(expectedResult.Item2, result.Item2);
         }
@@ -201,7 +201,7 @@ namespace SeriesTracker.Tests.ServicesTests
             // Act: Выполнение тестируемого кода.
             bool result = await _userService.UpdateUser(userId, userName, name, surName, email, password, avatar, dateBirth);
 
-            // Assert
+            //  Assert: Проверка результатов теста.
             Assert.False(result); // Check if the service returns false
         }
 
@@ -226,8 +226,8 @@ namespace SeriesTracker.Tests.ServicesTests
             // Act: Выполнение тестируемого кода.
             bool result = await _userService.UpdateUser(userId, userName, name, surName, email, password, avatar, dateBirth);
 
-            // Assert
-            Assert.True(result); // Check if the service returns true
+            //  Assert: Проверка результатов теста.
+            Assert.True(result);
         }
     }
 }
