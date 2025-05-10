@@ -155,7 +155,7 @@ namespace SeriesTracker.API.Controllers
             catch (Exception ex)
             {
                 // Логируем ошибку и возвращаем 500 Internal Server Error
-                return _logger.InternalServerError(ex, "An unexpected error occurred while deleting user account."); // Исправлена опечатка
+                return _logger.InternalServerError(ex, "An unexpected error occurred while deleting user account."); 
             }
         }
 
@@ -188,7 +188,7 @@ namespace SeriesTracker.API.Controllers
             catch (Exception ex)
             {
                 // Логируем ошибку и возвращаем 500 Internal Server Error
-                return _logger.InternalServerError(ex, "An unexpected error occurred while getting user by ID."); // Исправлено сообщение об ошибке
+                return _logger.InternalServerError(ex, "An unexpected error occurred while getting user by ID.");
             }
         }
 

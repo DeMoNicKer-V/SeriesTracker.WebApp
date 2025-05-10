@@ -95,7 +95,7 @@ namespace SeriesTracker.Application.Services
             User? user = await _userRepository.GetUserByUserName(userName) ?? throw new NotFoundException();
             var animeIds = await _userSeriesRepository.GetAnimeIdsList(user.Id, page, categoryId, isFavorite); // Получаем список идентификаторов аниме из репозитория
 
-            if (animeIds.Count == 0)
+            if (animeIds == null || animeIds.Count == 0)
             {
                 return []; // Возвращаем пустой массив, если список идентификаторов пуст
             }
@@ -108,10 +108,10 @@ namespace SeriesTracker.Application.Services
             return animeBaseArray; // Возвращаем массив DTO с информацией об аниме
         }
 
-        public async Task<bool> UpdateSeries(Guid seriesDd, int watched, int categoryId, bool favorite)
+        public async Task<bool> UpdateSeries(Guid seriesId, int watched, int categoryId, bool favorite)
         {
             var dateNow = DateTime.UtcNow.ToString("s"); // Получаем текущую дату и время в формате "s" (ISO 8601)
-            return await _userSeriesRepository.UpdateSeries(seriesDd, watched, categoryId, favorite, dateNow); // Обновляем запись в репозитории и возвращаем ее идентификатор
+            return await _userSeriesRepository.UpdateSeries(seriesId, watched, categoryId, favorite, dateNow); // Обновляем запись в репозитории и возвращаем ее идентификатор
         }
     }
 }

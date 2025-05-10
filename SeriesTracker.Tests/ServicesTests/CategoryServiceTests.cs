@@ -7,9 +7,8 @@ namespace SeriesTracker.Tests.ServicesTests
 {
     public class CategoryServiceTests
     {
-        private readonly Mock<ICategoryRepository> _mockCategoryRepository;
         private readonly CategoryService _categoryService;
-
+        private readonly Mock<ICategoryRepository> _mockCategoryRepository;
         public CategoryServiceTests()
         {
             _mockCategoryRepository = new Mock<ICategoryRepository>();
@@ -17,6 +16,7 @@ namespace SeriesTracker.Tests.ServicesTests
             _categoryService = new CategoryService(_mockCategoryRepository.Object);
         }
 
+        // Тест, проверяющий, что метод GetCategoryById возвращает категорию по ее идентификатору. Тест проверяет, что возвращаемая категория не null и имеет ожидаемые значения свойств.
         [Fact]
         public async Task GetCategoryById_ReturnsCategory()
         {
@@ -41,6 +41,7 @@ namespace SeriesTracker.Tests.ServicesTests
             Assert.Equal(category, result);
         }
 
+        // Тест, проверяющий, что метод GetCategoryList возвращает список категорий (вероятно, List<Category>). Тест проверяет, что возвращаемый список не null и содержит ожидаемые категории.
         [Fact]
         public async Task GetCategoryList_ReturnsCategoryList()
         {
@@ -69,6 +70,7 @@ namespace SeriesTracker.Tests.ServicesTests
             Assert.Equal(categories, result); // Проверяем, что возвращаемый список совпадает с ожидаемым.
         }
 
+        // Тест, проверяющий, что метод UpdateCategoryColor обновляет цвет категории и возвращает ожидаемый результат (true в случае успеха, false в случае неудачи). Тест проверяет сценарии, когда категория существует.
         [Theory]
         [InlineData((int)Core.Enums.Category.Смотрю, "#46bb32", true)]
         [InlineData(999, "#f12fab", false)]

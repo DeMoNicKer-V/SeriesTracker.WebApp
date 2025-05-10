@@ -30,10 +30,48 @@ namespace SeriesTracker.Tests.ServicesTests
             _userService = new UserService(_mockUserRepository.Object, _mockPasswordHasher.Object, _mockJwtProvider.Object, _mockMapper.Object);
         }
 
+        // Тест, проверяющий, что метод ChangeUserRole изменяет роль пользователя и возвращает ожидаемый результат (true в случае успеха, false в случае неудачи).
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public async Task ChangeUserRole_ReturnsExpectedResult(bool expectedResult)
+        {
+            // Arrange: Подготовка данных для теста.
+            Guid userId = Guid.NewGuid();
+            int roleId = 5;
+
+            _mockUserRepository.Setup(repo => repo.ChangeUserRole(userId, roleId)).ReturnsAsync(expectedResult);
+
+            // Act: Выполнение тестируемого кода.
+            bool result = await _userService.ChangeUserRole(userId, roleId);
+
+            //  Assert: Проверка результатов теста.
+            Assert.Equal(expectedResult, result);
+        }
+
+        // Тест, проверяющий, что метод DeleteUser удаляет пользователя и возвращает ожидаемый результат (true в случае успеха, false в случае неудачи).
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public async Task DeleteUser_ReturnsExpectedResult(bool expectedResult)
+        {
+            // Arrange: Подготовка данных для теста.
+            Guid userId = Guid.NewGuid();
+
+            _mockUserRepository.Setup(repo => repo.DeleteUser(userId)).ReturnsAsync(expectedResult);
+
+            // Act: Выполнение тестируемого кода.
+            bool result = await _userService.DeleteUser(userId);
+
+            //  Assert: Проверка результатов теста.
+            Assert.Equal(expectedResult, result);
+        }
+
+        // Тест, проверяющий, что метод GenerateNewUserToken возвращает пустую строку, если пользователь с указанным именем не существует.
         [Fact]
         public async Task GenerateNewUserToken_UserDoesNotExist_ReturnsEmptyString()
         {
-                // Arrange: Подготовка данных для теста.
+            // Arrange: Подготовка данных для теста.
             string userName = "nonexistentuser";
             _mockUserRepository.Setup(repo => repo.GetUserByUserName(userName)).ReturnsAsync(null as User);
 
@@ -44,10 +82,11 @@ namespace SeriesTracker.Tests.ServicesTests
             Assert.Equal(string.Empty, token);
         }
 
+        // Тест, проверяющий, что метод GenerateNewUserToken возвращает токен, если пользователь с указанным именем существует.
         [Fact]
         public async Task GenerateNewUserToken_UserExists_ReturnsToken()
         {
-                // Arrange: Подготовка данных для теста.
+            // Arrange: Подготовка данных для теста.
             string userName = "username";
             var user = User.Create(
                 Guid.NewGuid(),
@@ -72,10 +111,11 @@ namespace SeriesTracker.Tests.ServicesTests
             Assert.Equal(expectedToken, token);
         }
 
+        // Тест, проверяющий, что метод GetUserById возвращает null, если пользователь с указанным идентификатором не существует.
         [Fact]
         public async Task GetUserById_UserDoesNotExist_ReturnsNull()
         {
-                // Arrange: Подготовка данных для теста.
+            // Arrange: Подготовка данных для теста.
             Guid userId = Guid.NewGuid();
             _mockUserRepository.Setup(repo => repo.GetUserById(userId)).ReturnsAsync(null as User);
 
@@ -86,10 +126,11 @@ namespace SeriesTracker.Tests.ServicesTests
             Assert.Null(result);
         }
 
+        // Тест, проверяющий, что метод GetUserById возвращает UserDetailDto с заполненными данными, если пользователь с указанным идентификатором существует.
         [Fact]
         public async Task GetUserById_UserExists_ReturnsUserDetailDto()
         {
-                // Arrange: Подготовка данных для теста.
+            // Arrange: Подготовка данных для теста.
             Guid userId = Guid.NewGuid();
             var user = User.Create(
                            userId,
@@ -114,10 +155,11 @@ namespace SeriesTracker.Tests.ServicesTests
             Assert.Equal(userDetailDto, result);
         }
 
+        // Тест, проверяющий, что метод GetUserByUserName возвращает null, если пользователь с указанным именем не существует.
         [Fact]
         public async Task GetUserByUserName_UserDoesNotExist_ReturnsNull()
         {
-                // Arrange: Подготовка данных для теста.
+            // Arrange: Подготовка данных для теста.
             string userName = "nonexistentuser";
             _mockUserRepository.Setup(repo => repo.GetUserByUserName(userName)).ReturnsAsync(null as User);
 
@@ -128,10 +170,11 @@ namespace SeriesTracker.Tests.ServicesTests
             Assert.Null(result);
         }
 
+        // Тест, проверяющий, что метод GetUserByUserName возвращает UserDetailDto с заполненными данными, если пользователь с указанным именем существует.
         [Fact]
         public async Task GetUserByUserName_UserExists_ReturnsUserDetailDto()
         {
-                // Arrange: Подготовка данных для теста.
+            // Arrange: Подготовка данных для теста.
             string userName = "username";
             var user = User.Create(
                 Guid.NewGuid(),
@@ -157,10 +200,11 @@ namespace SeriesTracker.Tests.ServicesTests
             Assert.Equal(userDetailDto, result);
         }
 
+        // Тест, проверяющий, что метод GetUserList возвращает кортеж, содержащий список пользователей и общее количество пользователей. Важно проверить, что возвращаемый список не null и содержит ожидаемое количество пользователей, а также что общее количество пользователей соответствует ожидаемому значению.
         [Fact]
         public async Task GetUserList_ReturnsUserListAndCount()
         {
-                // Arrange: Подготовка данных для теста.
+            // Arrange: Подготовка данных для теста.
             int page = 1;
             var userList = new List<UserDto>
             {
@@ -180,10 +224,13 @@ namespace SeriesTracker.Tests.ServicesTests
             Assert.Equal(expectedResult.Item2, result.Item2);
         }
 
-        [Fact]
-        public async Task UpdateUser_UpdateFails_ReturnsFalse()
+        // Тест, проверяющий, что метод UpdateUser обновляет данные пользователя и возвращает ожидаемый результат (true в случае успеха, false в случае неудачи).
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public async Task UpdateUser_ReturnsExpectedResult(bool expectedResult)
         {
-                // Arrange: Подготовка данных для теста.
+            // Arrange: Подготовка данных для теста.
             Guid userId = Guid.NewGuid();
             string userName = "newusername";
             string name = "New";
@@ -194,40 +241,14 @@ namespace SeriesTracker.Tests.ServicesTests
             string dateBirth = "2000-01-01";
             string passwordHash = "hashedpassword";
 
-            // Setup repository to return false (update fails)
             _mockPasswordHasher.Setup(hasher => hasher.Generate(password)).Returns(passwordHash);
-            _mockUserRepository.Setup(repo => repo.UpdateUser(It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(false);
+            _mockUserRepository.Setup(repo => repo.UpdateUser(userId, userName, name, surName, email, passwordHash, avatar, dateBirth)).ReturnsAsync(expectedResult);
 
             // Act: Выполнение тестируемого кода.
             bool result = await _userService.UpdateUser(userId, userName, name, surName, email, password, avatar, dateBirth);
 
             //  Assert: Проверка результатов теста.
-            Assert.False(result); // Check if the service returns false
-        }
-
-        [Fact]
-        public async Task UpdateUser_ValidInput_ReturnsTrue()
-        {
-                // Arrange: Подготовка данных для теста.
-            Guid userId = Guid.NewGuid();
-            string userName = "newusername";
-            string name = "New";
-            string surName = "User";
-            string email = "new@example.com";
-            string password = "newpassword";
-            string avatar = "newavatar.jpg";
-            string dateBirth = "2000-01-01";
-            string passwordHash = "hashedpassword";
-
-            // Setup repository to return true
-            _mockPasswordHasher.Setup(hasher => hasher.Generate(password)).Returns(passwordHash);
-            _mockUserRepository.Setup(repo => repo.UpdateUser(userId, userName, name, surName, email, passwordHash, avatar, dateBirth)).ReturnsAsync(true);
-
-            // Act: Выполнение тестируемого кода.
-            bool result = await _userService.UpdateUser(userId, userName, name, surName, email, password, avatar, dateBirth);
-
-            //  Assert: Проверка результатов теста.
-            Assert.True(result);
+            Assert.Equal(expectedResult, result);
         }
     }
 }
