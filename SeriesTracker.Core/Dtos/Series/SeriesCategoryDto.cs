@@ -31,17 +31,17 @@
         public required string CategoryColor { get; set; }
 
         /// <summary>
-        /// Количество просмотренных эпизодов сериала пользователем.
+        /// Количество просмотренных эпизодов аниме пользователем.
         /// </summary>
         public int WatchedEpisodes { get; set; }
 
         /// <summary>
-        /// Дата добавления сериала в список пользователя.
+        /// Дата добавления аниме в список пользователя.
         /// </summary>
         public required string AddedDate { get; set; }
 
         /// <summary>
-        /// Дата последнего изменения информации о сериале в списке пользователя.
+        /// Дата последнего изменения информации о аниме в списке пользователя.
         /// </summary>
         public required string ChangedDate { get; set; }
 

@@ -22,11 +22,6 @@ namespace SeriesTracker.Application.Services
             _usersRepository = usersRepository ?? throw new ArgumentNullException(nameof(usersRepository));
         }
 
-        /// <summary>
-        /// Получает асинхронно набор разрешений для указанного пользователя.
-        /// </summary>
-        /// <param name="userId">Идентификатор пользователя, для которого необходимо получить разрешения.</param>
-        /// <returns>Задача, представляющая асинхронную операцию. Результатом задачи является HashSet разрешений.</returns>
         public async Task<HashSet<Permission>> GetPermissionsAsync(Guid userId)
         {
             // Получаем разрешения пользователя из репозитория

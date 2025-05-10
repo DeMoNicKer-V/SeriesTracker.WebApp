@@ -38,7 +38,7 @@ namespace SeriesTracker.DataAccess.Repositories
 
             // Загружаем пользователя с его ролями
             var user = await _context.UserEntities
-             .Include(u => u.Roles) // Важно загрузить связанные сущности
+             .Include(u => u.Roles)
              .FirstOrDefaultAsync(u => u.Id == userId);
 
             // Если пользователь не найден, возвращаем false

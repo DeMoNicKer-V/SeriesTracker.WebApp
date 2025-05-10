@@ -30,7 +30,7 @@ namespace SeriesTracker.Tests.ServicesTests
             _userSeriesService = new UserSeriesService(_mockUserSeriesRepository.Object, _mockUserRepository.Object, _mockLogger.Object, _mockMapper.Object);
         }
 
-        // Тест, проверяющий, что метод CreateSeries успешно создает запись и возвращает корректный Guid идентификатор созданной серии.
+        // Тест, проверяющий, что метод CreateSeries успешно создает запись и возвращает корректный Guid идентификатор созданной записи.
         [Fact]
         public async Task CreateSeries_ReturnsGuid()
         {
@@ -68,7 +68,7 @@ namespace SeriesTracker.Tests.ServicesTests
             _mockUserSeriesRepository.Verify(repo => repo.Add(It.IsAny<UserSeries>()), Times.Once);
         }
 
-        // Тест, проверяющий, что метод DeleteAllSeriesByUser удаляет все записи серий для определенного пользователя и возвращает ожидаемый результат (true в случае успеха, false в случае неудачи).
+        // Тест, проверяющий, что метод DeleteAllSeriesByUser удаляет все записи для определенного пользователя и возвращает ожидаемый результат (true в случае успеха, false в случае неудачи).
         [Theory]
         [InlineData(true)]
         [InlineData(false)]
@@ -86,7 +86,7 @@ namespace SeriesTracker.Tests.ServicesTests
             Assert.Equal(expectedResult, result);
         }
 
-        // Тест, проверяющий, что метод DeleteSeries удаляет конкретную запись серии и возвращает ожидаемый результат (true в случае успеха, false в случае неудачи).
+        // Тест, проверяющий, что метод DeleteSeries удаляет конкретную запись и возвращает ожидаемый результат (true в случае успеха, false в случае неудачи).
         [Theory]
         [InlineData(true)]
         [InlineData(false)]
@@ -104,7 +104,7 @@ namespace SeriesTracker.Tests.ServicesTests
             Assert.Equal(expectedResult, result);
         }
 
-        // Тест, проверяющий, что метод GetGroupShortSeries возвращает список сгруппированных серий (вероятно, List<SeriesGroupDto>). Важно убедиться, что возвращаемый список не null и содержит ожидаемые данные.
+        // Тест, проверяющий, что метод GetGroupShortSeries возвращает список сгруппированных данных.
         [Fact]
         public async Task GetGroupShortSeries_ReturnsList()
         {
@@ -165,7 +165,7 @@ namespace SeriesTracker.Tests.ServicesTests
             await Assert.ThrowsAsync<NotFoundException>(() => _userSeriesService.GetUserSeriesList(userName, 1, 3, false));
         }
 
-        // Тест, проверяющий, что метод GetUserSeriesList возвращает пустой массив, если пользователь существует, но в списке серий пользователя нет аниме.
+        // Тест, проверяющий, что метод GetUserSeriesList возвращает пустой массив, если пользователь существует, но у него нет аниме.
         [Fact]
         public async Task GetUserSeriesList_UserExistsAnimeIdsEmpty_ReturnsEmptyArray()
         {
@@ -211,7 +211,7 @@ namespace SeriesTracker.Tests.ServicesTests
             Assert.Null(result);
         }
 
-        // Тест, проверяющий, что метод UpdateSeries обновляет запись серии и возвращает ожидаемый результат (true в случае успеха, false в случае неудачи).
+        // Тест, проверяющий, что метод UpdateSeries обновляет запись и возвращает ожидаемый результат (true в случае успеха, false в случае неудачи).
         [Theory]
         [InlineData(true)]
         [InlineData(false)]

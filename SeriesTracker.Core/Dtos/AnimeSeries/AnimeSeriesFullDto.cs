@@ -15,7 +15,7 @@ namespace SeriesTracker.Core.Dtos
         public Guid? SeriesId { get; set; }
 
         /// <summary>
-        /// Количество просмотренных эпизодов аниме-сериала пользователем.
+        /// Количество просмотренных эпизодов аниме пользователем.
         /// </summary>
         public required int WatchedEpisodes { get; set; }
 
