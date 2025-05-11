@@ -18,6 +18,7 @@ namespace SeriesTracker.Application.Services
         private readonly IMapper _mapper;
         private readonly IUserRepository _userRepository;
         private readonly IUserSeriesRepository _userSeriesRepository;
+        private readonly IGraphQLHelper _graphQLHelper;
 
         /// <summary>
         /// Инициализирует новый экземпляр класса <see cref="UserSeriesService"/>.
@@ -27,7 +28,7 @@ namespace SeriesTracker.Application.Services
         /// <param name="logger">Логгер для записи информации о работе сервиса.</param>
         /// <param name="mapper">Маппер для преобразования объектов.</param>
         public UserSeriesService(
-            IUserSeriesRepository userSeriesRepository, IUserRepository userRepository, ILogger<UserSeriesService> logger, IMapper mapper)
+            IUserSeriesRepository userSeriesRepository, IUserRepository userRepository, ILogger<UserSeriesService> logger, IMapper mapper, IGraphQLHelper graphQLHelper)
         {
             // Внедряем зависимости (Dependency Injection) и проверяем на null
             _userSeriesRepository = userSeriesRepository ?? throw new ArgumentNullException(nameof(userSeriesRepository));
@@ -37,6 +38,8 @@ namespace SeriesTracker.Application.Services
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+
+            _graphQLHelper = graphQLHelper ?? throw new ArgumentNullException(nameof(graphQLHelper));
         }
 
         public async Task<Guid> Create(Guid seriesId, Guid userId, int animeId, int categoryId, int watchedEpisodes, bool isFavorite)
@@ -101,7 +104,7 @@ namespace SeriesTracker.Application.Services
             }
 
             var idsString = string.Join(",", animeIds); // Преобразуем список идентификаторов в строку, разделенную запятыми
-            var animesResponse = await GraphQLHelper.ExecuteGraphQLRequest<ShikimoriAnimeList<ShikimoriAnimeDto>>(GraphQLQueries.GetAnimesByIds(idsString), _logger);
+            var animesResponse = await _graphQLHelper.ExecuteGraphQLRequest<ShikimoriAnimeList<ShikimoriAnimeDto>>(GraphQLQueries.GetAnimesByIds(idsString), _logger);
 
             var animeBaseArray = _mapper.Map<ShikimoriAnime[]>(animesResponse.Animes);
 

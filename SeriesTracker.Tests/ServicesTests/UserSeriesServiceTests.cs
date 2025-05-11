@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
+using SeriesTracker.Application;
 using SeriesTracker.Application.Services;
 using SeriesTracker.Core.Abstractions;
 using SeriesTracker.Core.Dtos;
@@ -13,7 +15,8 @@ namespace SeriesTracker.Tests.ServicesTests
 {
     public class UserSeriesServiceTests
     {
-        private readonly Mock<ILogger<UserSeriesService>> _mockLogger;
+        private readonly ILogger<UserSeriesService> _logger;
+        private readonly Mock<IGraphQLHelper> _mockGraphQLHelper;
         private readonly Mock<IMapper> _mockMapper;
         private readonly Mock<IUserRepository> _mockUserRepository;
         private readonly Mock<IUserSeriesRepository> _mockUserSeriesRepository;
@@ -22,12 +25,13 @@ namespace SeriesTracker.Tests.ServicesTests
 
         public UserSeriesServiceTests()
         {
-            _mockLogger = new Mock<ILogger<UserSeriesService>>();
+            _logger = NullLogger<UserSeriesService>.Instance;
             _mockMapper = new Mock<IMapper>();
             _mockUserRepository = new Mock<IUserRepository>();
             _mockUserSeriesRepository = new Mock<IUserSeriesRepository>();
+            _mockGraphQLHelper = new Mock<IGraphQLHelper>();
 
-            _userSeriesService = new UserSeriesService(_mockUserSeriesRepository.Object, _mockUserRepository.Object, _mockLogger.Object, _mockMapper.Object);
+            _userSeriesService = new UserSeriesService(_mockUserSeriesRepository.Object, _mockUserRepository.Object, _logger, _mockMapper.Object, _mockGraphQLHelper.Object);
         }
 
         // Тест, проверяющий, что метод CreateSeries успешно создает запись и возвращает корректный Guid идентификатор созданной записи.
@@ -120,6 +124,21 @@ namespace SeriesTracker.Tests.ServicesTests
             _mockUserSeriesRepository.Verify(repo => repo.GetGroupShortSeries(userName), Times.Once);
         }
 
+        // Тест, проверяющий, что метод GetUserProfile возвращает null, если пользователь с указанным именем не существует.
+        [Fact]
+        public async Task GetUserProfile_UserDoesNotExist_ReturnsNull()
+        {
+            // Arrange: Подготовка данных для теста.
+            string userName = "nonexistentuser";
+            _mockUserRepository.Setup(repo => repo.GetUserByUserName(userName)).ReturnsAsync(null as User);
+
+            // Act: Выполнение тестируемого кода.
+            UserActivityDTO? result = await _userSeriesService.GetUserProfile(userName);
+
+            // Assert: Проверка результатов теста.
+            Assert.Null(result);
+        }
+
         // Тест, проверяющий, что метод GetUserProfile успешно получает профиль пользователя, если пользователь существует и возвращает UserActivityDto с заполненными данными профиля.
         [Fact]
         public async Task GetUserProfile_UserExistsAndProfileFound_ReturnsUserActivityDto()
@@ -195,22 +214,6 @@ namespace SeriesTracker.Tests.ServicesTests
             //  Assert: Проверка результатов теста.
             Assert.Empty(result);
         }
-
-        // Тест, проверяющий, что метод GetUserProfile возвращает null, если пользователь с указанным именем не существует.
-        [Fact]
-        public async Task GetUserProfile_UserDoesNotExist_ReturnsNull()
-        {
-            // Arrange: Подготовка данных для теста.
-            string userName = "nonexistentuser";
-            _mockUserRepository.Setup(repo => repo.GetUserByUserName(userName)).ReturnsAsync(null as User);
-
-            // Act: Выполнение тестируемого кода.
-            UserActivityDTO? result = await _userSeriesService.GetUserProfile(userName);
-
-            // Assert: Проверка результатов теста.
-            Assert.Null(result);
-        }
-
         // Тест, проверяющий, что метод UpdateSeries обновляет запись и возвращает ожидаемый результат (true в случае успеха, false в случае неудачи).
         [Theory]
         [InlineData(true)]

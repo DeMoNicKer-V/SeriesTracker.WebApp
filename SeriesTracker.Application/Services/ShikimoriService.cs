@@ -19,6 +19,7 @@ namespace SeriesTracker.Application.Services
         private readonly ILogger<ShikimoriService> _logger;
         private readonly IMapper _mapper;
         private readonly IUserRepository _userRepository;
+        private readonly IGraphQLHelper _graphQLHelper;
 
         /// <summary>
         /// Инициализирует новый экземпляр класса <see cref="ShikimoriService"/>.
@@ -31,7 +32,7 @@ namespace SeriesTracker.Application.Services
             IUserSeriesRepository userSeriesRepository,
             ILogger<ShikimoriService> logger,
             IMapper mapper,
-            IUserRepository userRepository)
+            IUserRepository userRepository, IGraphQLHelper graphQLHelper)
         {
             // Внедряем зависимости (Dependency Injection) и проверяем на null
             _userSeriesRepository = userSeriesRepository ?? throw new ArgumentNullException(nameof(userSeriesRepository));
@@ -41,6 +42,8 @@ namespace SeriesTracker.Application.Services
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
 
             _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
+
+            _graphQLHelper = graphQLHelper ?? throw new ArgumentNullException(nameof(graphQLHelper));
         }
 
         public async Task<AnimeSeriesFullDto> GetAnimeById(Guid userId, string animeId)
@@ -74,7 +77,7 @@ namespace SeriesTracker.Application.Services
         public async Task<GenreList> GetGenres()
         {
             // 1. Получаем список жанров через GraphQL
-            var genreResponse = await GraphQLHelper.ExecuteGraphQLRequest<GenreList>(GraphQLQueries.GetGenres(), _logger);
+            var genreResponse = await _graphQLHelper.ExecuteGraphQLRequest<GenreList>(GraphQLQueries.GetGenres(), _logger);
 
             if (genreResponse == null)
             {
@@ -88,7 +91,7 @@ namespace SeriesTracker.Application.Services
         public async Task<GenreGroupingDTO> GetGroupingGenres()
         {
             // 1. Получаем список жанров через GraphQL
-            var genreResponse = await GraphQLHelper.ExecuteGraphQLRequest<GenreList>(GraphQLQueries.GetGenres(), _logger);
+            var genreResponse = await _graphQLHelper.ExecuteGraphQLRequest<GenreList>(GraphQLQueries.GetGenres(), _logger);
 
             if (genreResponse == null)
             {
@@ -113,7 +116,7 @@ namespace SeriesTracker.Application.Services
         public async Task<ShikimoriAnime> GetRandomAnime()
         {
             // 1. Получаем список аниме через GraphQL (предполагаем, что только 1 элемент)
-            var animeResponse = await GraphQLHelper.ExecuteGraphQLRequest<ShikimoriAnimeList<ShikimoriAnime>>(GraphQLQueries.GetRandomAnime(), _logger);
+            var animeResponse = await _graphQLHelper.ExecuteGraphQLRequest<ShikimoriAnimeList<ShikimoriAnime>>(GraphQLQueries.GetRandomAnime(), _logger);
 
             if (animeResponse == null)
             {
@@ -155,7 +158,7 @@ namespace SeriesTracker.Application.Services
             where TIntermediate : IAnime
         {
             // 1. Получаем список аниме через GraphQL
-            var animeList = await GraphQLHelper.ExecuteGraphQLRequest<ShikimoriAnimeList<TSource>>(request, _logger);
+            var animeList = await _graphQLHelper.ExecuteGraphQLRequest<ShikimoriAnimeList<TSource>>(request, _logger);
 
             if (animeList == null)
             {

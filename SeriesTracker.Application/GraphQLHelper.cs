@@ -7,24 +7,15 @@ using Microsoft.Extensions.Logging;
 namespace SeriesTracker.Application
 {
     /// <summary>
-    /// Статический класс-хелпер для выполнения GraphQL-запросов к API Shikimori.
+    /// Класс-хелпер для выполнения GraphQL-запросов к API Shikimori.
     /// </summary>
-    public static class GraphQLHelper
+    public class GraphQLHelper : IGraphQLHelper
     {
         private static readonly string apiUrl = "https://shikimori.one/api/graphql";
 
         private static readonly GraphQLHttpClient graphQLClient = new GraphQLHttpClient(apiUrl, new NewtonsoftJsonSerializer());
 
-        /// <summary>
-        /// Выполняет GraphQL-запрос и возвращает результат с использованием функции проекции.
-        /// </summary>
-        /// <typeparam name="TSource">Тип данных, возвращаемых GraphQL-запросом.</typeparam>
-        /// <typeparam name="TResult">Тип данных, которые нужно получить в результате (после применения проекции).</typeparam>
-        /// <param name="request">Объект <see cref="GraphQLRequest"/>, представляющий GraphQL-запрос.</param>
-        /// <param name="logger">Логгер для записи информации о процессе выполнения запроса.</param>
-        /// <returns>Результат GraphQL-запроса типа <typeparamref name="TResult"/>.</returns>
-        /// <exception cref="Exception">Выбрасывается, если GraphQL-запрос завершается с ошибками.</exception>
-        public static async Task<TResult?> ExecuteGraphQLRequest<TSource, TResult>(
+        public async Task<TResult?> ExecuteGraphQLRequest<TSource, TResult>(
            GraphQLRequest request,
            ILogger logger,
            IMapper mapper)
@@ -55,7 +46,7 @@ namespace SeriesTracker.Application
             }
         }
 
-        public static async Task<TResult?> ExecuteGraphQLRequest<TSource, TResult>(
+        public async Task<TResult?> ExecuteGraphQLRequest<TSource, TResult>(
         GraphQLRequest request,
         ILogger logger)
         {
@@ -85,10 +76,7 @@ namespace SeriesTracker.Application
             }
         }
 
-        /// <summary>
-        ///  Вспомогательный метод для случаев, когда не требуется проекция.  Просто возвращает данные как есть.
-        /// </summary>
-        public static async Task<TSource?> ExecuteGraphQLRequest<TSource>(GraphQLRequest request, ILogger logger)
+        public async Task<TSource?> ExecuteGraphQLRequest<TSource>(GraphQLRequest request, ILogger logger)
         {
             return await ExecuteGraphQLRequest<TSource, TSource>(request, logger);
         }

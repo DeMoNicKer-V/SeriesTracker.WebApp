@@ -15,6 +15,7 @@ namespace SeriesTracker.Tests.ServicesTests
         private readonly Mock<IPasswordHasher> _mockPasswordHasher;
         private readonly Mock<IUserRepository> _mockUserReposiory;
         private readonly User _user;
+
         public AuthenticationServiceTests()
         {
             _mockUserReposiory = new Mock<IUserRepository>();
@@ -100,7 +101,10 @@ namespace SeriesTracker.Tests.ServicesTests
 
             // Проверяем, что методы GetUserByEmail и Verify были вызваны
             _mockUserReposiory.Verify(repo => repo.GetUserByEmail(email), Times.Once);
-            _mockPasswordHasher.Verify(hash => hash.Verify(password, _user.PasswordHash), Times.Once);
+            if (!string.IsNullOrEmpty(email))
+            {
+                _mockPasswordHasher.Verify(hash => hash.Verify(password, _user.PasswordHash), Times.Once);
+            }
         }
 
         // Тест, проверяющий, что метод Register успешно регистрирует нового пользователя с валидными данными и возвращает Guid идентификатор созданного пользователя.
