@@ -61,14 +61,14 @@ namespace SeriesTracker.Core.Abstractions
             return token;
         }
 
-        public async Task Register(string userName, string email, string password, string? avatar, string? name, string? surName, string? dateBirth)
+        public async Task<Guid> Register(string userName, string email, string password, string? avatar, string? name, string? surName, string? dateBirth)
         {
             // 1. Хеширование пароля
             string hashedPassword = _passwordHasher.Generate(password);
 
             // 2. Создание пользователя
             var user = User.Create(
-                Guid.NewGuid(), // Генерируем уникальный идентификатор для пользователя
+                Guid.NewGuid(),
                 userName,
                 email,
                 hashedPassword,
@@ -76,11 +76,11 @@ namespace SeriesTracker.Core.Abstractions
                 surName,
                 avatar,
                 dateBirth,
-                DateTime.UtcNow.ToString("s") // Дата создания пользователя в формате ISO 8601
+                DateTime.UtcNow.ToString("s")
             );
 
-            // 3. Сохранение пользователя в репозитории
-            await _userRepository.CreateUser(user);
+            // 3. Сохранение пользователя в репозитории и возвращаем Guid
+            return await _userRepository.CreateUser(user);
         }
 
         public async Task<bool> UserNameExists(string userName)

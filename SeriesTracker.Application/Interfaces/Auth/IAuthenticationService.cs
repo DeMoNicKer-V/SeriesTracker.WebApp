@@ -30,8 +30,8 @@
         /// <param name="name">Имя пользователя (может быть null).</param>
         /// <param name="surName">Фамилия пользователя (может быть null).</param>
         /// <param name="dateBirth">Дата рождения пользователя (может быть null).</param>
-        /// <returns>Результат асинхронной операции.</returns>
-        Task Register(string userName, string email, string password, string? avatar, string? name, string? surName, string? dateBirth);
+        /// <returns>Возвращает Guid загерестрированного пользователя.</returns>
+        Task<Guid> Register(string userName, string email, string password, string? avatar, string? name, string? surName, string? dateBirth);
 
         /// <summary>
         /// Проверяет, существует ли указанное имя пользователя (userName) в системе.
