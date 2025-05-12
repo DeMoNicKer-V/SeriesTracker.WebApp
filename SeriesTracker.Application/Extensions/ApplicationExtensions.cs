@@ -25,6 +25,7 @@ namespace SeriesTracker.Application.Extensions
 
             // Регистрация сервисов, связанных с получением данных через Shikimori Api.
             services.AddScoped<IShikimoriService, ShikimoriService>();
+            services.AddScoped<IGraphQLHelper, GraphQLHelper>();
             services.AddScoped<ICalendarFetcher, CalendarFetcher>();
 
             return services;

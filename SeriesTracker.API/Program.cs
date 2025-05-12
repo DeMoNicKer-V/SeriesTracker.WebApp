@@ -111,3 +111,5 @@ app.MapControllers();
 // ---- Запуск приложения ----
 // Запускаем веб-приложение.
 app.Run();
+
+public partial class Program { }
