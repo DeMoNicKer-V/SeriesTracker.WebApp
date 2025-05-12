@@ -1,10 +1,10 @@
 using Microsoft.AspNetCore.Mvc.Testing;
-using Moq;
-using SeriesTracker.Application.Services;
-using System.Net;
 using Microsoft.Extensions.DependencyInjection;
+using Moq;
 using Newtonsoft.Json;
 using SeriesTracker.API.Contracts;
+using SeriesTracker.Application.Services;
+using System.Net;
 using System.Text;
 
 namespace SeriesTracker.IntegrationTests
