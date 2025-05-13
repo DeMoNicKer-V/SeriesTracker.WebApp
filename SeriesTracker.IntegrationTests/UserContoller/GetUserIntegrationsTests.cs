@@ -1,24 +1,14 @@
-﻿using Moq;
-using SeriesTracker.Core.Abstractions;
-using System.Net.Http.Headers;
-using Microsoft.Extensions.DependencyInjection;
-using SeriesTracker.Core.Models;
-using SeriesTracker.Core.Dtos;
-using Microsoft.AspNetCore.Http;
-using System.Net;
+﻿using Microsoft.AspNetCore.Mvc.Testing;
+using Moq;
 using Newtonsoft.Json;
+using SeriesTracker.Core.Abstractions;
+using SeriesTracker.Core.Dtos;
+using System.Net;
 
-namespace SeriesTracker.IntegrationTests
+namespace SeriesTracker.IntegrationTests.UserContoller
 {
-    public class UserContollerIntegrationTests : IClassFixture<CustomWebApplicationFactory>
+    public class GetUserIntegrationsTests(CustomWebApplicationFactory factory) : TestsBase<IUserService>(factory)
     {
-        private readonly CustomWebApplicationFactory _factory;
-
-        public UserContollerIntegrationTests(CustomWebApplicationFactory factory)
-        {
-            _factory = factory;
-        }
-
         // Тест, проверяющий, что метод GetUserById возвращает 404 NotFound, если пользователь с указанным ID не существует.
         [Fact]
         public async Task GetUserById_ReturnsNotFound()
@@ -75,8 +65,9 @@ namespace SeriesTracker.IntegrationTests
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
             var content = await response.Content.ReadAsStringAsync();
-            Assert.Contains(testUser.UserName, content);  
+            Assert.Contains(testUser.UserName, content);
         }
+
         // Тест, проверяющий, что метод GetUsersList возвращает 200 OK и список пользователей, а также общее количество пользователей для указанной страницы.  Параметр 'page' указывает номер запрашиваемой страницы.
         [Theory]
         [InlineData(1)]
@@ -94,13 +85,7 @@ namespace SeriesTracker.IntegrationTests
             var mockUserService = new Mock<IUserService>();
             mockUserService.Setup(service => service.GetUserList(page)).ReturnsAsync((userList, totalCount));
 
-            var client = _factory.WithWebHostBuilder(builder =>
-            {
-                builder.ConfigureServices(services =>
-                {
-                    services.AddScoped(typeof(IUserService), (sp) => mockUserService.Object);
-                });
-            }).CreateClient();
+            var client = CreateTestClient(mockUserService);
 
             // Act: Выполнение тестируемого кода.
             var response = await client.GetAsync($"/user/{page}");
@@ -111,9 +96,9 @@ namespace SeriesTracker.IntegrationTests
             var content = await response.Content.ReadAsStringAsync();
             var result = JsonConvert.DeserializeObject<UserListResponse>(content);
 
-            Assert.Equal(totalCount, result.totalCount);
-            Assert.Equal(userList.Count, result.users.Count);
-            Assert.Contains(userList[0].UserName, result.users[0].UserName);
+            Assert.Equal(totalCount, result.TotalCount);
+            Assert.Equal(userList.Count, result.Users.Count);
+            Assert.Contains(userList[0].UserName, result.Users[0].UserName);
         }
 
         // Тест, проверяющий, что метод GetUsersList возвращает 500 InternalServerError, если во время получения списка пользователей возникает необработанное исключение.
@@ -133,30 +118,11 @@ namespace SeriesTracker.IntegrationTests
             // Assert: Проверка результатов теста.
             Assert.Equal(HttpStatusCode.InternalServerError, response.StatusCode);
         }
-
-        // Метод для создания тестового клиента (с имитацией авторизации)
-        private HttpClient CreateTestClient(Mock<IUserService>? mockUserService = null)
-        {
-            var client = _factory.WithWebHostBuilder(builder =>
-            {
-                builder.ConfigureServices(services =>
-                {
-                    if (mockUserService != null)
-                    {
-                        services.AddScoped(typeof(IUserService), (sp) => mockUserService.Object);
-                    }
-                });
-            }).CreateClient();
-
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Test");
-
-            return client;
-        }
     }
 
     public class UserListResponse
     {
-        public int totalCount { get; set; }
-        public List<UserDto> users { get; set; } = new List<UserDto>();
+        public int TotalCount { get; set; }
+        public List<UserDto> Users { get; set; } = [];
     }
 }

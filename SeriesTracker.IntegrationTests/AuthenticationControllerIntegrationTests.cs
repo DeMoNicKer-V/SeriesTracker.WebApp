@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using Newtonsoft.Json;
 using SeriesTracker.API.Contracts;
@@ -9,15 +7,8 @@ using System.Text;
 
 namespace SeriesTracker.IntegrationTests
 {
-    public class AuthenticationControllerIntegrationTests : IClassFixture<WebApplicationFactory<Program>>
+    public class AuthenticationControllerIntegrationTests(CustomWebApplicationFactory factory) : TestsBase<IAuthenticationService>(factory)
     {
-        private readonly WebApplicationFactory<Program> _factory;
-
-        public AuthenticationControllerIntegrationTests(WebApplicationFactory<Program> factory)
-        {
-            _factory = factory;
-        }
-
         // “ест, провер€ющий, что метод CheckInput (CheckEmail или CheckUserName) возвращает 500 InternalServerError, если во врем€ проверки доступности email или username возникает исключение.
         [Theory]
         [InlineData("test@example.com", "email")]
@@ -36,13 +27,7 @@ namespace SeriesTracker.IntegrationTests
                 mockAuthenticationService.Setup(service => service.UserNameExists(inputValue)).ThrowsAsync(new Exception("Error"));
             }
 
-            var client = _factory.WithWebHostBuilder(builder =>
-            {
-                builder.ConfigureServices(services =>
-                {
-                    services.AddScoped(typeof(IAuthenticationService), (sp) => mockAuthenticationService.Object);
-                });
-            }).CreateClient();
+            var client = CreateTestClient(mockAuthenticationService);
 
             // Act: ¬ыполнение тестируемого кода
             var response = await client.GetAsync($"/auth/{route}?{route}={inputValue}");
@@ -73,13 +58,7 @@ namespace SeriesTracker.IntegrationTests
                 mockAuthenticationService.Setup(service => service.UserNameExists(inputValue)).ReturnsAsync(exists);
             }
 
-            var client = _factory.WithWebHostBuilder(builder =>
-            {
-                builder.ConfigureServices(services =>
-                {
-                    services.AddScoped(typeof(IAuthenticationService), (sp) => mockAuthenticationService.Object);
-                });
-            }).CreateClient();
+            var client = CreateTestClient(mockAuthenticationService);
 
             // Act: ¬ыполнение тестируемого кода
             var response = await client.GetAsync($"/auth/{route}?{route}={inputValue}");
@@ -96,13 +75,7 @@ namespace SeriesTracker.IntegrationTests
             var mockAuthenticationService = new Mock<IAuthenticationService>();
             mockAuthenticationService.Setup(service => service.Login(It.IsAny<string>(), It.IsAny<string>())).ThrowsAsync(new Exception("Error"));
 
-            var client = _factory.WithWebHostBuilder(builder =>
-            {
-                builder.ConfigureServices(services =>
-                {
-                    services.AddScoped(typeof(IAuthenticationService), (sp) => mockAuthenticationService.Object);
-                });
-            }).CreateClient();
+            var client = CreateTestClient(mockAuthenticationService);
 
             LoginUserRequest loginRequest = new("test@example.com", "password");
             var json = JsonConvert.SerializeObject(loginRequest);
@@ -127,13 +100,7 @@ namespace SeriesTracker.IntegrationTests
             string? expectedToken = expectedPassword.Equals(password) ? "test_token" : null;
             mockAuthenticationService.Setup(service => service.Login(email, password)).ReturnsAsync(expectedToken);
 
-            var client = _factory.WithWebHostBuilder(builder =>
-            {
-                builder.ConfigureServices(services =>
-                {
-                    services.AddScoped(typeof(IAuthenticationService), (sp) => mockAuthenticationService.Object);
-                });
-            }).CreateClient();
+            var client = CreateTestClient(mockAuthenticationService);
 
             LoginUserRequest loginRequest = new(email, password);
             var json = JsonConvert.SerializeObject(loginRequest);
@@ -189,13 +156,7 @@ namespace SeriesTracker.IntegrationTests
             var mockAuthenticationService = new Mock<IAuthenticationService>();
             mockAuthenticationService.Setup(service => service.Register(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).ThrowsAsync(new Exception("Error"));
 
-            var client = _factory.WithWebHostBuilder(builder =>
-            {
-                builder.ConfigureServices(services =>
-                {
-                    services.AddScoped(typeof(IAuthenticationService), (sp) => mockAuthenticationService.Object);
-                });
-            }).CreateClient();
+            var client = CreateTestClient(mockAuthenticationService);
 
             var registerRequest = new CreateUserRequest
             (
@@ -243,13 +204,7 @@ namespace SeriesTracker.IntegrationTests
             var mockAuthenticationService = new Mock<IAuthenticationService>();
             mockAuthenticationService.Setup(service => service.Register(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(Guid.NewGuid()); // Assuming register returns Guid now.
 
-            var client = _factory.WithWebHostBuilder(builder =>
-            {
-                builder.ConfigureServices(services =>
-                {
-                    services.AddScoped(typeof(IAuthenticationService), (sp) => mockAuthenticationService.Object);
-                });
-            }).CreateClient();
+            var client = CreateTestClient(mockAuthenticationService);
 
             var registerRequest = new CreateUserRequest
             (
@@ -279,13 +234,7 @@ namespace SeriesTracker.IntegrationTests
             var mockAuthenticationService = new Mock<IAuthenticationService>();
             mockAuthenticationService.Setup(service => service.Verify(It.IsAny<string>(), It.IsAny<string>())).ThrowsAsync(new Exception("Error"));
 
-            var client = _factory.WithWebHostBuilder(builder =>
-            {
-                builder.ConfigureServices(services =>
-                {
-                    services.AddScoped(typeof(IAuthenticationService), (sp) => mockAuthenticationService.Object);
-                });
-            }).CreateClient();
+            var client = CreateTestClient(mockAuthenticationService);
 
             var loginRequest = new LoginUserRequest("test@example.com", "password");
             var json = JsonConvert.SerializeObject(loginRequest);
@@ -324,13 +273,7 @@ namespace SeriesTracker.IntegrationTests
             var mockAuthenticationService = new Mock<IAuthenticationService>();
             mockAuthenticationService.Setup(service => service.Verify("test@example.com", "password")).ReturnsAsync(true);
 
-            var client = _factory.WithWebHostBuilder(builder =>
-            {
-                builder.ConfigureServices(services =>
-                {
-                    services.AddScoped(typeof(IAuthenticationService), (sp) => mockAuthenticationService.Object);
-                });
-            }).CreateClient();
+            var client = CreateTestClient(mockAuthenticationService);
 
             var loginRequest = new LoginUserRequest("test@example.com", "password");
             var json = JsonConvert.SerializeObject(loginRequest);
@@ -351,13 +294,7 @@ namespace SeriesTracker.IntegrationTests
             var mockAuthenticationService = new Mock<IAuthenticationService>();
             mockAuthenticationService.Setup(service => service.Verify("test@example.com", "wrongpassword")).ThrowsAsync(new UnauthorizedAccessException("Invalid credentials"));
 
-            var client = _factory.WithWebHostBuilder(builder =>
-            {
-                builder.ConfigureServices(services =>
-                {
-                    services.AddScoped(typeof(IAuthenticationService), (sp) => mockAuthenticationService.Object);
-                });
-            }).CreateClient();
+            var client = CreateTestClient(mockAuthenticationService);
 
             var loginRequest = new LoginUserRequest("test@example.com", "wrongpassword");
             var json = JsonConvert.SerializeObject(loginRequest);

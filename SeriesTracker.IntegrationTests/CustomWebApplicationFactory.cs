@@ -19,7 +19,8 @@ namespace SeriesTracker.IntegrationTests
 
                 var mockPermissionService = new Mock<IPermissionSevice>();
                 var userId = Guid.Parse("aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee");
-                mockPermissionService.Setup(p => p.GetPermissionsAsync(userId)).ReturnsAsync([Permission.Delete]);
+                mockPermissionService.Setup(p => p.GetPermissionsAsync(userId)).ReturnsAsync([
+                    Permission.Create, Permission.Delete, Permission.Update, Permission.Add, Permission.Read]);
 
                 services.AddScoped(typeof(IPermissionSevice), (sp) => mockPermissionService.Object);
             });
