@@ -1,14 +1,8 @@
 ﻿using Moq;
 using Newtonsoft.Json;
-using SeriesTracker.API.Contracts;
 using SeriesTracker.Core.Abstractions;
 using SeriesTracker.Core.Models.Shikimori;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SeriesTracker.IntegrationTests
 {
@@ -16,29 +10,29 @@ namespace SeriesTracker.IntegrationTests
     {
         // Тест, проверяющий, что метод GetAiredAnimes возвращает возвращает верный HttpStatusCode.
         [Theory]
-        [InlineData(true, true, HttpStatusCode.NoContent, null)]
-        [InlineData(false, true, HttpStatusCode.NotFound, null)]
-        [InlineData(true, true, HttpStatusCode.Unauthorized, typeof(UnauthorizedAccessException))]
-        [InlineData(false, true, HttpStatusCode.InternalServerError, typeof(Exception))]
-        public async Task UpdateSeries_ReturnsCorrectStatusCode(bool isSuccess, bool isAuthorized, HttpStatusCode expectedStatusCode, Type? exception)
+        [InlineData(HttpStatusCode.OK, null)]
+        [InlineData(HttpStatusCode.InternalServerError, typeof(HttpRequestException))]
+        [InlineData(HttpStatusCode.InternalServerError, typeof(JsonException))]
+        [InlineData(HttpStatusCode.InternalServerError, typeof(Exception))]
+        public async Task GetAiredAnimes_ReturnsCorrectStatusCode(HttpStatusCode expectedStatusCode, Type? exceptionType)
         {
             // Arrange: Подготовка данных для теста
-            CalendarAnimeItem[] animes = isSuccess ? new CalendarAnimeItem[1] : [];
+            CalendarAnimeItem[] animes = new CalendarAnimeItem[1];
             var mockCalenderFetcher = new Mock<ICalendarFetcher>();
-            if (exception != null)
+            if (exceptionType != null)
             {
-                mockCalenderFetcher.Setup(service => service.FetchData())
-                    .ThrowsAsync(exception == typeof(UnauthorizedAccessException) ? new UnauthorizedAccessException("Error") : new Exception("Error"));
+                Exception? exception = Activator.CreateInstance(exceptionType) as Exception;
+                mockCalenderFetcher.Setup(service => service.FetchData()).ThrowsAsync(exception);
             }
             else
             {
                 mockCalenderFetcher.Setup(service => service.FetchData()).ReturnsAsync(animes);
             }
 
-            var client = CreateTestClient(mockCalenderFetcher, isAuthorized);
+            var client = CreateTestClient(mockCalenderFetcher);
 
             // Act: Выполнение тестируемого кода
-            var response = await client.GetAsync($"/animes/calender");
+            var response = await client.GetAsync($"/animes/calendar");
 
             // Assert: Проверка результатов теста
             Assert.Equal(expectedStatusCode, response.StatusCode);

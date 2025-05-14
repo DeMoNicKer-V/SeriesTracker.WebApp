@@ -202,7 +202,7 @@ namespace SeriesTracker.IntegrationTests
         {
             // Arrange: Подготовка данных для теста.
             var mockAuthenticationService = new Mock<IAuthenticationService>();
-            mockAuthenticationService.Setup(service => service.Register(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(Guid.NewGuid()); // Assuming register returns Guid now.
+            mockAuthenticationService.Setup(service => service.Register(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(Guid.NewGuid());
 
             var client = CreateTestClient(mockAuthenticationService);
 
@@ -292,7 +292,7 @@ namespace SeriesTracker.IntegrationTests
         {
             // Arrange: Подготовка данных для теста.
             var mockAuthenticationService = new Mock<IAuthenticationService>();
-            mockAuthenticationService.Setup(service => service.Verify("test@example.com", "wrongpassword")).ThrowsAsync(new UnauthorizedAccessException("Invalid credentials"));
+            mockAuthenticationService.Setup(service => service.Verify("test@example.com", "wrongpassword")).ThrowsAsync(new UnauthorizedAccessException("Error"));
 
             var client = CreateTestClient(mockAuthenticationService);
 

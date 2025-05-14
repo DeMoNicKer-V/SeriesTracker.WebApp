@@ -55,6 +55,7 @@ namespace SeriesTracker.IntegrationTests.UserSeriesContoller
 
             var content = await response.Content.ReadAsStringAsync();
             var result = JsonConvert.DeserializeObject<List<SeriesGroupDto>>(content);
+
             // Assert: Проверка результатов теста.
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
@@ -162,7 +163,7 @@ namespace SeriesTracker.IntegrationTests.UserSeriesContoller
 
             var content = await response.Content.ReadAsStringAsync();
             var result = JsonConvert.DeserializeObject<ShikimoriAnime[]>(content);
-            Assert.Equal(animes.Length, content.Length);
+            Assert.Equal(animes.Length, result.Length);
         }
 
         // Тест, проверяющий, что метод GetAnimesByUser возвращает 404 NotFound, если пользователь с указанным именем не найден.

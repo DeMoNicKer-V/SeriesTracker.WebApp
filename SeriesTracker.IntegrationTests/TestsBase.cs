@@ -1,8 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc.Testing;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Moq;
-
 using System.Net.Http.Headers;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace SeriesTracker.IntegrationTests
 {
