@@ -20,7 +20,7 @@ namespace SeriesTracker.IntegrationTests
             // 1. Создаем claims
             var claims = new[] {
                 new Claim("userId", "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"),
-                new Claim(ClaimTypes.Name, "TestUser"), 
+                new Claim("userName", "authUser"), 
             };
 
             var identity = new ClaimsIdentity(claims, "Test");

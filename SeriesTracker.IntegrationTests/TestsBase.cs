@@ -16,7 +16,7 @@ namespace SeriesTracker.IntegrationTests
         }
 
         // Метод для создания тестового клиента (с имитацией авторизации)
-        protected HttpClient CreateTestClient(Mock<T>? mockService = null)
+        protected HttpClient CreateTestClient(Mock<T>? mockService = null, bool isAuthorized = true)
         {
             var client = _factory.WithWebHostBuilder(builder =>
             {
@@ -29,7 +29,11 @@ namespace SeriesTracker.IntegrationTests
                 });
             }).CreateClient();
 
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Test");
+            if (!isAuthorized)
+            {
+                client.DefaultRequestHeaders.Clear();
+            }
+            else client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Test");
 
             return client;
         }

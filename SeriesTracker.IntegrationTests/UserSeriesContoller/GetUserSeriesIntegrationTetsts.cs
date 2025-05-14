@@ -5,7 +5,6 @@ using SeriesTracker.Core.Dtos;
 using SeriesTracker.Core.Enums;
 using SeriesTracker.Core.Exceptions;
 using SeriesTracker.Core.Models.Shikimori;
-using SeriesTracker.IntegrationTests.UserContoller;
 using System.Net;
 
 namespace SeriesTracker.IntegrationTests.UserSeriesContoller
