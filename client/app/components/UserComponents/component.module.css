@@ -16,6 +16,10 @@
     flex: auto;
 }
 
+.active {
+    text-shadow: 1px 1px 3px #44a5a6;
+    text-decoration: underline;
+}
 .user-edit-form-head {
     justify-content: center;
     flex: auto;

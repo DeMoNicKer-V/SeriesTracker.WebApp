@@ -61,7 +61,7 @@ const LoadAnimateImage: React.FC<Props> = ({
                 img.onerror = null;
             }
         };
-    }, [src]); // Зависимость от src: эффект будет перезапускаться при изменении src
+    }, [src]);
 
     // Отображаем Skeleton, пока изображение загружается
     if (isLoading) {

@@ -44,7 +44,7 @@ export default function CalendarPage() {
             newFilterDate.setDate(newFilterDate.getDate() + Number(key)); // Изменяем дату
             setFilterDate(newFilterDate); // Обновляем состояние с новой датой
         },
-        [setFilterDate] // Зависимость: setFilterDate (для обновления состояния)
+        [setFilterDate]
     );
 
     // Получаем данные аниме из SWR
@@ -65,7 +65,7 @@ export default function CalendarPage() {
                 isDateEqual(new Date(item.nextEpisodeAt), filterDate)
             );
         },
-        [isDateEqual] // Зависимость: isDateEqual (для оптимизации)
+        [isDateEqual]
     );
 
     // Эффект для фильтрации аниме при изменении данных или фильтра

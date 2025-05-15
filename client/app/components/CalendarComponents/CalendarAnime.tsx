@@ -50,7 +50,7 @@ const CalendarAnime: React.FC<Props> = ({
             <Link href={`/animes/${item.anime.id}`}>
                 <Badge.Ribbon
                     className={
-                        item.nextEpisode === item.anime.episodes ? "hidden" : ""
+                        item.nextEpisode === item.anime.episodes ? "" : "hidden"
                     }
                     color="volcano"
                     text={
@@ -83,7 +83,9 @@ const CalendarAnime: React.FC<Props> = ({
                                 xxl={16}
                             >
                                 <Text className={styles.title} strong>
-                                    {item.anime.russian ?? item.anime.name}
+                                    {item.anime.russian
+                                        ? item.anime.russian
+                                        : item.anime.name}
                                 </Text>
                                 <Descriptions
                                     items={[

@@ -50,7 +50,7 @@ const UserAnimesList: React.FC<Props> = ({
     // Сбрасывает номер текущей страницы на 1.
     const resetPage = useCallback(() => {
         changePage(1);
-    }, [changePage]);
+    }, [changePage, myList]);
 
     useEffect(() => {
         resetPage();
@@ -80,7 +80,7 @@ const UserAnimesList: React.FC<Props> = ({
     const ListBranches = () => {
         return (
             <PageNavigator
-                hidden={data.length < 22 || page > 1}
+                hidden={(data.length < 22 && page == 1) || data.length < 22}
                 isLoading={isLoading}
                 onFirstButtonCLick={() => changePage(1)}
                 onPrevButtonCLick={() => changePage(page - 1)}

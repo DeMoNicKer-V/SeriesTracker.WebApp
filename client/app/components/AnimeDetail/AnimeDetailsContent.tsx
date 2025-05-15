@@ -51,7 +51,7 @@ const AnimeDetailsContent: React.FC<Props> = ({
         return defaultCategories.filter(
             (category) => category.value !== anime.categoryId
         );
-    }, [anime]); // Зависимость: anime
+    }, [anime]);
 
     if (isLoading) {
         return <Loading loading />;
@@ -124,16 +124,9 @@ const AnimeDetailsContent: React.FC<Props> = ({
                                                 />
                                                 {anime.categoryId > 0 && (
                                                     <Text
-                                                        strong
-                                                        italic
-                                                        style={{
-                                                            position:
-                                                                "absolute",
-                                                            fontSize: 13,
-                                                            textShadow:
-                                                                "1px 1px 2px black",
-                                                            top: -25,
-                                                        }}
+                                                        className={
+                                                            styles["cover-text"]
+                                                        }
                                                     >
                                                         {`Добавлено: ${new Date(
                                                             anime.addedDate

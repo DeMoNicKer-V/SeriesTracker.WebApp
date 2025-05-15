@@ -50,7 +50,7 @@ const AnimesList: React.FC = ({}): JSX.Element => {
     const ListBranches = () => {
         return (
             <PageNavigator
-                hidden={data.length < 22 || page > 1}
+                hidden={(data.length < 22 && page == 1) || data.length < 22}
                 isLoading={isLoading}
                 onFirstButtonCLick={() => changePage(1)}
                 onPrevButtonCLick={() => changePage(page - 1)}

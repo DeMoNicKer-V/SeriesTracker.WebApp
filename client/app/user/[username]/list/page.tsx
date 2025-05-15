@@ -176,44 +176,36 @@ export default function UserListPage({
                             Menu: {
                                 itemBg: "transparent",
                                 darkItemBg: "transparent",
+                                itemSelectedColor: `${colors?.get(
+                                    mylist
+                                )} !important`,
                             },
                         },
                     }}
-                ></ConfigProvider>{" "}
-                <Breadcrumb
-                    separator=""
-                    items={[
-                        {
-                            title: (
-                                <Link href={"./"}>
-                                    <Flex justify="center" gap={5}>
-                                        <UserOutlined /> {params.username}
-                                    </Flex>
-                                </Link>
-                            ),
-                        },
+                >
+                    <Breadcrumb
+                        separator=""
+                        items={[
+                            {
+                                title: (
+                                    <Link href={"./"}>
+                                        <Flex justify="center" gap={5}>
+                                            <UserOutlined /> {params.username}
+                                        </Flex>
+                                    </Link>
+                                ),
+                            },
 
-                        {
-                            type: "separator",
-                        },
-                        {
-                            title: "Список аниме",
-                        },
-                    ]}
-                />
-                <Row gutter={[15, 15]} align={"middle"} justify={"center"}>
-                    <Col span={22}>
-                        <ConfigProvider
-                            theme={{
-                                components: {
-                                    Menu: {
-                                        itemSelectedColor: `${colors?.get(
-                                            mylist
-                                        )} !important`,
-                                    },
-                                },
-                            }}
-                        >
+                            {
+                                type: "separator",
+                            },
+                            {
+                                title: "Список аниме",
+                            },
+                        ]}
+                    />
+                    <Row gutter={[15, 15]} align={"middle"} justify={"center"}>
+                        <Col span={22}>
                             <Menu
                                 style={{
                                     justifyContent: "center",
@@ -224,17 +216,17 @@ export default function UserListPage({
                                 items={sortMenuItems}
                                 mode="horizontal"
                             />
-                        </ConfigProvider>
-                    </Col>
+                        </Col>
 
-                    <Col span={24}>
-                        <UserAnimesList
-                            color={colors.get(mylist)}
-                            myList={mylist}
-                            userName={params.username}
-                        />
-                    </Col>
-                </Row>
+                        <Col span={24}>
+                            <UserAnimesList
+                                color={colors.get(mylist)}
+                                myList={mylist}
+                                userName={params.username}
+                            />
+                        </Col>
+                    </Row>
+                </ConfigProvider>
             </div>
         </ConditionalContent>
     );

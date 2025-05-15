@@ -20,6 +20,7 @@ import {
     Typography,
 } from "antd";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import React from "react";
 import styles from "./component.module.css";
 
@@ -36,6 +37,7 @@ interface Props {
  * @returns {JSX.Element}
  */
 const UserProfile: React.FC<Props> = ({ user }): JSX.Element => {
+    const path = usePathname();
     // Определение пунктов меню для Dropdown
     const items: MenuProps["items"] = [
         {
@@ -54,9 +56,7 @@ const UserProfile: React.FC<Props> = ({ user }): JSX.Element => {
         {
             label: (
                 // Ссылка на профиль пользователя
-                <Link href={`/user/${user?.userName}`} target="_top">
-                    Профиль
-                </Link>
+                <Link href={`/user/${user?.userName}`}>Профиль</Link>
             ),
             key: "1",
             icon: <UserOutlined />,
@@ -64,9 +64,7 @@ const UserProfile: React.FC<Props> = ({ user }): JSX.Element => {
         {
             label: (
                 // Ссылка на список аниме пользователя
-                <Link href={`/user/${user?.userName}/list`} target="_top">
-                    Мои аниме
-                </Link>
+                <Link href={`/user/${user?.userName}/list`}>Мои аниме</Link>
             ),
             key: "2",
             icon: <BookOutlined />,
@@ -74,9 +72,7 @@ const UserProfile: React.FC<Props> = ({ user }): JSX.Element => {
         {
             label: (
                 // Ссылка на настройки пользователя
-                <Link href={`/user/${user?.userName}/edit`} target="_top">
-                    Настройки
-                </Link>
+                <Link href={`/user/${user?.userName}/edit`}>Редактировать</Link>
             ),
             key: "3",
             icon: <SettingOutlined />,
@@ -115,7 +111,14 @@ const UserProfile: React.FC<Props> = ({ user }): JSX.Element => {
                                     shape="circle"
                                     src={user?.avatar}
                                 ></Avatar>
-                                <Typography.Title level={5}>
+                                <Typography.Title
+                                    level={5}
+                                    className={
+                                        path.includes(user.userName)
+                                            ? styles["active"]
+                                            : ""
+                                    }
+                                >
                                     {user?.userName}
                                 </Typography.Title>
                             </Space>

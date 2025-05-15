@@ -35,7 +35,7 @@ const HeaderMenu: React.FC<Props> = ({
         >
             <Row align="middle" justify={"space-between"}>
                 <Col>
-                    <Flex>
+                    <Flex align="center">
                         <Button
                             size="large"
                             type="text"

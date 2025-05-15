@@ -17,12 +17,12 @@ namespace SeriesTracker.DataAccess.Configurations
         private readonly Dictionary<Category, string> categoryColors =
             new()
             {
-                 { Category.Запланировано, "#6DBA91" },
-                 { Category.Смотрю, "#4DA8DA" },
-                 { Category.Просмотрено, "#F9A602" },
-                 { Category.Пересматриваю, "#FFA500" },
-                 { Category.Отложено, "#999999" },
-                 { Category.Брошено, "#E74C3C" }
+                 { Category.Запланировано, "#8FBC8F" },
+                 { Category.Смотрю, "#708FC4" },
+                 { Category.Просмотрено, "#FFAD4F" },
+                 { Category.Пересматриваю, "#9966CC" },
+                 { Category.Отложено, "#778899" },
+                 { Category.Брошено, "#CD5C5C" }
             };
 
         /// <summary>
