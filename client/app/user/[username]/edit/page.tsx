@@ -44,14 +44,6 @@ export default function EditUserPage({
     //  Состояние для управления видимостью модального окна подтверждения удаления аккаунта
     const [openDeleteUser, setOpenDeleteUser] = useState<boolean>(false);
 
-    //  Асинхронная функция для проверки, соответствует ли отображаемый профиль профилю текущего пользователя
-    const getUser = async () => {
-        if (user?.userName !== params.username) {
-            setError(true);
-            return;
-        }
-        setError(false); //  Сбрасываем ошибку, если имена совпадают
-    };
     //  Асинхронная функция для удаления аккаунта пользователя
     const handleDeleteUser = async () => {
         setOpenDeleteUser(false);
@@ -69,8 +61,16 @@ export default function EditUserPage({
 
     //  Эффект, который запускается при монтировании компонента
     useEffect(() => {
+        const getUser = async () => {
+            if (user?.userName !== params.username) {
+                setError(true);
+                return;
+            }
+            setError(false); //  Сбрасываем ошибку, если имена совпадают
+        };
+
         getUser();
-    }, [user]); //  Зависимости пустые, эффект выполняется один раз при монтировании
+    }, [user, params.username]); // Добавлены params.username в зависимости
 
     return (
         <ConditionalContent

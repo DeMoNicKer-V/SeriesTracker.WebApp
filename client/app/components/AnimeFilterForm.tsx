@@ -135,7 +135,7 @@ const AnimeFilterForm: React.FC<Props> = ({
         if (!genres) {
             fetchGenres();
         }
-    }, [fetchGenres]); //  Зависимость от useCallback функции
+    }, [fetchGenres, genres]); //  Зависимость от useCallback функции
 
     return (
         <Drawer

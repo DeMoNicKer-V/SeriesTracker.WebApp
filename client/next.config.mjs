@@ -1,6 +1,5 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    reactStrictMode: true, //  Включаем строгий режим
     // ... другие настройки
     async redirects() {
         return [
@@ -10,6 +9,13 @@ const nextConfig = {
                 permanent: false, //  Укажите true для постоянного перенаправления (код 301)
             },
         ];
+    },
+    reactStrictMode: true, //  Включаем строгий режим
+    output: "export", // Обязательно для статической экспортируемости
+    distDir: "wwwroot", // Укажите выходную директорию.  Это папка, которую будет обслуживать ваш C# backend.  Например, 'wwwroot', 'public', и т.д.
+    assetPrefix: "", // Важно для корректной работы при экспорте
+    images: {
+        unoptimized: true, // Важно при output: 'export'
     },
 };
 

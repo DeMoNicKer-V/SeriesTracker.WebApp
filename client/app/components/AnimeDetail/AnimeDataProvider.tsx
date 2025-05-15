@@ -5,8 +5,8 @@ import {
 } from "@/app/models/anime/AnimeDetail"; // Импортируем типы данных и дефолтное значение
 import React from "react";
 import useSWR from "swr";
-import { getAnimeById } from "../api/animes/getAnime";
-import PageErrorView from "./PageErrorVIew";
+import { getAnimeById } from "../../api/animes/getAnime";
+import PageErrorView from "../PageErrorVIew";
 
 // Интерфейс для props компонента AnimeDataProvider
 interface AnimeDataProviderProps {

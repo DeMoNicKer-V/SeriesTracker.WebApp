@@ -159,6 +159,7 @@ const SearchBar: React.FC = (): JSX.Element => {
                                         >
                                             <Col>
                                                 <Image
+                                                    alt={`serch-anime-${item.id}`}
                                                     preview={false}
                                                     height={100}
                                                     width={70}

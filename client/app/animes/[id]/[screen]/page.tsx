@@ -1,7 +1,6 @@
 "use client";
-
-import AnimeDataProvider from "@/app/components/AnimeDataProvider";
-import ScreenshotsPreview from "@/app/components/AnimeDetailDescription/ScreenshotsPreview";
+import AnimeDataProvider from "@/app/components/AnimeDetail/AnimeDataProvider";
+import ScreenshotsPreview from "@/app/components/AnimeDetail/ScreenshotsPreview";
 import Loading from "@/app/components/Loading";
 import { ShikimoriLogo } from "@/app/img/ShikimoriLogo";
 import { Breadcrumb, Card, Col, Row, Tooltip } from "antd";

@@ -53,7 +53,6 @@ const PageNavigator: React.FC<Props> = ({
                         disabled={page === 1}
                         className="navigation-btn"
                         icon={<DoubleLeftOutlined />}
-                        style={{ marginRight: "auto" }}
                         type="primary"
                         ghost
                         onClick={onFirstButtonCLick}

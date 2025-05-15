@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SeriesTracker.Application",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SeriesTracker.Infrastructure", "SeriesTracker.Infrastructure\SeriesTracker.Infrastructure.csproj", "{70D1AC74-17B2-4E9A-B952-0BC15C2EAE43}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SeriesTracker.Tests", "SeriesTracker.Tests\SeriesTracker.Tests.csproj", "{6DAE9A27-6EA0-4392-8EED-FA9EDDD9C14A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SeriesTracker.UnitTests", "SeriesTracker.Tests\SeriesTracker.UnitTests.csproj", "{6DAE9A27-6EA0-4392-8EED-FA9EDDD9C14A}"
 	ProjectSection(ProjectDependencies) = postProject
 		{1BFAAB40-74DD-4C2D-B126-C62C203616B8} = {1BFAAB40-74DD-4C2D-B126-C62C203616B8}
 		{70D1AC74-17B2-4E9A-B952-0BC15C2EAE43} = {70D1AC74-17B2-4E9A-B952-0BC15C2EAE43}
@@ -21,7 +21,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SeriesTracker.Tests", "Seri
 		{AF154567-C620-487C-BD1B-1764EA969E69} = {AF154567-C620-487C-BD1B-1764EA969E69}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SeriesTracker.IntegrationTests", "SeriesTracker.IntegrationTests\SeriesTracker.IntegrationTests.csproj", "{F3F3FC90-E577-4761-94C6-790FDCA9C46C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SeriesTracker.IntegrationTests", "SeriesTracker.IntegrationTests\SeriesTracker.IntegrationTests.csproj", "{F3F3FC90-E577-4761-94C6-790FDCA9C46C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

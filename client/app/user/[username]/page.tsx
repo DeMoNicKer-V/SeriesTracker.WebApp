@@ -294,6 +294,7 @@ export default function UserPage({ params }: { params: { username: string } }) {
                                                             xxl={2}
                                                         >
                                                             <Image
+                                                                alt={`anime-${item.id}`}
                                                                 preview={false}
                                                                 height={90}
                                                                 src={
@@ -344,7 +345,7 @@ export default function UserPage({ params }: { params: { username: string } }) {
                     )}
                 </Row>
                 {user?.userName === params.username && (
-                    <FloatButton.Group style={{ right: 32 }}>
+                    <FloatButton.Group className="float-btn">
                         <FloatButton
                             onClick={() => router.push(`${pathname}/edit`)}
                             icon={<SettingOutlined />}

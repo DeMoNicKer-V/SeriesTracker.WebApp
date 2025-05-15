@@ -129,7 +129,7 @@ const BelowButtons: React.FC<Props> = ({
             console.error("Ошибка при уменьшении эпизода:", error);
             message.error("Не удалось уменьшить количество эпизодов.");
         }
-    }, [watchedEpisode, updateEpisodeSeries, anime]);
+    }, [watchedEpisode, updateEpisodeSeries]);
 
     // Увеличивает количество просмотренных эпизодов на 1.
     const incEpisodeSeries = useCallback(async () => {
@@ -177,7 +177,7 @@ const BelowButtons: React.FC<Props> = ({
                 message.error("Не удалось обновить категорию.");
             }
         },
-        [anime, createRequest]
+        [createRequest]
     );
 
     // Удаляет аниме из списка пользователя.

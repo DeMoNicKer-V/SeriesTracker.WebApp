@@ -146,7 +146,7 @@ export default function UserListPage({
     //  Эффект для обновления URL при изменении mylist (выбранной категории)
     useEffect(() => {
         router.push(`${path}?mylist=${mylist}`); //  Обновляем URL
-    }, [mylist]);
+    }, [mylist, path, router]);
 
     //  Функция для обработки выбора пункта меню сортировки
     const switchGroup: MenuProps["onSelect"] = (e) => {

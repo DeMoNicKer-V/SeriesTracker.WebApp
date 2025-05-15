@@ -34,30 +34,27 @@ function useAnimeList(): UseAnimeListResult {
         },
         []
     );
-    /**
-     * @function scrollTop
-     * @description Прокручивает страницу в начало.
-     */
-    function scrollTop() {
-        window.scrollTo({
-            top: 0,
-            left: 0,
-            behavior: "smooth",
-        });
-    }
 
-    /**
-     * @function changePage
-     * @description Изменяет номер текущей страницы и прокручивает страницу в начало.
-     * @param {number} newPage - Новый номер страницы.
-     */
     const changePage = useCallback(
         (newPage: number) => {
             setPage(newPage);
             setRequest((prevRequest) => ({ ...prevRequest, page: newPage }));
+
+            /**
+             * @function scrollTop
+             * @description Прокручивает страницу в начало.
+             */
+            function scrollTop() {
+                window.scrollTo({
+                    top: 0,
+                    left: 0,
+                    behavior: "smooth",
+                });
+            }
+
             scrollTop();
         },
-        [scrollTop]
+        [setPage, setRequest] // Убедитесь, что вы включили все зависимости, которые используются в changePage
     );
 
     return {

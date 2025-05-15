@@ -11,7 +11,7 @@ import { FloatButton, Menu, MenuProps } from "antd";
 import Sider from "antd/es/layout/Sider";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useUser } from "../UserContext";
 import styles from "./component.module.css";
 
@@ -67,14 +67,14 @@ const SiderMenu: React.FC<Props> = ({
     const router = useRouter();
 
     // Выполняет поиск случайного аниме и перенаправляет пользователя на страницу с его детальной информацией.
-    const searchRandomAnime = async () => {
+    const searchRandomAnime = useCallback(async () => {
         try {
             const id = await getRandomAnimeId(); // Получаем случайный ID аниме
             router.push(`/animes/${id}`); // Перенаправляем пользователя на страницу с детальной информацией
         } catch (error) {
             console.error("Ошибка при получении случайного аниме:", error);
         }
-    };
+    }, [router]); // dependencies of searchRandomAnime
 
     // Массив элементов меню для боковой панели.
     const siderMenuItems: MenuItem[] = useMemo(() => {
@@ -104,7 +104,7 @@ const SiderMenu: React.FC<Props> = ({
                 : false,
         ];
         return baseItems.filter(Boolean) as MenuItem[]; // Фильтруем элементы, чтобы убрать false
-    }, [user]);
+    }, [user, searchRandomAnime]);
 
     useEffect(() => {
         // Обновляем ключ текущего выбранного пункта меню при изменении pathName

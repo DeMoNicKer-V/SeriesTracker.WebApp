@@ -52,7 +52,7 @@ const CalendarList: React.FC<Props> = ({
                 <CalendarAnime item={item} loading={loading} />
             </List.Item>
         )); // Преобразуем каждый элемент animes в List.Item
-    }, [animes]); // Зависимости: animes (если animes меняется, пересоздаем массив)
+    }, [animes, loading]);
 
     return (
         <ConfigProvider

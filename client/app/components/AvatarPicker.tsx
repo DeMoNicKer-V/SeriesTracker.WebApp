@@ -213,6 +213,7 @@ const AvatarPicker: React.FC<Props> = ({
                 {previewImage && (
                     // Отображаем компонент Image для предпросмотра изображения
                     <Image
+                        alt="avatar-preview"
                         wrapperClassName={styles["avatar-picker-image"]}
                         preview={{
                             // Настройки предпросмотра

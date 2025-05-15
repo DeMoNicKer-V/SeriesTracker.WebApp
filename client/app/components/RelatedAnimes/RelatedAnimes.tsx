@@ -64,6 +64,7 @@ export const RelatedAnimes: React.FC<Props> = ({
                                     xxl={2}
                                 >
                                     <Image
+                                        alt={`related-${item.anime.id}`}
                                         width={70}
                                         preview={false}
                                         src={item.anime.pictureUrl}

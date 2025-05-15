@@ -115,6 +115,10 @@ input {
     height: 60px !important;
 }
 
+.float-btn {
+    right: 24px;
+}
+
 .title-link {
     white-space: nowrap;
     overflow: hidden;

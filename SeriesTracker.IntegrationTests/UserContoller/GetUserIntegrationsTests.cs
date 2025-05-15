@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc.Testing;
-using Moq;
+﻿using Moq;
 using Newtonsoft.Json;
 using SeriesTracker.Core.Abstractions;
 using SeriesTracker.Core.Dtos;

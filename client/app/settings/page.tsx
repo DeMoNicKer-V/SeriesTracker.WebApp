@@ -21,9 +21,6 @@ export default function SettingsPage() {
     //  Получаем информацию о текущем пользователе из контекста
     const { user } = useUser();
 
-    //  Массив разрешенных ролей (для доступа к странице)
-    const allowedRoles = [1, 2];
-
     //  Состояние для отображения ошибок авторизации
     const [error, setError] = useState<boolean | null>(null);
 
@@ -55,6 +52,7 @@ export default function SettingsPage() {
 
     //  Эффект, который запускается при монтировании компонента
     useEffect(() => {
+        const allowedRoles = [1, 2];
         const start = async () => {
             if (!user) {
                 return; // Ждем, пока user не станет доступен
@@ -150,7 +148,7 @@ export default function SettingsPage() {
                     </Row>
                 </ConfigProvider>
                 <DeleteModal
-                    onCofirm={handleDeleteUser}
+                    onConfirm={handleDeleteUser}
                     onCancel={onClose}
                     open={openDeleteUser}
                     title={`Удалить пользователя '${deleteUserUserName}' ?`}

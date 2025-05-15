@@ -50,7 +50,7 @@ const UserAnimesList: React.FC<Props> = ({
     // Сбрасывает номер текущей страницы на 1.
     const resetPage = useCallback(() => {
         changePage(1);
-    }, [myList]);
+    }, [changePage]);
 
     useEffect(() => {
         resetPage();
