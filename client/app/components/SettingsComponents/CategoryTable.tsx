@@ -59,22 +59,6 @@ const CategoryTable: React.FC<Props> = ({ categories }: Props): JSX.Element => {
         }
     };
 
-    // Обновляет цвет категории и перезагружает страницу.
-    const updateCategoryColor = async (
-        id: number,
-        color: string
-    ): Promise<void> => {
-        try {
-            await editCategoryColor(id, color); // Отправляем запрос на изменение цвета категории
-            window.location.reload();
-        } catch (error) {
-            console.error("Ошибка при обновлении цвета категории:", error);
-            api.error({
-                message: "Не удалось обновить цвет категории.",
-            });
-        }
-    };
-
     // Открывает уведомление с запросом подтверждения изменения цвета категории.
     const openNotification = async (
         record: Category,
@@ -181,10 +165,7 @@ const CategoryTable: React.FC<Props> = ({ categories }: Props): JSX.Element => {
                             title={`${record.name}`}
                             description="Вернуть предыдущий цвет для категории?"
                             onConfirm={() => {
-                                updateCategoryColor(
-                                    record.id,
-                                    record.prevColor
-                                );
+                                onConfirm(record.id, record.prevColor);
                             }}
                             okText="Да"
                             cancelText="Нет"

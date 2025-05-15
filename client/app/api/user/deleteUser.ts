@@ -12,18 +12,18 @@ import { del } from "../httpClient";
 
 // Функция для удаления пользователя
 export const deleteUser = async (userName: string): Promise<void> => {
-    const url = DELETE_USER_URL.replace("{username}", userName);
+    const url = DELETE_USER_URL.replace("{userName}", userName);
     await del(url);
 };
 
 // Функция для удаления своего аккаунта
 export const deleteSelfUser = async (userName: string): Promise<void> => {
-    const url = DELETE_USER_SELF_URL.replace("{username}", userName);
+    const url = DELETE_USER_SELF_URL.replace("{userName}", userName);
     await del(url);
 };
 
 // Функция для удаления всего списка аниме пользователя
 export const deleteUserSeries = async (userName: string) => {
-    const url = DELETE_USER_SERIES_URL.replace("{username}", userName);
+    const url = DELETE_USER_SERIES_URL.replace("{userName}", userName);
     await del(url);
 };

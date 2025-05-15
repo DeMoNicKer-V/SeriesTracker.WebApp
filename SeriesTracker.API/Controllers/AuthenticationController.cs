@@ -154,7 +154,7 @@ namespace SeriesTracker.API.Controllers
         ///   Возвращает  `500 Internal Server Error`, если произошла непредвиденная ошибка.
         /// </returns>
         [HttpPost("logout/{userName}")] // Атрибут, определяющий маршрут для HTTP POST-запроса выхода пользователя
-        public IResult Logout(string userName)
+        public IResult Logout(string? userName)
         {
             try
             {

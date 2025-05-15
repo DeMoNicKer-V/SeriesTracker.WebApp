@@ -82,7 +82,7 @@ export default function SettingsPage() {
             setUsersData(usersData);
         };
         fetchUsers();
-    }, [page]); //  Зависимости: page (перезапускаем функцию, если изменилась страница)
+    }, [page]);
 
     return (
         <ConditionalContent
@@ -151,7 +151,7 @@ export default function SettingsPage() {
                     onConfirm={handleDeleteUser}
                     onCancel={onClose}
                     open={openDeleteUser}
-                    title={`Удалить пользователя '${deleteUserUserName}' ?`}
+                    title={`Удалить пользователя: ${deleteUserUserName}?`}
                 />
             </div>
         </ConditionalContent>

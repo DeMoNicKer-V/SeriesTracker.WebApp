@@ -146,13 +146,12 @@ namespace SeriesTracker.API.Controllers
                 {
                     throw new Exception($"Failed to delete user ({userName}).");
                 }
-                Response.Cookies.Delete("secretCookie"); // Удаляем куки
 
                 // Логируем информацию об успешном удалении аккаунта и возвращаем 204 No Content
                 return _logger.NoContentResponse(
                     logMessage: $"The user ({userName}) deleted his account.");
             }
-            catch (Exception ex)
+            catch (Exception ex)    
             {
                 // Логируем ошибку и возвращаем 500 Internal Server Error
                 return _logger.InternalServerError(ex, "An unexpected error occurred while deleting user account."); 

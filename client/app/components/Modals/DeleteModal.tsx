@@ -43,14 +43,16 @@ const DeleteModal: React.FC<Props> = ({
                 disabled: deleteStr !== "УДАЛИТЬ",
             }}
             title={
-                <Flex gap={10}>
+                <Flex align="center" gap={10}>
                     <QuestionCircleOutlined />
-                    <Title level={5}>{title}</Title>
+                    <Title className="zero-margin" level={5}>
+                        {title}
+                    </Title>
                 </Flex>
             }
             footer={(_, { OkBtn, CancelBtn }) => (
                 <>
-                    <Flex gap={10}>
+                    <Flex justify="end" gap={10}>
                         <CancelBtn />
                         <OkBtn />
                     </Flex>
@@ -60,7 +62,6 @@ const DeleteModal: React.FC<Props> = ({
             <Flex className="flex-column" gap={10}>
                 <Paragraph>
                     Будьте внимательны, это необратимое действие! <br />
-                    <br />
                     Чтобы подтвердить удаление, введите в поле ниже - (
                     <Text type="danger" code strong>
                         УДАЛИТЬ

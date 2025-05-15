@@ -37,6 +37,7 @@ const HeaderMenu: React.FC<Props> = ({
                 <Col>
                     <Flex align="center">
                         <Button
+                            className="cursor-pointer"
                             size="large"
                             type="text"
                             icon={<MenuOutlined />}
