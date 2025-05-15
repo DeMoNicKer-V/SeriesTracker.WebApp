@@ -73,8 +73,8 @@ namespace SeriesTracker.DataAccess.Repositories
             List<int> animeIds = await _context.UserSeriesEntities
                 .AsNoTracking()
                 .Where(s => s.UserId == userId && (categoryId <= 0 || s.CategoryId == categoryId) && (!isFavorite || s.IsFavorite))
-                .Skip((page - 1) * 22)
-                .Take(22)
+                .Skip((page - 1) * 21)
+                .Take(21)
                 .Select(s => s.AnimeId)
                 .ToListAsync();
 

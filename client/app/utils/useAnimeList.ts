@@ -54,7 +54,7 @@ function useAnimeList(): UseAnimeListResult {
 
             scrollTop();
         },
-        [setPage, setRequest] // Убедитесь, что вы включили все зависимости, которые используются в changePage
+        [setPage, setRequest]
     );
 
     return {

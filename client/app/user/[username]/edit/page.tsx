@@ -70,7 +70,7 @@ export default function EditUserPage({
         };
 
         getUser();
-    }, [user, params.username]); // Добавлены params.username в зависимости
+    }, [user, params.username]);
 
     return (
         <ConditionalContent

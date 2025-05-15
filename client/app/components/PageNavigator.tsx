@@ -9,6 +9,7 @@ interface Props {
     page: number; // Текущая страница (число)
     isLoading?: boolean; // Состояние загрузки (опционально)
     hidden?: boolean; // Флаг, определяющий, должен ли элемент быть скрыт (опционально)
+    nextButtonnDisabled?: boolean;
     onFirstButtonCLick: () => void; // Функция-обработчик клика на кнопку "В начало"
     onPrevButtonCLick: () => void; // Функция-обработчик клика на кнопку "Назад"
     onNextButtonCLick: () => void; // Функция-обработчик клика на кнопку "Вперед"
@@ -25,6 +26,7 @@ const PageNavigator: React.FC<Props> = ({
     page,
     isLoading = false,
     hidden = false,
+    nextButtonnDisabled = false,
     onFirstButtonCLick,
     onPrevButtonCLick,
     onNextButtonCLick,
@@ -45,7 +47,7 @@ const PageNavigator: React.FC<Props> = ({
             loading={isLoading}
         >
             <Flex className="page-navigator" gap={20} justify="space-between">
-                <Space>
+                <Space className="hui">
                     <Tag>{page}</Tag>
                     <Button
                         aria-label="Перейти в начало"
@@ -73,6 +75,7 @@ const PageNavigator: React.FC<Props> = ({
                         {"Назад"}
                     </Button>
                     <Button
+                        disabled={nextButtonnDisabled}
                         size="small"
                         className="navigation-btn"
                         iconPosition="end"

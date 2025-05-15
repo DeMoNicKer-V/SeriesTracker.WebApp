@@ -77,10 +77,11 @@ const UserAnimesList: React.FC<Props> = ({
     );
 
     // Компонент для отображения скелетона и навигации по страницам.
-    const ListBranches = () => {
+    const ListBranches = ({ hidden }: any) => {
         return (
             <PageNavigator
-                hidden={(data.length < 22 && page == 1) || data.length < 22}
+                hidden={hidden}
+                nextButtonnDisabled={data.length < 21}
                 isLoading={isLoading}
                 onFirstButtonCLick={() => changePage(1)}
                 onPrevButtonCLick={() => changePage(page - 1)}
@@ -104,8 +105,6 @@ const UserAnimesList: React.FC<Props> = ({
                               colorBgSpotlight: color,
                           },
                           Button: {
-                              defaultHoverBorderColor: color,
-
                               colorPrimaryHover: color,
                           },
                       }
@@ -117,8 +116,8 @@ const UserAnimesList: React.FC<Props> = ({
         >
             <List
                 className={styles["animes-list"]}
-                header={<ListBranches />}
-                footer={<ListBranches />}
+                header={<ListBranches hidden={false} />}
+                footer={<ListBranches hidden={data.length < 21} />}
                 grid={{
                     gutter: 30,
                     xs: 2,
@@ -128,7 +127,7 @@ const UserAnimesList: React.FC<Props> = ({
                     xl: 6,
                     xxl: 7,
                 }}
-                dataSource={data.length == 22 ? data.slice(0, -1) : data}
+                dataSource={data}
                 renderItem={(anime: Anime) => (
                     <List.Item key={anime.id}>
                         <AnimeItem

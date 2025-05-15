@@ -10,7 +10,7 @@
 }
 
 .nav-header-btn {
-    cursor: pointer;
+    cursor: pointer !important;
 }
 
 .sider {

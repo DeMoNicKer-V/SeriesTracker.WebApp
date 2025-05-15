@@ -51,10 +51,6 @@ input {
     cursor: default;
 }
 
-.cursor-pointer {
-    cursor: pointer !important;
-}
-
 .container {
     position: relative;
     padding: 20px;
@@ -94,6 +90,10 @@ input {
     .fullscreen {
         position: fixed;
     }
+}
+
+.navigation-btn:not([disabled])::before {
+    background-color: transparent !important;
 }
 
 @media (max-width: 992px) {

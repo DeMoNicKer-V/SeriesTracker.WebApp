@@ -27,15 +27,12 @@ export default function CalendarPage() {
     const [filterAnimes, setFilterAnimes] = useState<CalendarAnimeItem[]>([]);
 
     // Функция для проверки равенства двух дат (используем useCallback для оптимизации)
-    const isDateEqual = useCallback(
-        (date1: Date, date2: Date) => {
-            return (
-                date1.getMonth() === date2.getMonth() &&
-                date1.getDate() === date2.getDate()
-            );
-        },
-        [] // Зависимости нет, функция всегда будет одной и той же
-    );
+    const isDateEqual = useCallback((date1: Date, date2: Date) => {
+        return (
+            date1.getMonth() === date2.getMonth() &&
+            date1.getDate() === date2.getDate()
+        );
+    }, []);
 
     // Функция для обработки изменения даты (используем useCallback для оптимизации)
     const onChangeDate = useCallback(
@@ -73,7 +70,7 @@ export default function CalendarPage() {
         if (airedAnimes) {
             setFilterAnimes(filterItems(airedAnimes, filterDate)); // Вызываем функцию фильтрации
         }
-    }, [airedAnimes, filterDate, filterItems]); // Зависимости: airedAnimes, filterDate, filterItems (перезапускаем при изменении)
+    }, [airedAnimes, filterDate, filterItems]);
 
     return (
         <div className="container">
