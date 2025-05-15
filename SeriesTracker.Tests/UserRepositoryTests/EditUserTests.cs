@@ -26,7 +26,7 @@ namespace SeriesTracker.Tests.UserRepositoryTests
             var role = await _fixture._context.RoleEntities.FindAsync(roleId);
             Assert.NotNull(role);
 
-            var user = await _fixture._context.UserEntities.Include(u => u.Roles).FirstAsync();
+            var user = await _fixture._context.UserEntities.Include(u => u.Role).FirstAsync();
 
             //  Act: Выполнение тестируемого кода.
             bool result = await _fixture._userRepository.ChangeUserRole(user.Id, roleId);
@@ -34,10 +34,10 @@ namespace SeriesTracker.Tests.UserRepositoryTests
             //  Assert: Проверка результатов теста.
             Assert.True(result);
 
-            var updatedUser = await _fixture._context.UserEntities.Include(u => u.Roles).FirstOrDefaultAsync(u => u.Id == user.Id);
+            var updatedUser = await _fixture._context.UserEntities.Include(u => u.Role).FirstOrDefaultAsync(u => u.Id == user.Id);
 
             Assert.NotNull(updatedUser);
-            Assert.Equal(roleId, updatedUser.Roles.First().Id);
+            Assert.Equal(roleId, updatedUser.Role.Id);
         }
 
         // Тест, проверяющий, что метод ChangeUserRole возвращает false, если роль не существует.

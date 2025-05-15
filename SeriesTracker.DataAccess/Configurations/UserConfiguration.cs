@@ -20,11 +20,8 @@ namespace SeriesTracker.DataAccess.Configurations
             builder.HasKey(x => x.Id);
 
             // Конфигурируем связь "многие ко многим" между пользователями и ролями через таблицу UserRoleEntity.
-            builder.HasMany(u => u.Roles)
-                .WithMany(r => r.Users)
-                .UsingEntity<UserRoleEntity>(
-                    l => l.HasOne<RoleEntity>().WithMany().HasForeignKey(r => r.RoleId),
-                    r => r.HasOne<UserEntity>().WithMany().HasForeignKey(u => u.UserId));
+            builder.HasOne(u => u.Role)
+                .WithMany(r => r.Users).HasForeignKey(u => u.RoleId);
         }
     }
 }

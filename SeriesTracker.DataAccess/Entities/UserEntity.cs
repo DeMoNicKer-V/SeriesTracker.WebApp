@@ -50,9 +50,14 @@ namespace SeriesTracker.DataAccess.Entities
         public string RegDate { get; set; } = string.Empty;
 
         /// <summary>
-        /// Навигационное свойство, представляющее список ролей пользователя.
+        /// Идентификатор роли пользователя.
         /// </summary>
-        public ICollection<RoleEntity> Roles { get; set; } = [];
+        public int RoleId { get; set; }
+
+        /// <summary>
+        /// Навигационное свойство, представляющее роль пользователя.
+        /// </summary>
+        public RoleEntity Role { get; set; } = new();
 
         /// <summary>
         /// Фамилия пользователя.

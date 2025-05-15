@@ -12,11 +12,7 @@ import {
     defaultUserValues,
     MainUserInfo,
 } from "@/app/models/user/MainUserInfo";
-import {
-    CrownOutlined,
-    SettingOutlined,
-    UserOutlined,
-} from "@ant-design/icons";
+import { CrownOutlined, EditOutlined, UserOutlined } from "@ant-design/icons";
 import {
     Avatar,
     Button,
@@ -348,7 +344,7 @@ export default function UserPage({ params }: { params: { username: string } }) {
                     <FloatButton.Group className="float-btn">
                         <FloatButton
                             onClick={() => router.push(`${pathname}/edit`)}
-                            icon={<SettingOutlined />}
+                            icon={<EditOutlined />}
                         />
                         <FloatButton.BackTop />
                     </FloatButton.Group>

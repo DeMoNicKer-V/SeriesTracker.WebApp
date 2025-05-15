@@ -38,7 +38,7 @@ namespace SeriesTracker.DataAccess.Repositories
 
             // Загружаем пользователя с его ролями
             var user = await _context.UserEntities
-             .Include(u => u.Roles)
+             .Include(u => u.Role)
              .FirstOrDefaultAsync(u => u.Id == userId);
 
             // Если пользователь не найден, возвращаем false
@@ -48,13 +48,13 @@ namespace SeriesTracker.DataAccess.Repositories
             }
 
             // Проверяем, что роль уже назначена пользователю
-            if (user.Roles.First().Id == roleEntity.Id)
+            if (user.Role.Id == roleEntity.Id)
             {
                 return true; // Роль уже назначена, возвращаем true
             }
 
             // Обновляем роли пользователя
-            user.Roles = [roleEntity];
+            user.Role = roleEntity;
 
             // Сохраняем изменения в базе данных
             var rowsAffected = await _context.SaveChangesAsync();
@@ -87,7 +87,7 @@ namespace SeriesTracker.DataAccess.Repositories
             };
 
             // Добавляем роль в навигационное свойство
-            userEntity.Roles.Add(roleEntity);
+            userEntity.Role = roleEntity;
 
             // Добавляем сущность пользователя в контекст.
             await _context.UserEntities.AddAsync(userEntity);
@@ -112,7 +112,7 @@ namespace SeriesTracker.DataAccess.Repositories
             // AsNoTracking используется, так как мы не планируем изменять эту сущность.
             var userEntity = await _context.UserEntities
                 .AsNoTracking()
-                .Include(u => u.Roles)
+                .Include(u => u.Role)
                 .FirstOrDefaultAsync(u => u.Email == email);
 
             // Преобразуем сущность пользователя в объект User.
@@ -125,7 +125,7 @@ namespace SeriesTracker.DataAccess.Repositories
             // AsNoTracking используется, так как мы не планируем изменять эту сущность.
             var userEntity = await _context.UserEntities
                             .AsNoTracking()
-                            .Include(u => u.Roles)
+                            .Include(u => u.Role)
                             .FirstOrDefaultAsync(u => u.Id == id);
 
             // Преобразуем сущность пользователя в объект User.
@@ -138,7 +138,7 @@ namespace SeriesTracker.DataAccess.Repositories
             // AsNoTracking используется, так как мы не планируем изменять эту сущность.
             var userEntity = await _context.UserEntities
                             .AsNoTracking()
-                            .Include(u => u.Roles)
+                            .Include(u => u.Role)
                             .FirstOrDefaultAsync(u => u.UserName == userName);
 
             // Преобразуем сущность пользователя в объект User.
@@ -154,7 +154,7 @@ namespace SeriesTracker.DataAccess.Repositories
             // AsNoTracking используется, так как мы не планируем изменять эти сущности.
             var users = await _context.UserEntities
                 .AsNoTracking()
-                .Include(u => u.Roles)
+                .Include(u => u.Role)
                 .Skip((page - 1) * 10)
                 .Take(10)
                 .Select(u => new UserDto
@@ -162,7 +162,7 @@ namespace SeriesTracker.DataAccess.Repositories
                     Id = u.Id,
                     Email = u.Email,
                     UserName = u.UserName,
-                    RoleId = u.Roles.First().Id, // Предполагается, что у пользователя всегда есть хотя бы одна роль
+                    RoleId = u.Role.Id, // Предполагается, что у пользователя всегда есть хотя бы одна роль
                     RegDate = u.RegDate,
                 }).ToListAsync();
 
@@ -182,9 +182,9 @@ namespace SeriesTracker.DataAccess.Repositories
             var permissions = await _context.UserEntities
                 .AsNoTracking()
                 .Where(u => u.Id == userId)
-                .Include(u => u.Roles)
+                .Include(u => u.Role)
                 .ThenInclude(r => r.Permissions)
-                .SelectMany(u => u.Roles.SelectMany(r => r.Permissions.Select(p => (Permission)p.Id)))
+                .SelectMany(u => u.Role.Permissions.Select(p => (Permission)p.Id))
                 .ToListAsync();
 
             // 4. Возвращаем набор разрешений
@@ -270,7 +270,7 @@ namespace SeriesTracker.DataAccess.Repositories
                     userEntity.Avatar,
                     userEntity.DateBirth,
                     userEntity.RegDate,
-                    userEntity.Roles.First().Id);
+                    userEntity.Role.Id);
 
                 return user;
             }

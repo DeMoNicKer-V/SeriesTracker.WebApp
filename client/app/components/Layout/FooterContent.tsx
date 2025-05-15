@@ -59,12 +59,12 @@ const FooterContent: React.FC<Props> = ({
                 </Link>
             </Text>
             <Text className={styles["footer-primary-text"]}>
-                Copyright ©
+                Copyright{" "}
                 <Link
                     className={styles["footer-primary-text"]}
                     href={"/animes"}
                 >
-                    Series Tracker
+                    ©Series Tracker
                 </Link>
                 {` ${new Date().getFullYear()}. `}
                 All Rights Reserved.

@@ -3,9 +3,9 @@
 import { logout } from "@/app/api/auth";
 import {
     BookOutlined,
+    EditOutlined,
     LogoutOutlined,
     MailOutlined,
-    SettingOutlined,
     UserOutlined,
 } from "@ant-design/icons";
 import {
@@ -75,7 +75,7 @@ const UserProfile: React.FC<Props> = ({ user }): JSX.Element => {
                 <Link href={`/user/${user?.userName}/edit`}>Редактировать</Link>
             ),
             key: "3",
-            icon: <SettingOutlined />,
+            icon: <EditOutlined />,
         },
         {
             label: "Выйти", // Пункт меню для выхода из системы

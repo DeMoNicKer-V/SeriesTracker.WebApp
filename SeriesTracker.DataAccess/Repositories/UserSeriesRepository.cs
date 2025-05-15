@@ -136,7 +136,7 @@ namespace SeriesTracker.DataAccess.Repositories
             }
 
             // Группируем список записей по категориям
-            List<SeriesGroupFullDto> categoryGroup = userSeriesList
+            List<SeriesGroupFullDto> categoryGroup = [.. userSeriesList
                 .GroupBy(s => s.Category.Id) // Группируем по ID категории
                 .Select(g =>
                 {
@@ -150,7 +150,7 @@ namespace SeriesTracker.DataAccess.Repositories
                         SeriesCount = g.Count() // Количество записей в категории
                     };
                 })
-                .ToList(); // Преобразуем в список
+                .OrderBy(u => u.Id)]; // Преобразуем в список
 
             // Формируем строку с ID последних 5 измененных записей
             string lastFiveSeriesString = string.Join(",", userSeriesList
