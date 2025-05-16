@@ -23,40 +23,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SeriesTracker.UnitTests", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SeriesTracker.IntegrationTests", "SeriesTracker.IntegrationTests\SeriesTracker.IntegrationTests.csproj", "{F3F3FC90-E577-4761-94C6-790FDCA9C46C}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "screenshots", "screenshots", "{E7650857-5330-4A8A-A87F-5B774FFA77C5}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "full", "full", "{D55583AE-7B41-4393-8A67-D4B46883D5A8}"
-	ProjectSection(SolutionItems) = preProject
-		..\..\..\Pictures\Screenshots\full\calendar_full.png = ..\..\..\Pictures\Screenshots\full\calendar_full.png
-		..\..\..\Pictures\Screenshots\full\categories_full.png = ..\..\..\Pictures\Screenshots\full\categories_full.png
-		..\..\..\Pictures\Screenshots\full\detail_full.png = ..\..\..\Pictures\Screenshots\full\detail_full.png
-		..\..\..\Pictures\Screenshots\full\edituser_full.png = ..\..\..\Pictures\Screenshots\full\edituser_full.png
-		..\..\..\Pictures\Screenshots\full\filter_full.png = ..\..\..\Pictures\Screenshots\full\filter_full.png
-		..\..\..\Pictures\Screenshots\full\login_full.png = ..\..\..\Pictures\Screenshots\full\login_full.png
-		..\..\..\Pictures\Screenshots\full\mainpage_full.png = ..\..\..\Pictures\Screenshots\full\mainpage_full.png
-		..\..\..\Pictures\Screenshots\full\register_full.png = ..\..\..\Pictures\Screenshots\full\register_full.png
-		..\..\..\Pictures\Screenshots\full\rules_full.png = ..\..\..\Pictures\Screenshots\full\rules_full.png
-		..\..\..\Pictures\Screenshots\full\userpage_full.png = ..\..\..\Pictures\Screenshots\full\userpage_full.png
-		..\..\..\Pictures\Screenshots\full\userseries_full.png = ..\..\..\Pictures\Screenshots\full\userseries_full.png
-		..\..\..\Pictures\Screenshots\full\users_full.png = ..\..\..\Pictures\Screenshots\full\users_full.png
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "mobile", "mobile", "{3FE56F23-4595-412B-A836-E7DFA2B806B6}"
-	ProjectSection(SolutionItems) = preProject
-		..\..\..\Pictures\Screenshots\mobile\calendar_mobile.png = ..\..\..\Pictures\Screenshots\mobile\calendar_mobile.png
-		..\..\..\Pictures\Screenshots\mobile\categories_mobile.png = ..\..\..\Pictures\Screenshots\mobile\categories_mobile.png
-		..\..\..\Pictures\Screenshots\mobile\detail_mobile.png = ..\..\..\Pictures\Screenshots\mobile\detail_mobile.png
-		..\..\..\Pictures\Screenshots\mobile\edituser_mobile.png = ..\..\..\Pictures\Screenshots\mobile\edituser_mobile.png
-		..\..\..\Pictures\Screenshots\mobile\filter_mobile.png = ..\..\..\Pictures\Screenshots\mobile\filter_mobile.png
-		..\..\..\Pictures\Screenshots\mobile\login_mobile.png = ..\..\..\Pictures\Screenshots\mobile\login_mobile.png
-		..\..\..\Pictures\Screenshots\mobile\mainpage_mobile.png = ..\..\..\Pictures\Screenshots\mobile\mainpage_mobile.png
-		..\..\..\Pictures\Screenshots\mobile\register_mobile.png = ..\..\..\Pictures\Screenshots\mobile\register_mobile.png
-		..\..\..\Pictures\Screenshots\mobile\rules_mobile.png = ..\..\..\Pictures\Screenshots\mobile\rules_mobile.png
-		..\..\..\Pictures\Screenshots\mobile\userpage_mobile.png = ..\..\..\Pictures\Screenshots\mobile\userpage_mobile.png
-		..\..\..\Pictures\Screenshots\mobile\userseries_mobile.png = ..\..\..\Pictures\Screenshots\mobile\userseries_mobile.png
-		..\..\..\Pictures\Screenshots\mobile\users_mobile.png = ..\..\..\Pictures\Screenshots\mobile\users_mobile.png
-	EndProjectSection
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -94,10 +60,6 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{D55583AE-7B41-4393-8A67-D4B46883D5A8} = {E7650857-5330-4A8A-A87F-5B774FFA77C5}
-		{3FE56F23-4595-412B-A836-E7DFA2B806B6} = {E7650857-5330-4A8A-A87F-5B774FFA77C5}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {AEDD0F87-8FF7-437D-934E-B76F422FC2C4}
