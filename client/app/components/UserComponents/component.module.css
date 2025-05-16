@@ -45,3 +45,13 @@
     opacity: 0.75;
     font-size: 12px;
 }
+
+.avatar-text {
+    flex-direction: column;
+}
+
+@media (max-width: 992px) {
+    .avatar-text {
+        text-align: center;
+    }
+}

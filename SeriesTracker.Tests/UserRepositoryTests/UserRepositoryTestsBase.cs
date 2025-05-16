@@ -69,7 +69,7 @@ namespace SeriesTracker.Tests.UserRepositoryTests
                 SurName = "Test_1",
                 Avatar = "Test_icon1",
                 DateBirth = "20-12-1999",
-                Roles = [_context.RoleEntities.Where(r => r.Id == 1).First()],
+                Role = _context.RoleEntities.Where(r => r.Id == 1).First(),
                 RegDate = regDate,
             };
             var moder = new UserEntity
@@ -82,7 +82,7 @@ namespace SeriesTracker.Tests.UserRepositoryTests
                 SurName = "Test_2",
                 Avatar = "Test_icon2",
                 DateBirth = "21-12-1999",
-                Roles = [_context.RoleEntities.Where(r => r.Id == 2).First()],
+                Role = _context.RoleEntities.Where(r => r.Id == 2).First(),
                 RegDate = regDate,
             };
             var user = new UserEntity
@@ -95,7 +95,7 @@ namespace SeriesTracker.Tests.UserRepositoryTests
                 SurName = "Test_3",
                 Avatar = "Test_icon3",
                 DateBirth = "22-12-1999",
-                Roles = [_context.RoleEntities.Where(r => r.Id == 3).First()],
+                Role = _context.RoleEntities.Where(r => r.Id == 3).First(),
                 RegDate = regDate,
             };
 

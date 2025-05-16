@@ -37,7 +37,7 @@ const UserFormOptional: React.FC<Props> = ({
                 <Form.Item noStyle valuePropName="fileList" name={"avatar"}>
                     <AvatarPicker preloadFile={avatar} onChange={setAvatar} />
                 </Form.Item>
-                <Flex className="flex-column">
+                <Flex className={styles["avatar-text"]}>
                     <Title level={5}>{"Выберите ваш аватар"}</Title>
 
                     <Text

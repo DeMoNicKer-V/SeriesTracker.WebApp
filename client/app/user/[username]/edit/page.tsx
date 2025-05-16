@@ -21,6 +21,7 @@ import dayjs from "dayjs";
 import "dayjs/locale/ru";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import styles from "../page.module.css";
 dayjs.locale("ru");
 
 //  Основной компонент EditUserPage (страница редактирования профиля пользователя)
@@ -94,6 +95,7 @@ export default function EditUserPage({
                 >
                     <title>{`${params.username} / Редактирование`}</title>
                     <Breadcrumb
+                        className={styles["breadcrumb"]}
                         items={[
                             {
                                 title: (
@@ -124,7 +126,7 @@ export default function EditUserPage({
                             <Flex
                                 justify="center"
                                 gap={15}
-                                style={{ flexDirection: "column" }}
+                                className="flex-column"
                             >
                                 <Button
                                     onClick={() => setOpenDeleteList(true)}

@@ -213,7 +213,7 @@ namespace SeriesTracker.Application
             return new GraphQLRequest
             {
                 Query = @"query GetRandomAnime() {
-                                 animes(order: random, score: 6, kind: ""ova,ona,tv,movie"", status: ""!anons"", limit: 1) {
+                                 animes(order: random, score: 6, kind: ""ova,ona,tv,movie"", rating: ""!g"" status: ""!anons"", limit: 1) {
                                      id
                                  }
                              }",

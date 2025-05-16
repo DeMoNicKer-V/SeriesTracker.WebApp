@@ -31,15 +31,24 @@ import {
 import Link from "next/link";
 import { useMemo } from "react";
 import Loading from "../Loading";
+import PageErrorView from "../PageErrorVIew";
 import styles from "./component.module.css";
 
 const { Title, Text } = Typography;
+
+// Определение интерфейса Props для компонента AnimeDetailsContent
 interface Props {
-    anime: AnimeDetail;
-    isLoading: boolean;
-    error: any;
-    user?: User;
+    anime: AnimeDetail; // Аниме (обязательно)
+    isLoading: boolean; // Состояние загрузки (обязательно)
+    error: any; // Состояние ошибки (обязательно)
+    user?: User; // Пользоватеь (опционально)
 }
+/**
+ * @component AnimeDetailsContent
+ * @description Компонент для детального представления аниме.
+ * @param {Props} props - Объект с пропсами компонента.
+ * @returns {JSX.Element}
+ */
 const AnimeDetailsContent: React.FC<Props> = ({
     anime,
     isLoading,
@@ -58,11 +67,7 @@ const AnimeDetailsContent: React.FC<Props> = ({
     }
 
     if (error) {
-        return <p>Error: {error.message}</p>; // Обработка ошибки
-    }
-
-    if (!anime) {
-        return <p>No anime data available.</p>; // Обработка случая, когда anime равно null
+        return <PageErrorView text={error.message} />; // Обработка ошибки
     }
 
     return (
