@@ -9,13 +9,11 @@
     •
     <a href="#технологии">Технологии</a>
     •
+    <a href="#функциональность">Функциональность</a>
+    •
     <a href="#скриншоты">Скриншоты</a>
     •
-    <a href="#использование">Использование</a>
-    •
-    <a href="#roadmap">RoadMap</a>
-    •
-    <a href="#архитектура">Архитектура</a>
+    <a href="#демонстрация">Демонстрация</a>
     •
     <a href="#лицензия">Лицензия</a>
 </p>
@@ -56,7 +54,6 @@
     *   Day.js - Библиотека для работы с датами.
     *   SWR - Библиотека для эффективной загрузки данных.
  
-
 ## Функциональность
 
 ### Общее
@@ -120,3 +117,50 @@
 *   Все данные хранятся на сервере PostgreSQL.
 
 ## Скриншоты
+
+### Desktop версия
+<details>
+    <summary>Нажмите, чтобы посмотреть скриншоты</summary>
+
+| <!-- --> | <!-- --> |
+|:-:|:-:|
+| **Страница входа** | **Страница регистрации** |
+|  [![Login](screenshots/full/login_full.png)](screenshots/full/login_full.png) | [![Register](screenshots/full/register_full.png)](screenshots/full/register_full.png)  |
+| **Главная страница приложения** | **Окно для параметризированного поиска** |
+|  [![Main Page](screenshots/full/mainpage_full.png)](screenshots/full/mainpage_full.png) |  [![Filter](screenshots/full/filter_full.png)](screenshots/full/filter_full.png)
+| **Страница календаря** | **Страница профиля пользователя** |
+| [![Calendar](screenshots/full/calendar_full.png)](screenshots/full/calendar_full.png) |  [![User Page](screenshots/full/userpage_full.png)](screenshots/full/userpage_full.png) |
+| **Страница пользовательского списка** | **Страница редактирования профиля пользователя.** |
+|  [![User Series](screenshots/full/userseries_full.png)](screenshots/full/userseries_full.png) | [![Edit User](screenshots/full/edituser_full.png)](screenshots/full/edituser_full.png) |
+| **Страница настроек (категории)** | **Страница настроек (пользователи)** |
+|  [![Categories](screenshots/full/categories_full.png)](screenshots/full/categories_full.png) | [![Users](screenshots/full/users_full.png)](screenshots/full/users_full.png)
+| **Экран детальной информации об аниме** | **Страница с правилами** |
+|  [![Detail](screenshots/full/detail_full.png)](screenshots/full/detail_full.png) |  [![Rules](screenshots/full/rules_full.png)](screenshots/full/rules_full.png) |
+
+</details>
+
+### Мобильная версия
+
+<details>
+    <summary>Нажмите, чтобы посмотреть скриншоты</summary>
+    
+| <!-- --> | <!-- --> |
+|:-:|:-:|
+| **Страница входа** | **Страница регистрации** |
+|  [![Login](screenshots/mobile/login_mobile.png)](screenshots/mobile/login_mobile.png) | [![Register](screenshots/mobile/register_mobile.png)](screenshots/mobile/register_mobile.png)  |
+| **Главная страница приложения** | **Окно для параметризированного поиска** |
+|  [![Main Page](screenshots/mobile/mainpage_mobile.png)](screenshots/mobile/mainpage_mobile.png) |  [![Filter](screenshots/mobile/filter_mobile.png)](screenshots/mobile/filter_mobile.png)
+| **Страница календаря** | **Страница профиля пользователя** |
+| [![Calendar](screenshots/mobile/calendar_mobile.png)](screenshots/mobile/calendar_mobile.png) |  [![User Page](screenshots/mobile/userpage_mobile.png)](screenshots/mobile/userpage_mobile.png) |
+| **Страница пользовательского списка** | **Страница редактирования профиля пользователя.** |
+|  [![User Series](screenshots/mobile/userseries_mobile.png)](screenshots/mobile/userseries_mobile.png) | [![Edit User](screenshots/mobile/edituser_mobile.png)](screenshots/mobile/edituser_mobile.png) |
+| **Страница настроек (категории)** | **Страница настроек (пользователи)** |
+|  [![Categories](screenshots/mobile/categories_mobile.png)](screenshots/mobile/categories_mobile.png) | [![Users](screenshots/mobile/users_mobile.png)](screenshots/mobile/users_mobile.png)
+| **Экран детальной информации об аниме** | **Страница с правилами** |
+|  [![Detail](screenshots/mobile/detail_mobile.png)](screenshots/mobile/detail_mobile.png) |  [![Rules](screenshots/mobile/rules_mobile.png)](screenshots/mobile/rules_mobile.png) |
+
+</details>
+
+## Лицензия
+
+Series Tracker.WebApp распространяется на условиях лицензии Apache (версия 2.0). Подробности в [Лицензия](LICENSE.txt).
