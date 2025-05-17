@@ -186,7 +186,7 @@
 </details>
 
 ## Демонстрация
-[Смотрите видео-демонстрацию проекта](https://drive.google.com/file/d/1HMkyuQreIwc_jnymMmDFiqK_y2c9OFMQ/view?usp=drive_link/preview)
+[Посмотреть небольшую видео-демонстрацию приложения](https://drive.google.com/file/d/1HMkyuQreIwc_jnymMmDFiqK_y2c9OFMQ/view?usp=drive_link/preview)
 
 ## Лицензия
 
