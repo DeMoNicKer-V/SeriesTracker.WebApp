@@ -31,12 +31,13 @@
 Этот проект построен с использованием следующих технологий:
 
 *   **Backend:**
+    *   Visual Studio - Основной инструмент для работы с кодом.
     *   C# - Язык разработки.
     *   ASP.NET Core -  Платформа для создания веб-API.
     *   PostgreSQL -  Реляционная база данных для хранения данных.
     *   EntityFramework Core - ORM для взаимодействия с БД.
     *   JWT -  Для аутентификации и авторизации.
-    *   Shikimori API - Внешний API для работы с данными аниме.
+    *   Shikimori API - Внешний API для получения данных.
     *   Automapper -  Для преобразования данных.
 *   **Архитектура:**
     *   Реализована архитектура, основанная на паттерне Репозиторий-Сервис-Контроллер, для разделения ответственности и улучшения масштабируемости:
@@ -47,6 +48,7 @@
         *   `.Infrastructure`: Вспомогательные сервисы и интеграции.
 *   **Тестирование:**  Применяются юнит-тесты и интеграционные тесты для обеспечения качества кода.
 *   **Frontend:**
+    *   Visual Studio Code - Основной инструмент для работы с кодом.
     *   Next.js - Фреймворк для создания пользовательского интерфейса.
     *   TypeScript -  Язык разработки.
     *   CSS -  Для оформления.
@@ -118,48 +120,73 @@
 
 ## Скриншоты
 
-### Desktop версия
+### Здесь представлены скриншоты того, как приложение выглядит на устройствах с различным размером экрана.
+
+* Desktop версия
+
 <details>
     <summary>Нажмите, чтобы посмотреть скриншоты</summary>
 
-| <!-- --> | <!-- --> |
-|:-:|:-:|
-| **Страница входа** | **Страница регистрации** |
-|  [![Login](screenshots/full/login_full.png)](screenshots/full/login_full.png) | [![Register](screenshots/full/register_full.png)](screenshots/full/register_full.png)  |
-| **Главная страница приложения** | **Окно для параметризированного поиска** |
-|  [![Main Page](screenshots/full/mainpage_full.png)](screenshots/full/mainpage_full.png) |  [![Filter](screenshots/full/filter_full.png)](screenshots/full/filter_full.png)
-| **Страница календаря** | **Страница профиля пользователя** |
-| [![Calendar](screenshots/full/calendar_full.png)](screenshots/full/calendar_full.png) |  [![User Page](screenshots/full/userpage_full.png)](screenshots/full/userpage_full.png) |
-| **Страница пользовательского списка** | **Страница редактирования профиля пользователя.** |
-|  [![User Series](screenshots/full/userseries_full.png)](screenshots/full/userseries_full.png) | [![Edit User](screenshots/full/edituser_full.png)](screenshots/full/edituser_full.png) |
-| **Страница настроек (категории)** | **Страница настроек (пользователи)** |
-|  [![Categories](screenshots/full/categories_full.png)](screenshots/full/categories_full.png) | [![Users](screenshots/full/users_full.png)](screenshots/full/users_full.png)
-| **Экран детальной информации об аниме** | **Страница с правилами** |
-|  [![Detail](screenshots/full/detail_full.png)](screenshots/full/detail_full.png) |  [![Rules](screenshots/full/rules_full.png)](screenshots/full/rules_full.png) |
+<table>
+    <tr>
+        <td width="50%"><b><p align="center">Страница входа</p></b><img src="screenshots/full/login_full.png"</td>
+        <td width="50%"><b><p align="center">Страница регистрации</p></b><img src="screenshots/full/register_full.png"</td>
+    </tr>
+    <tr>
+        <td width="50%"><b><p align="center">Главная страница приложения</p></b><img src="screenshots/full/mainpage_full.png"</td>
+        <td width="50%"><b><p align="center">Окно для параметризированного поиска</p></b><img src="screenshots/full/filter_full.png"</td>
+    </tr>
+    <tr>
+        <td width="50%"><b><p align="center">Страница календаря</p></b><img src="screenshots/full/calendar_full.png"</td>
+        <td width="50%"><b><p align="center">Страница профиля пользователя</p></b><img src="screenshots/full/userpage_full.png"</td>
+    </tr>
+    <tr>
+        <td width="50%"><b><p align="center">Страница пользовательского списка</p></b><img src="screenshots/full/userseries_full.png"</td>
+        <td width="50%"><b><p align="center">Страница редактирования профиля пользователя</p></b><img src="screenshots/full/edituser_full.png"</td>
+    </tr>
+    <tr>
+        <td width="50%"><b><p align="center">Экран детальной информации об аниме</p></b><img src="screenshots/full/detail_full.png"></td>
+        <td width="50%"><b><p align="center">Страница с правилами</p></b><img src="screenshots/full/rules_full.png"></td>
+    </tr>
+    <tr>
+        <td width="50%"><b><p align="center">Страница настроек (категории)</p></b><img src="screenshots/full/categories_full.png"</td>
+        <td width="50%"><b><p align="center">Страница настроек (пользователи)</p></b><img src="screenshots/full/users_full.png"</td>
+    </tr>
+</table>
 
 </details>
 
-### Мобильная версия
-
+* Мобильная версия
 <details>
     <summary>Нажмите, чтобы посмотреть скриншоты</summary>
     
-| <!-- --> | <!-- --> |
-|:-:|:-:|
-| **Страница входа** | **Страница регистрации** |
-|  [![Login](screenshots/mobile/login_mobile.png)](screenshots/mobile/login_mobile.png) | [![Register](screenshots/mobile/register_mobile.png)](screenshots/mobile/register_mobile.png)  |
-| **Главная страница приложения** | **Окно для параметризированного поиска** |
-|  [![Main Page](screenshots/mobile/mainpage_mobile.png)](screenshots/mobile/mainpage_mobile.png) |  [![Filter](screenshots/mobile/filter_mobile.png)](screenshots/mobile/filter_mobile.png)
-| **Страница календаря** | **Страница профиля пользователя** |
-| [![Calendar](screenshots/mobile/calendar_mobile.png)](screenshots/mobile/calendar_mobile.png) |  [![User Page](screenshots/mobile/userpage_mobile.png)](screenshots/mobile/userpage_mobile.png) |
-| **Страница пользовательского списка** | **Страница редактирования профиля пользователя.** |
-|  [![User Series](screenshots/mobile/userseries_mobile.png)](screenshots/mobile/userseries_mobile.png) | [![Edit User](screenshots/mobile/edituser_mobile.png)](screenshots/mobile/edituser_mobile.png) |
-| **Страница настроек (категории)** | **Страница настроек (пользователи)** |
-|  [![Categories](screenshots/mobile/categories_mobile.png)](screenshots/mobile/categories_mobile.png) | [![Users](screenshots/mobile/users_mobile.png)](screenshots/mobile/users_mobile.png)
-| **Экран детальной информации об аниме** | **Страница с правилами** |
-|  [![Detail](screenshots/mobile/detail_mobile.png)](screenshots/mobile/detail_mobile.png) |  [![Rules](screenshots/mobile/rules_mobile.png)](screenshots/mobile/rules_mobile.png) |
+<table>
+    <tr>
+        <td width="50%"><b><p align="center">Страница входа</p></b><img src="screenshots/mobile/login_mobile.png"</td>
+        <td width="50%"><b><p align="center">Страница регистрации</p></b><img src="screenshots/mobile/register_mobile.png"</td>
+    </tr>
+    <tr>
+        <td width="50%"><b><p align="center">Главная страница приложения</p></b><img src="screenshots/mobile/mainpage_mobile.png"</td>
+        <td width="50%"><b><p align="center">Окно для параметризированного поиска</p></b><img src="screenshots/mobile/filter_mobile.png"</td>
+    </tr>
+    <tr>
+        <td width="50%"><b><p align="center">Страница календаря</p></b><img src="screenshots/mobile/calendar_mobile.png"</td>
+        <td width="50%"><b><p align="center">Страница профиля пользователя</p></b><img src="screenshots/mobile/userpage_mobile.png"</td>
+    </tr>
+    <tr>
+        <td width="50%"><b><p align="center">Страница пользовательского списка</p></b><img src="screenshots/mobile/userseries_mobile.png"</td>
+        <td width="50%"><b><p align="center">Страница редактирования профиля пользователя</p></b><img src="screenshots/mobile/edituser_mobile.png"</td>
+    </tr>
+    <tr>
+        <td width="50%"><b><p align="center">Экран детальной информации об аниме</p></b><img src="screenshots/mobile/detail_mobile.png"></td>
+        <td width="50%"><b><p align="center">Страница с правилами</p></b><img src="screenshots/mobile/rules_mobile.png"></td>
+    </tr>
+</table>
 
 </details>
+
+## Демонстрация
+[Смотрите видео-демонстрацию проекта](https://drive.google.com/file/d/1HMkyuQreIwc_jnymMmDFiqK_y2c9OFMQ/view?usp=drive_link/preview)
 
 ## Лицензия
 
